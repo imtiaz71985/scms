@@ -32,18 +32,18 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <sec:ifAnyUrls urls="/registrationInfo/show">
+                <sec:ifAnyUrls urls="/registrationInfo/show,/counselorAction/show">
                     <li>
-                        <a href="#"><i class="fa fa-h-square"></i>&nbsp;Static Clinic<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-h-square"></i>&nbsp;Health Clinic<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/registrationInfo/show">
                                 <li>
-                                    <a href="#registrationInfo/show"><i class="fa fa-rss"></i>&nbsp;Registration</a>
+                                    <a href="#registrationInfo/show"><i class="fa fa-user-plus"></i>&nbsp;Registration</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/counselorAction/show">
                                 <li>
-                                    <a href="#counselorAction/show"><i class="fa fa-bars"></i>&nbsp;Counselor Action</a>
+                                    <a href="#counselorAction/show"><i class="fa fa-user-times"></i>&nbsp;Counselor Action</a>
                                 </li>
                             </sec:access>
                         </ul>

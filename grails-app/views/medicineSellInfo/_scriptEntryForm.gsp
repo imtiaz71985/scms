@@ -139,6 +139,7 @@
         }
         totalAmount=parseFloat(totalAmount,10)+parseFloat(amount,10);
         $("#footerSpan").text(formatAmount(totalAmount));
+        unitPrice = 0;
         clearForm($("#frmMedicine"), $("#medicineId"));
         $("#voucherNo").val(voucherNo);
         $('#gridMedicine  > .k-grid-content').height(285);
@@ -245,7 +246,24 @@
             dataType: 'json'
         });
     }
-
+    function getOnlyMedicinePrice() {
+        var medicineId = dropDownMedicine.value();
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller:'medicineSellInfo', action: 'retrieveMedicinePrice')}?medicineId=" + medicineId;
+        jQuery.ajax({
+            type: 'post',
+            url: actionUrl,
+            success: function (data, textStatus) {
+                unitPrice = data.amount;
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+    }
     function calculateTotalPrice() {
         var medicineId = dropDownMedicine.value();
         var quantity = $("#quantity").val();
@@ -286,6 +304,7 @@
             $("#unit").text(data.unit);
         }
         gridMedicineSellInfo.dataSource.remove(data);
+        getOnlyMedicinePrice();
         var amount = $("#amount").val();
         totalAmount=parseFloat(totalAmount,10)-parseFloat(amount,10);
         $("#footerSpan").text('');
