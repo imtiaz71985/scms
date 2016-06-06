@@ -5,7 +5,7 @@
 </ul>
 </script>
 <script language="javascript">
-    var voucherNo,quantity,gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine, medicineName, unitPrice = 0;
+    var voucherNo,quantity,gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine, medicineName, unitPrice = 0, totalAmount = 0;
 
     $(document).ready(function () {
         voucherNo = '${voucherNo}';
@@ -13,6 +13,9 @@
         initMedicineSellInfoGrid();
         initObservable();
         $('#quantity').kendoNumericTextBox({
+            spin: function() {
+                calculateTotalPrice();
+            },
             min: 1,
             step:1,
             max: 999999999999.99,
@@ -130,14 +133,15 @@
         var gridCount = gridModel.dataSource.data().length;
         if (gridCount > 0) {
             gridModel.dataSource.data().unshift(data);
-        }
-        else {
+        } else {
             var dsDr = new kendo.data.DataSource({data: [data]});
             gridModel.setDataSource(dsDr);
         }
+        totalAmount=parseFloat(totalAmount,10)+parseFloat(amount,10);
+        $("#footerSpan").text(formatAmount(totalAmount));
         clearForm($("#frmMedicine"), $("#medicineId"));
         $("#voucherNo").val(voucherNo);
-        $('#gridMedicine  > .k-grid-content').height(310);
+        $('#gridMedicine  > .k-grid-content').height(285);
         return false;
     }
 
@@ -165,7 +169,8 @@
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(amount)#",
-                    sortable: false,filterable: false,width: 50
+                    sortable: false,filterable: false,width: 50,
+                    footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
                 },
                 {
                     field: "quantity",
@@ -183,7 +188,7 @@
         });
         gridMedicineSellInfo = $("#gridMedicine").data("kendoGrid");
         $("#menuGridKendoDr").kendoMenu();
-        $('#gridMedicine  > .k-grid-content').height(310);
+        $('#gridMedicine  > .k-grid-content').height(285);
     }
 
     function initObservable() {
@@ -281,14 +286,21 @@
             $("#unit").text(data.unit);
         }
         gridMedicineSellInfo.dataSource.remove(data);
-        $('#gridMedicine  > .k-grid-content').height(310);
+        var amount = $("#amount").val();
+        totalAmount=parseFloat(totalAmount,10)-parseFloat(amount,10);
+        $("#footerSpan").text('');
+        $("#footerSpan").text(formatAmount(totalAmount));
+        $('#gridMedicine  > .k-grid-content').height(285);
     }
     function deleteMedicine(com, grid) {
         if (executeCommonPreConditionForSelectKendo(gridMedicineSellInfo, 'medicine') == false) {
             return;
         }
         var data = gridMedicineSellInfo.dataItem(gridMedicineSellInfo.select());
+        totalAmount=parseFloat(totalAmount,10)-parseFloat(data.amount,10);
         gridMedicineSellInfo.dataSource.remove(data);
-        $('#gridMedicine  > .k-grid-content').height(310);
+        $("#footerSpan").text('');
+        $("#footerSpan").text(formatAmount(totalAmount));
+        $('#gridMedicine  > .k-grid-content').height(285);
     }
 </script>
