@@ -1,0 +1,149 @@
+/* Style for kendo grid menu*/
+ul.kendoGridMenu li i {
+    margin: 5px;
+    color: #428BCA;
+    font-size: 15px;
+}
+/* Style for Bootstrap*/
+.panel {
+    margin-bottom: 10px;
+}
+.panel-primary > .panel-heading {
+    background-color: #a4ccee;
+    background-image: none;
+    border-color: #006dba;
+    color: #515967;
+}
+
+.panel-title {
+    font-size: 15px;
+}
+.panel-primary {
+    border-color: #006dba;
+}
+.panel-heading {
+    padding: 4px 13px;
+}
+.panel-footer {
+    background-color: #a4ccee;
+    border-top: 1px solid #006dba;
+    padding: 3px 12px;
+}
+label {
+    font-weight: normal;
+    margin-bottom: 0;
+}
+/* Style for label required */
+.label-required {
+    color:red;
+}
+/*for button container*/
+.buttons {
+    border-bottom: 1px solid #006dba;
+    border-top: 1px solid #006dba;
+    clear: right;
+    color: #006dba;
+    padding: 5px 8px;
+}
+.k-button {
+    background-color: #459cd3;
+    border-color: #006dba;
+    color: #101010;
+}
+.k-button:hover {
+    background-color: #006dba;
+}
+
+/* class for rolling spinner */
+.spinner {
+    padding: 5px;
+    right: 0;
+    clear: both;
+    float: left;
+    margin-bottom: 30px;
+    position: relative;
+}
+.form-control {
+    font-size: 14px;
+    height: 28px;
+    padding: 0 0 0 5px;
+}
+body {
+    font-size: 12px;
+    line-height: 1.2;
+}
+.alpha {
+    border-radius: 0 20px 20px 0;
+}
+.custom {
+    height: 35px;
+    color: #445b00;
+}
+.custom:hover {
+    background-color: lightgray;
+}
+.yellow {
+    color: #ffb400;
+}
+.col-xs-1  {
+    width: 4px;
+}
+.col-xs-6  {
+    width: 60%;
+}
+.custom-class  {
+    width: 90%;
+    height: 90%;
+}
+#searchValue {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    height: 27px;
+}
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
+input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
+input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
+textarea:focus::-webkit-input-placeholder { color:transparent; }
+textarea:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
+textarea:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
+textarea:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
+.kendo-drop-down {
+    width: 100%;
+}
+.kendo-date-picker {
+    width: 100%;
+}
+.k-grid td {
+    border-width: .2px 0 0 1px;
+}
+.k-grid tbody>tr:last-child>td {
+    border-bottom: 1px solid #F9F0F0;
+}
+.k-menu .k-item > .k-link {
+    padding: 0 0.9em 0;
+}
+.red {
+    color: red;
+}
+.borderless > thead > tr > th,
+.borderless > tfoot > tr > th,
+.borderless > thead > tr > td,
+.borderless > tbody > tr > td,
+.borderless > tfoot > tr > td {
+    border-top: 0px;
+}
+.borderless > tbody > tr > th{
+    border-bottom: 1px solid #dddddd;
+}
+.no-data {
+    background: #c2dfee;
+}
+/* Style for bootbox confirmation box */
+.conf-delete {
+    width: 400px !important;
+}
+.conf-download {
+    width: 420px !important;
+}

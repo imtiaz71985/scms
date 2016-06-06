@@ -1,0 +1,173 @@
+package service
+
+import grails.transaction.Transactional
+
+@Transactional
+class ThemeService {
+
+    private static final String KEY_COMMON_CSS = "app.theme.common.css"
+
+    public static final String INSERT_QUERY_COMMON_CSS = """
+        INSERT INTO theme(version,module_id, name, value)
+            VALUES(0,1,'app.theme.common.css',
+             CONCAT(
+                '/* Style for kendo grid menu*/\\n',
+                'ul.kendoGridMenu li i {\\n',
+                ' margin: 5px;\\n',
+                'color: #428BCA;\\n',
+                ' font-size: 15px;\\n',
+                '}\\n',
+                '/* Style for Bootstrap*/\\n',
+                '.panel {\\n',
+                ' margin-bottom: 10px;\\n',
+                '}\\n',
+                '.panel-primary > .panel-heading {\\n',
+                '   background-color: #f8f8f8;\\n',
+                '   background-image: none;\\n',
+                '  border-color: #CCCCCC;\\n',
+                ' color: #515967;\\n',
+                '}\\n',
+                '.panel-footer {\\n',
+                '   border-top: 1px solid #cccccc;\\n',
+                '}\\n',
+
+                '.panel-title {\\n',
+                '  font-size: 15px;\\n',
+                '}\\n',
+
+                '.panel-primary {\\n',
+                ' border-color: #cccccc;\\n',
+                '}\\n',
+
+                '.panel-heading {\\n',
+                '   padding: 4px 13px;\\n',
+                '}\\n',
+
+                '.panel-footer {\\n',
+                '   padding: 3px 12px;\\n',
+                '}\\n',
+
+                'label {\\n',
+                ' font-weight: normal;\\n',
+                '  margin-bottom: 0;\\n',
+                '}\\n',
+                '/* Style for label required */\\n',
+                '.label-required {\\n',
+                ' color:red;\\n',
+                '}\\n',
+                '/*for button container*/\\n',
+                '.buttons {\\n',
+                '   border-bottom: 1px solid #BDC7D8;\\n',
+                '   border-top: 1px solid #BDC7D8;\\n',
+                '   clear: right;\\n',
+                '   color: #666666;\\n',
+                '   padding: 5px 8px;\\n',
+                '}\\n',
+
+                '/* class for rolling spinner */\\n',
+                '.spinner {\\n',
+                '    padding: 5px;\\n',
+                '   right: 0;\\n',
+                '   clear: both;\\n',
+                '   float: left;\\n',
+                '  margin-bottom: 30px;\\n',
+                '  position: relative;\\n',
+                '}\\n',
+                '.form-control {\\n',
+                '   font-size: 14px;\\n',
+                '   height: 28px;\\n',
+                '   padding: 0 0 0 5px;\\n',
+                '}\\n',
+
+                'body {\\n',
+                '   font-size: 12px;\\n',
+                '   line-height: 1.2;\\n',
+                '}\\n',
+
+                '.alpha {\\n',
+                '  border-radius: 0 20px 20px 0;\\n',
+                '}\\n',
+                '.custom {\\n',
+                '   height: 35px;\\n',
+                '   color: #445b00;\\n',
+                '}\\n',
+                '.custom:hover {\\n',
+                '  background-color: lightgray;\\n',
+                '}\\n',
+                '.yellow {\\n',
+                '   color: #ffb400;\\n',
+                '}\\n',
+                '.col-xs-1  {\\n',
+                '    width: 4px;\\n',
+                '}\\n',
+                '.col-xs-6  {\\n',
+                '   width: 60%;\\n',
+                '}\\n',
+                '.custom-class  {\\n',
+                '   width: 90%;\\n',
+                '   height: 90%;\\n',
+                '}\\n',
+                '#searchValue {\\n',
+                '   border: 1px solid #ccc;\\n',
+                '   border-radius: 4px;\\n',
+                '  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;\\n',
+                '  height: 27px;\\n',
+                '}\\n',
+
+                'input:focus::-webkit-input-placeholder { color:transparent; }\\n',
+                'input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */\\n',
+                'input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */\\n',
+                'input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */\\n',
+
+                'textarea:focus::-webkit-input-placeholder { color:transparent; }\\n',
+                'textarea:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */\\n',
+                'textarea:focus::-moz-placeholder { color:transparent; } /* FF 19+ */\\n',
+                'textarea:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */\\n',
+
+                '.kendo-drop-down {\\n',
+                '    width: 100%;\\n',
+                '}\\n',
+                '.kendo-date-picker {\\n',
+                '    width: 100%;\\n',
+                '}\\n',
+                '.k-grid td {\\n',
+                '  border-width: .2px 0 0 1px;\\n',
+                '}\\n',
+                '.k-grid tbody>tr:last-child>td {\\n',
+                '  border-bottom: 1px solid #F9F0F0;\\n',
+                '}\\n',
+
+                '.k-menu .k-item > .k-link {\\n',
+                '   padding: 0 0.9em 0;\\n',
+                '}\\n',
+
+                '.red {\\n',
+                '   color: red;\\n',
+                '}\\n',
+
+                '.borderless > thead > tr > th,\\n',
+                '.borderless > tfoot > tr > th,\\n',
+                '.borderless > thead > tr > td,\\n',
+                '.borderless > tbody > tr > td,\\n',
+                '.borderless > tfoot > tr > td {\\n',
+                '    border-top: 0px;\\n',
+                '}\\n',
+
+                '.borderless > tbody > tr > th{\\n',
+                '  border-bottom: 1px solid #dddddd;\\n',
+                '}\\n',
+
+                '.no-data {\\n',
+                '    background: #c2dfee;\\n',
+                '}\\n',
+                '/* Style for bootbox confirmation box */\\n',
+                '.conf-delete {\\n',
+                'width: 400px !important;\\n',
+                '}\\n',
+                '.conf-download {\\n',
+                'width: 420px !important;\\n',
+                '}'
+                ))
+    """
+
+}

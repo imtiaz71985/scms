@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="commonFooter" language="groovy" pageWidth="555" pageHeight="18" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="06cc1690-f9bc-425f-92ec-cb82b083fa9e">
+	<property name="ireport.zoom" value="1.2722928551174546"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<title>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement x="344" y="0" width="211" height="18" forecolor="#2C2A2B" uuid="1d01fb13-653c-4d58-aeb7-81041653d316"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font fontName="Cambria" size="6"/>
+				</textElement>
+				<text><![CDATA[Application developed by MIS Department.
+]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement x="0" y="0" width="168" height="17" forecolor="#2C2A2B" uuid="0c3833a9-d9ef-4d30-aadc-9f710090dabd"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="SansSerif" size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" mode="Transparent" x="0" y="0" width="555" height="1" backcolor="#FFFFFF" uuid="731dc29a-0466-4de0-b781-13c4399f656e"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="SansSerif" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="232" y="1" width="80" height="17" forecolor="#2C2A2B" uuid="0c117db4-2cd3-402a-ad58-1231951a7c6e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="312" y="1" width="40" height="17" forecolor="#2C2A2B" uuid="c7cb6116-ead8-467a-9698-03b32de411c1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

@@ -1,0 +1,86 @@
+package actions.medicineInfo
+
+import com.model.ListMedicineInfoActionServiceModel
+import com.scms.MedicineInfo
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import scms.ActionServiceIntf
+import scms.BaseService
+
+@Transactional
+class CreateMedicineInfoActionService extends BaseService implements ActionServiceIntf {
+
+    private static final String SAVE_SUCCESS_MESSAGE = "Medicine has been saved successfully"
+    private static final String ALREADY_EXIST = "Same Medicine already exist"
+    private static final String MEDICINE_INFO = "medicineInfo"
+
+    private Logger log = Logger.getLogger(getClass())
+
+    @Transactional(readOnly = true)
+    public Map executePreCondition(Map params) {
+        try {
+            //Check parameters
+            if (!params.typeId||!params.genericName||!params.strength) {
+                return super.setError(params, INVALID_INPUT_MSG)
+            }
+            long typeId = Long.parseLong(params.typeId)
+            if (params.strength) {
+                int duplicateCount = MedicineInfo.countByGenericNameIlikeAndTypeAndStrength(params.name,typeId,params.strength)
+                if (duplicateCount > 0) {
+                    return super.setError(params, ALREADY_EXIST)
+                }            }
+            MedicineInfo medicineInfo = buildObject(params)
+            params.put(MEDICINE_INFO, medicineInfo)
+            return params
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            throw new RuntimeException(ex)
+        }
+    }
+
+    @Transactional
+    public Map execute(Map result) {
+        try {
+            MedicineInfo medicineInfo = (MedicineInfo) result.get(MEDICINE_INFO)
+            medicineInfo.save()
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            throw new RuntimeException(ex)
+        }
+    }
+    /**
+     *
+     * @param result - map received from execute method
+     * @return - map
+     */
+    public Map executePostCondition(Map result) {
+        return result
+    }
+    /**
+     *
+     * @param result - map received from executePost method
+     * @return - map containing success message
+     */
+    public Map buildSuccessResultForUI(Map result) {
+        MedicineInfo medicineInfo = (MedicineInfo) result.get(MEDICINE_INFO)
+        ListMedicineInfoActionServiceModel model = ListMedicineInfoActionServiceModel.read(medicineInfo.id)
+        result.put(MEDICINE_INFO, model)
+        return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
+    }
+    /**
+     *
+     * @param result - map received from previous method
+     * @return - map
+     */
+    public Map buildFailureResultForUI(Map result) {
+        return result
+    }
+
+    private MedicineInfo buildObject(Map parameterMap) {
+        MedicineInfo medicineInfo = new MedicineInfo(parameterMap)
+        medicineInfo.unitPrice = Double.parseDouble(parameterMap.unitPrice)
+        medicineInfo.type = Double.parseDouble(parameterMap.typeId)
+        return medicineInfo
+    }
+}
