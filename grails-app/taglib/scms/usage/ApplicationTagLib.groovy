@@ -3,6 +3,7 @@ package scms.usage
 import scms.BaseTagLibExecutor
 import taglib.GetDropDownAddressTaglibActionService
 import taglib.GetDropDownDiseaseGroupTagLibActionService
+import taglib.GetDropDownHospitalTagLibActionService
 import taglib.GetDropDownMedicineListTagLibActionService
 import taglib.GetDropDownRegistrationNoTagLibActionService
 import taglib.GetDropDownServiceTokenNoTagLibActionService
@@ -22,6 +23,7 @@ class ApplicationTagLib extends BaseTagLibExecutor {
     GetDropDownMedicineListTagLibActionService getDropDownMedicineListTagLibActionService
     GetDropDownRegistrationNoTagLibActionService getDropDownRegistrationNoTagLibActionService
     GetDropDownServiceTokenNoTagLibActionService getDropDownServiceTokenNoTagLibActionService
+    GetDropDownHospitalTagLibActionService getDropDownHospitalTagLibActionService
 
     /**
      * Render html select of Department
@@ -90,6 +92,11 @@ class ApplicationTagLib extends BaseTagLibExecutor {
     def dropDownServiceTokenNo = { attrs, body ->
         attrs.body = body
         super.executeTag(getDropDownServiceTokenNoTagLibActionService, attrs)
+        out << (String) attrs.html
+    }
+    def dropDownHospital = { attrs, body ->
+        attrs.body = body
+        super.executeTag(getDropDownHospitalTagLibActionService, attrs)
         out << (String) attrs.html
     }
 

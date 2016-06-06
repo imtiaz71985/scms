@@ -5,9 +5,10 @@ class ListSecUserActionServiceModel {
     public static final String MODEL_NAME = 'list_sec_user_action_service_model'
     public static final String SQL_LIST_SEC_USER_MODEL = """
     CREATE OR REPLACE VIEW list_sec_user_action_service_model AS
-        SELECT suser.id, suser.version,suser.username,suser.password, suser.enabled,
+        SELECT suser.id, suser.version,suser.username,hl.code AS hospital_code,hl.name AS hospital_name,suser.password, suser.enabled,
             suser.account_expired, suser.account_locked
         FROM sec_user suser
+        LEFT JOIN hospital_location hl ON hl.code=suser.hospital_code
         ORDER BY suser.id ASC;
     """
 
@@ -18,6 +19,8 @@ class ListSecUserActionServiceModel {
     boolean accountExpired                  // flag to determine is account expired or not
     boolean accountLocked                   // flag to determine is account locked or not
     String password                         // password of SecUser
+    String hospitalCode                     // user hospital code
+    String hospitalName                     // user hospital name
 
     static mapping = {
         cache usage: "read-only"

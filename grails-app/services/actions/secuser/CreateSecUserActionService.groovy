@@ -94,7 +94,6 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
      */
     private SecUser buildObject(Map parameterMap) {
         SecUser secUser = new SecUser(parameterMap)
-        secUser.hospitalCode = "01"
         return secUser
     }
 }

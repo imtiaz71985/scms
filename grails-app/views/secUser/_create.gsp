@@ -59,6 +59,25 @@
                                     <span class="k-invalid-msg" data-for="confirmPassword"></span>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label label-required" for="hospitalCode">Hospital:</label>
+
+                                <div class="col-md-6">
+                                    <app:dropDownHospital
+                                            data_model_name="dropDownHospitalCode"
+                                            required="required"
+                                            validationmessage="Required"
+                                            class="kendo-drop-down"
+                                            data-bind="value: secUser.hospitalCode"
+                                            id="hospitalCode"
+                                            name="hospitalCode">
+                                    </app:dropDownHospital>
+                                </div>
+
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="userId"></span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-md-4">

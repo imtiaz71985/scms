@@ -10,7 +10,7 @@
 </script>
 
 <script language="javascript">
-    var gridSecUser, dataSource, secUserModel;
+    var gridSecUser, dataSource, secUserModel,dropDownHospitalCode;
 
     $(document).ready(function () {
         $("#userRow").hide();
@@ -126,6 +126,8 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         username: { type: "string" },
+                        hospitalCode: { type: "string" },
+                        hospitalName: { type: "string" },
                         enabled: { type: "boolean" },
                         accountLocked: { type: "boolean" },
                         accountExpired: { type: "boolean" }
@@ -160,6 +162,7 @@
             },
             columns: [
                 {field: "username", title: "Login ID", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "hospitalName", title: "Hospital", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "enabled", title: "Enabled", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()}, template:"#=enabled?'YES':'NO'#"},
                 {field: "accountLocked", title: "Locked", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
@@ -183,6 +186,7 @@
                         id: "",
                         version: "",
                         username: "",
+                        hospitalCode: "",
                         enabled: false,
                         accountLocked: false,
                         accountExpired: false
