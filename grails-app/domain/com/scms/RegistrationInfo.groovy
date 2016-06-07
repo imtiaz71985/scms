@@ -17,6 +17,7 @@ class RegistrationInfo {
     String hospitalCode
     boolean isActive
     long service_charge_id
+    boolean isReissue
 
     static constraints = {
         createDate type:'date'
@@ -26,6 +27,7 @@ class RegistrationInfo {
         mobileNo(nullable: true)
         modifyDate(nullable: true)
         modifyBy (nullable: true)
+        isReissue (nullable: true)
     }
 
     static mapping = {
