@@ -72,7 +72,7 @@
                             <sec:access url="/medicineSellInfo/showMonthlyStatus">
                                 <li>
                                     <a href="#medicineSellInfo/showMonthlyStatus"><i
-                                            class="fa fa-file-pdf-o"></i>&nbsp;Month wise Sale</a>
+                                            class="fa fa-file-pdf-o"></i>&nbsp;Month Status</a>
                                 </li>
                             </sec:access>
                         </ul>
@@ -111,6 +111,11 @@
                             <sec:access url="/medicineInfo/show">
                                 <li>
                                     <a href="#medicineInfo/show"><i class="fa fa-hospital-o"></i>&nbsp;Medicine</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/calendar/show">
+                                <li>
+                                    <a href="#calendar/show"><i class="fa fa-calendar-o"></i>&nbsp;Office Calendar</a>
                                 </li>
                             </sec:access>
                         </ul>

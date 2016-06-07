@@ -1,5 +1,8 @@
 package actions.medicineSellInfo
 
+import com.scms.HospitalLocation
+import com.scms.SecUser
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
 import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
@@ -15,15 +18,17 @@ import java.text.SimpleDateFormat
 class DownloadMonthWiseMedicineSellInfoActionService extends BaseService implements ActionServiceIntf {
 
     JasperService jasperService
+    SpringSecurityService springSecurityService
 
     private static final String REPORT_FOLDER = 'medicineSellInfo'
     private static final String JASPER_FILE = 'monthWiseMedicineSellReport'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = 'Medicine Sale Report'
+    private static final String REPORT_TITLE = 'Monthly Report'
     private static final String OUTPUT_FILE_NAME = "medicine_sale_report"
     private static final String FROM_DATE = "fromDate"
     private static final String TO_DATE = "toDate"
     private static final String MONTH_NAME = "monthName"
+    private static final String HOSPITAL_NAME = "hospitalName"
 
     /**
      * Get parameters from UI
@@ -48,6 +53,9 @@ class DownloadMonthWiseMedicineSellInfoActionService extends BaseService impleme
         String end = DateUtility.getDBDateFormatAsString(ce.getTime())
         String monthName = new SimpleDateFormat("MMMM yyyy").format(c.getTime());
 
+        String hospitalName = HospitalLocation.findByCode(SecUser.read(springSecurityService.principal.id).hospitalCode).name
+
+        params.put(HOSPITAL_NAME, hospitalName)
         params.put(FROM_DATE, start)
         params.put(TO_DATE, end)
         params.put(MONTH_NAME, monthName)
@@ -113,6 +121,7 @@ class DownloadMonthWiseMedicineSellInfoActionService extends BaseService impleme
         reportParams.put(FROM_DATE, result.get(FROM_DATE))
         reportParams.put(TO_DATE, result.get(TO_DATE))
         reportParams.put(MONTH_NAME, result.get(MONTH_NAME))
+        reportParams.put(HOSPITAL_NAME, result.get(HOSPITAL_NAME))
         JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)
         ByteArrayOutputStream report = jasperService.generateReport(reportDef)

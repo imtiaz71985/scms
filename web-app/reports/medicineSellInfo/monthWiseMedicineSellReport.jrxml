@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthWiseMedicineSellReport" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="10" bottomMargin="5" uuid="8fa5faa7-d462-4a01-b835-787865c9ddce">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthWiseMedicineSellReport" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="5" uuid="8fa5faa7-d462-4a01-b835-787865c9ddce">
 	<property name="ireport.zoom" value="1.210000000000001"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -15,11 +15,25 @@
 		<defaultValueExpression><![CDATA[$P{toDate}]]></defaultValueExpression>
 	</parameter>
 	<parameter name="monthName" class="java.lang.String"/>
+	<parameter name="hospitalName" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT id, version,sell_date, SUM(total_amount) AS total_amount
-  FROM medicine_sell_info
-        WHERE sell_date BETWEEN $P{fromDate} AND $P{toDate}
-        GROUP BY sell_date]]>
+		<![CDATA[            SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status, COALESCE(SUM(msi.total_amount),0) AS medicine_sales,
+                COALESCE(SUM(sc.charge_amount),0) AS registration_amount,COALESCE(SUM(sc2.charge_amount),0) AS consultation_amount,
+                COALESCE((SELECT SUM(sc3.charge_amount)
+                         FROM token_and_charge_mapping tcm3
+                        LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
+                        WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+                        GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_amount
+
+                FROM calendar c
+                LEFT JOIN medicine_sell_info msi ON msi.sell_date = c.date_field
+                LEFT JOIN registration_info ri ON ri.create_date = c.date_field
+                LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
+
+                LEFT JOIN token_and_charge_mapping tcm2 ON DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                                WHERE c.date_field BETWEEN $P{fromDate} AND $P{toDate}
+                                GROUP BY c.date_field]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -27,19 +41,35 @@
 	<field name="version" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="sell_date" class="java.sql.Date">
+	<field name="date_field" class="java.sql.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="total_amount" class="java.lang.Double">
+	<field name="is_holiday" class="java.lang.Boolean">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<variable name="variable1" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{total_amount}]]></variableExpression>
+	<field name="holiday_status" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="medicine_sales" class="java.lang.Double"/>
+	<field name="registration_amount" class="java.lang.Double"/>
+	<field name="consultation_amount" class="java.lang.Double"/>
+	<field name="pathology_amount" class="java.lang.Double"/>
+	<variable name="medicine" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{medicine_sales}]]></variableExpression>
+	</variable>
+	<variable name="membership" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{registration_amount}]]></variableExpression>
+	</variable>
+	<variable name="consultancy" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{consultation_amount}]]></variableExpression>
+	</variable>
+	<variable name="diagnostic" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{pathology_amount}]]></variableExpression>
 	</variable>
 	<pageHeader>
 		<band height="51">
 			<staticText>
-				<reportElement x="0" y="43" width="535" height="1" uuid="8f7fa5be-25c2-4014-b929-3739f976ceb1"/>
+				<reportElement x="0" y="46" width="575" height="1" uuid="8f7fa5be-25c2-4014-b929-3739f976ceb1"/>
 				<box>
 					<bottomPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
@@ -54,29 +84,30 @@
 				<textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="448" y="0" width="87" height="32" uuid="40133f03-e77e-4653-81bb-8cbff13490d1"/>
+				<reportElement x="493" y="0" width="82" height="32" uuid="40133f03-e77e-4653-81bb-8cbff13490d1"/>
 				<imageExpression><![CDATA[$P{LOGO_DIR}+"logo.png"]]></imageExpression>
 			</image>
 			<textField pattern="dd-MMM-yyyy">
-				<reportElement x="177" y="29" width="168" height="12" forecolor="#2C2A2B" uuid="99e8d58c-12ce-4904-9ab1-cafec748120c"/>
+				<reportElement x="177" y="32" width="168" height="12" forecolor="#2C2A2B" uuid="99e8d58c-12ce-4904-9ab1-cafec748120c"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="SansSerif" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Month : " + $P{monthName}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="177" y="18" width="168" height="11" uuid="5b91dc82-a231-4da4-9a80-014aaa0b8a0e"/>
-				<textElement textAlignment="Center">
-					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+			<textField>
+				<reportElement x="168" y="18" width="187" height="14" forecolor="#2C2A2B" uuid="db2631eb-f103-4983-95ac-51a14a11f9a2"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Hatia Static Clinic]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{hospitalName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="20">
 			<staticText>
-				<reportElement mode="Opaque" x="109" y="0" width="157" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="a4ea4644-d19c-46e1-8481-75467461768b"/>
+				<reportElement mode="Opaque" x="34" y="0" width="90" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="a4ea4644-d19c-46e1-8481-75467461768b"/>
 				<box topPadding="2" leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -89,7 +120,7 @@
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="266" y="0" width="193" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="7e3cf906-188b-4205-a729-0a43388db855"/>
+				<reportElement mode="Opaque" x="352" y="0" width="114" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="7e3cf906-188b-4205-a729-0a43388db855"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -99,10 +130,10 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Cambria" size="8"/>
 				</textElement>
-				<text><![CDATA[Amount (BDT)]]></text>
+				<text><![CDATA[Diagnostic Charge]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="76" y="0" width="33" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="71914a25-4aab-430e-be06-2131c249bcf4"/>
+				<reportElement mode="Opaque" x="1" y="0" width="33" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="71914a25-4aab-430e-be06-2131c249bcf4"/>
 				<box topPadding="2" leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -114,12 +145,51 @@
 				</textElement>
 				<text><![CDATA[SL#]]></text>
 			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="124" y="0" width="114" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="d64a1724-e5a5-460f-a320-605990ff42e5"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<text><![CDATA[Membership Charges]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="238" y="0" width="114" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="27f5704a-afcf-412b-adfb-fa67d08184d1"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<text><![CDATA[Consultation Fee]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="466" y="0" width="109" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="02f81669-fa68-4996-9f20-d2be28dc7191"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<text><![CDATA[Medicine Sales]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="20">
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToTallestObject" x="76" y="0" width="33" height="20" forecolor="#000000" uuid="fbe79ce1-8732-45d7-b028-47e28c6de41c"/>
+				<reportElement stretchType="RelativeToTallestObject" x="1" y="0" width="33" height="20" forecolor="#000000" uuid="fbe79ce1-8732-45d7-b028-47e28c6de41c"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -132,7 +202,7 @@
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd-MMM-yy" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="109" y="0" width="157" height="20" forecolor="#000000" uuid="0afc8f46-6eb3-415f-9d81-a97ce42e2437"/>
+				<reportElement stretchType="RelativeToTallestObject" x="34" y="0" width="90" height="20" forecolor="#000000" uuid="0afc8f46-6eb3-415f-9d81-a97ce42e2437"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -142,10 +212,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Calibri" size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{sell_date}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{date_field}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="266" y="0" width="193" height="20" forecolor="#000000" uuid="b38600e9-9362-47cf-90b8-80fe27b97ef0"/>
+				<reportElement stretchType="RelativeToTallestObject" x="352" y="0" width="114" height="20" forecolor="#000000" uuid="b38600e9-9362-47cf-90b8-80fe27b97ef0"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -155,14 +225,53 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Calibri" size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{total_amount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pathology_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="124" y="0" width="114" height="20" forecolor="#000000" uuid="dbb7e76c-948f-48dc-a87e-697f823f6595"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Calibri" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{registration_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="238" y="0" width="114" height="20" forecolor="#000000" uuid="02fd2ca0-40bb-4774-befc-a2d3ae7d581a"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Calibri" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{consultation_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="466" y="0" width="109" height="20" forecolor="#000000" uuid="ee449818-a344-435d-929f-09760884fb77"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Calibri" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{medicine_sales}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<pageFooter>
 		<band height="19">
 			<subreport>
-				<reportElement x="0" y="0" width="535" height="19" forecolor="#2C2A2B" uuid="2e3c1c3d-28d0-43ad-a28b-1578e0fefcfd"/>
+				<reportElement x="0" y="0" width="575" height="19" forecolor="#2C2A2B" uuid="2e3c1c3d-28d0-43ad-a28b-1578e0fefcfd"/>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{ROOT_DIR} + "commonFooter.jasper"]]></subreportExpression>
 			</subreport>
@@ -171,7 +280,7 @@
 	<summary>
 		<band height="23">
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="391" y="3" width="68" height="20" uuid="b218e22a-ed88-486a-9fee-7e6be4b16be9"/>
+				<reportElement x="466" y="3" width="109" height="20" uuid="b218e22a-ed88-486a-9fee-7e6be4b16be9"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineColor="#939597"/>
@@ -181,10 +290,10 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{variable1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{medicine}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
-				<reportElement x="76" y="3" width="315" height="20" uuid="ca4c0508-af28-4a48-aec0-433c05493a78"/>
+				<reportElement x="0" y="3" width="124" height="20" uuid="ca4c0508-af28-4a48-aec0-433c05493a78"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -195,6 +304,45 @@
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Total : "]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="352" y="3" width="114" height="20" uuid="d605d457-45ca-424a-bcf7-50ca6821784b"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{diagnostic}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="238" y="3" width="114" height="20" uuid="615b4750-b8ca-4f5b-a4b8-0c228a236605"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{consultancy}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="124" y="3" width="114" height="20" uuid="e542e041-6dde-42b6-b220-7ed44116ad78"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{membership}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

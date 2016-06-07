@@ -30,7 +30,7 @@
     }
 
     function executePreCondition() {
-        if(!$('#month').val()){
+        if (!$('#month').val()) {
             return false;
         }
         return true;
@@ -44,7 +44,7 @@
         return false;
     }
 
-    function loadGridValue(){
+    function loadGridValue() {
         var month = $('#month').val();
         showLoadingSpinner(true);
         var params = "?month=" + month;
@@ -56,7 +56,22 @@
     function resetForm() {
         clearForm($("#monthWiseSellForm"), $('#month'));
     }
-
+    function dataBoundGrid(e) {
+        var grid = e.sender;
+        var data = grid.dataSource.data();
+        $.each(data, function (i, row) {
+            var str = row.dateField;
+            var currentDate = moment().format('YYYY-MM-DD');
+            if (str == currentDate) {
+                var sel = $('tr[data-uid="' + row.uid + '"] ');
+                grid.select(sel);
+            }
+            if (row.is_holiday) {
+                $('tr[data-uid="' + row.uid + '"] ').css("background-color", "#fee7df");  //light red
+                $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
+            }
+        });
+    }
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
@@ -71,19 +86,30 @@
                 data: "list", total: "count",
                 model: {
                     fields: {
-                        id: { type: "number" },
-                        version: { type: "number" },
-                        total_amount: { type: "number" },
-                        sell_date: { type: "date" }
+                        id: {type: "number"},
+                        version: {type: "number"},
+                        registration_amount: {type: "number"},
+                        consultation_amount: {type: "number"},
+                        pathology_amount: {type: "number"},
+                        medicine_sales: {type: "number"},
+                        date_field: {type: "date"},
+                        is_holiday: {type: "boolean"},
+                        holiday_status: {type: "string"}
                     }
                 },
                 parse: function (data) {
                     checkIsErrorGridKendo(data);
-                    if(data.count > 0) isApplicable = true;
+                    if (data.count > 0) isApplicable = true;
                     return data;
                 }
             },
-            sort: [{field: 'sell_date', dir: 'asc'}],
+            aggregate: [
+                {field: "registration_amount", aggregate: "sum" },
+                {field: "consultation_amount", aggregate: "sum" },
+                {field: "pathology_amount", aggregate: "sum" },
+                {field: "medicine_sales", aggregate: "sum" }
+            ],
+            sort: [{field: 'date_field', dir: 'asc'}],
             pageSize: 50,
             serverPaging: true,
             serverFiltering: true,
@@ -95,12 +121,12 @@
         initDataSource();
         $("#gridSellReportInfo").kendoGrid({
             dataSource: dataSource,
-            autoBind:false,
+            autoBind: false,
             height: getGridHeightKendo(),
             selectable: true,
             sortable: true,
             resizable: true,
-            dataBound: gridDataBound,
+            dataBound: dataBoundGrid,
             reorderable: true,
             pageable: {
                 refresh: true,
@@ -113,10 +139,56 @@
                 }
             },
             columns: [
-                {field: "sell_date", title: "Sale Date", width: 100, sortable: false, filterable: false,headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
-                template: "#=kendo.toString(kendo.parseDate(sell_date, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"},
-                {field: "total_amount", title: "Total Amount", width: 80, sortable: false, filterable: false,headerAttributes: {style: setAlignRight()},attributes: {style: setAlignRight()},
-                template: "#=formatAmount(total_amount)#"}
+                {
+                    field: "date_field",
+                    title: "Date",
+                    width: 100,
+                    sortable: false,
+                    filterable: false,
+                    headerAttributes: {style: setAlignCenter()},
+                    attributes: {style: setAlignCenter()},
+                    template: "#=kendo.toString(kendo.parseDate(date_field, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
+                },
+                {
+                    field: "registration_amount",
+                    title: "Membership Charge",
+                    width: 80,sortable: false,filterable: false,
+                    headerAttributes: {style: setAlignRight()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=is_holiday?'':formatAmount(registration_amount)#",
+                    footerTemplate: "Total : #=formatAmount(sum)#"
+                },
+                {
+                    field: "consultation_amount",
+                    title: "Consultation Fee",
+                    width: 80,sortable: false,filterable: false,
+                    headerAttributes: {style: setAlignRight()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=is_holiday?'':formatAmount(consultation_amount)#",
+                    footerTemplate: "Total : #=formatAmount(sum)#"
+                },
+                {
+                    field: "pathology_amount",
+                    title: "Diagnostic Charge",
+                    width: 80,sortable: false,filterable: false,
+                    headerAttributes: {style: setAlignRight()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=is_holiday?'':formatAmount(pathology_amount)#",
+                    footerTemplate: "Total : #=formatAmount(sum)#"
+                },
+                {
+                    field: "medicine_sales",
+                    title: "Medicine Sales",
+                    width: 80,sortable: false,filterable: false,
+                    headerAttributes: {style: setAlignRight()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=is_holiday?holiday_status:formatAmount(medicine_sales)#",
+                    footerTemplate: "Total : #=formatAmount(sum)#"
+                }
             ],
             filterable: {
                 mode: "row"
@@ -127,14 +199,14 @@
         $("#menuGrid").kendoMenu();
     }
 
-    function downloadMonthWiseSell(){
-        if(isApplicable){
+    function downloadMonthWiseSell() {
+        if (isApplicable) {
             showLoadingSpinner(true);
             var month = $('#month').val(),
-                  msg = 'Do you want to download the sell report now?',
-                  url = "${createLink(controller: 'medicineSellInfo', action: 'downloadMonthWiseSell')}?month=" + month;
+                    msg = 'Do you want to download the sell report now?',
+                    url = "${createLink(controller: 'medicineSellInfo', action: 'downloadMonthWiseSell')}?month=" + month;
             confirmDownload(msg, url);
-        }else{
+        } else {
             showError('No record to download');
         }
         return false;

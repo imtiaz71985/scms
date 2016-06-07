@@ -28,8 +28,12 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
             DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
             Date date = originalFormat.parse(dateStr);
             c.setTime(date);
+            Calendar ce = Calendar.getInstance();
+            ce.setTime(date);
+            ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
             String fromDate = DateUtility.getDBDateFormatAsString(c.getTime())
-            String toDate = DateUtility.getDBDateFormatAsString(new Date())
+            String toDate = DateUtility.getDBDateFormatAsString(ce.getTime())
 
             GrailsParameterMap parameterMap = (GrailsParameterMap) result
             initListing(parameterMap)
@@ -48,18 +52,30 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
     private  LinkedHashMap getMonthlyStatus(String fromDate, String toDate) {
 
         String queryStr = """
-                    SELECT id, version,sell_date, SUM(total_amount) AS total_amount
-                        FROM medicine_sell_info
-                            WHERE sell_date BETWEEN :fromDate AND :toDate
-                        GROUP BY sell_date
-                    LIMIT :resultPerPage OFFSET :start;
+            SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status, COALESCE(SUM(msi.total_amount),0) AS medicine_sales,
+                COALESCE(SUM(sc.charge_amount),0) AS registration_amount,COALESCE(SUM(sc2.charge_amount),0) AS consultation_amount,
+                COALESCE((SELECT SUM(sc3.charge_amount)
+                         FROM token_and_charge_mapping tcm3
+                        LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
+                        WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+                        GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_amount
+
+                FROM calendar c
+                LEFT JOIN medicine_sell_info msi ON msi.sell_date = c.date_field
+                LEFT JOIN registration_info ri ON ri.create_date = c.date_field
+                LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
+
+                LEFT JOIN token_and_charge_mapping tcm2 ON DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                                WHERE c.date_field BETWEEN :fromDate AND :toDate
+                                GROUP BY c.date_field
+                                LIMIT :resultPerPage OFFSET :start;
         """
 
         String queryCount = """
-                    SELECT COUNT(tmp.sell_date) AS count
-                    FROM (SELECT sell_date FROM medicine_sell_info
-                        WHERE sell_date BETWEEN :fromDate AND :toDate
-                        GROUP BY sell_date) tmp
+            SELECT COUNT(c.id) AS count
+                FROM calendar c
+            WHERE c.date_field BETWEEN :fromDate AND :toDate
         """
 
         Map queryParams = [
