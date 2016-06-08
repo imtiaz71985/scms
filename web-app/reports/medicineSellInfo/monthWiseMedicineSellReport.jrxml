@@ -253,9 +253,9 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="1" y="0" width="33" height="20" forecolor="#000000" uuid="fbe79ce1-8732-45d7-b028-47e28c6de41c"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
 					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -266,9 +266,9 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			<textField isStretchWithOverflow="true" pattern="dd-MMM-yy" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="34" y="0" width="68" height="20" forecolor="#000000" uuid="0afc8f46-6eb3-415f-9d81-a97ce42e2437"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
 					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -278,14 +278,13 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="357" y="0" width="79" height="20" forecolor="#000000" uuid="b38600e9-9362-47cf-90b8-80fe27b97ef0">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true
- ]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
@@ -294,14 +293,13 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="102" y="0" width="66" height="20" forecolor="#000000" uuid="dbb7e76c-948f-48dc-a87e-697f823f6595">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true
-]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
@@ -310,14 +308,13 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="225" y="0" width="61" height="20" forecolor="#000000" uuid="02fd2ca0-40bb-4774-befc-a2d3ae7d581a">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true
- ]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
@@ -326,14 +323,13 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="436" y="0" width="69" height="20" forecolor="#000000" uuid="ee449818-a344-435d-929f-09760884fb77">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true
- ]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
@@ -342,14 +338,13 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="168" y="0" width="57" height="20" forecolor="#000000" uuid="ff2e321b-5ac4-4bbe-bd3c-1ed59e714f3f">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true
- ]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
@@ -358,14 +353,13 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="286" y="0" width="71" height="20" forecolor="#000000" uuid="87ca5a2f-a469-463d-8bb7-0742f24e870f">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true
- ]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
@@ -389,14 +383,13 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="505" y="0" width="69" height="20" forecolor="#000000" uuid="cfdc7a28-d2c4-46f9-bd36-021dd39c438c">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true
- ]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8"/>
@@ -421,10 +414,10 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="436" y="3" width="69" height="20" uuid="b218e22a-ed88-486a-9fee-7e6be4b16be9"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
@@ -434,9 +427,9 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 			<textField pattern="#,##0.00">
 				<reportElement x="0" y="3" width="102" height="20" uuid="ca4c0508-af28-4a48-aec0-433c05493a78"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
 					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -447,10 +440,10 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="357" y="3" width="79" height="20" uuid="d605d457-45ca-424a-bcf7-50ca6821784b"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
@@ -460,10 +453,10 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="225" y="3" width="61" height="20" uuid="615b4750-b8ca-4f5b-a4b8-0c228a236605"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
@@ -473,10 +466,10 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="102" y="3" width="66" height="20" uuid="e542e041-6dde-42b6-b220-7ed44116ad78"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
@@ -486,10 +479,10 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="168" y="3" width="57" height="20" uuid="93b9f868-9158-43e7-a8f9-9705ff19097f"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
@@ -499,10 +492,10 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="286" y="3" width="71" height="20" uuid="1668330a-e21d-424b-9a7b-2adfd4832622"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
