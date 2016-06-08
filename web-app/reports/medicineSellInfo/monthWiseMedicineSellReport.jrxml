@@ -84,6 +84,11 @@
 	<variable name="subsidy" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{subsidy_amount}]]></variableExpression>
 	</variable>
+	<variable name="grandTotal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{medicine_sales}+$F{re_registration_amount}+
+$F{registration_amount}+$F{consultation_amount}+
+$F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
+	</variable>
 	<pageHeader>
 		<band height="51">
 			<staticText>
@@ -133,12 +138,12 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="401" y="0" width="81" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="7e3cf906-188b-4205-a729-0a43388db855"/>
+				<reportElement mode="Opaque" x="357" y="0" width="79" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="7e3cf906-188b-4205-a729-0a43388db855"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -146,7 +151,7 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Diagnostic Charge]]></text>
 			</staticText>
@@ -159,12 +164,12 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[SL#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="102" y="0" width="84" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="d64a1724-e5a5-460f-a320-605990ff42e5"/>
+				<reportElement mode="Opaque" x="102" y="0" width="66" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="d64a1724-e5a5-460f-a320-605990ff42e5"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -172,12 +177,12 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
-				<text><![CDATA[Membership Charges]]></text>
+				<text><![CDATA[Mship Charges]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="257" y="0" width="71" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="27f5704a-afcf-412b-adfb-fa67d08184d1"/>
+				<reportElement mode="Opaque" x="225" y="0" width="61" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="27f5704a-afcf-412b-adfb-fa67d08184d1"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -185,12 +190,12 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Consultation Fee]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="482" y="0" width="93" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="02f81669-fa68-4996-9f20-d2be28dc7191"/>
+				<reportElement mode="Opaque" x="436" y="0" width="69" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="02f81669-fa68-4996-9f20-d2be28dc7191"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -198,12 +203,12 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Medicine Sales]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="186" y="0" width="71" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="fcd19815-8a99-44c5-9807-ef3a5a733d59"/>
+				<reportElement mode="Opaque" x="168" y="0" width="57" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="fcd19815-8a99-44c5-9807-ef3a5a733d59"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -211,12 +216,12 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Card re-issue Charges]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="328" y="0" width="73" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="b2da528b-e185-439a-9c80-85cbc7f8be60"/>
+				<reportElement mode="Opaque" x="286" y="0" width="71" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="b2da528b-e185-439a-9c80-85cbc7f8be60"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -224,9 +229,22 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Subsidy Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="505" y="0" width="69" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="89c75263-1691-4cc3-827e-15d7551a0489"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -241,7 +259,7 @@
 					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Calibri" size="6"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
@@ -254,12 +272,15 @@
 					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Calibri" size="6"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{date_field}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="401" y="0" width="81" height="20" forecolor="#000000" uuid="b38600e9-9362-47cf-90b8-80fe27b97ef0"/>
+				<reportElement stretchType="RelativeToTallestObject" x="357" y="0" width="79" height="20" forecolor="#000000" uuid="b38600e9-9362-47cf-90b8-80fe27b97ef0">
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true
+ ]]></printWhenExpression>
+				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -267,12 +288,15 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Calibri" size="6"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{pathology_amount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="102" y="0" width="84" height="20" forecolor="#000000" uuid="dbb7e76c-948f-48dc-a87e-697f823f6595"/>
+				<reportElement stretchType="RelativeToTallestObject" x="102" y="0" width="66" height="20" forecolor="#000000" uuid="dbb7e76c-948f-48dc-a87e-697f823f6595">
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true
+]]></printWhenExpression>
+				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -280,12 +304,15 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Calibri" size="6"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{registration_amount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="257" y="0" width="71" height="20" forecolor="#000000" uuid="02fd2ca0-40bb-4774-befc-a2d3ae7d581a"/>
+				<reportElement stretchType="RelativeToTallestObject" x="225" y="0" width="61" height="20" forecolor="#000000" uuid="02fd2ca0-40bb-4774-befc-a2d3ae7d581a">
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true
+ ]]></printWhenExpression>
+				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -293,12 +320,15 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Calibri" size="6"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{consultation_amount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="482" y="0" width="93" height="20" forecolor="#000000" uuid="ee449818-a344-435d-929f-09760884fb77"/>
+				<reportElement stretchType="RelativeToTallestObject" x="436" y="0" width="69" height="20" forecolor="#000000" uuid="ee449818-a344-435d-929f-09760884fb77">
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true
+ ]]></printWhenExpression>
+				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -306,12 +336,15 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Calibri" size="6"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{medicine_sales}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="186" y="0" width="71" height="20" forecolor="#000000" uuid="ff2e321b-5ac4-4bbe-bd3c-1ed59e714f3f"/>
+				<reportElement stretchType="RelativeToTallestObject" x="168" y="0" width="57" height="20" forecolor="#000000" uuid="ff2e321b-5ac4-4bbe-bd3c-1ed59e714f3f">
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true
+ ]]></printWhenExpression>
+				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -319,12 +352,15 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Calibri" size="6"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{re_registration_amount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="328" y="0" width="73" height="20" forecolor="#000000" uuid="87ca5a2f-a469-463d-8bb7-0742f24e870f"/>
+				<reportElement stretchType="RelativeToTallestObject" x="286" y="0" width="71" height="20" forecolor="#000000" uuid="87ca5a2f-a469-463d-8bb7-0742f24e870f">
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true
+ ]]></printWhenExpression>
+				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -332,16 +368,49 @@
 					<rightPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Calibri" size="6"/>
+					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{subsidy_amount}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="102" y="0" width="472" height="20" uuid="afadad35-e7d8-4a2f-a89f-11ed6efebb28">
+					<printWhenExpression><![CDATA[$F{is_holiday}==true]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="2" leftPadding="200" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Holiday]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="505" y="0" width="69" height="20" forecolor="#000000" uuid="cfdc7a28-d2c4-46f9-bd36-021dd39c438c">
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true
+ ]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{medicine_sales}+$F{re_registration_amount}+
+$F{registration_amount}+$F{consultation_amount}+
+$F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<pageFooter>
 		<band height="19">
 			<subreport>
-				<reportElement x="0" y="0" width="575" height="19" forecolor="#2C2A2B" uuid="2e3c1c3d-28d0-43ad-a28b-1578e0fefcfd"/>
+				<reportElement x="1" y="0" width="574" height="19" forecolor="#2C2A2B" uuid="2e3c1c3d-28d0-43ad-a28b-1578e0fefcfd"/>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{ROOT_DIR} + "commonFooter.jasper"]]></subreportExpression>
 			</subreport>
@@ -350,7 +419,7 @@
 	<summary>
 		<band height="23">
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="482" y="3" width="93" height="20" uuid="b218e22a-ed88-486a-9fee-7e6be4b16be9"/>
+				<reportElement x="436" y="3" width="69" height="20" uuid="b218e22a-ed88-486a-9fee-7e6be4b16be9"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineColor="#939597"/>
@@ -376,7 +445,7 @@
 				<textFieldExpression><![CDATA["Total : "]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="401" y="3" width="81" height="20" uuid="d605d457-45ca-424a-bcf7-50ca6821784b"/>
+				<reportElement x="357" y="3" width="79" height="20" uuid="d605d457-45ca-424a-bcf7-50ca6821784b"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineColor="#939597"/>
@@ -389,7 +458,7 @@
 				<textFieldExpression><![CDATA[$V{diagnostic}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="257" y="3" width="71" height="20" uuid="615b4750-b8ca-4f5b-a4b8-0c228a236605"/>
+				<reportElement x="225" y="3" width="61" height="20" uuid="615b4750-b8ca-4f5b-a4b8-0c228a236605"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineColor="#939597"/>
@@ -402,7 +471,7 @@
 				<textFieldExpression><![CDATA[$V{consultancy}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="102" y="3" width="84" height="20" uuid="e542e041-6dde-42b6-b220-7ed44116ad78"/>
+				<reportElement x="102" y="3" width="66" height="20" uuid="e542e041-6dde-42b6-b220-7ed44116ad78"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -415,7 +484,7 @@
 				<textFieldExpression><![CDATA[$V{membership}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="186" y="3" width="71" height="20" uuid="93b9f868-9158-43e7-a8f9-9705ff19097f"/>
+				<reportElement x="168" y="3" width="57" height="20" uuid="93b9f868-9158-43e7-a8f9-9705ff19097f"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -428,7 +497,7 @@
 				<textFieldExpression><![CDATA[$V{reissue}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="328" y="3" width="73" height="20" uuid="1668330a-e21d-424b-9a7b-2adfd4832622"/>
+				<reportElement x="286" y="3" width="71" height="20" uuid="1668330a-e21d-424b-9a7b-2adfd4832622"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineColor="#939597"/>
@@ -439,6 +508,19 @@
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{subsidy}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="505" y="3" width="69" height="20" uuid="234327be-ce6e-46dc-afb0-ebaab905681d"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="1.0" lineColor="#939597"/>
+					<leftPen lineWidth="1.0" lineColor="#939597"/>
+					<bottomPen lineWidth="1.0" lineColor="#939597"/>
+					<rightPen lineWidth="1.0" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotal}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
