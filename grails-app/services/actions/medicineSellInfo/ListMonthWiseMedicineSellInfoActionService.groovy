@@ -53,7 +53,12 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
 
         String queryStr = """
             SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status, COALESCE(SUM(msi.total_amount),0) AS medicine_sales,
-                COALESCE(SUM(sc.charge_amount),0) AS registration_amount,COALESCE(SUM(sc2.charge_amount),0) AS consultation_amount,
+                COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
+                        COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
+                        LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
+                        WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field
+                        GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
+                COALESCE(SUM(sc2.charge_amount),0) AS consultation_amount,
                 COALESCE((SELECT SUM(sc3.charge_amount)
                          FROM token_and_charge_mapping tcm3
                         LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'

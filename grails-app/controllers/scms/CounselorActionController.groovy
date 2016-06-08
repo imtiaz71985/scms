@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat
 
 class CounselorActionController extends BaseController {
     SpringSecurityService springSecurityService
-    BaseService baseService
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
     ]

@@ -89,6 +89,7 @@
                         id: {type: "number"},
                         version: {type: "number"},
                         registration_amount: {type: "number"},
+                        re_registration_amount: {type: "number"},
                         consultation_amount: {type: "number"},
                         pathology_amount: {type: "number"},
                         medicine_sales: {type: "number"},
@@ -105,6 +106,7 @@
             },
             aggregate: [
                 {field: "registration_amount", aggregate: "sum" },
+                {field: "re_registration_amount", aggregate: "sum" },
                 {field: "consultation_amount", aggregate: "sum" },
                 {field: "pathology_amount", aggregate: "sum" },
                 {field: "medicine_sales", aggregate: "sum" }
@@ -157,6 +159,16 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=is_holiday?'':formatAmount(registration_amount)#",
+                    footerTemplate: "Total : #=formatAmount(sum)#"
+                },
+                {
+                    field: "re_registration_amount",
+                    title: "Card Re-issue Charge",
+                    width: 80,sortable: false,filterable: false,
+                    headerAttributes: {style: setAlignRight()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=is_holiday?'':formatAmount(re_registration_amount)#",
                     footerTemplate: "Total : #=formatAmount(sum)#"
                 },
                 {
