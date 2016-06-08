@@ -148,8 +148,10 @@
                     sortable: false,
                     filterable: false,
                     headerAttributes: {style: setAlignCenter()},
+                    footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignCenter()},
-                    template: "#=kendo.toString(kendo.parseDate(date_field, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
+                    template: "#=kendo.toString(kendo.parseDate(date_field, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
+                    footerTemplate: "Total : "
                 },
                 {
                     field: "registration_amount",
@@ -159,7 +161,7 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=is_holiday?'':formatAmount(registration_amount)#",
-                    footerTemplate: "Total : #=formatAmount(sum)#"
+                    footerTemplate: "#=formatAmount(sum)#"
                 },
                 {
                     field: "re_registration_amount",
@@ -169,7 +171,7 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=is_holiday?'':formatAmount(re_registration_amount)#",
-                    footerTemplate: "Total : #=formatAmount(sum)#"
+                    footerTemplate: "#=formatAmount(sum)#"
                 },
                 {
                     field: "consultation_amount",
@@ -179,7 +181,7 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=is_holiday?'':formatAmount(consultation_amount)#",
-                    footerTemplate: "Total : #=formatAmount(sum)#"
+                    footerTemplate: "#=formatAmount(sum)#"
                 },
                 {
                     field: "pathology_amount",
@@ -189,7 +191,7 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=is_holiday?'':formatAmount(pathology_amount)#",
-                    footerTemplate: "Total : #=formatAmount(sum)#"
+                    footerTemplate: "#=formatAmount(sum)#"
                 },
                 {
                     field: "medicine_sales",
@@ -199,7 +201,7 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=is_holiday?holiday_status:formatAmount(medicine_sales)#",
-                    footerTemplate: "Total : #=formatAmount(sum)#"
+                    footerTemplate: "#=formatAmount(sum)#"
                 }
             ],
             filterable: {
