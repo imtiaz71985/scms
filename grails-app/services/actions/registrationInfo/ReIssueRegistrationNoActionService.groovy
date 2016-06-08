@@ -16,7 +16,7 @@ class ReIssueRegistrationNoActionService extends BaseService implements ActionSe
 
     private Logger log = Logger.getLogger(getClass())
 
-    private static final String DELETE_SUCCESS_MESSAGE = "Record has been re issued successfully"
+    private static final String REISSUE_SUCCESS_MESSAGE = "Record has been re issued successfully"
     private static final String NOT_FOUND = "Selected record does not exits"
     private static final String REGISTRATION_INFO = "registrationInfo"
     SpringSecurityService springSecurityService
@@ -66,7 +66,7 @@ class ReIssueRegistrationNoActionService extends BaseService implements ActionSe
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        return super.setSuccess(result, DELETE_SUCCESS_MESSAGE)
+        return super.setSuccess(result, REISSUE_SUCCESS_MESSAGE)
     }
 
     public Map buildFailureResultForUI(Map params) {
