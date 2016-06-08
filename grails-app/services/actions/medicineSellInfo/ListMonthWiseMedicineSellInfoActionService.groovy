@@ -59,6 +59,10 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
                         WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field
                         GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
                 COALESCE(SUM(sc2.charge_amount),0) AS consultation_amount,
+                COALESCE((SELECT SUM(sti.subsidy_amount)
+                FROM service_token_info sti
+                        WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
+                        GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_amount,
                 COALESCE((SELECT SUM(sc3.charge_amount)
                          FROM token_and_charge_mapping tcm3
                         LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
