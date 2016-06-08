@@ -9,6 +9,9 @@
     <sec:access url="/registrationInfo/delete">
         <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
     </sec:access>
+    <sec:access url="/registrationInfo/reIssue">
+        <li onclick="reIssueRegNo();"><i class="fa fa-anchor"></i>Re Issue</li>
+    </sec:access>
 </ul>
 </script>
 
@@ -433,6 +436,42 @@
             });
             return true;
         }
+    }
+    function reIssueRegNo(){
+        if (executeCommonPreConditionForSelectKendo(gridRegistrationInfo, 'record') == false) {
+            return;
+        }
+
+        bootbox.prompt({
+            title: 'Are you sure you want to re issue registration card?',
+            placeholder: 'Short description',
+            buttons: {
+                confirm: {
+                    label: 'Submit'
+                }
+            },
+            callback: function(value){
+                if(value ==null) {
+                    return;
+                }else{
+                var regNo = getSelectedValueFromGridKendo(gridRegistrationInfo, 'regNo');
+
+               $.ajax({
+                    url: "${createLink(controller: 'registrationInfo', action:  'reIssue')}?regNo=" + regNo+"&description="+value,
+                    success: executePostCondition,
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        afterAjaxError(XMLHttpRequest, textStatus)
+                    },
+                    complete: function (XMLHttpRequest, textStatus) {
+                      //  showLoadingSpinner(false);
+                    },
+                    dataType: 'json',
+                    type: 'post'
+                });
+                }
+            }
+        });
+
     }
 
 </script>

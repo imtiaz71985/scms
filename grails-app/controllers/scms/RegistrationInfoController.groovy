@@ -3,6 +3,7 @@ package scms
 import actions.registrationInfo.CreateRegistrationInfoActionService
 import actions.registrationInfo.DeleteRegistrationInfoActionService
 import actions.registrationInfo.ListRegistrationInfoActionService
+import actions.registrationInfo.ReIssueRegistrationNoActionService
 import actions.registrationInfo.UpdateRegistrationInfoActionService
 import com.scms.*
 import grails.converters.JSON
@@ -23,6 +24,7 @@ class RegistrationInfoController extends BaseController {
     UpdateRegistrationInfoActionService updateRegistrationInfoActionService
     DeleteRegistrationInfoActionService deleteRegistrationInfoActionService
     ListRegistrationInfoActionService listRegistrationInfoActionService
+    ReIssueRegistrationNoActionService reIssueRegistrationNoActionService
 
     def show() {
         List<Village> lstVillage = Village.list([sort: "name",order: "ASC"])
@@ -39,6 +41,10 @@ class RegistrationInfoController extends BaseController {
     }
     def delete() {
         renderOutput(deleteRegistrationInfoActionService, params)
+
+    }
+    def reIssue() {
+        renderOutput(reIssueRegistrationNoActionService, params)
 
     }
     def list() {
