@@ -32,6 +32,9 @@
         defaultPageTile("Sell details", null);
 
     });
+    function  resetForm(){
+        window.history.back();
+    }
     function executePreCondition() {
         var count = gridMedicineSellInfo.dataSource.total();
         if (count == 0) {
