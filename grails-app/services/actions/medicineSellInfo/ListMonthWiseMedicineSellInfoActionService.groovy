@@ -58,7 +58,12 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
                         LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
                         WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field
                         GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
-                COALESCE(SUM(sc2.charge_amount),0) AS consultation_amount,
+
+                COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
+                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_amount,
+
                 COALESCE((SELECT SUM(sti.subsidy_amount)
                 FROM service_token_info sti
                         WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
@@ -73,12 +78,9 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
                 LEFT JOIN medicine_sell_info msi ON msi.sell_date = c.date_field
                 LEFT JOIN registration_info ri ON ri.create_date = c.date_field
                 LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
-
-                LEFT JOIN token_and_charge_mapping tcm2 ON DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                                WHERE c.date_field BETWEEN :fromDate AND :toDate
-                                GROUP BY c.date_field
-                                LIMIT :resultPerPage OFFSET :start;
+            WHERE c.date_field BETWEEN :fromDate AND :toDate
+            GROUP BY c.date_field
+            LIMIT :resultPerPage OFFSET :start;
         """
 
         String queryCount = """
