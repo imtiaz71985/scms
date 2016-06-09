@@ -4,7 +4,7 @@
     <div class="xnavbar-header" >
         <a style="padding-right: 2px;padding-top: 0;" class="navbar-brand" href="#login/dashBoard"><img src="images/logo.png" style="height: inherit;"/></a>
         <i id="spinner" class="navbar-brand fa fa-2x fa-refresh fa-spin" style="margin: 2px 4px;color:#9F9F9F"></i>
-        <i class="navbar-brand" style="padding-left:35%;margin: 2px 4px;color:#9F9F9F"><sec:hospitalName></sec:hospitalName></i>
+        <i class="navbar-brand" style="padding-left:35%;margin: 2px 4px;color:#004992"><sec:hospitalName></sec:hospitalName></i>
     </div>
     <!-- /.navbar-header -->
 

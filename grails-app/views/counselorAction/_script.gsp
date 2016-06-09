@@ -372,6 +372,7 @@
                     dataType: "json",
                     type: "post"
                 }
+
             },
             schema: {
                 type: 'json',
