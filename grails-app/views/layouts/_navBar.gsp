@@ -1,16 +1,10 @@
 <!-- Navigation -->
 <nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation"
-     style="margin-bottom: 0;">
-    <div class="navbar-header">
-        <div class="col-md-6">
-            <a href="#login/dashBoard"><img src="images/logo.png" style="height: 50px;"/></a>
-        </div>
-        <div class="col-md-1">
-            <i id="spinner" class="navbar-brand fa fa-2x fa-refresh fa-spin" style="height: 40px;margin: 2px 4px;color:#9F9F9F"></i>
-        </div>
-        <div class="col-md-2">
-            <i class="navbar-brand" style="position:fixed;padding-left:35%;margin: 2px 4px;color:#9F9F9F"><sec:hospitalName></sec:hospitalName></i>
-        </div>
+     style="margin-bottom: 0;height: 2px;">
+    <div class="xnavbar-header" >
+        <a style="padding-right: 2px;padding-top: 0;" class="navbar-brand" href="#login/dashBoard"><img src="images/logo.png" style="height: inherit;"/></a>
+        <i id="spinner" class="navbar-brand fa fa-2x fa-refresh fa-spin" style="margin: 2px 4px;color:#9F9F9F"></i>
+        <i class="navbar-brand" style="padding-left:35%;margin: 2px 4px;color:#9F9F9F"><sec:hospitalName></sec:hospitalName></i>
     </div>
     <!-- /.navbar-header -->
 

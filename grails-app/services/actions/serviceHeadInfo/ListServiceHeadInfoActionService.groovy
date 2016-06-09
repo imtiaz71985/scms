@@ -43,7 +43,7 @@ class ListServiceHeadInfoActionService extends BaseService implements ActionServ
         try {
             Map resultMap
             Closure param={
-                'eq'('serviceTypeId',serviceTypeId)
+                'eq' ('serviceTypeId',serviceTypeId)
             }
             if(serviceTypeId>0){
                 resultMap = super.getSearchResult(result,ListServiceHeadInfoActionServiceModel.class,param)
