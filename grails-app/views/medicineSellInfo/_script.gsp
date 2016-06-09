@@ -31,7 +31,7 @@
     }
     function onLoadMedicineSellInfoPage() {
 //        initializeForm($("#medicineSellInfoForm"), onSubmitMedicineSellInfo);
-        defaultPageTile("Sell Medicine", null);
+        defaultPageTile("Sale Medicine", null);
     }
 
     function executePreCondition() {

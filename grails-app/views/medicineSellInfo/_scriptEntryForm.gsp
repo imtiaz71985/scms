@@ -26,7 +26,7 @@
         $("#frmMedicine").submit(function (e) {
             onSubmitForm();
         });
-        defaultPageTile("Sell details", null);
+        defaultPageTile("Sale details", null);
 
     });
 

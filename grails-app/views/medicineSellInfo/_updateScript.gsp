@@ -29,7 +29,7 @@
             onSubmitForm();
         });
         $('#gridMedicine  > .k-grid-content').height(285);
-        defaultPageTile("Sell details", null);
+        defaultPageTile("Sale details", null);
 
     });
     function  resetForm(){

@@ -58,10 +58,8 @@ label {
 .spinner {
     padding: 5px;
     right: 0;
-    clear: both;
     float: left;
     margin-bottom: 30px;
-    position: relative;
 }
 .form-control {
     font-size: 14px;
