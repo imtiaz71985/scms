@@ -16,8 +16,8 @@
 </script>
 
 <script language="javascript">
-    var gridRegistrationInfo, dataSourceGrid, registrationInfoModel,dropDownSex,dropDownMaritalStatus,dropDownDistrict,dropDownUpazila,
-            dropDownUnion;
+    var gridRegistrationInfo, dataSourceGrid, registrationInfoModel,dropDownSex,dropDownMaritalStatus,
+            dropDownDistrict,dropDownUpazila,dropDownUnion,dropDownVillage;
 
     $(document).ready(function () {
         onLoadRegistrationInfoPage();
@@ -32,13 +32,6 @@
     });
 
     function onLoadRegistrationInfoPage() {
-        var data = ${lstVillage};
-        $("#village").kendoComboBox({
-            dataTextField: "name",
-            dataValueField: "id",
-            dataSource: data,
-            height: 100
-        });
         dropDownUpazila = initKendoDropdown($('#upazilaId'), null, null, null);
         dropDownUnion = initKendoDropdown($('#unionId'), null, null, null);
         $("#registrationInfoRow").hide();
@@ -114,6 +107,7 @@
             try {
                 $("#gridRegistrationInfo").data("kendoGrid").dataSource.read();
                 resetForm();
+                $("#village").reloadMe();
                 showSuccess(result.message);
             } catch (e) {
                 // Do Nothing
@@ -125,18 +119,26 @@
         $(':input', $('#registrationInfoForm')).each(function () {
             var type = this.type;
             var tag = this.tagName.toLowerCase(); // normalize case
-
             // password inputs, and textareas
             if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea' || type == 'select' ) {
                 this.value = "";
             }
         });
-        $("#upazilaId").val('');
-        $("#unionId").val('');
-        $("#village").val('');
+        var frmValidator = $('#registrationInfoForm').kendoValidator({
+            validateOnBlur: false
+        }).data("kendoValidator");
+        frmValidator.hideMessages();
+
+        dropDownMaritalStatus.value('');
+        dropDownSex.value('');
         dropDownDistrict.value('');
+        dropDownUnion.value('');
+        dropDownUpazila.value('');
+        dropDownVillage.value('');
 
         $('#regFees').val('10 tk');
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+
         $('#addressSelection').hide();
         $('#divAddress').show();
         $("#registrationInfoRow").hide();
@@ -281,11 +283,10 @@
         $('#divAddress').hide();
         var registrationInfo = getSelectedObjectFromGridKendo(gridRegistrationInfo);
 
-        populateUpazilaListForUpdate(registrationInfo.districtId);
-        //$('#upazilaId').trigger('change');
-        populateUnionListForUpdate(registrationInfo.upazilaId);
+        populateUpazilaListForUpdate(registrationInfo.districtId,registrationInfo.upazilaId);
+        populateUnionListForUpdate(registrationInfo.upazilaId,registrationInfo.unionId);
         showRecord(registrationInfo);
-
+        dropDownVillage.value(registrationInfo.village);
         $('#id').val($('#regNo').val());
 
     }
@@ -322,7 +323,7 @@
         });
         return true;
     }
-    function populateUpazilaListForUpdate(districtId) {
+    function populateUpazilaListForUpdate(districtId,upzilaId) {
 
         if (districtId == '') {
             dropDownUpazila.setDataSource(getKendoEmptyDataSource(dropDownUpazila, null));
@@ -338,6 +339,7 @@
                     return false;
                 }
                 dropDownUpazila.setDataSource(data.lstUpazila);
+                dropDownUpazila.value(upzilaId);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus);
@@ -378,7 +380,7 @@
         });
         return true;
     }
-    function populateUnionListForUpdate(upazilaId) {
+    function populateUnionListForUpdate(upazilaId,unionId) {
         if (upazilaId == '') {
             dropDownUnion.setDataSource(getKendoEmptyDataSource(dropDownUnion, null));
             dropDownUnion.value('');
@@ -393,6 +395,7 @@
                     return false;
                 }
                 dropDownUnion.setDataSource(data.lstUnion);
+                dropDownUnion.value(unionId);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus);

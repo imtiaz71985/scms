@@ -11,7 +11,7 @@ import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class GetDropDownAddressTaglibActionService extends BaseService  implements ActionServiceIntf {
+class GetDropDownAddressTaglibActionService extends BaseService implements ActionServiceIntf {
 
     private static final String NAME = 'name'
     private static final String TYPE = 'type'
@@ -41,7 +41,7 @@ class GetDropDownAddressTaglibActionService extends BaseService  implements Acti
             String name = params.get(NAME)
             String dataModelName = params.get(DATA_MODEL_NAME)
             String type = params.get(TYPE)
-            if ((!name) || (!dataModelName)|| (!type)) {
+            if ((!name) || (!dataModelName) || (!type)) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
 
@@ -68,20 +68,13 @@ class GetDropDownAddressTaglibActionService extends BaseService  implements Acti
         try {
             String type = result.type
             List lstAddress
-            if(type.equals('District')){
-                lstAddress= District.list([sort: "name",order: "ASC"])
-                /*def c = District.createCriteria()
-                lstAddress = c.list {
-                        order('name','ASC')
-                }*/
+            if (type.equals('District')) {
+                lstAddress = District.list([sort: "name", order: "ASC"])
+            } else if (type.equals('Union')) {
+                lstAddress = StUnion.list([sort: "name", order: "ASC"])
+            } else {
+                lstAddress = Village.list([sort: "name", order: "ASC"])
             }
-            else if(type.equals('Union')){
-                lstAddress= StUnion.list([sort: "name",order: "ASC"])
-            }
-            else{
-                lstAddress= Village.list([sort: "name",order: "ASC"])
-            }
-
             String html = buildDropDown(lstAddress, result)
             result.html = html
             return result
@@ -146,20 +139,45 @@ class GetDropDownAddressTaglibActionService extends BaseService  implements Acti
         String html = "<select ${strAttributes}>\n" + SELECT_END
         String strOnChange = paramOnChange ? ",change: function(e) {${paramOnChange};}" : EMPTY_SPACE
         String strDefaultValue = defaultValue ? defaultValue : EMPTY_SPACE
+        String jsonData = EMPTY_SPACE
+        String script = EMPTY_SPACE
 
-        if (showHints.booleanValue()) {
-            lstValues = listForKendoDropdown(lstValues, null, hintsText)
-        }
-        String jsonData = lstValues as JSON
-
-        String script = """ \n
+        String type = dropDownAttributes.type
+        if (type.equals('Village')) {
+            if (showHints.booleanValue()) {
+                lstValues = listForKendoDropdown(lstValues, null, hintsText)
+                lstValues.remove(0)
+            }
+            jsonData = lstValues as JSON
+            script = """ \n
+            <script type="text/javascript">
+                \$(document).ready(function () {
+                    \$('#${escapeChar(name)}').kendoComboBox({
+                        dataTextField   : 'name',
+                        dataValueField  : 'id',
+                        filter          : "contains",
+                        suggest         : true,
+                        dataSource      : ${jsonData},
+                        value           :'${strDefaultValue}'
+                        ${strOnChange}
+                    });
+                });
+                ${dataModelName} = \$("#${escapeChar(name)}").data("kendoComboBox");
+            </script>
+        """
+        } else {
+            if (showHints.booleanValue()) {
+                lstValues = listForKendoDropdown(lstValues, null, hintsText)
+            }
+            jsonData = lstValues as JSON
+            script = """ \n
             <script type="text/javascript">
                 \$(document).ready(function () {
                     \$('#${escapeChar(name)}').kendoDropDownList({
                         dataTextField   : 'name',
                         dataValueField  : 'id',
-                        filter: "contains",
-                        suggest: true,
+                        filter          : "contains",
+                        suggest         : true,
                         dataSource      : ${jsonData},
                         value           :'${strDefaultValue}'
                         ${strOnChange}
@@ -168,6 +186,7 @@ class GetDropDownAddressTaglibActionService extends BaseService  implements Acti
                 ${dataModelName} = \$("#${escapeChar(name)}").data("kendoDropDownList");
             </script>
         """
+        }
         return html + script
     }
 

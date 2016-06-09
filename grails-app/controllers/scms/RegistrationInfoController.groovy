@@ -31,9 +31,10 @@ class RegistrationInfoController extends BaseController {
     ReIssueRegistrationNoActionService reIssueRegistrationNoActionService
 
     def show() {
-        List<Village> lstVillage = Village.list([sort: "name",order: "ASC"])
-//        lstVillage = baseService.listForKendoDropdown(lstVillage, null, null)
-        render(view: "/registrationInfo/show", model:[lstVillage: lstVillage as JSON])
+        render(view: "/registrationInfo/show")
+    }
+    def reloadDropDown() {
+        render app.dropDownVillage(params)
     }
     def create() {
         renderOutput(createRegistrationInfoActionService, params)

@@ -7,9 +7,11 @@
                 </div>
             </div>
 
-            <g:form name='registrationInfoForm' id='registrationInfoForm' class="form-horizontal form-widgets" role="form">
+            <g:form name='registrationInfoForm' id='registrationInfoForm' class="form-horizontal form-widgets"
+                    role="form">
                 <div class="panel-body">
                     <input type="hidden" name="id" id="id" data-bind="value: registrationInfo.regNo"/>
+
                     <div class="form-group">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -26,6 +28,7 @@
                                     <span class="k-invalid-msg" data-for="regNo"></span>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <label class="col-md-3 control-label label-required" for="patientName">Name:</label>
 
@@ -40,19 +43,23 @@
                                     <span class="k-invalid-msg" data-for="patientName"></span>
                                 </div>
                             </div>
+
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-optional" for="fatherOrMotherName">Father/ Mother Name:</label>
+                                <label class="col-md-3 control-label label-optional"
+                                       for="fatherOrMotherName">Father/ Mother Name:</label>
 
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" id="fatherOrMotherName" name="fatherOrMotherName"
+                                    <input type="text" class="form-control" id="fatherOrMotherName"
+                                           name="fatherOrMotherName"
                                            placeholder="Father or Mother Name" tabindex="2"
                                            data-bind="value: registrationInfo.fatherOrMotherName"/>
                                 </div>
 
-
                             </div>
+
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="dateOfBirth">Date of Birth:</label>
+                                <label class="col-md-3 control-label label-required"
+                                       for="dateOfBirth">Date of Birth:</label>
 
                                 <div class="col-md-6">
                                     <app:dateControl name="dateOfBirth"
@@ -66,6 +73,7 @@
                                     <span class="k-invalid-msg" data-for="dateOfBirth"></span>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <label class="col-md-3 control-label label-required" for="sexId">Sex :</label>
 
@@ -83,8 +91,10 @@
                                     <span class="k-invalid-msg" data-for="sexId"></span>
                                 </div>
                             </div>
+
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="maritalStatusId">Marital Status :</label>
+                                <label class="col-md-3 control-label label-required"
+                                       for="maritalStatusId">Marital Status :</label>
 
                                 <div class="col-md-6">
                                     <app:dropDownSystemEntity
@@ -102,6 +112,7 @@
                             </div>
 
                         </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-md-2 control-label label-required">Fees:</label>
@@ -111,10 +122,11 @@
                                            value="10 tk"/>
                                 </div>
 
-
                             </div>
+
                             <div class="form-group">
                                 <label class="col-md-2 control-label label-required" for="mobileNo">Mobile No:</label>
+
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="mobileNo" name="mobileNo"
                                            placeholder="Mobile no" required validationMessage="Required"
@@ -123,15 +135,24 @@
                                 </div>
 
                                 <div class="col-md-3 pull-left">
-                                    <span class="k-invalid-msg" data-for="mobileNo" ></span>
+                                    <span class="k-invalid-msg" data-for="mobileNo"></span>
                                 </div>
                             </div>
+
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="village" >Village :</label>
+                                <label class="col-md-2 control-label label-required" for="village">Village :</label>
 
                                 <div class="col-md-6">
-                                    <input id="village" name="village" style="width:100%" onchange="javascript:populateAddress();"
-                                           placeholder="Write/Select one..."   data-bind="value: registrationInfo.village" required validationMessage="Required">
+                                    <app:dropDownVillage
+                                            data_model_name="dropDownVillage"
+                                            required="required" validationmessage="Required"
+                                            url="${createLink(controller: 'registrationInfo', action: 'reloadDropDown')}"
+                                            onchange="javascript:populateAddress();"
+                                            data-bind="value: registrationInfo.village"
+                                            placeholder="Write/Select one..."
+                                            class="kendo-drop-down" type="Village"
+                                            id="village" name="village">
+                                    </app:dropDownVillage>
                                 </div>
 
                                 <div class="col-md-3 pull-left">
@@ -140,59 +161,64 @@
                             </div>
 
                             <div id="addressSelection" style="display: none;">
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="districtId" >District :</label>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label label-required"
+                                           for="districtId">District :</label>
 
-                                <div class="col-md-6">
-                                    <app:dropDownDistrict
-                                            data_model_name="dropDownDistrict"
-                                            id="districtId" name="districtId" tabindex="1"
-                                            class="kendo-drop-down" type="District"
-                                            onchange="javascript:populateUpazilaList();"
-                                            data-bind="value: registrationInfo.districtId">
-                                    </app:dropDownDistrict>
+                                    <div class="col-md-6">
+                                        <app:dropDownDistrict
+                                                data_model_name="dropDownDistrict"
+                                                id="districtId" name="districtId" tabindex="1"
+                                                class="kendo-drop-down" type="District"
+                                                onchange="javascript:populateUpazilaList();"
+                                                data-bind="value: registrationInfo.districtId">
+                                        </app:dropDownDistrict>
+                                    </div>
+
+                                    <div class="col-md-3 pull-left">
+                                        %{--<span class="k-invalid-msg" data-for="districtId"></span>--}%
+                                    </div>
                                 </div>
 
-                                <div class="col-md-3 pull-left">
-                                    %{--<span class="k-invalid-msg" data-for="districtId"></span>--}%
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label label-required"
+                                           for="upazilaId">Upazila :</label>
+
+                                    <div class="col-md-6">
+                                        <select id="upazilaId"
+                                                name="upazilaId"
+                                                tabindex="5"
+                                                onchange="javascript:populateUnionList();"
+                                                data-bind="value: registrationInfo.upazilaId"
+                                                class="kendo-drop-down">
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 pull-left">
+                                        %{-- <span class="k-invalid-msg" data-for="upazilaId"></span>--}%
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label label-required" for="unionId">Union :</label>
+
+                                    <div class="col-md-6">
+                                        <select id="unionId"
+                                                name="unionId"
+                                                tabindex="5"
+                                                data-bind="value: registrationInfo.unionId"
+                                                class="kendo-drop-down">
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 pull-left">
+                                        %{--<span class="k-invalid-msg" data-for="unionDetails"></span>--}%
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="upazilaId" >Upazila :</label>
 
-                                <div class="col-md-6">
-                                    <select id="upazilaId"
-                                            name="upazilaId"
-                                            tabindex="5"
-                                            onchange="javascript:populateUnionList();"
-                                            data-bind="value: registrationInfo.upazilaId"
-                                            class="kendo-drop-down">
-                                    </select>
-                                </div>
-
-                                <div class="col-md-3 pull-left">
-                                   %{-- <span class="k-invalid-msg" data-for="upazilaId"></span>--}%
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="unionId" >Union :</label>
-
-                                <div class="col-md-6">
-                                    <select id="unionId"
-                                            name="unionId"
-                                            tabindex="5"
-                                            data-bind="value: registrationInfo.unionId"
-                                            class="kendo-drop-down">
-                                    </select>
-                                </div>
-
-                                <div class="col-md-3 pull-left">
-                                    %{--<span class="k-invalid-msg" data-for="unionDetails"></span>--}%
-                                </div>
-                            </div>
-                            </div>
                             <div class="form-group" id="divAddress">
-                                <label class="col-md-2 control-label label-required" >Address :</label>
+                                <label class="col-md-2 control-label label-required">Address :</label>
 
                                 <div class="col-md-6">
                                     <textarea readonly="true" id="addressDetails" style="width:100%"></textarea>
