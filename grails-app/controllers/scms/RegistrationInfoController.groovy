@@ -5,7 +5,11 @@ import actions.registrationInfo.DeleteRegistrationInfoActionService
 import actions.registrationInfo.ListRegistrationInfoActionService
 import actions.registrationInfo.ReIssueRegistrationNoActionService
 import actions.registrationInfo.UpdateRegistrationInfoActionService
-import com.scms.*
+import com.scms.RegistrationInfo
+import com.scms.SecUser
+import com.scms.StUnion
+import com.scms.Upazila
+import com.scms.Village
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
