@@ -393,10 +393,10 @@
                     return data;
                 }
             },
-            pageSize: 15,
-            serverPaging: true,
-            serverFiltering: true,
-            serverSorting: true
+            sort: {field: 'name', dir: 'asc'},
+            serverPaging: false,
+            serverFiltering: false,
+            serverSorting: false
         });
     }
 
@@ -413,9 +413,10 @@
 
             columns: [
 
-                {field: "name", title: "Name", width: 200, sortable: false, filterable: false},
+                {field: "name", title: "Name", width: 250, sortable: false, filterable: false},
 
-                {field: "chargeAmount", title: "Fees", width: 70, sortable: false, filterable: false},
+                {field: "chargeAmount", title: "Fees", width: 100,attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()}, sortable: false, filterable: false},
                 {
                     template: "<input type='checkbox' class='checkbox' />"
                 }
@@ -532,7 +533,11 @@
                     checkIsErrorGridKendo(data);
                     return data;
                 }
-            }
+            },
+            sort: {field: 'name', dir: 'asc'},
+            serverPaging: false,
+            serverFiltering: false,
+            serverSorting: false
         });
     }
 
@@ -550,18 +555,11 @@
                 {
                     field: "diseaseCode",
                     title: "Disease Code",
-                    width: 100,
+                    width: 150,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
-                {
-                    field: "diseaseGroupName",
-                    title: "Group Name",
-                    width: 120,
-                    sortable: false,
-                    filterable: kendoCommonFilterable(97)
-                },
-                {field: "name", title: "Name", width: 200, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "name", title: "Name", width: 270, sortable: false, filterable: kendoCommonFilterable(97)},
                 {
                     template: "<input type='checkbox' class='checkboxDisease' />"
                 }
