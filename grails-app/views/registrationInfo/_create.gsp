@@ -131,7 +131,7 @@
 
                                 <div class="col-md-6">
                                     <input id="village" name="village" style="width:100%" onchange="javascript:populateAddress();"
-                                           data-bind="value: registrationInfo.village" required validationMessage="Required">
+                                           placeholder="Write/Select one..."   data-bind="value: registrationInfo.village" required validationMessage="Required">
                                 </div>
 
                                 <div class="col-md-3 pull-left">

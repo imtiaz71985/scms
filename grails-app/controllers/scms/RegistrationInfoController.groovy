@@ -32,7 +32,7 @@ class RegistrationInfoController extends BaseController {
 
     def show() {
         List<Village> lstVillage = Village.list([sort: "name",order: "ASC"])
-        lstVillage = baseService.listForKendoDropdown(lstVillage, null, null)
+//        lstVillage = baseService.listForKendoDropdown(lstVillage, null, null)
         render(view: "/registrationInfo/show", model:[lstVillage: lstVillage as JSON])
     }
     def create() {

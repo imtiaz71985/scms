@@ -133,6 +133,9 @@
         });
         $("#upazilaId").val('');
         $("#unionId").val('');
+        $("#village").val('');
+        dropDownDistrict.value('');
+
         $('#regFees').val('10 tk');
         $('#addressSelection').hide();
         $('#divAddress').show();
@@ -278,10 +281,11 @@
         $('#divAddress').hide();
         var registrationInfo = getSelectedObjectFromGridKendo(gridRegistrationInfo);
 
-        showRecord(registrationInfo);
         populateUpazilaListForUpdate(registrationInfo.districtId);
         //$('#upazilaId').trigger('change');
         populateUnionListForUpdate(registrationInfo.upazilaId);
+        showRecord(registrationInfo);
+
         $('#id').val($('#regNo').val());
 
     }
