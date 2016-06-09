@@ -52,8 +52,9 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
     private  LinkedHashMap getMonthlyStatus(String fromDate, String toDate) {
 
         String queryStr = """
-            SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status, COALESCE((SELECT SUM(msi.total_amount) FROM
-            medicine_sell_info msi WHERE msi.sell_date = c.date_field GROUP BY msi.sell_date ),0) AS medicine_sales,
+            SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
+            COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
+            WHERE msi.sell_date = c.date_field GROUP BY msi.sell_date ),0) AS medicine_sales,
                 COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
                         COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
                         LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id

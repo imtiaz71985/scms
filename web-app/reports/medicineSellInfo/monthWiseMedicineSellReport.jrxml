@@ -17,12 +17,20 @@
 	<parameter name="monthName" class="java.lang.String"/>
 	<parameter name="hospitalName" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status, COALESCE(SUM(msi.total_amount),0) AS medicine_sales,
+		<![CDATA[            SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
+            COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
+            WHERE msi.sell_date = c.date_field GROUP BY msi.sell_date ),0) AS medicine_sales,
+                COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
                         COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
                         LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
                         WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field
                         GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
-                COALESCE(SUM(sc.charge_amount),0) AS registration_amount,COALESCE(SUM(sc2.charge_amount),0) AS consultation_amount,
+
+                COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
+                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_amount,
+
                 COALESCE((SELECT SUM(sti.subsidy_amount)
                 FROM service_token_info sti
                         WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
@@ -34,12 +42,8 @@
                         GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_amount
 
                 FROM calendar c
-                LEFT JOIN medicine_sell_info msi ON msi.sell_date = c.date_field
                 LEFT JOIN registration_info ri ON ri.create_date = c.date_field
                 LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
-
-                LEFT JOIN token_and_charge_mapping tcm2 ON DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
                                 WHERE c.date_field BETWEEN $P{fromDate} AND $P{toDate}
                                 GROUP BY c.date_field]]>
 	</queryString>
@@ -59,8 +63,8 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="medicine_sales" class="java.lang.Double"/>
-	<field name="re_registration_amount" class="java.lang.Double"/>
 	<field name="registration_amount" class="java.lang.Double"/>
+	<field name="re_registration_amount" class="java.lang.Double"/>
 	<field name="consultation_amount" class="java.lang.Double"/>
 	<field name="subsidy_amount" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
