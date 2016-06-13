@@ -405,7 +405,7 @@
         $("#gridServiceHeadInfo").kendoGrid({
             dataSource: dataSource,
             height: 200,
-            selectable: true,
+            selectable: false,
             sortable: true,
             resizable: true,
             reorderable: true,
@@ -418,24 +418,27 @@
                 {field: "chargeAmount", title: "Fees", width: 100,attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()}, sortable: false, filterable: false},
                 {
-                    template: "<input type='checkbox' class='checkbox' />"
+                    template: "<input type='checkbox' id='shiCheckbox' class='checkbox' />"
                 }
             ],
             dataBound: function () {
                 $(".checkbox").bind("change", function (e) {
                     $(e.target).closest("tr").toggleClass("k-state-selected");
-                    selectRowForServices();
+
                 });
             }
         });
         gridServiceHeadInfo = $("#gridServiceHeadInfo").data("kendoGrid");
     }
 
+    //bind click event to the checkbox
+    gridServiceHeadInfo.table.on("click", ".checkbox" , selectRowForServices);
         //on click of the checkbox:
         function selectRowForServices() {
 
             var chargeAmt =0;
             var selectedChargeId='';
+
             var rows = gridServiceHeadInfo.select();
             rows.each(function(index, row) {
                 chargeAmt = chargeAmt+parseFloat(gridServiceHeadInfo.dataItem(row).chargeAmount);
@@ -546,7 +549,7 @@
         $("#gridDiseaseDetails").kendoGrid({
             dataSource: dataSource,
             height: 200,
-            selectable: true,
+            selectable: false,
             sortable: true,
             resizable: true,
             reorderable: true,

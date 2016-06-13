@@ -14,6 +14,7 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
+import scms.utility.DateUtility
 
 import java.text.SimpleDateFormat
 
@@ -56,8 +57,10 @@ class RegistrationInfoController extends BaseController {
         renderOutput(listRegistrationInfoActionService, params)
     }
     def retrieveRegNo() {
+        Date date = DateUtility.parseDateForDB(DateUtility.getDBDateFormatAsString(new Date()))
+
         String hospital_code= SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        int c=RegistrationInfo.countByCreateDateAndHospitalCode(new Date(),hospital_code)
+        int c = RegistrationInfo.countByCreateDateAndHospitalCode(date,hospital_code)
         c+=1
         String DATE_FORMAT = "ddMMyy";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);

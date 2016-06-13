@@ -14,6 +14,7 @@ import com.scms.SystemEntity
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import org.apache.commons.collections.map.HashedMap
+import scms.utility.DateUtility
 
 import java.text.SimpleDateFormat
 
@@ -82,8 +83,9 @@ class MedicineSellInfoController extends BaseController {
     }
 
     private String generateVoucherNo(){
+        Date date = DateUtility.parseDateForDB(DateUtility.getDBDateFormatAsString(new Date()))
         String hospital_code= SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        int serial = MedicineSellInfo.countBySellDateAndHospitalCode(new Date(),hospital_code)
+        int serial = MedicineSellInfo.countBySellDateAndHospitalCode(date,hospital_code)
         serial+=1
         String DATE_FORMAT = "ddMMyy";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);

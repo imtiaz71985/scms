@@ -39,7 +39,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
    ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no GROUP BY tcm.service_token_no),0) AS totalCharge
                    FROM registration_info ri
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
-                  WHERE st.service_date BETWEEN '${start}' AND '${end}'
+                  WHERE st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
                    ORDER BY isExit,serviceDate ASC
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
