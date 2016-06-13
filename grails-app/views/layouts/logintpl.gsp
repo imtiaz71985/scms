@@ -12,7 +12,7 @@
 
     <style>
         body {
-            background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='100px'><text x='5' y='15' fill='lightgray' font-size='8'>Hatia Health Clinic</text></svg>");
+            background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='50px' width='100px'><text x='5' y='15' fill='lightgray' font-size='8'>Friendship Health Clinic</text></svg>");
         }
     </style>
 </head>
@@ -40,7 +40,7 @@
 
                         <div class="col-md-9">
                             <input type="text" class="form-control" id="username" name="j_username" tabindex="1"
-                                   placeholder="Login ID" value="admin"/>
+                                   placeholder="Login ID" value=""/>
                         </div>
                     </div>
 
@@ -50,8 +50,7 @@
                         <div class="col-md-9">
 
                             <input type="password" class="form-control" id="password" name="j_password"
-                                   tabindex="2"
-                                   placeholder="Password" value="admin"/>
+                                   tabindex="2" placeholder="Password" value=""/>
                         </div>
                     </div>
 
