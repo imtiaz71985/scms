@@ -1,8 +1,8 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-  %{--  <sec:access url="/counselorAction/create">
-        <li onclick="showForm();"><i class="fa fa-plus-square-o"></i>Take New Service</li>
-    </sec:access>--}%
+%{--  <sec:access url="/counselorAction/create">
+      <li onclick="showForm();"><i class="fa fa-plus-square-o"></i>Take New Service</li>
+  </sec:access>--}%
     <sec:access url="/counselorAction/update">
         <li onclick="editRecord();"><i class="fa fa-edit"></i>Counselor Action</li>
     </sec:access>
@@ -10,30 +10,34 @@
 </script>
 
 <script language="javascript">
-    var gridCounselorAction, dataSource, registrationInfoModel,dropDownServiceType,dropDownReferTo,dropDownPrescriptionType,
-            dropDownDiseaseGroup,gridServiceHeadInfo,gridDiseaseDetails,dropDownRegistrationNo,dropDownServiceTokenNo;
+    var gridCounselorAction, dataSource, registrationInfoModel, dropDownServiceType, dropDownReferTo, dropDownPrescriptionType,
+            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo, dropDownServiceTokenNo;
+    var checkedIds = {}; // declare an object to hold selected grid ids
+    var chargeAmt = 0;
+
 
     $(document).ready(function () {
         onLoadCounselorActionPage();
         initRegAndServiceInfoGrid();
+        initServiceHeadInfoGrid();
         initObservable();
     });
-    jQuery(function() {
-        jQuery("form.counselorActionForm").submit(function(event) {
+    jQuery(function () {
+        jQuery("form.counselorActionForm").submit(function (event) {
             event.preventDefault();
             return false;
         });
     });
 
     function onLoadCounselorActionPage() {
-       
+
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
 
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#counselorActionForm"), onSubmitCounselorAction);
         // update page title
-        defaultPageTile("Service Details",null);
+        defaultPageTile("Service Details", null);
     }
     function showForm() {
         if (executeCommonPreConditionForSelectKendo(gridCounselorAction, 'record') == false) {
@@ -75,11 +79,10 @@
             return;
         }
         var counselorAction = getSelectedObjectFromGridKendo(gridCounselorAction);
-
         var regNo = counselorAction.regNo;
         if (counselorAction.isExit) {
             showError('Sorry! Selected service is completed.');
-            return ;
+            return;
         }
         $("#regNo").val(counselorAction.regNo);
         $("#counselorActionRow").show();
@@ -104,7 +107,7 @@
             //data: jQuery("#counselorActionForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
-                if(data.serviceTokenNo==''){
+                if (data.serviceTokenNo == '') {
                     resetForm();
                 }
                 $('#serviceTokenNo').val(data.serviceTokenNo);
@@ -135,7 +138,17 @@
         if (executePreCondition() == false) {
             return false;
         }
+        var checked = [];
+        for (var i in checkedIds) {
+            if (checkedIds[i]) {
+                checked.push(i);
+            }
+        }
+        alert(checked);
+        alert($('#selectedChargeId').val());
 
+        $('#selectedChargeId').val(checked);
+        alert($('#selectedChargeId').val());
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
@@ -161,7 +174,10 @@
         });
         return false;
     }
-
+    function resetBasicData(){
+        for (var i in checkedIds) delete checkedIds[i];
+        chargeAmt = 0;
+    }
     function executePostCondition(result) {
         if (result.isError) {
             showError(result.message);
@@ -169,16 +185,16 @@
         } else {
             try {
                 /*var newEntry = result.counselorAction;
-                if ($('#id').val().isEmpty() && newEntry != null) { // newly created
-                    var gridData = gridCounselorAction.dataSource.data();
-                    gridData.unshift(newEntry);
-                } else if (newEntry != null) { // updated existing
-                    var selectedRow = gridCounselorAction.select();
-                    var allItems = gridCounselorAction.items();
-                    var selectedIndex = allItems.index(selectedRow);
-                    gridCounselorAction.removeRow(selectedRow);
-                    gridCounselorAction.dataSource.insert(selectedIndex, newEntry);
-                }*/
+                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
+                 var gridData = gridCounselorAction.dataSource.data();
+                 gridData.unshift(newEntry);
+                 } else if (newEntry != null) { // updated existing
+                 var selectedRow = gridCounselorAction.select();
+                 var allItems = gridCounselorAction.items();
+                 var selectedIndex = allItems.index(selectedRow);
+                 gridCounselorAction.removeRow(selectedRow);
+                 gridCounselorAction.dataSource.insert(selectedIndex, newEntry);
+                 }*/
                 if ($('#id').val().isEmpty()) {
                     bootboxAlert(result.message);
                 } else {
@@ -198,7 +214,7 @@
             var tag = this.tagName.toLowerCase(); // normalize case
 
             // password inputs, and textareas
-            if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea' || type == 'select' ) {
+            if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea' || type == 'select') {
                 this.value = "";
             }
         });
@@ -229,6 +245,7 @@
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
         initRegAndServiceInfoGrid();
+        resetBasicData();
     }
 
     function initDataSourceRegAndServiceInfo() {
@@ -245,15 +262,15 @@
                 data: "list", total: "count",
                 model: {
                     fields: {
-                        regNo: { type: "string" },
-                        patientName: { type: "string" },
-                        dateOfBirth: { type: "date" },
-                        mobileNo: { type: "string" },
-                        address:{type:"string"},
-                        serviceTokenNo:{type:"string"},
-                        totalCharge:{type:"string"},
-                        serviceDate:{type:"string"},
-                        isExit:{type:"boolean"}
+                        regNo: {type: "string"},
+                        patientName: {type: "string"},
+                        dateOfBirth: {type: "date"},
+                        mobileNo: {type: "string"},
+                        address: {type: "string"},
+                        serviceTokenNo: {type: "string"},
+                        totalCharge: {type: "string"},
+                        serviceDate: {type: "string"},
+                        isExit: {type: "boolean"}
                     }
                 },
                 parse: function (data) {
@@ -288,12 +305,20 @@
                 {field: "serviceTokenNo", title: "Token No", width: 80, sortable: false, filterable: false},
 
                 {field: "patientName", title: "Name", width: 150, sortable: false, filterable: false},
-                {field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
-                    template: "#=evaluateDateRange(dateOfBirth, new Date())#"},
+                {
+                    field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
+                    template: "#=evaluateDateRange(dateOfBirth, new Date())#"
+                },
                 {field: "totalCharge", title: "Total Charges", width: 80, sortable: false, filterable: false},
                 {
-                    field: "isExit", title: "Action Completed", width: 80, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()}, template:"#=isExit?'YES':'NO'#"
+                    field: "isExit",
+                    title: "Action Completed",
+                    width: 80,
+                    sortable: false,
+                    filterable: false,
+                    attributes: {style: setAlignCenter()},
+                    headerAttributes: {style: setAlignCenter()},
+                    template: "#=isExit?'YES':'NO'#"
                 }
             ],
             toolbar: kendo.template($("#gridToolbar").html())
@@ -319,19 +344,19 @@
         kendo.bind($("#application_top_panel"), registrationInfoModel);
     }
 
-   function executePostConditionForDelete(data){
-       if (data.isError){
-           showError(data.message);
-           return false;
-       }
-       var row = gridCounselorAction.select();
-       row.each(function () {
-           gridCounselorAction.removeRow($(this));
-       });
-       resetForm();
-       showSuccess(data.message);
+    function executePostConditionForDelete(data) {
+        if (data.isError) {
+            showError(data.message);
+            return false;
+        }
+        var row = gridCounselorAction.select();
+        row.each(function () {
+            gridCounselorAction.removeRow($(this));
+        });
+        resetForm();
+        showSuccess(data.message);
     }
-    function getServiceHeadInfo(){
+    function getServiceHeadInfo() {
         var serviceTypeId = $("#serviceTypeId").val();
 
         if (serviceTypeId == '') {
@@ -340,17 +365,16 @@
             $('#divCharges').hide();
             return false;
         }
-        else if (serviceTypeId==2) {
+        else if (serviceTypeId == 2) {
             $('#divCharges').show();
             $('#divReferTo').show();
             $('#divServiceCharges').show();
             //$('#divSubsidy').show();
-           // $('#divPayable').show();
+            // $('#divPayable').show();
             $('#pathologyCharges').val('');
             $('#divPathology').hide();
         }
-        else if(serviceTypeId>2)
-        {
+        else if (serviceTypeId > 2) {
             $('#divCharges').show();
             $('#divPathology').show();
             $('#divServiceCharges').hide();
@@ -360,19 +384,20 @@
             $('#serviceCharges').val('');
         }
         $('#divServiceDetails').show();
-        var serviceTypeId=$('#serviceTypeId').val();
-        initServiceHeadInfoGrid(serviceTypeId);
+        var serviceTypeId = $('#serviceTypeId').val();
+        resetBasicData();
+        var url = "${createLink(controller: 'serviceHeadInfo', action: 'list')}?serviceTypeId=" + serviceTypeId;
+        populateGridKendo(gridServiceHeadInfo,url);
     }
-    function initDataSourceForServiceHeadInfo( serviceTypeId ) {
 
+    function initDataSourceForServiceHeadInfo() {
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'serviceHeadInfo', action: 'list')}?serviceTypeId="+serviceTypeId,
+                    url: false,
                     dataType: "json",
                     type: "post"
                 }
-
             },
             schema: {
                 type: 'json',
@@ -400,10 +425,11 @@
         });
     }
 
-    function initServiceHeadInfoGrid( serviceTypeId ) {
-        initDataSourceForServiceHeadInfo( serviceTypeId );
+    function initServiceHeadInfoGrid() {
+        initDataSourceForServiceHeadInfo();
         $("#gridServiceHeadInfo").kendoGrid({
             dataSource: dataSource,
+            autoBind: false,
             height: 200,
             selectable: false,
             sortable: true,
@@ -413,78 +439,78 @@
 
             columns: [
 
-                {field: "name", title: "Name", width: 250, sortable: false, filterable: false},
+                {field: "name", title: "Name", width: 270, sortable: false, filterable: false},
 
-                {field: "chargeAmount", title: "Fees", width: 100,attributes: {style: setAlignRight()},
-                    headerAttributes: {style: setAlignRight()}, sortable: false, filterable: false},
+                {
+                    field: "chargeAmount", title: "Fees", width: 100, attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()}, sortable: false, filterable: false
+                },
                 {
                     template: "<input type='checkbox' id='shiCheckbox' class='checkbox' />"
                 }
-            ],
-            dataBound: function () {
-                $(".checkbox").bind("change", function (e) {
-                    $(e.target).closest("tr").toggleClass("k-state-selected");
-
-                });
-            }
+            ]
         });
         gridServiceHeadInfo = $("#gridServiceHeadInfo").data("kendoGrid");
+        //bind click event to the checkbox
+        gridServiceHeadInfo.table.on("click", ".checkbox", selectRow);
     }
 
-    //bind click event to the checkbox
-    gridServiceHeadInfo.table.on("click", ".checkbox" , selectRowForServices);
-        //on click of the checkbox:
-        function selectRowForServices() {
+    function selectRow() {
+        var checked = this.checked,
+                row = $(this).closest("tr"),
+                grid = $("#gridServiceHeadInfo").data("kendoGrid"),
+                dataItem = grid.dataItem(row);
+        checkedIds[dataItem.id] = checked;
 
-            var chargeAmt =0;
-            var selectedChargeId='';
+        if (checked) {
+            //-select the row
+            row.addClass("k-state-selected");
+            chargeAmt+=parseFloat(dataItem.chargeAmount);
+        } else {
+            //-remove selection
+            row.removeClass("k-state-selected");
+            chargeAmt-=parseFloat(dataItem.chargeAmount);
 
-            var rows = gridServiceHeadInfo.select();
-            rows.each(function(index, row) {
-                chargeAmt = chargeAmt+parseFloat(gridServiceHeadInfo.dataItem(row).chargeAmount);
-                selectedChargeId=gridServiceHeadInfo.dataItem(row).id+','+selectedChargeId
-            });
-            $('#selectedChargeId').val(selectedChargeId);
-           // var serviceTypeId = $("#serviceTypeId").val();
-            var v=$('#pathologyCharges').is(":visible");
-            if (!v) {
-                $('#serviceCharges').val(chargeAmt);
-            }
-            else {
-                $('#pathologyCharges').val(chargeAmt);
-            }
-            getPayableAmount();
         }
+        var v = $('#pathologyCharges').is(":visible");
+        if (!v) {
+            $('#serviceCharges').val(chargeAmt);
+        }
+        else {
+            $('#pathologyCharges').val(chargeAmt);
+        }
+        getPayableAmount();
+    }
 
-    function getPayableAmount(){
-        var charge=$('#serviceCharges').val();
-        var subsidy=0;
-        var pathCharges=0;
-        var v=$('#pathologyCharges').is(":visible");
+    function getPayableAmount() {
+        var charge = $('#serviceCharges').val();
+        var subsidy = 0;
+        var pathCharges = 0;
+        var v = $('#pathologyCharges').is(":visible");
         if (v) {
-        pathCharges= $('#pathologyCharges').val();
+            pathCharges = $('#pathologyCharges').val();
         }
-        if($('#subsidyAmount').val()>'0'){
-            subsidy=$('#subsidyAmount').val();
+        if ($('#subsidyAmount').val() > '0') {
+            subsidy = $('#subsidyAmount').val();
         }
-        if(subsidy>charge){
+        if (subsidy > charge) {
             $('#subsidyAmount').val('0');
         }
 
-        var payable=(parseFloat(charge)+ parseFloat(pathCharges))-parseFloat(subsidy);
+        var payable = (parseFloat(charge) + parseFloat(pathCharges)) - parseFloat(subsidy);
         $('#payableAmount').val(payable);
     }
-    function loadPathologyServicesToComplete(){
-        var v=$('#divServiceDetails').is(":visible");
-
-        if(!v) {
+    function loadPathologyServicesToComplete() {
+        var v = $('#divServiceDetails').is(":visible");
+        if (!v) {
             $('#divServiceDetails').show();
             $('#divPathology').show();
-             var serviceTypeId=3;
-            initServiceHeadInfoGrid(serviceTypeId);
+            var serviceTypeId = 3;
+            resetBasicData();
+            var url = "${createLink(controller: 'serviceHeadInfo', action: 'list')}?serviceTypeId=" + serviceTypeId;
+            populateGridKendo(gridServiceHeadInfo,url);
         }
-        else{
-
+        else {
             $('#divPathology').hide();
             $('#divServiceDetails').hide();
         }
@@ -492,29 +518,29 @@
 
     $('#subsidyAmount').kendoNumericTextBox({
         min: 0,
-        step:1,
+        step: 1,
         max: 999999999999.99,
         format: "#.##"
 
     });
     //quantity = $("#quantity").data("kendoNumericTextBox");
-    function loadDisease(){
+    function loadDisease() {
         //var v=$('#divDiseaseDetails').is(":visible");
 
-       // if(!v) {
-            $('#divDiseaseDetails').show();
-            initDiseaseInfoGrid();
+        // if(!v) {
+        $('#divDiseaseDetails').show();
+        initDiseaseInfoGrid();
         //}
         //else{
         //    $('#divDiseaseDetails').hide();
         //}
     }
     function initDiseaseInfoDataSource() {
-       var diseaseGroupId=$('#diseaseGroupId').val();
+        var diseaseGroupId = $('#diseaseGroupId').val();
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId="+diseaseGroupId,
+                    url: "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId=" + diseaseGroupId,
                     dataType: "json",
                     type: "post"
                 }
@@ -526,7 +552,7 @@
                     fields: {
                         diseaseCode: {type: "string"},
                         name: {type: "string"},
-                        description:{type:"string"},
+                        description: {type: "string"},
                         diseaseGroupId: {type: "string"},
                         diseaseGroupName: {type: "string"},
                         isActive: {type: "boolean"}
@@ -553,16 +579,16 @@
             sortable: true,
             resizable: true,
             reorderable: true,
-            pageable:false,
+            pageable: false,
             columns: [
                 {
                     field: "diseaseCode",
                     title: "Disease Code",
-                    width: 150,
+                    width: 100,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
-                {field: "name", title: "Name", width: 270, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "name", title: "Name", width: 250, sortable: false, filterable: kendoCommonFilterable(97)},
                 {
                     template: "<input type='checkbox' class='checkboxDisease' />"
                 }
@@ -580,18 +606,18 @@
 
     //on click of the checkbox:
     function selectRowForDisease() {
-        var selectedDiseaseCode='';
+        var selectedDiseaseCode = '';
         var rows = gridDiseaseDetails.select();
-        rows.each(function(index, row) {
+        rows.each(function (index, row) {
 
-            selectedDiseaseCode=gridDiseaseDetails.dataItem(row).diseaseCode+','+selectedDiseaseCode
+            selectedDiseaseCode = gridDiseaseDetails.dataItem(row).diseaseCode + ',' + selectedDiseaseCode
         });
         $('#selectedDiseaseCode').val(selectedDiseaseCode);
     }
-    function LoadDetailsByRegNo(){
+    function LoadDetailsByRegNo() {
         var regNo = $('#regNoDDL').val();
         $("#regNo").val(regNo);
-        if(regNo>0) {
+        if (regNo > 0) {
             showLoadingSpinner(true);
             var actionUrl = "${createLink(controller:'counselorAction', action: 'createServiceTokenNo')}";
 
@@ -611,48 +637,47 @@
                 dataType: 'json'
             });
         }
-        else
-        {
-           return;
+        else {
+            return;
         }
         $("#counselorActionRow").show();
         $('#searchCriteriaRow').hide();
 
     }
-    function LoadDetailsByTokenNo(){
+    function LoadDetailsByTokenNo() {
 
         var tokenNo = $('#serviceTokenNoDDL').val();
-    if(tokenNo.length>2) {
-        $("#serviceTokenNo").val(tokenNo);
-        showLoadingSpinner(true);
-        var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDataByTokenNo')}?tokenNo=" + tokenNo;
+        if (tokenNo.length > 2) {
+            $("#serviceTokenNo").val(tokenNo);
+            showLoadingSpinner(true);
+            var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDataByTokenNo')}?tokenNo=" + tokenNo;
 
-        jQuery.ajax({
-            type: 'post',
-            //data: jQuery("#counselorActionForm").serialize(),
-            url: actionUrl,
-            success: function (data, textStatus) {
-                if (data.regNo == '') {
-                    resetForm();
-                }
-                $('#regNo').val(data.regNo);
-                $('#id').val(tokenNo);
-                $('#serviceCharges').val(data.totalHealthCharge);
-                $('#payableAmount').val(data.totalHealthCharge);
-                dropDownServiceType.value(data.serviceTypeId);
-                dropDownServiceType.enable(false);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            jQuery.ajax({
+                type: 'post',
+                //data: jQuery("#counselorActionForm").serialize(),
+                url: actionUrl,
+                success: function (data, textStatus) {
+                    if (data.regNo == '') {
+                        resetForm();
+                    }
+                    $('#regNo').val(data.regNo);
+                    $('#id').val(tokenNo);
+                    $('#serviceCharges').val(data.totalHealthCharge);
+                    $('#payableAmount').val(data.totalHealthCharge);
+                    dropDownServiceType.value(data.serviceTypeId);
+                    dropDownServiceType.enable(false);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
 
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json'
-        });
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);
+                },
+                dataType: 'json'
+            });
         }
-        else{
-    return;
+        else {
+            return;
         }
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
         $("#counselorActionRow").show();

@@ -45,16 +45,18 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-optional"
+                                <label class="col-md-3 control-label label-required"
                                        for="fatherOrMotherName">Father/ Mother Name:</label>
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="fatherOrMotherName"
-                                           name="fatherOrMotherName"
+                                           name="fatherOrMotherName" required="true" validationMessage="Required"
                                            placeholder="Father or Mother Name" tabindex="2"
                                            data-bind="value: registrationInfo.fatherOrMotherName"/>
                                 </div>
-
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="fatherOrMotherName"></span>
+                                </div>
                             </div>
 
                             <div class="form-group">

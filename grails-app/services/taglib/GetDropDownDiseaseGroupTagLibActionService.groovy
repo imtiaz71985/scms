@@ -143,7 +143,6 @@ class GetDropDownDiseaseGroupTagLibActionService extends BaseService implements 
                         dataValueField  : 'id',
                         dataSource      : ${jsonData},
                         value           :'${strDefaultValue}'
-                        ${strOnChange}
                     });
                 });
                 ${dataModelName} = \$("#${escapeChar(name)}").data("kendoDropDownList");

@@ -1,4 +1,3 @@
-
 <div class="container-fluid">
     <div class="row" id="searchCriteriaRow">
         <div id="application_top_panel1" class="panel panel-primary">
@@ -11,16 +10,19 @@
             <g:form name='searchByRegForm' id='searchByRegForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
                     <div>
-                        <div  class="form-group">
-                            <div class="col-md-3"align="center">
-                             <label class="control-label ">Registration No</label>
+                        <div class="form-group">
+                            <div class="col-md-3" align="center">
+                                <label class="control-label ">Registration No</label>
                             </div>
+
                             <div class="col-md-3"></div>
-                        <div class="col-md-3" align="center">
-                            <label class="control-label">Service Token No:</label>
+
+                            <div class="col-md-3" align="center">
+                                <label class="control-label">Service Token No:</label>
+                            </div>
                         </div>
-                        </div>
-                        <div  class="form-group">
+
+                        <div class="form-group">
                             <div class="col-md-3">
                                 <app:dropDownRegistrationNo
                                         data_model_name="dropDownRegistrationNo"
@@ -28,6 +30,7 @@
                                         class="kendo-drop-down">
                                 </app:dropDownRegistrationNo>
                             </div>
+
                             <div class="col-md-2">
 
                                 <button id="btnNewService" name="btnNewService" type="button"
@@ -37,7 +40,9 @@
                                         class="k-icon k-i-plus"></span> Take New Service
                                 </button>
                             </div>
-                <div class="col-md-1"></div>
+
+                            <div class="col-md-1"></div>
+
                             <div class="col-md-3">
                                 <app:dropDownServiceTokenNo
                                         data_model_name="dropDownServiceTokenNo"
@@ -45,6 +50,7 @@
                                         class="kendo-drop-down">
                                 </app:dropDownServiceTokenNo>
                             </div>
+
                             <div class="col-md-2">
 
                                 <button id="btnForCompleteAction" name="btnForCompleteAction" type="button"
@@ -60,6 +66,7 @@
             </g:form>
         </div>
     </div>
+
     <div class="row" id="counselorActionRow">
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
@@ -68,19 +75,23 @@
                 </div>
             </div>
 
-            <g:form name='counselorActionForm' id='counselorActionForm' class="form-horizontal form-widgets" role="form">
+            <g:form name='counselorActionForm' id='counselorActionForm' class="form-horizontal form-widgets"
+                    role="form">
                 <div class="panel-body">
                     <input type="hidden" name="id" id="id" data-bind="value: counselorAction.serviceTokenNo"/>
                     <input type="hidden" id="regNo" name="regNo"/>
                     <input type="hidden" id="selectedChargeId" name="selectedChargeId"/>
                     <input type="hidden" id="selectedDiseaseCode" name="selectedDiseaseCode"/>
+
                     <div class="form-group">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="serviceTokenNo">Service No:</label>
+                                <label class="col-md-3 control-label label-required"
+                                       for="serviceTokenNo">Service No:</label>
 
                                 <div class="col-md-6">
-                                    <input type="text" readonly="true" class="form-control" id="serviceTokenNo" name="serviceTokenNo"
+                                    <input type="text" readonly="true" class="form-control" id="serviceTokenNo"
+                                           name="serviceTokenNo"
                                            required validationMessage="Required"
                                            tabindex="2"
                                            data-bind="value: counselorAction.serviceTokenNo"/>
@@ -90,13 +101,15 @@
                                     <span class="k-invalid-msg" data-for="serviceTokenNo"></span>
                                 </div>
                             </div>
+
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="serviceTypeId">Service Type:</label>
+                                <label class="col-md-3 control-label label-required"
+                                       for="serviceTypeId">Service Type:</label>
 
                                 <div class="col-md-6">
                                     <app:dropDownServiceType
                                             data_model_name="dropDownServiceType"
-                                        type="counselor"
+                                            type="counselor"
                                             id="serviceTypeId" name="serviceTypeId" tabindex="1"
                                             class="kendo-drop-down" onchange="javascript: getServiceHeadInfo();"
                                             data-bind="value: counselorAction.serviceTypeId"
@@ -108,8 +121,10 @@
                                     <span class="k-invalid-msg" data-for="serviceTypeId"></span>
                                 </div>
                             </div>
-                            <div class="form-group"  id="divPrescriptionType" style="display:none;">
-                                <label class="col-md-3 control-label label-required" for="prescriptionTypeId">Prescription Type:</label>
+
+                            <div class="form-group" id="divPrescriptionType" style="display:none;">
+                                <label class="col-md-3 control-label label-required"
+                                       for="prescriptionTypeId">Prescription Type:</label>
 
                                 <div class="col-md-6">
                                     <app:dropDownSystemEntity
@@ -120,20 +135,23 @@
                                     </app:dropDownSystemEntity>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <div class="col-md-3"></div>
+
                                 <div class="col-md-6">
-                                <button id="btnPathologyService" name="btnPathologyService" type="button"
-                                        class="k-button k-button-icontext" style="display:none;"
-                                        role="button" tabindex="4" onclick='loadPathologyServicesToComplete();'
-                                        aria-disabled="false">Pathology Services
-                                </button>
-                                    </div>
+                                    <button id="btnPathologyService" name="btnPathologyService" type="button"
+                                            class="k-button k-button-icontext" style="display:none;"
+                                            role="button" tabindex="4" onclick='loadPathologyServicesToComplete();'
+                                            aria-disabled="false">Pathology Services
+                                    </button>
                                 </div>
+                            </div>
                         </div>
+
                         <div class="col-md-6" id="divCharges" style="display:none;">
 
-                            <div class="form-group"  id="divReferTo" style="display:none;">
+                            <div class="form-group" id="divReferTo" style="display:none;">
                                 <label class="col-md-3 control-label label-required" for="referToId">Refer To:</label>
 
                                 <div class="col-md-6">
@@ -146,39 +164,51 @@
                                 </div>
 
                             </div>
+
                             <div class="form-group" id="divServiceCharges" style="display:none;">
                                 <label class="col-md-3 control-label label-required">Service Charges:</label>
-                                <div class="col-md-3">
-                                    <input id="serviceCharges" name="serviceCharges" type="text" readonly="true" class="form-control"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div id="divSubsidy" style="display:none;">
-                                <label class="col-md-3 control-label label-required">Subsidy Amount:</label>
-                                <div class="col-md-3">
-                                    <input id="subsidyAmount" name="subsidyAmount" type="number" class="form-control" onchange="javascript: getPayableAmount();"/>
-                                </div>
-                                </div>
-                                </div>
-                            <div class="form-group">
-                                <div  id="divPathology"  style="display:none;">
-                                <label class="col-md-3 control-label label-required">Pathology Fees:</label>
 
                                 <div class="col-md-3">
-                                    <input id="pathologyCharges" name="pathologyCharges" type="text" readonly="true" class="form-control" />
+                                    <input id="serviceCharges" name="serviceCharges" type="text" readonly="true"
+                                           class="form-control"/>
                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div id="divSubsidy" style="display:none;">
+                                    <label class="col-md-3 control-label label-required">Subsidy Amount:</label>
+
+                                    <div class="col-md-3">
+                                        <input id="subsidyAmount" name="subsidyAmount" type="number"
+                                               class="form-control" onchange="javascript: getPayableAmount();"/>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div id="divPathology" style="display:none;">
+                                    <label class="col-md-3 control-label label-required">Pathology Fees:</label>
+
+                                    <div class="col-md-3">
+                                        <input id="pathologyCharges" name="pathologyCharges" type="text" readonly="true"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+
                                 <div style="display:none;" id="divPayable">
                                     <label class="col-md-3 control-label label-required">Total Payable:</label>
+
                                     <div class="col-md-3">
-                                        <input id="payableAmount" name="payableAmount" type="text" readonly="true" class="form-control"/>
+                                        <input id="payableAmount" name="payableAmount" type="text" readonly="true"
+                                               class="form-control"/>
                                     </div>
                                 </div>
                             </div>
 
 
                             <div class="form-group " id="divDiseaseGroup" style="display:none;">
-                                <label class="col-md-3 control-label label-required" for="diseaseGroupId">Disease Group:</label>
+                                <label class="col-md-3 control-label label-required"
+                                       for="diseaseGroupId">Disease Group:</label>
 
                                 <div class="col-md-9">
                                     <app:dropDownDiseaseGroup
@@ -193,12 +223,14 @@
                         </div>
 
                     </div>
+
                     <div class="form-group ">
-                    <div class="col-md-6 " id="divServiceDetails" style="display:none;height: 200px;">
-                            <div id="gridServiceHeadInfo" ></div>
-                    </div>
-                        <div class="col-md-6 pull-right" id="divDiseaseDetails" style="display:none;height: 200px;">
-                            <div id="gridDiseaseDetails" ></div>
+                        <div class="col-md-5 " id="divServiceDetails" style="display:none;height: 200px;">
+                            <div id="gridServiceHeadInfo"></div>
+                        </div>
+
+                        <div class="col-md-5 pull-right" id="divDiseaseDetails" style="display:none;height: 200px;">
+                            <div id="gridDiseaseDetails"></div>
                         </div>
                     </div>
 

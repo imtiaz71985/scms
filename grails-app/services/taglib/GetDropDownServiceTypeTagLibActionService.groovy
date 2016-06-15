@@ -134,7 +134,6 @@ class GetDropDownServiceTypeTagLibActionService extends BaseService implements A
         }
 
         String html = "<select ${strAttributes}>\n" + SELECT_END
-        String strOnChange = paramOnChange ? ",change: function(e) {${paramOnChange};}" : EMPTY_SPACE
         String strDefaultValue = defaultValue ? defaultValue : EMPTY_SPACE
 
         if (showHints.booleanValue()) {
@@ -150,7 +149,6 @@ class GetDropDownServiceTypeTagLibActionService extends BaseService implements A
                         dataValueField  : 'id',
                         dataSource      : ${jsonData},
                         value           :'${strDefaultValue}'
-                        ${strOnChange}
                     });
                 });
                 ${dataModelName} = \$("#${escapeChar(name)}").data("kendoDropDownList");
