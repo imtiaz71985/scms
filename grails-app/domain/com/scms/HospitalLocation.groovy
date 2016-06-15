@@ -1,6 +1,7 @@
 package com.scms
 
 class HospitalLocation {
+
     long id
     long version
     String name
@@ -9,6 +10,5 @@ class HospitalLocation {
 
     static mapping = {}
     static constraints = {
-        address nullable: true
     }
 }

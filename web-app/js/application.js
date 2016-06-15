@@ -741,6 +741,13 @@ function bootboxAlert(msg){
 }
 
 
+function getDefaultPageSize(){
+    return 50;
+}
+function getDefaultPageSizes(){
+    return [20, 30, 40, 50];
+}
+
 
 
 

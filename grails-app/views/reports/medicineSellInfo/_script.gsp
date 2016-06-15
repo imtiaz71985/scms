@@ -114,7 +114,7 @@
                 {field: "medicine_sales", aggregate: "sum" }
             ],
             sort: [{field: 'date_field', dir: 'asc'}],
-            pageSize: 50,
+            pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -134,7 +134,7 @@
             reorderable: true,
             pageable: {
                 refresh: true,
-                pageSizes: [10, 15, 20],
+                pageSizes: getDefaultPageSizes(),
                 buttonCount: 4,
                 messages: {
                     display: "{0} - {1} of {2} records",

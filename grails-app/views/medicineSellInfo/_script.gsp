@@ -131,7 +131,7 @@
                     return data;
                 }
             },
-            pageSize: 50,
+            pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -150,7 +150,7 @@
             dataBound: gridDataBound,
             pageable: {
                 refresh: true,
-                pageSizes: [10, 15, 20],
+                pageSizes: getDefaultPageSizes(),
                 buttonCount: 4
             },
             columns: [

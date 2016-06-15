@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row" id="searchCriteriaRow">
-        <div id="application_top_panel1" class="panel panel-primary">
+        <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
                     Search Criteria
@@ -68,7 +68,7 @@
     </div>
 
     <div class="row" id="counselorActionRow">
-        <div id="application_top_panel" class="panel panel-primary">
+        <div id="application_top_panel1" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
                     Service Details

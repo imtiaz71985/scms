@@ -123,7 +123,7 @@
                     return data;
                 }
             },
-            pageSize: 10,
+            pageSize: getDefaultPageSize(),
             sort: {field: 'username', dir: 'asc'},
             serverPaging: true,
             serverFiltering: true,
@@ -142,7 +142,7 @@
             reorderable: true,
             pageable: {
                 refresh: true,
-                pageSizes: [10, 15, 20],
+                pageSizes: getDefaultPageSizes(),
                 buttonCount: 4
             },
             columns: [

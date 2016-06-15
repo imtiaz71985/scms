@@ -147,7 +147,7 @@
                     return data;
                 }
             },
-            pageSize: 15,
+            pageSize: getDefaultPageSize(),
             serverPaging: false,
             serverFiltering: false,
             serverSorting: false
@@ -211,7 +211,7 @@
                     return data;
                 }
             },
-            pageSize: 15,
+            pageSize: getDefaultPageSize(),
             serverPaging: false,
             serverFiltering: false,
             serverSorting: false

@@ -80,7 +80,7 @@
                     </li>
                 </sec:ifAnyUrls>
                 <sec:ifAnyUrls urls="/serviceType/show,/systemEntity/show,/serviceHeadInfo/show,/diseaseGroup/show,
-                                    /diseaseGroup/show,/diseaseInfo/show,/medicineInfo/show">
+                                    /diseaseGroup/show,/diseaseInfo/show,/medicineInfo/show,/hospitalLocation/show">
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Setting<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -117,6 +117,11 @@
                             <sec:access url="/calendar/show">
                                 <li>
                                     <a href="#calendar/show"><i class="fa fa-calendar-o"></i>&nbsp;Office Calendar</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/hospitalLocation/show">
+                                <li>
+                                    <a href="#hospitalLocation/show"><i class="fa fa-hospital-o"></i>&nbsp;Hospital</a>
                                 </li>
                             </sec:access>
                         </ul>

@@ -13,6 +13,7 @@
     var gridCounselorAction, dataSource, registrationInfoModel, dropDownServiceType, dropDownReferTo, dropDownPrescriptionType,
             dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo, dropDownServiceTokenNo;
     var checkedIds = {}; // declare an object to hold selected grid ids
+    var checkedDiseaseCodes = {}; // declare an object to hold selected disease codes
     var chargeAmt = 0;
 
 
@@ -20,6 +21,7 @@
         onLoadCounselorActionPage();
         initRegAndServiceInfoGrid();
         initServiceHeadInfoGrid();
+        initDiseaseInfoGrid();
         initObservable();
     });
     jQuery(function () {
@@ -33,6 +35,7 @@
 
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
+        $('#counselorActionGridRow').show();
 
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#counselorActionForm"), onSubmitCounselorAction);
@@ -45,6 +48,7 @@
         }
         $("#counselorActionRow").show();
         $('#searchCriteriaRow').hide();
+        $('#counselorActionGridRow').hide();
         var counselorAction = getSelectedObjectFromGridKendo(gridCounselorAction);
         var regNo = counselorAction.regNo;
         $("#regNo").val(counselorAction.regNo);
@@ -87,6 +91,7 @@
         $("#regNo").val(counselorAction.regNo);
         $("#counselorActionRow").show();
         $('#searchCriteriaRow').hide();
+        $('#counselorActionGridRow').hide();
         $("#divPrescriptionType").show();
         $('#serviceCharges').show();
         $('#divCharges').show();
@@ -125,6 +130,9 @@
             },
             dataType: 'json'
         });
+        var url = "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId=" ;
+        populateGridKendo(gridDiseaseDetails,url);
+
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
     function executePreCondition() {
@@ -138,20 +146,27 @@
         if (executePreCondition() == false) {
             return false;
         }
-        var checked = [];
-        for (var i in checkedIds) {
-            if (checkedIds[i]) {
-                checked.push(i);
-            }
-        }
-        $('#selectedChargeId').val(checked);
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
             actionUrl = "${createLink(controller:'counselorAction', action: 'create')}";
+            var checked = [];
+            for (var i in checkedIds) {
+                if (checkedIds[i]) {
+                    checked.push(i);
+                }
+            }
+            $('#selectedChargeId').val(checked);
         } else {
             actionUrl = "${createLink(controller:'counselorAction', action: 'update')}";
+            var checkedDisease = [];
+            for (var i in checkedDiseaseCodes) {
+                if (checkedDiseaseCodes[i]) {
+                    checkedDisease.push(i);
+                }
+            }
+            $('#selectedDiseaseCode').val(checkedDisease);
         }
         jQuery.ajax({
             type: 'post',
@@ -170,10 +185,13 @@
         });
         return false;
     }
+
     function resetBasicData(){
         for (var i in checkedIds) delete checkedIds[i];
+        for (var i in checkedDiseaseCodes) delete checkedDiseaseCodes[i];
         chargeAmt = 0;
     }
+
     function executePostCondition(result) {
         if (result.isError) {
             showError(result.message);
@@ -240,6 +258,7 @@
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
+        $('#counselorActionGridRow').show();
         initRegAndServiceInfoGrid();
         resetBasicData();
     }
@@ -274,7 +293,7 @@
                     return data;
                 }
             },
-            pageSize: 15,
+            pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -293,7 +312,7 @@
             dataBound: gridDataBound,
             pageable: {
                 refresh: true,
-                pageSizes: [10, 15, 20],
+                pageSizes: getDefaultPageSizes(),
                 buttonCount: 4
             },
             columns: [
@@ -434,9 +453,7 @@
             navigatable: true,
 
             columns: [
-
                 {field: "name", title: "Name", width: 270, sortable: false, filterable: false},
-
                 {
                     field: "chargeAmount", title: "Fees", width: 100, attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()}, sortable: false, filterable: false
@@ -448,10 +465,10 @@
         });
         gridServiceHeadInfo = $("#gridServiceHeadInfo").data("kendoGrid");
         //bind click event to the checkbox
-        gridServiceHeadInfo.table.on("click", ".checkbox", selectRow);
+        gridServiceHeadInfo.table.on("click", ".checkbox", selectServiceHead);
     }
 
-    function selectRow() {
+    function selectServiceHead() {
         var checked = this.checked,
                 row = $(this).closest("tr"),
                 grid = $("#gridServiceHeadInfo").data("kendoGrid"),
@@ -519,24 +536,20 @@
         format: "#.##"
 
     });
-    //quantity = $("#quantity").data("kendoNumericTextBox");
-    function loadDisease() {
-        //var v=$('#divDiseaseDetails').is(":visible");
 
-        // if(!v) {
+    function loadDisease() {
         $('#divDiseaseDetails').show();
-        initDiseaseInfoGrid();
-        //}
-        //else{
-        //    $('#divDiseaseDetails').hide();
-        //}
-    }
-    function initDiseaseInfoDataSource() {
+        resetBasicData();
         var diseaseGroupId = $('#diseaseGroupId').val();
+        var url = "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId=" + diseaseGroupId;
+        populateGridKendo(gridDiseaseDetails,url);
+    }
+
+    function initDiseaseInfoDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId=" + diseaseGroupId,
+                    url: false,
                     dataType: "json",
                     type: "post"
                 }
@@ -571,6 +584,7 @@
         $("#gridDiseaseDetails").kendoGrid({
             dataSource: dataSource,
             height: 200,
+            autoBind: false,
             selectable: false,
             sortable: true,
             resizable: true,
@@ -591,26 +605,28 @@
             ],
             filterable: {
                 mode: "row"
-            },
-            dataBound: function () {
-                $(".checkboxDisease").bind("change", function (e) {
-                    $(e.target).closest("tr").toggleClass("k-state-selected");
-                    selectRowForDisease();
-                });
             }
         });
         gridDiseaseDetails = $("#gridDiseaseDetails").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
-    //on click of the checkbox:
-    function selectRowForDisease() {
-        var selectedDiseaseCode = '';
-        var rows = gridDiseaseDetails.select();
-        rows.each(function (index, row) {
-            selectedDiseaseCode = gridDiseaseDetails.dataItem(row).diseaseCode + ',' + selectedDiseaseCode
-        });
-        $('#selectedDiseaseCode').val(selectedDiseaseCode);
+    gridDiseaseDetails.table.on("click", ".checkboxDisease", selectDisease);
+
+    function selectDisease() {
+        var checked = this.checked,
+                row = $(this).closest("tr"),
+                grid = $("#gridDiseaseDetails").data("kendoGrid"),
+                dataItem = grid.dataItem(row);
+        checkedDiseaseCodes[dataItem.diseaseCode] = checked;
+        if (checked) {
+            //-select the row
+            row.addClass("k-state-selected");
+        } else {
+            //-remove selection
+            row.removeClass("k-state-selected");
+        }
     }
+
     function LoadDetailsByRegNo() {
         var regNo = $('#regNoDDL').val();
         $("#regNo").val(regNo);
@@ -639,6 +655,7 @@
         }
         $("#counselorActionRow").show();
         $('#searchCriteriaRow').hide();
+        $('#counselorActionGridRow').hide();
 
     }
     function LoadDetailsByTokenNo() {
@@ -679,6 +696,7 @@
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
         $("#counselorActionRow").show();
         $('#searchCriteriaRow').hide();
+        $('#counselorActionGridRow').hide();
         $("#divPrescriptionType").show();
         $('#serviceCharges').show();
         $('#divCharges').show();

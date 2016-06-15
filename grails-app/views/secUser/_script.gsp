@@ -139,7 +139,7 @@
                 }
             },
             sort: {field: 'id', dir: 'asc'},
-            pageSize: 10,
+            pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -157,7 +157,7 @@
             reorderable: true,
             pageable: {
                 refresh: true,
-                pageSizes: [10, 15, 20],
+                pageSizes: getDefaultPageSizes(),
                 buttonCount: 4
             },
             columns: [

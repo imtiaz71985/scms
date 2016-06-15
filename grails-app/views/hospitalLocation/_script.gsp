@@ -1,45 +1,45 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-    <sec:access url="/serviceType/create">
+    <sec:access url="/hospitalLocation/create">
         <li onclick="showForm();"><i class="fa fa-plus-square-o"></i>New</li>
     </sec:access>
-    <sec:access url="/serviceType/update">
+    <sec:access url="/hospitalLocation/update">
         <li onclick="editRecord();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-    <sec:access url="/serviceType/delete">
+    <sec:access url="/hospitalLocation/delete">
         <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
     </sec:access>
 </ul>
 </script>
 
 <script language="javascript">
-    var gridServiceType, dataSource, ServiceTypeModel;
+    var gridHospitalLocation, dataSource, hospitalLocationModel;
 
     $(document).ready(function () {
-        onLoadServiceTypePage();
-        initServiceTypeGrid();
+        onLoadHospitalLocationPage();
+        initHospitalLocationGrid();
         initObservable();
     });
 
-    function onLoadServiceTypePage() {
-        $("#serviceTypeRow").hide();
+    function onLoadHospitalLocationPage() {
+        $("#hospitalLocationRow").hide();
         // initialize form with kendo validator & bind onSubmit event
-        initializeForm($("#serviceTypeForm"), onSubmitServiceType);
+        initializeForm($("#hospitalLocationForm"), onSubmitHospitalLocation);
         // update page title
-        defaultPageTile("Create Service Type",null);
+        defaultPageTile("Create Hospital",null);
     }
 
     function showForm() {
-        $("#serviceTypeRow").show();
+        $("#hospitalLocationRow").show();
     }
     function executePreCondition() {
-        if (!validateForm($("#serviceTypeForm"))) {
+        if (!validateForm($("#hospitalLocationForm"))) {
             return false;
         }
         return true;
     }
 
-    function onSubmitServiceType() {
+    function onSubmitHospitalLocation() {
         if (executePreCondition() == false) {
             return false;
         }
@@ -48,14 +48,14 @@
         showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'serviceType', action: 'create')}";
+            actionUrl = "${createLink(controller:'hospitalLocation', action: 'create')}";
         } else {
-            actionUrl = "${createLink(controller:'serviceType', action: 'update')}";
+            actionUrl = "${createLink(controller:'hospitalLocation', action: 'update')}";
         }
 
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#serviceTypeForm").serialize(),
+            data: jQuery("#hospitalLocationForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);
@@ -77,16 +77,16 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.serviceType;
+                var newEntry = result.hospitalLocation;
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
-                    var gridData = gridServiceType.dataSource.data();
+                    var gridData = gridHospitalLocation.dataSource.data();
                     gridData.unshift(newEntry);
                 } else if (newEntry != null) { // updated existing
-                    var selectedRow = gridServiceType.select();
-                    var allItems = gridServiceType.items();
+                    var selectedRow = gridHospitalLocation.select();
+                    var allItems = gridHospitalLocation.items();
                     var selectedIndex = allItems.index(selectedRow);
-                    gridServiceType.removeRow(selectedRow);
-                    gridServiceType.dataSource.insert(selectedIndex, newEntry);
+                    gridHospitalLocation.removeRow(selectedRow);
+                    gridHospitalLocation.dataSource.insert(selectedIndex, newEntry);
                 }
                 resetForm();
                 showSuccess(result.message);
@@ -96,18 +96,18 @@
         }
     }
 
-    function resetForm(hide) {
-        clearForm($("#serviceTypeForm"), $('#name'));
+    function resetForm() {
+        clearForm($("#hospitalLocationForm"), $('#name'));
         initObservable();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
-        if(hide) $("#serviceTypeRow").hide();
+        $("#hospitalLocationRow").hide();
     }
 
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'serviceType', action: 'list')}",
+                    url: "${createLink(controller: 'hospitalLocation', action: 'list')}",
                     dataType: "json",
                     type: "post"
                 }
@@ -120,8 +120,8 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         name: { type: "string" },
-                        description: { type: "string" },
-                        isActive: { type: "boolean" }
+                        code: { type: "string" },
+                        address: { type: "string" }
                     }
                 },
                 parse: function (data) {
@@ -136,9 +136,9 @@
         });
     }
 
-    function initServiceTypeGrid() {
+    function initHospitalLocationGrid() {
         initDataSource();
-        $("#gridServiceType").kendoGrid({
+        $("#gridHospitalLocation").kendoGrid({
             dataSource: dataSource,
             height: getGridHeightKendo(),
             selectable: true,
@@ -152,54 +152,52 @@
             },
             columns: [
                 {field: "name", title: "Name", width: 200, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "description", title: "Description", width: 250, sortable: false, filterable: false},
-                {field: "isActive", title: "Is Active", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()}, template:"#=isActive?'YES':'NO'#"}
+                {field: "address", title: "Address", width: 100, sortable: false, filterable: false}
             ],
             filterable: {
                 mode: "row"
             },
             toolbar: kendo.template($("#gridToolbar").html())
         });
-        gridServiceType = $("#gridServiceType").data("kendoGrid");
+        gridHospitalLocation = $("#gridHospitalLocation").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
 
     function initObservable() {
-        ServiceTypeModel = kendo.observable(
+        hospitalLocationModel = kendo.observable(
                 {
-                    serviceType: {
+                    hospitalLocation: {
                         id: "",
                         version: "",
                         name: "",
-                        description: "",
-                        isActive: true
+                        code: "",
+                        address: ""
                     }
                 }
         );
-        kendo.bind($("#application_top_panel"), ServiceTypeModel);
+        kendo.bind($("#application_top_panel"), hospitalLocationModel);
     }
 
     function deleteRecord() {
-        if (executeCommonPreConditionForSelectKendo(gridServiceType, 'record') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridHospitalLocation, 'record') == false) {
             return;
         }
         var msg = 'Are you sure you want to delete the selected record?',
-                url = "${createLink(controller: 'serviceType', action:  'delete')}";
-        confirmDelete(msg, url, gridServiceType);
+                url = "${createLink(controller: 'hospitalLocation', action:  'delete')}";
+        confirmDelete(msg, url, gridHospitalLocation);
     }
 
     function editRecord() {
-        if (executeCommonPreConditionForSelectKendo(gridServiceType, 'record') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridHospitalLocation, 'record') == false) {
             return;
         }
-        $("#serviceTypeRow").show();
-        var serviceType = getSelectedObjectFromGridKendo(gridServiceType);
-        showRecord(serviceType);
+        $("#hospitalLocationRow").show();
+        var hospitalLocation = getSelectedObjectFromGridKendo(gridHospitalLocation);
+        showRecord(hospitalLocation);
     }
 
-    function showRecord(serviceType) {
-        ServiceTypeModel.set('serviceType', serviceType);
+    function showRecord(hospitalLocation) {
+        hospitalLocationModel.set('hospitalLocation', hospitalLocation);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
