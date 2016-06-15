@@ -144,11 +144,7 @@
                 checked.push(i);
             }
         }
-        alert(checked);
-        alert($('#selectedChargeId').val());
-
         $('#selectedChargeId').val(checked);
-        alert($('#selectedChargeId').val());
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
@@ -586,13 +582,16 @@
                     title: "Disease Code",
                     width: 100,
                     sortable: false,
-                    filterable: kendoCommonFilterable(97)
+                    filterable: false
                 },
-                {field: "name", title: "Name", width: 250, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "name", title: "Name", width: 250, sortable: false, filterable: false },
                 {
                     template: "<input type='checkbox' class='checkboxDisease' />"
                 }
             ],
+            filterable: {
+                mode: "row"
+            },
             dataBound: function () {
                 $(".checkboxDisease").bind("change", function (e) {
                     $(e.target).closest("tr").toggleClass("k-state-selected");
@@ -603,13 +602,11 @@
         gridDiseaseDetails = $("#gridDiseaseDetails").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
-
     //on click of the checkbox:
     function selectRowForDisease() {
         var selectedDiseaseCode = '';
         var rows = gridDiseaseDetails.select();
         rows.each(function (index, row) {
-
             selectedDiseaseCode = gridDiseaseDetails.dataItem(row).diseaseCode + ',' + selectedDiseaseCode
         });
         $('#selectedDiseaseCode').val(selectedDiseaseCode);
