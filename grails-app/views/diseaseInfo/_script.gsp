@@ -159,14 +159,14 @@
                 {
                     field: "diseaseCode",
                     title: "Disease Code",
-                    width: 50,
+                    width: 60,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
                 {
                     field: "diseaseGroupName",
                     title: "Group Name",
-                    width: 120,
+                    width: 100,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
@@ -174,12 +174,12 @@
                 {
                     field: "description",
                     title: "Description",
-                    width: 200,
+                    width: 150,
                     sortable: false,
                     filterable: false
                 },
                 {
-                    field: "isActive", title: "Is Active", width: 30, sortable: false, filterable: false,
+                    field: "isActive", title: "Is Active", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=isActive?'YES':'NO'#"
                 }
