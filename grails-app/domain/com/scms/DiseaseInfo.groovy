@@ -15,6 +15,7 @@ class DiseaseInfo {
         modifyDate type:'date'
         modifyDate(nullable: true)
         modifyBy (nullable: true)
+        description (nullable: true)
     }
     static mapping = {
 
