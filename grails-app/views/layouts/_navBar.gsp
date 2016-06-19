@@ -73,7 +73,7 @@
                             <sec:access url="/medicineSellInfo/showMonthlyStatus">
                                 <li>
                                     <a href="#medicineSellInfo/showMonthlyStatus"><i
-                                            class="fa fa-file-pdf-o"></i>&nbsp;Month Status</a>
+                                            class="fa fa-file-pdf-o"></i>&nbsp;Monthly Status</a>
                                 </li>
                             </sec:access>
                         </ul>
