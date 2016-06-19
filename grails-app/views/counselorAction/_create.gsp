@@ -35,7 +35,7 @@
 
                                 <button id="btnNewService" name="btnNewService" type="button"
                                         class="k-button"
-                                        role="button" tabindex="4" onclick="LoadDetailsByRegNo()"
+                                        role="button" onclick="LoadDetailsByRegNo()"
                                         aria-disabled="false"><span
                                         class="k-icon k-i-plus"></span> Take New Service
                                 </button>
@@ -57,7 +57,7 @@
                                         class="k-button"
                                         role="button" tabindex="4" onclick="LoadDetailsByTokenNo()"
                                         aria-disabled="false"><span
-                                        class="fa fa-edit"></span>Counselor Action
+                                        class="fa fa-edit"></span>  Counselor Action
                                 </button>
                             </div>
                         </div>
@@ -93,7 +93,6 @@
                                     <input type="text" readonly="true" class="form-control" id="serviceTokenNo"
                                            name="serviceTokenNo"
                                            required validationMessage="Required"
-                                           tabindex="2"
                                            data-bind="value: counselorAction.serviceTokenNo"/>
                                 </div>
 
@@ -129,7 +128,7 @@
                                 <div class="col-md-6">
                                     <app:dropDownSystemEntity
                                             data_model_name="dropDownPrescriptionType"
-                                            id="prescriptionTypeId" name="prescriptionTypeId" tabindex="1"
+                                            id="prescriptionTypeId" name="prescriptionTypeId" tabindex="2"
                                             class="kendo-drop-down" type="Prescription Type"
                                             data-bind="value: counselorAction.prescriptionTypeId">
                                     </app:dropDownSystemEntity>
@@ -142,7 +141,7 @@
                                 <div class="col-md-6">
                                     <button id="btnPathologyService" name="btnPathologyService" type="button"
                                             class="k-button k-button-icontext" style="display:none;"
-                                            role="button" tabindex="4" onclick='loadPathologyServicesToComplete();'
+                                            role="button" tabindex="3" onclick='loadPathologyServicesToComplete();'
                                             aria-disabled="false">Pathology Services
                                     </button>
                                 </div>
@@ -157,7 +156,7 @@
                                 <div class="col-md-6">
                                     <app:dropDownSystemEntity
                                             data_model_name="dropDownReferTo"
-                                            id="referToId" name="referToId" tabindex="1"
+                                            id="referToId" name="referToId" tabindex="4"
                                             class="kendo-drop-down" type="Refer Type"
                                             data-bind="value: counselorAction.referToId">
                                     </app:dropDownSystemEntity>
@@ -179,7 +178,7 @@
                                     <label class="col-md-3 control-label label-required">Subsidy Amount:</label>
 
                                     <div class="col-md-3">
-                                        <input id="subsidyAmount" name="subsidyAmount" type="number"
+                                        <input id="subsidyAmount" name="subsidyAmount" type="number" tabindex="5"
                                                class="form-control" onchange="javascript: getPayableAmount();"/>
                                     </div>
                                 </div>
@@ -191,7 +190,7 @@
 
                                     <div class="col-md-3">
                                         <input id="pathologyCharges" name="pathologyCharges" type="text" readonly="true"
-                                               class="form-control"/>
+                                               class="form-control" tabindex="6"/>
                                     </div>
                                 </div>
 
@@ -200,7 +199,7 @@
 
                                     <div class="col-md-3">
                                         <input id="payableAmount" name="payableAmount" type="text" readonly="true"
-                                               class="form-control"/>
+                                               class="form-control" tabindex="7"/>
                                     </div>
                                 </div>
                             </div>
@@ -213,7 +212,7 @@
                                 <div class="col-md-9">
                                     <app:dropDownDiseaseGroup
                                             data_model_name="dropDownDiseaseGroup" hints_text="All"
-                                            id="diseaseGroupId" name="diseaseGroupId" tabindex="1"
+                                            id="diseaseGroupId" name="diseaseGroupId" tabindex="8"
                                             class="kendo-drop-down" onchange="loadDisease();">
                                     </app:dropDownDiseaseGroup>
                                 </div>
@@ -240,12 +239,12 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="4"
+                            role="button" tabindex="9"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="5"
+                            class="k-button k-button-icontext" role="button" tabindex="10"
                             aria-disabled="false" onclick='resetForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

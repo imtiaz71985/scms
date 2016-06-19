@@ -1,6 +1,7 @@
 package actions.medicineInfo
 
 import com.scms.MedicineInfo
+import com.scms.MedicinePrice
 import com.scms.MedicineSellInfoDetails
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -13,7 +14,7 @@ class DeleteMedicineInfoActionService extends BaseService implements ActionServi
     private Logger log = Logger.getLogger(getClass())
 
     private static final String DELETE_SUCCESS_MESSAGE = "Medicine has been deleted successfully"
-    private static final String RELATED_FEATURE_FOUND = "Different records associated with this medicine"
+    private static final String RELATED_FEATURE_FOUND = " different records associated with this medicine"
     private static final String MEDICINE_INFO = "medicineInfo"
 
     @Transactional(readOnly = true)
@@ -32,7 +33,12 @@ class DeleteMedicineInfoActionService extends BaseService implements ActionServi
     public Map execute(Map result) {
         try {
             MedicineInfo medicineInfo = (MedicineInfo) result.get(MEDICINE_INFO)
+            List<MedicinePrice> lstMedicinePrice=MedicinePrice.findAllByMedicineId(medicineInfo.id)
+            for (int i=0; i<lstMedicinePrice.size();i++){
+                lstMedicinePrice[i].delete()
+            }
             medicineInfo.delete()
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

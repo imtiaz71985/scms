@@ -6,6 +6,7 @@ class MedicineSellInfo {
     long version
     String voucherNo
     Date sellDate
+    Date sellDateExt
     long sellBy
     double totalAmount
     String hospitalCode

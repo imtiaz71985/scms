@@ -6,6 +6,9 @@
     <sec:access url="/medicineInfo/update">
         <li onclick="editForm();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
+    <sec:access url="/medicinePrice/show">
+        <li onclick="navigatePriceForm();"><i class="fa fa-money"></i>Price</li>
+    </sec:access>
     <sec:access url="/medicineInfo/delete">
         <li onclick="deleteForm();"><i class="fa fa-trash-o"></i>Delete</li>
     </sec:access>
@@ -13,7 +16,7 @@
 </script>
 
 <script language="javascript">
-    var gridMedicine, dataSource, medicineInfoModel;
+    var gridMedicine, dataSource, medicineInfoModel,unitPrice;
 
     $(document).ready(function () {
         onLoadMedicineInfoPage();
@@ -22,6 +25,15 @@
     });
 
     function onLoadMedicineInfoPage() {
+        $('#unitPrice').kendoNumericTextBox({
+            min: 0,
+            step:1,
+            max: 999999999999.99,
+            format: "#.##"
+
+        });
+        unitPrice = $("#unitPrice").data("kendoNumericTextBox");
+
         $("#medicineInfoRow").hide();
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#medicineForm"), onSubmitMedicineInfoRole);
@@ -31,13 +43,7 @@
 
     function showForm() {
         $("#medicineInfoRow").show();
-        $('#unitPrice').kendoNumericTextBox({
-            min: 0,
-            step:1,
-            max: 999999999999.99,
-            format: "#.##"
-
-        });
+        resetForm();
     }
     function executePreCondition() {
         if (!validateForm($("#medicineForm"))) {
@@ -106,6 +112,7 @@
     function resetForm(hide) {
         clearForm($("#medicineForm"), $('#typeId'));
         initObservable();
+        unitPrice.readonly(false);
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         if(hide) $("#medicineInfoRow").hide();
     }
@@ -129,6 +136,7 @@
                         typeId: { type: "number" },
                         type: { type: "string" },
                         genericName: { type: "string" },
+                        brandName: { type: "string" },
                         strength: { type: "string" },
                         unitType: { type: "string" },
                         unitPrice: { type: "number" }
@@ -164,6 +172,7 @@
             columns: [
                 {field: "type", title: "Type", width: 50, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "genericName", title: "Generic Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "brandName", title: "Brand Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "strength", title: "Strength", width: 40, sortable: false, filterable: false},
                 {field: "unitType", title: "Unit Type", width: 40, sortable: false, filterable: false},
                 {field: "unitPrice", title: "Unit Price", width: 40, sortable: false, filterable: false}
@@ -179,18 +188,19 @@
 
     function initObservable() {
         medicineInfoModel = kendo.observable(
-                {
-                    medicineInfo: {
-                        id: "",
-                        version: "",
-                        typeId: "",
-                        type: "",
-                        genericName: "",
-                        strength: "",
-                        unitType: "",
-                        unitPrice: ""
-                    }
+            {
+                medicineInfo: {
+                    id: "",
+                    version: "",
+                    typeId: "",
+                    type: "",
+                    genericName: "",
+                    brandName: "",
+                    strength: "",
+                    unitType: "",
+                    unitPrice: ""
                 }
+            }
         );
         kendo.bind($("#application_top_panel"), medicineInfoModel);
     }
@@ -209,13 +219,7 @@
             return;
         }
         $("#medicineInfoRow").show();
-        $('#unitPrice').kendoNumericTextBox({
-            min: 0,
-            step:1,
-            max: 999999999999.99,
-            format: "#.##"
-
-        });
+        unitPrice.readonly();
         var medicineInfo = getSelectedObjectFromGridKendo(gridMedicine);
         showSecRole(medicineInfo);
     }
@@ -223,6 +227,17 @@
     function showSecRole(medicineInfo) {
         medicineInfoModel.set('medicineInfo', medicineInfo);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    function navigatePriceForm(){
+        if (executeCommonPreConditionForSelectKendo(gridMedicine, 'medicine') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var medicineId = getSelectedIdFromGridKendo(gridMedicine);
+        var loc = "${createLink(controller: 'medicinePrice', action: 'show')}?medicineId=" + medicineId;
+        router.navigate(formatLink(loc));
+        return false;
     }
 
 </script>

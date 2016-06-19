@@ -707,7 +707,8 @@
         //$('#btnDiseaseInfo').show();
         $('#divDiseaseGroup').show();
         $('#divDiseaseDetails').show();
-        initDiseaseInfoGrid();
+        var url = "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId=" ;
+        populateGridKendo(gridDiseaseDetails,url);
     }
 
 </script>

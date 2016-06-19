@@ -82,11 +82,11 @@ class UpdateMedicineInfoActionService extends BaseService implements ActionServi
 
     private static MedicineInfo buildObject(Map parameterMap, MedicineInfo oldMedicineInfo) {
         MedicineInfo medicineInfo = new MedicineInfo(parameterMap)
+        oldMedicineInfo.brandName = medicineInfo.brandName
         oldMedicineInfo.genericName = medicineInfo.genericName
         oldMedicineInfo.type = Long.parseLong(parameterMap.typeId)
         oldMedicineInfo.strength = medicineInfo.strength
         oldMedicineInfo.unitType = medicineInfo.unitType
-        oldMedicineInfo.unitPrice = medicineInfo.unitPrice
         return oldMedicineInfo
     }
 }

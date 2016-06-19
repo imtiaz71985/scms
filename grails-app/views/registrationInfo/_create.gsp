@@ -20,7 +20,6 @@
                                 <div class="col-md-6">
                                     <input type="text" readonly="true" class="form-control" id="regNo" name="regNo"
                                            required validationMessage="Required"
-                                           tabindex="2"
                                            data-bind="value: registrationInfo.regNo"/>
                                 </div>
 
@@ -35,7 +34,7 @@
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="patientName" name="patientName"
                                            placeholder="Patient Name" required="true" validationMessage="Required"
-                                           tabindex="2"
+                                           tabindex="1"
                                            data-bind="value: registrationInfo.patientName"/>
                                 </div>
 
@@ -66,7 +65,7 @@
                                 <div class="col-md-6">
                                     <app:dateControl name="dateOfBirth"
                                                      required="true" validationMessage="Required"
-                                                     tabindex="2" class="form-control"
+                                                     tabindex="3" class="form-control"
                                                      data-bind="value: registrationInfo.dateOfBirth">
                                     </app:dateControl>
                                 </div>
@@ -82,7 +81,7 @@
                                 <div class="col-md-6">
                                     <app:dropDownSystemEntity
                                             data_model_name="dropDownSex"
-                                            id="sexId" name="sexId" tabindex="1"
+                                            id="sexId" name="sexId" tabindex="4"
                                             class="kendo-drop-down" type="Sex"
                                             data-bind="value: registrationInfo.sexId"
                                             required="true" validationmessage="Required">
@@ -101,7 +100,7 @@
                                 <div class="col-md-6">
                                     <app:dropDownSystemEntity
                                             data_model_name="dropDownMaritalStatus"
-                                            id="maritalStatusId" name="maritalStatusId" tabindex="1"
+                                            id="maritalStatusId" name="maritalStatusId" tabindex="5"
                                             class="kendo-drop-down" type="Marital Status"
                                             data-bind="value: registrationInfo.maritalStatusId"
                                             required="true" validationmessage="Required">
@@ -132,7 +131,7 @@
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="mobileNo" name="mobileNo"
                                            placeholder="Mobile no" required validationMessage="Required"
-                                           tabindex="2" onKeyPress="return allowOnlyNumeric(event)"
+                                           tabindex="6" onKeyPress="return allowOnlyNumeric(event)"
                                            data-bind="value: registrationInfo.mobileNo"/>
                                 </div>
 
@@ -151,7 +150,7 @@
                                             url="${createLink(controller: 'registrationInfo', action: 'reloadDropDown')}"
                                             onchange="javascript:populateAddress();"
                                             data-bind="value: registrationInfo.village"
-                                            placeholder="Write/Select one..."
+                                            placeholder="Write/Select one..." tabindex="7"
                                             class="kendo-drop-down" type="Village"
                                             id="village" name="village">
                                     </app:dropDownVillage>
@@ -170,7 +169,7 @@
                                     <div class="col-md-6">
                                         <app:dropDownDistrict
                                                 data_model_name="dropDownDistrict"
-                                                id="districtId" name="districtId" tabindex="1"
+                                                id="districtId" name="districtId" tabindex="8"
                                                 class="kendo-drop-down" type="District"
                                                 onchange="javascript:populateUpazilaList();"
                                                 data-bind="value: registrationInfo.districtId">
@@ -189,7 +188,7 @@
                                     <div class="col-md-6">
                                         <select id="upazilaId"
                                                 name="upazilaId"
-                                                tabindex="5"
+                                                tabindex="9"
                                                 onchange="javascript:populateUnionList();"
                                                 data-bind="value: registrationInfo.upazilaId"
                                                 class="kendo-drop-down">
@@ -207,7 +206,7 @@
                                     <div class="col-md-6">
                                         <select id="unionId"
                                                 name="unionId"
-                                                tabindex="5"
+                                                tabindex="10"
                                                 data-bind="value: registrationInfo.unionId"
                                                 class="kendo-drop-down">
                                         </select>
@@ -223,7 +222,7 @@
                                 <label class="col-md-2 control-label label-required">Address :</label>
 
                                 <div class="col-md-6">
-                                    <textarea readonly="true" id="addressDetails" style="width:100%"></textarea>
+                                    <textarea readonly="true" id="addressDetails" style="width:100%" tabindex="11"></textarea>
                                 </div>
                             </div>
 
@@ -235,11 +234,11 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="4"
+                            role="button" tabindex="12"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="5"
+                            class="k-button k-button-icontext" role="button" tabindex="13"
                             aria-disabled="false" onclick='resetForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

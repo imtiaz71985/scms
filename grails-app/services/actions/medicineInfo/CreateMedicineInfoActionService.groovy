@@ -2,6 +2,7 @@ package actions.medicineInfo
 
 import com.model.ListMedicineInfoActionServiceModel
 import com.scms.MedicineInfo
+import com.scms.MedicinePrice
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -43,6 +44,14 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
         try {
             MedicineInfo medicineInfo = (MedicineInfo) result.get(MEDICINE_INFO)
             medicineInfo.save()
+
+            MedicinePrice medicinePrice = new MedicinePrice()
+            medicinePrice.medicineId = medicineInfo.id
+            medicinePrice.price = medicineInfo.unitPrice
+            medicinePrice.isActive = Boolean.TRUE
+            medicinePrice.start = new Date()
+            medicinePrice.save()
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
