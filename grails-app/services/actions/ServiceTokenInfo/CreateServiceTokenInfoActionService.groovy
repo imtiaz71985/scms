@@ -101,13 +101,18 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
      * @return -new systemEntity object
      /*    */
     private ServiceTokenInfo buildObject(Map parameterMap) {
+        int count = ServiceTokenInfo.countByRegNo(parameterMap.regNo)
         ServiceTokenInfo serviceTokenInfo = new ServiceTokenInfo()
         serviceTokenInfo.serviceTokenNo=parameterMap.serviceTokenNo
         serviceTokenInfo.regNo=parameterMap.regNo
         serviceTokenInfo.referToId=Long.parseLong(parameterMap.referToId)
         serviceTokenInfo.serviceDate=DateUtility.getSqlDate(new Date())
         serviceTokenInfo.createBy= springSecurityService.principal.id
-        serviceTokenInfo.visitTypeId=1
+        if(count>0){
+            serviceTokenInfo.visitTypeId=2L // re-visit
+        }else{
+            serviceTokenInfo.visitTypeId=1L
+        }
         serviceTokenInfo.isExit =false
         try {
             if (Long.parseLong(parameterMap.serviceTypeId)>2)

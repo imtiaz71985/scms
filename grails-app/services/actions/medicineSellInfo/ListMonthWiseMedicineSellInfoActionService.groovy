@@ -74,14 +74,24 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
                          FROM token_and_charge_mapping tcm3
                         LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                         WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                        GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_amount
+                        GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_amount,
+
+                COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
+                    WHERE ri.create_date = c.date_field GROUP BY ri.create_date ),0) AS new_patient,
+
+                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
+                    WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_revisit,
+
+                (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
+                WHERE ri.create_date = c.date_field GROUP BY ri.create_date ),0)+
+                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
+                WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)) AS total_patient
 
                 FROM calendar c
                 LEFT JOIN registration_info ri ON ri.create_date = c.date_field
                 LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
             WHERE c.date_field BETWEEN :fromDate AND :toDate
-            GROUP BY c.date_field
-            LIMIT :resultPerPage OFFSET :start;
+            GROUP BY c.date_field;;
         """
 
         String queryCount = """
@@ -92,9 +102,7 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
 
         Map queryParams = [
                 fromDate      : fromDate,
-                toDate        : toDate,
-                resultPerPage : resultPerPage,
-                start         : start
+                toDate        : toDate
         ]
 
         List<GroovyRowResult> rowResults = executeSelectSql(queryStr, queryParams)

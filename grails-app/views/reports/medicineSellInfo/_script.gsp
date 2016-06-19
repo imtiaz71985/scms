@@ -96,7 +96,10 @@
                         medicine_sales: {type: "number"},
                         date_field: {type: "date"},
                         is_holiday: {type: "boolean"},
-                        holiday_status: {type: "string"}
+                        holiday_status: {type: "string"},
+                        new_patient: {type: "number"},
+                        patient_revisit: {type: "number"},
+                        total_patient: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -111,10 +114,13 @@
                 {field: "consultation_amount", aggregate: "sum" },
                 {field: "subsidy_amount", aggregate: "sum" },
                 {field: "pathology_amount", aggregate: "sum" },
-                {field: "medicine_sales", aggregate: "sum" }
+                {field: "medicine_sales", aggregate: "sum" },
+                {field: "new_patient", aggregate: "sum" },
+                {field: "patient_revisit", aggregate: "sum" },
+                {field: "total_patient", aggregate: "sum" }
             ],
             sort: [{field: 'date_field', dir: 'asc'}],
-            pageSize: getDefaultPageSize(),
+            pageSize: false,
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -132,21 +138,12 @@
             resizable: true,
             dataBound: dataBoundGrid,
             reorderable: true,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4,
-                messages: {
-                    display: "{0} - {1} of {2} records",
-                    empty: "No records to display",
-                    itemsPerPage: "records(s) per page"
-                }
-            },
+            pageable: false,
             columns: [
                 {
                     field: "date_field",
                     title: "Date",
-                    width: 100,
+                    width: 80,
                     sortable: false,
                     filterable: false,
                     headerAttributes: {style: setAlignCenter()},
@@ -155,55 +152,93 @@
                     template: "#=kendo.toString(kendo.parseDate(date_field, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
                     footerTemplate: "Total : "
                 },
-                {
-                    field: "registration_amount",
-                    title: "Membership Charge",
-                    width: 80,sortable: false,filterable: false,
-                    headerAttributes: {style: setAlignRight()},
-                    footerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?'':formatAmount(registration_amount)#",
-                    footerTemplate: "#=formatAmount(sum)#"
+                {title: "Patient",headerAttributes:{style:setAlignCenter()},
+                    columns: [
+                        {
+                            field: "new_patient",
+                            title: "New",
+                            width: 30,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=new_patient#",
+                            footerTemplate: "#=sum#"
+                        },
+                        {
+                            field: "patient_revisit",
+                            title: "Re-visit",
+                            width: 40,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=patient_revisit#",
+                            footerTemplate: "#=sum#"
+                        },
+                        {
+                            field: "total_patient",
+                            title: "Total",
+                            width: 40,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=total_patient#",
+                            footerTemplate: "#=sum#"
+                        }
+                    ]
                 },
-                {
-                    field: "re_registration_amount",
-                    title: "Card Re-issue Charge",
-                    width: 80,sortable: false,filterable: false,
-                    headerAttributes: {style: setAlignRight()},
-                    footerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?'':formatAmount(re_registration_amount)#",
-                    footerTemplate: "#=formatAmount(sum)#"
-                },
-                {
-                    field: "consultation_amount",
-                    title: "Consultation Fee",
-                    width: 80,sortable: false,filterable: false,
-                    headerAttributes: {style: setAlignRight()},
-                    footerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?'':formatAmount(consultation_amount)#",
-                    footerTemplate: "#=formatAmount(sum)#"
-                },
-                {
-                    field: "subsidy_amount",
-                    title: "Subsidy Amount",
-                    width: 80,sortable: false,filterable: false,
-                    headerAttributes: {style: setAlignRight()},
-                    footerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?'':formatAmount(subsidy_amount)#",
-                    footerTemplate: "#=formatAmount(sum)#"
-                },
-                {
-                    field: "pathology_amount",
-                    title: "Diagnostic Charge",
-                    width: 80,sortable: false,filterable: false,
-                    headerAttributes: {style: setAlignRight()},
-                    footerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?'':formatAmount(pathology_amount)#",
-                    footerTemplate: "#=formatAmount(sum)#"
+                {title: "Charges",headerAttributes:{style:setAlignCenter()},
+                    columns: [
+                        {
+                            field: "registration_amount",
+                            title: "Membership",
+                            width: 80,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=is_holiday?'':formatAmount(registration_amount)#",
+                            footerTemplate: "#=formatAmount(sum)#"
+                        },
+                        {
+                            field: "re_registration_amount",
+                            title: "Card Re-issue",
+                            width: 80,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=is_holiday?'':formatAmount(re_registration_amount)#",
+                            footerTemplate: "#=formatAmount(sum)#"
+                        },
+                        {
+                            field: "consultation_amount",
+                            title: "Consultation",
+                            width: 80,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=is_holiday?'':formatAmount(consultation_amount)#",
+                            footerTemplate: "#=formatAmount(sum)#"
+                        },
+                        {
+                            field: "subsidy_amount",
+                            title: "Subsidy",
+                            width: 80,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=is_holiday?'':formatAmount(subsidy_amount)#",
+                            footerTemplate: "#=formatAmount(sum)#"
+                        },
+                        {
+                            field: "pathology_amount",
+                            title: "Diagnostic",
+                            width: 80,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=is_holiday?'':formatAmount(pathology_amount)#",
+                            footerTemplate: "#=formatAmount(sum)#"
+                        }
+                    ]
                 },
                 {
                     field: "medicine_sales",
@@ -216,9 +251,7 @@
                     footerTemplate: "#=formatAmount(sum)#"
                 }
             ],
-            filterable: {
-                mode: "row"
-            },
+            filterable: false,
             toolbar: kendo.template($("#gridToolbar").html())
         });
         gridSellReportInfo = $("#gridSellReportInfo").data("kendoGrid");

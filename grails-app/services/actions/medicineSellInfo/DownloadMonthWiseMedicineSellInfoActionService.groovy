@@ -24,7 +24,7 @@ class DownloadMonthWiseMedicineSellInfoActionService extends BaseService impleme
     private static final String JASPER_FILE = 'monthWiseMedicineSellReport'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = 'Monthly Report'
-    private static final String OUTPUT_FILE_NAME = "medicine_sale_report"
+    private static final String OUTPUT_FILE_NAME = "monthly_report"
     private static final String FROM_DATE = "fromDate"
     private static final String TO_DATE = "toDate"
     private static final String MONTH_NAME = "monthName"
