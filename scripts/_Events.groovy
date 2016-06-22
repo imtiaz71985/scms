@@ -1,6 +1,5 @@
-
 eventCreateWarStart = { warName, stagingDir ->
-    if (grailsEnv == "xproduction") {
+    if (grailsEnv == "production") {
         def sharedLibsDir = "${grailsSettings.projectWorkDir}/sharedLibs"
 
         ant.mkdir dir: sharedLibsDir
