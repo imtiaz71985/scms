@@ -18,7 +18,7 @@ class ServiceHeadInfoService extends  BaseService {
             SELECT sc.id AS chargeId FROM service_head_info sh LEFT JOIN service_charges sc ON  sh.service_code=sc.service_code
                 WHERE sh.service_type_id=${typeId} AND sh.is_active=TRUE AND sc.activation_date<=CURRENT_DATE
             AND CURRENT_DATE BETWEEN sc.activation_date AND  COALESCE(sc.last_active_date,CURRENT_DATE)
-                GROUP BY sc.service_code
+                GROUP BY sc.service_code ORDER BY sc.id desc
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         long chargeId=(long)result[0].chargeId
