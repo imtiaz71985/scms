@@ -94,6 +94,7 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
         sellInfo.voucherNo = params.voucherNo
         sellInfo.hospitalCode = hospital_code
         sellInfo.sellDate = DateUtility.getSqlDate(new Date())
+        sellInfo.sellDateExt = DateUtility.getSqlFromDateWithSeconds(new Date())
         sellInfo.sellBy = springSecurityService.principal.id
         return sellInfo
     }
