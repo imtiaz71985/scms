@@ -1,6 +1,5 @@
 package actions.serviceHeadInfo
 
-import com.model.ListServiceHeadInfoActionServiceModel
 import com.scms.ServiceCharges
 import com.scms.ServiceHeadInfo
 import grails.plugin.springsecurity.SpringSecurityService
@@ -71,9 +70,9 @@ class CreateServiceHeadInfoActionService extends BaseService implements ActionSe
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        ServiceHeadInfo serviceHeadInfo = (ServiceHeadInfo) result.get(SERVICE_HEAD_INFO)
+        /*ServiceHeadInfo serviceHeadInfo = (ServiceHeadInfo) result.get(SERVICE_HEAD_INFO)
         ListServiceHeadInfoActionServiceModel model = ListServiceHeadInfoActionServiceModel.findByServiceCode(serviceHeadInfo.serviceCode)
-        result.put(SERVICE_HEAD_INFO, model)
+        result.put(SERVICE_HEAD_INFO, model)*/
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
 

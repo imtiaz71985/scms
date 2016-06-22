@@ -2,7 +2,7 @@ package scms
 
 import actions.ServiceTokenInfo.CreateServiceTokenInfoActionService
 import actions.ServiceTokenInfo.UpdateServiceTokenInfoActionService
-import actions.registrationInfo.ListRegistrationInfoActionService
+import com.scms.DiseaseInfo
 import com.scms.SecUser
 import com.scms.ServiceTokenInfo
 import grails.converters.JSON
@@ -10,6 +10,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
+import service.ServiceHeadInfoService
 import service.ServiceTokenRelatedInfoService
 
 import java.text.SimpleDateFormat
@@ -23,6 +24,7 @@ class CounselorActionController extends BaseController {
     CreateServiceTokenInfoActionService createServiceTokenInfoActionService
     UpdateServiceTokenInfoActionService updateServiceTokenInfoActionService
     ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
+    ServiceHeadInfoService serviceHeadInfoService
 
 
     def show() {
@@ -46,6 +48,40 @@ class CounselorActionController extends BaseController {
         result.put('count', lst.size())
         render result as JSON
        // renderOutput(listServiceTokenInfoActionService, params)
+    }
+    def diseaseListByGroup() {
+        long diseaseGroupId=0
+        try{
+            if(params.diseaseGroupId){
+                diseaseGroupId=Long.parseLong(params.diseaseGroupId)
+            }
+        }
+        catch (Exception e){}
+
+        List<GroovyRowResult> lst
+        if(diseaseGroupId>0) {
+            lst = DiseaseInfo.findAllByDiseaseGroupIdAndIsActive(diseaseGroupId,true)
+        }
+        else {
+            lst=DiseaseInfo.findAllByIsActive(true)
+        }
+
+        Map result=new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
+    def serviceHeadInfoListByType() {
+        long serviceTypeId=0
+        try{
+            serviceTypeId=Long.parseLong(params.serviceTypeId)
+        }catch (Exception ex){}
+        List<GroovyRowResult> lst=serviceHeadInfoService.serviceHeadInfoByType(serviceTypeId)
+
+        Map result=new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
     }
 
     def createServiceTokenNo() {

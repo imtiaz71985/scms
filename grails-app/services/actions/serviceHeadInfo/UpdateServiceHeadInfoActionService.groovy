@@ -1,6 +1,5 @@
 package actions.serviceHeadInfo
 
-import com.model.ListServiceHeadInfoActionServiceModel
 import com.scms.ServiceCharges
 import com.scms.ServiceHeadInfo
 import grails.plugin.springsecurity.SpringSecurityService
@@ -48,23 +47,38 @@ class UpdateServiceHeadInfoActionService extends BaseService implements ActionSe
 
             Date d=DateUtility.parseMaskedDate(result.activationDate)
             d=d.minus(1)
-           /* Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -1);
-            serviceCharges.lastActiveDate = DateUtility.getSqlDate(cal.getTime())*/
-            serviceCharges.lastActiveDate=DateUtility.getSqlDate(d)
-            serviceCharges.save()
+            boolean newEntry=true
+           if(serviceCharges!=null) {
+               if(serviceCharges.activationDate>DateUtility.getSqlFromDateWithSeconds(new Date())) {
+                   serviceCharges.chargeAmount = Double.parseDouble(result.chargeAmount)
+                   serviceCharges.activationDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
+                   serviceCharges.createDate = DateUtility.getSqlDate(new Date())
+                   serviceCharges.createdBy = springSecurityService.principal.id
+                   newEntry=false
+               }
+               else {
+                   serviceCharges.lastActiveDate = DateUtility.getSqlDate(d)
+               }
+               serviceCharges.save()
+               if(!newEntry) {
+                   ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateGreaterThan(serviceHeadInfo.serviceCode,DateUtility.getSqlFromDateWithSeconds(d))
+                   if(!serviceCharges3){
+                       serviceCharges.lastActiveDate = DateUtility.getSqlDate(d)
+                       serviceCharges.save();
+                   }
+               }
+           }
 
-            ServiceCharges serviceCharges2 = new ServiceCharges()
-            serviceCharges2.serviceCode = serviceHeadInfo.serviceCode
-            serviceCharges2.chargeAmount = Double.parseDouble(result.chargeAmount)
-            serviceCharges2.activationDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
-            serviceCharges2.createDate = DateUtility.getSqlDate(new Date())
-            serviceCharges2.createdBy = springSecurityService.principal.id
-            serviceCharges2.save()
+            if(serviceHeadInfo.isActive && newEntry) {
+                ServiceCharges serviceCharges2 = new ServiceCharges()
+                serviceCharges2.serviceCode = serviceHeadInfo.serviceCode
+                serviceCharges2.chargeAmount = Double.parseDouble(result.chargeAmount)
+                serviceCharges2.activationDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
+                serviceCharges2.createDate = DateUtility.getSqlDate(new Date())
+                serviceCharges2.createdBy = springSecurityService.principal.id
+                serviceCharges2.save()
+            }
 
-            /*Map resultMap = super.getSearchResult(result, ListServiceHeadInfoActionServiceModel.class)
-            result.put(LIST, resultMap.list)
-            result.put(COUNT, resultMap.count)*/
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -77,9 +91,9 @@ class UpdateServiceHeadInfoActionService extends BaseService implements ActionSe
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        ServiceHeadInfo serviceHeadInfo = (ServiceHeadInfo) result.get(SERVICE_HEAD_INFO)
+        /*ServiceHeadInfo serviceHeadInfo = (ServiceHeadInfo) result.get(SERVICE_HEAD_INFO)
         ListServiceHeadInfoActionServiceModel model = ListServiceHeadInfoActionServiceModel.findByServiceCode(serviceHeadInfo.serviceCode)
-        result.put(SERVICE_HEAD_INFO, model)
+        result.put(SERVICE_HEAD_INFO, model)*/
         return super.setSuccess(result, UPDATE_SUCCESS_MESSAGE)
     }
 

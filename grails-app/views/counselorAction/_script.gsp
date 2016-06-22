@@ -401,7 +401,7 @@
         $('#divServiceDetails').show();
         var serviceTypeId = $('#serviceTypeId').val();
         resetBasicData();
-        var url = "${createLink(controller: 'serviceHeadInfo', action: 'list')}?serviceTypeId=" + serviceTypeId;
+        var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
         populateGridKendo(gridServiceHeadInfo,url);
     }
 
@@ -520,7 +520,7 @@
             $('#divPathology').show();
             var serviceTypeId = 3;
             resetBasicData();
-            var url = "${createLink(controller: 'serviceHeadInfo', action: 'list')}?serviceTypeId=" + serviceTypeId;
+            var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
             populateGridKendo(gridServiceHeadInfo,url);
         }
         else {
@@ -541,7 +541,7 @@
         $('#divDiseaseDetails').show();
         resetBasicData();
         var diseaseGroupId = $('#diseaseGroupId').val();
-        var url = "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId=" + diseaseGroupId;
+        var url = "${createLink(controller: 'counselorAction', action: 'diseaseListByGroup')}?diseaseGroupId=" + diseaseGroupId;
         populateGridKendo(gridDiseaseDetails,url);
     }
 
@@ -707,7 +707,7 @@
         //$('#btnDiseaseInfo').show();
         $('#divDiseaseGroup').show();
         $('#divDiseaseDetails').show();
-        var url = "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId=" ;
+        var url = "${createLink(controller: 'counselorAction', action: 'diseaseListByGroup')}?diseaseGroupId=" ;
         populateGridKendo(gridDiseaseDetails,url);
     }
 

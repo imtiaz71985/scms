@@ -9,7 +9,9 @@ import com.scms.SecUser
 import com.scms.ServiceHeadInfo
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
+import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
+import service.ServiceHeadInfoService
 
 import java.text.SimpleDateFormat
 
@@ -23,7 +25,7 @@ class ServiceHeadInfoController extends BaseController{
     CreateServiceHeadInfoActionService createServiceHeadInfoActionService
     UpdateServiceHeadInfoActionService updateServiceHeadInfoActionService
     DeleteServiceHeadInfoActionService deleteServiceHeadInfoActionService
-    ListServiceHeadInfoActionService listServiceHeadInfoActionService
+    ServiceHeadInfoService serviceHeadInfoService
 
     def show() {
         render(view: "/serviceHeadInfo/show")
@@ -41,7 +43,13 @@ class ServiceHeadInfoController extends BaseController{
 
     }
     def list() {
-        renderOutput(listServiceHeadInfoActionService, params)
+        List<GroovyRowResult> lst=serviceHeadInfoService.serviceHeadInfoList()
+
+        Map result=new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+        //renderOutput(listServiceHeadInfoActionService, params)
     }
     def retrieveServiceCode() {
         long serviceTypeId = Long.parseLong(params.serviceTypeId.toString())

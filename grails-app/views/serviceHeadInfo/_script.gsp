@@ -87,7 +87,7 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.serviceHeadInfo;
+                /*var newEntry = result.serviceHeadInfo;
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
                     var gridData = gridServiceHeadInfo.dataSource.data();
                     gridData.unshift(newEntry);
@@ -97,8 +97,9 @@
                     var selectedIndex = allItems.index(selectedRow);
                     gridServiceHeadInfo.removeRow(selectedRow);
                     gridServiceHeadInfo.dataSource.insert(selectedIndex, newEntry);
-                }
+                }*/
                 //initServiceHeadInfoGrid();
+                $("#gridServiceHeadInfo").data("kendoGrid").dataSource.read();
                 resetForm();
                 showSuccess(result.message);
             } catch (e) {
@@ -109,6 +110,7 @@
 
     function resetForm() {
         clearForm($("#serviceHeadInfoForm"), $('#name'));
+        $('#isActive').attr("disabled",true);
         dropDownServiceType.enable(true);
         initObservable();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
@@ -261,7 +263,11 @@
         dropDownServiceType.enable(false);
         $("#serviceHeadInfoRow").show();
         var serviceHeadInfo = getSelectedObjectFromGridKendo(gridServiceHeadInfo);
+
         showRecord(serviceHeadInfo);
+        if(!serviceHeadInfo.isActive){
+            $('#isActive').attr("disabled",false);
+        }
     }
 
     function showRecord(serviceHeadInfo) {
@@ -301,13 +307,7 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.serviceHeadInfo;
-                var selectedRow = gridServiceHeadInfo.select();
-                var allItems = gridServiceHeadInfo.items();
-                var selectedIndex = allItems.index(selectedRow);
-                gridServiceHeadInfo.removeRow(selectedRow);
-                gridServiceHeadInfo.dataSource.insert(selectedIndex, newEntry);
-                resetForm();
+                $("#gridServiceHeadInfo").data("kendoGrid").dataSource.read();
                 showSuccess(result.message);
             } catch (e) {
                 // Do Nothing

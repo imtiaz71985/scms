@@ -67,7 +67,7 @@
                                    for="isActive">Is Active:</label>
 
                             <div class="col-md-3">
-                                <g:checkBox class="form-control-static" name="isActive" tabindex="2"
+                                <g:checkBox class="form-control-static" id="isActive" name="isActive" tabindex="2" disabled="true"
                                             data-bind="checked: serviceHeadInfo.isActive"/>
                             </div>
                         </div>

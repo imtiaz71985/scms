@@ -1,6 +1,5 @@
 package actions.serviceHeadInfo
 
-import com.model.ListServiceHeadInfoActionServiceModel
 import com.scms.ServiceHeadInfo
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
@@ -54,9 +53,9 @@ class DeleteServiceHeadInfoActionService  extends BaseService implements ActionS
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        ServiceHeadInfo serviceHeadInfo = (ServiceHeadInfo) result.get(SERVICE_HEAD_INFO)
+       /* ServiceHeadInfo serviceHeadInfo = (ServiceHeadInfo) result.get(SERVICE_HEAD_INFO)
         ListServiceHeadInfoActionServiceModel model = ListServiceHeadInfoActionServiceModel.findByServiceCode(serviceHeadInfo.serviceCode)
-        result.put(SERVICE_HEAD_INFO, model)
+        result.put(SERVICE_HEAD_INFO, model)*/
         return super.setSuccess(result, DELETE_SUCCESS_MESSAGE)
     }
 
