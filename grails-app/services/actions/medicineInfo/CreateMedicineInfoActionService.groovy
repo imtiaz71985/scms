@@ -89,7 +89,9 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
     private MedicineInfo buildObject(Map parameterMap) {
         MedicineInfo medicineInfo = new MedicineInfo(parameterMap)
         medicineInfo.unitPrice = Double.parseDouble(parameterMap.unitPrice)
+        medicineInfo.mrpPrice = Double.parseDouble(parameterMap.mrpPrice)
         medicineInfo.type = Double.parseDouble(parameterMap.typeId)
+        medicineInfo.vendorId = Long.parseLong(parameterMap.vendorId)
         return medicineInfo
     }
 }

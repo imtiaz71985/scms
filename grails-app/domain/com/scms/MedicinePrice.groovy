@@ -6,6 +6,7 @@ class MedicinePrice {
     long version
     long medicineId
     double price
+    double mrpPrice
     Date start
     Date end
     boolean isActive

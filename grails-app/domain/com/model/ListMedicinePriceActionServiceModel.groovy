@@ -7,7 +7,7 @@ class ListMedicinePriceActionServiceModel {
                 CREATE OR REPLACE VIEW list_medicine_price_action_service_model AS
 
                       SELECT mp.id, mp.version,mp.start,mp.end,mp.medicine_id,
-                      mi.generic_name,mi.brand_name,mi.strength,mp.price,mp.is_active
+                      mi.generic_name,mi.brand_name,mi.strength,mp.price,mp.mrp_price,mp.is_active
                             FROM medicine_price mp
                             LEFT JOIN medicine_info mi ON mp.medicine_id=mi.id
                       ORDER BY mp.start DESC,mp.medicine_id;
@@ -22,6 +22,7 @@ class ListMedicinePriceActionServiceModel {
     String brandName
     String strength
     double price
+    double mrpPrice
     boolean isActive
 
     static mapping = {

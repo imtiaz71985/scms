@@ -1,5 +1,5 @@
 <script language="javascript">
-    var gridMedicinePrice, dataSource, medicineId, price,name;
+    var gridMedicinePrice, dataSource, medicineId, price,mrpPrice,name;
 
     $(document).ready(function () {
         onLoadMedicinePricePage();
@@ -19,6 +19,14 @@
 
         });
         price = $("#price").data("kendoNumericTextBox");
+        $('#mrpPrice').kendoNumericTextBox({
+            min: 0,
+            step:1,
+            max: 999999999999.99,
+            format: "#.##"
+
+        });
+        mrpPrice = $("#mrpPrice").data("kendoNumericTextBox");
 
         $("#start").kendoDateTimePicker({
             timeFormat: "HH:mm:ss",
@@ -86,6 +94,7 @@
         clearForm($("#medicinePriceForm"), $('#price'));
         $('#medicineId').val(medicineId);
         $('#name').val(name);
+        window.history.back();
     }
 
     function initDataSource() {
@@ -107,6 +116,7 @@
                         version: {type: "number"},
                         medicineId: {type: "number"},
                         price: {type: "number"},
+                        mrpPrice: {type: "number"},
                         isActive: {type: "boolean"},
                         start: {type: "date"},
                         end: {type: "date"}
@@ -143,6 +153,11 @@
                     field: "price",title: "Price", width: 50,
                     attributes: {style: setAlignRight()},headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(price)#",sortable: false,filterable: false
+                },
+                {
+                    field: "mrpPrice",title: "MRP Price", width: 50,
+                    attributes: {style: setAlignRight()},headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(mrpPrice)#",sortable: false,filterable: false
                 },
                 {
                     field: "start", title: "From Date", width: 100, sortable: false,filterable: false,

@@ -53,6 +53,7 @@ class CreateMedicinePriceActionService  extends BaseService implements ActionSer
             medicinePrice.save()
             MedicineInfo medicineInfo = MedicineInfo.read(medicinePrice.medicineId)
             medicineInfo.unitPrice = medicinePrice.price
+            medicineInfo.mrpPrice = medicinePrice.mrpPrice
             medicineInfo.save()
             return result
         } catch (Exception ex) {
@@ -92,6 +93,7 @@ class CreateMedicinePriceActionService  extends BaseService implements ActionSer
         parameterMap.start = retDate
         MedicinePrice medicinePrice = new MedicinePrice(parameterMap)
         medicinePrice.price = Double.parseDouble(parameterMap.price)
+        medicinePrice.mrpPrice = Double.parseDouble(parameterMap.mrpPrice)
         medicinePrice.isActive = Boolean.TRUE
         return medicinePrice
     }

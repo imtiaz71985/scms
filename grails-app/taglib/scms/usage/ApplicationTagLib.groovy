@@ -10,6 +10,7 @@ import taglib.GetDropDownServiceTokenNoTagLibActionService
 import taglib.GetDropDownServiceTypeTagLibActionService
 import taglib.GetDropDownSystemEntityTaglibActionService
 import taglib.GetDropDownSystemEntityTypeTaglibActionService
+import taglib.GetDropDownVendorTagLibActionService
 
 class ApplicationTagLib extends BaseTagLibExecutor {
 
@@ -24,6 +25,7 @@ class ApplicationTagLib extends BaseTagLibExecutor {
     GetDropDownRegistrationNoTagLibActionService getDropDownRegistrationNoTagLibActionService
     GetDropDownServiceTokenNoTagLibActionService getDropDownServiceTokenNoTagLibActionService
     GetDropDownHospitalTagLibActionService getDropDownHospitalTagLibActionService
+    GetDropDownVendorTagLibActionService getDropDownVendorTagLibActionService
 
     /**
      * Render html select of Department
@@ -97,6 +99,11 @@ class ApplicationTagLib extends BaseTagLibExecutor {
     def dropDownHospital = { attrs, body ->
         attrs.body = body
         super.executeTag(getDropDownHospitalTagLibActionService, attrs)
+        out << (String) attrs.html
+    }
+    def dropDownVendor = { attrs, body ->
+        attrs.body = body
+        super.executeTag(getDropDownVendorTagLibActionService, attrs)
         out << (String) attrs.html
     }
 
