@@ -190,10 +190,12 @@ class GetDropDownUserRoleTagLibActionService extends BaseService implements Acti
                             ${dataModelName}.destroy();
                      }
                         \$('#${name}').kendoDropDownList({
-                            dataTextField:'name',
-                            dataValueField:'id',
-                            dataSource:${jsonData},
-                            value:'${strDefaultValue}',
+                            dataTextField  :'name',
+                            dataValueField :'id',
+                            filter         : "contains",
+                            suggest        : true,
+                            dataSource     :${jsonData},
+                            value          :'${strDefaultValue}',
                             ${strOnChange}
                         });
                 });
