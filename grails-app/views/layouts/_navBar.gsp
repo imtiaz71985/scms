@@ -154,6 +154,7 @@
             </ul>
         </div>
         <!-- /.sidebar-collapse -->
-    </div>
+    <div class="copy-right"><b> &#9400; </b>&nbsp;Developed by<b> MIS </b>department.</div>
+</div>
     <!-- /.navbar-static-side -->
 </nav>

@@ -82,7 +82,7 @@ body {
 .sidebar .sidebar-nav.navbar-collapse {
     padding-right: 0;
     padding-left: 0;
-    height: 600px;
+    height: 585px;
     overflow-y: auto;
 }
 
@@ -352,5 +352,14 @@ table.dataTable thead .sorting:after {
 #dash-container {
     border-top: 1px solid #EEEEEE;
     margin: 10px 0 20px;
+}
+
+.copy-right {
+    padding-right: 0;
+    padding-left: 30px;
+    padding-bottom: 20px;
+    height: 20px;
+    color: gray;
+    overflow-y: auto;
 }
 
