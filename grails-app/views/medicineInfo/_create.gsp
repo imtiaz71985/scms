@@ -56,6 +56,23 @@
                                 <span class="k-invalid-msg" data-for="brandName"></span>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label label-required" for="vendorId">Vendor Name:</label>
+
+                            <div class="col-md-6">
+                                <app:dropDownVendor
+                                        data_model_name="dropDownVendor"
+                                        id="vendorId" name="vendorId" tabindex="4"
+                                        class="kendo-drop-down" type="Vendor Name"
+                                        data-bind="value: medicineInfo.vendorId"
+                                        required="true" validationmessage="Required">
+                                </app:dropDownVendor>
+                            </div>
+
+                            <div class="col-md-3 pull-left">
+                                <span class="k-invalid-msg" data-for="vendorId"></span>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -65,8 +82,21 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="unitPrice" name="unitPrice"
-                                       placeholder="Unit Price" required validationMessage="Required" tabindex="4"
+                                       placeholder="Unit Price" required validationMessage="Required" tabindex="5"
                                        data-bind="value: medicineInfo.unitPrice"/>
+                            </div>
+
+                            <div class="col-md-3 pull-left">
+                                <span class="k-invalid-msg" data-for="unitPrice"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label label-required" for="mrpPrice">MRP Price:</label>
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="mrpPrice" name="mrpPrice"
+                                       placeholder="MRP Price" required validationMessage="Required" tabindex="6"
+                                       data-bind="value: medicineInfo.mrpPrice"/>
                             </div>
 
                             <div class="col-md-3 pull-left">
@@ -78,7 +108,7 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="strength" name="strength"
-                                       placeholder="Strength" required validationMessage="Required" tabindex="5"
+                                       placeholder="Strength" required validationMessage="Required" tabindex="7"
                                        data-bind="value: medicineInfo.strength"/>
                             </div>
 
@@ -91,7 +121,7 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="unitType" name="unitType"
-                                       placeholder="Unit Type" required validationMessage="Required" tabindex="6"
+                                       placeholder="Unit Type" required validationMessage="Required" tabindex="8"
                                        data-bind="value: medicineInfo.unitType"/>
                             </div>
 
@@ -106,12 +136,12 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="7"
+                            role="button" tabindex="9"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="8"
+                            class="k-button k-button-icontext" role="button" tabindex="10"
                             aria-disabled="false" onclick='resetForm("hide");'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>
