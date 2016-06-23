@@ -16,7 +16,7 @@
 </script>
 
 <script language="javascript">
-    var gridMedicine, dataSource, medicineInfoModel,unitPrice,mrpPrice,dropDownType,dropDownVendor;
+    var gridMedicine, dataSource, medicineInfoModel, unitPrice, mrpPrice, dropDownType, dropDownVendor;
 
     $(document).ready(function () {
         onLoadMedicineInfoPage();
@@ -27,7 +27,7 @@
     function onLoadMedicineInfoPage() {
         $('#unitPrice').kendoNumericTextBox({
             min: 0,
-            step:1,
+            step: 1,
             max: 999999999999.99,
             format: "#.##"
 
@@ -35,7 +35,7 @@
         unitPrice = $("#unitPrice").data("kendoNumericTextBox");
         $('#mrpPrice').kendoNumericTextBox({
             min: 0,
-            step:1,
+            step: 1,
             max: 999999999999.99,
             format: "#.##"
 
@@ -46,7 +46,7 @@
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#medicineForm"), onSubmitMedicineInfoRole);
         // update page title
-        defaultPageTile("Create medicine",null);
+        defaultPageTile("Create medicine", null);
     }
 
     function showForm() {
@@ -123,7 +123,7 @@
         unitPrice.readonly(false);
         mrpPrice.readonly(false);
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
-        if(hide) $("#medicineInfoRow").hide();
+        if (hide) $("#medicineInfoRow").hide();
     }
 
     function initDataSource() {
@@ -140,17 +140,17 @@
                 data: "list", total: "count",
                 model: {
                     fields: {
-                        id: { type: "number" },
-                        version: { type: "number" },
-                        typeId: { type: "number" },
-                        vendorId: { type: "number" },
-                        type: { type: "string" },
-                        genericName: { type: "string" },
-                        brandName: { type: "string" },
-                        strength: { type: "string" },
-                        unitType: { type: "string" },
-                        unitPrice: { type: "number" },
-                        mrpPrice: { type: "number" }
+                        id: {type: "number"},
+                        version: {type: "number"},
+                        typeId: {type: "number"},
+                        vendorId: {type: "number"},
+                        type: {type: "string"},
+                        genericName: {type: "string"},
+                        brandName: {type: "string"},
+                        strength: {type: "string"},
+                        unitType: {type: "string"},
+                        unitPrice: {type: "number"},
+                        mrpPrice: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -182,11 +182,37 @@
             },
             columns: [
                 {field: "type", title: "Type", width: 50, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "genericName", title: "Generic Name", width: 70, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "brandName", title: "Brand Name", width: 70, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "vendorName", title: "Vendor Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "unitPrice", title: "Unit Price", width: 40, sortable: false, filterable: false},
-                {field: "mrpPrice", title: "MRP Price", width: 40, sortable: false, filterable: false},
+                {
+                    field: "genericName",
+                    title: "Generic Name",
+                    width: 70,
+                    sortable: false,
+                    filterable: kendoCommonFilterable(97)
+                },
+                {
+                    field: "brandName",
+                    title: "Brand Name",
+                    width: 70,
+                    sortable: false,
+                    filterable: kendoCommonFilterable(97)
+                },
+                {
+                    field: "vendorName",
+                    title: "Vendor Name",
+                    width: 100,
+                    sortable: false,
+                    filterable: kendoCommonFilterable(97)
+                },
+                {
+                    field: "unitPrice", title: "Unit Price", width: 40, sortable: false, filterable: false,
+                    attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(unitPrice)#"
+                },
+                {
+                    field: "mrpPrice", title: "MRP Price", width: 40, sortable: false, filterable: false,
+                    attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(mrpPrice)#"
+                },
                 {field: "strength", title: "Strength", width: 40, sortable: false, filterable: false},
                 {field: "unitType", title: "Unit Type", width: 40, sortable: false, filterable: false}
             ],
@@ -201,21 +227,21 @@
 
     function initObservable() {
         medicineInfoModel = kendo.observable(
-            {
-                medicineInfo: {
-                    id: "",
-                    version: "",
-                    typeId: "",
-                    vendorId: "",
-                    type: "",
-                    genericName: "",
-                    brandName: "",
-                    strength: "",
-                    unitType: "",
-                    unitPrice: "",
-                    mrpPrice: ""
+                {
+                    medicineInfo: {
+                        id: "",
+                        version: "",
+                        typeId: "",
+                        vendorId: "",
+                        type: "",
+                        genericName: "",
+                        brandName: "",
+                        strength: "",
+                        unitType: "",
+                        unitPrice: "",
+                        mrpPrice: ""
+                    }
                 }
-            }
         );
         kendo.bind($("#application_top_panel"), medicineInfoModel);
     }
@@ -245,7 +271,7 @@
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
-    function navigatePriceForm(){
+    function navigatePriceForm() {
         if (executeCommonPreConditionForSelectKendo(gridMedicine, 'medicine') == false) {
             return;
         }
