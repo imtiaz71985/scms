@@ -17,16 +17,16 @@ class Requisition {
     Date sendDate
 
     static constraints = {
-        createDate type:'date'
-        approvedDate type:'date'
-        procAdjDate type:'date'
-        sendDate type:'date'
         approvedDate(nullable: true)
         sendDate(nullable: true)
         sendTo(nullable: true)
         approvedBy(nullable: true)
     }
     static mapping = {
+        createDate type:'date'
+        approvedDate type:'date'
+        procAdjDate type:'date'
+        sendDate type:'date'
         hospitalCode index: 'requisition_hospital_code_idx'
 
     }
