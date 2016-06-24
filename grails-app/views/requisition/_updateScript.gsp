@@ -5,15 +5,15 @@
 </ul>
 </script>
 <script language="javascript">
-    var voucherNo,quantity,gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine, medicineName, unitPrice = 0, totalAmount = 0;
+    var requisitionNo,quantity,gridRequisition, dataSource, requisitionModel, dropDownMedicine, medicineName, unitPrice = 0, totalAmount = 0;
 
     $(document).ready(function () {
-        voucherNo = '${voucherNo}';
+        requisitionNo = '${requisitionNo}';
         totalAmount = ${totalAmount};
-        $("#voucherNo").val(voucherNo);
-        initMedicineSellInfoGrid();
+        $("#requisitionNo").val(requisitionNo);
+        initRequisitionGrid();
         initObservable();
-        gridMedicineSellInfo.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
+        gridRequisition.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
         $("#footerSpan").text(formatAmount(totalAmount));
 
         $('#quantity').kendoNumericTextBox({
@@ -27,19 +27,17 @@
 
         });
         quantity = $("#quantity").data("kendoNumericTextBox");
-        $("#frmMedicine").submit(function (e) {
-            onSubmitForm();
-        });
         $('#gridMedicine  > .k-grid-content').height(285);
-        defaultPageTile("Sale details", null);
+        defaultPageTile("Update requisition details", null);
 
     });
     function  resetForm(){
         window.history.back();
     }
     function executePreCondition() {
-        var count = gridMedicineSellInfo.dataSource.total();
+        var count = gridRequisition.dataSource.total();
         if (count == 0) {
+            showError('No data found to update');
             return false;
         }
         return true;
@@ -50,13 +48,15 @@
         }
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
-        var formData=jQuery('#frmMedicine').serializeArray();
-        formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineSellInfo.dataSource.data())});
+        var formData=jQuery('#frmRequisitionUpt').serializeArray();
+        formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridRequisition.dataSource.data())});
+
+        console.log(formData);
 
         jQuery.ajax({
             type: 'post',
             data: formData,
-            url: "${createLink(controller:'medicineSellInfo', action: 'update')}",
+            url: "${createLink(controller:'requisition', action: 'update')}",
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -79,9 +79,9 @@
             $("#unit").text('');
         } else {
             showSuccess(result.message);
-            clearForm($("#frmMedicine"), $('#medicineId'));
+            clearForm($("#frmRequisitionUpt"), $('#medicineId'));
             var dsDr = new kendo.data.DataSource({data: []});
-            gridMedicineSellInfo.setDataSource(dsDr);
+            gridRequisition.setDataSource(dsDr);
             $("#unit").text('');
             window.history.back();
         }
@@ -96,12 +96,11 @@
             showLoadingSpinner(false);
             return false;
         }
-        var sellDate = $('#sellDate').val();
         var quantity = $('#quantity').val();
         var amount = $('#amount').val();
 
         // add data into grid;
-        addToGrid(gridMedicineSellInfo, medicineId, sellDate, quantity, amount);
+        addToGrid(gridRequisition, medicineId, quantity, amount);
         showLoadingSpinner(false);
         setButtonDisabled($('#addMedicine'), false);
         return false;
@@ -120,8 +119,8 @@
     }
     function checkDuplicateEntry(medicineId) {
         var success = true;
-        gridMedicineSellInfo.items().each(function () {
-            var dataItem = gridMedicineSellInfo.dataItem($(this));
+        gridRequisition.items().each(function () {
+            var dataItem = gridRequisition.dataItem($(this));
             if (dataItem.medicineId == medicineId) {
                 showError('Same value already exists');
                 success = false;
@@ -129,11 +128,10 @@
         });
         return success;
     }
-    function addToGrid(gridModel, medicineId, sellDate, quantity, amount) {
+    function addToGrid(gridModel, medicineId, quantity, amount) {
         var data = {
             medicineName: medicineName,
             medicineId: medicineId,
-            sellDate: sellDate,
             quantity: quantity,
             amount: amount
         };
@@ -146,8 +144,8 @@
             var dsDr = new kendo.data.DataSource({data: [data]});
             gridModel.setDataSource(dsDr);
         }
-        clearForm($("#frmMedicine"), $("#medicineId"));
-        $("#voucherNo").val(voucherNo);
+        clearForm($("#frmRequisitionUpt"), $("#medicineId"));
+        $("#requisitionNo").val(requisitionNo);
         totalAmount=parseFloat(totalAmount,10)+parseFloat(amount,10);
         $("#footerSpan").text(formatAmount(totalAmount));
         unitPrice = 0;
@@ -156,7 +154,7 @@
     }
 
 
-    function initMedicineSellInfoGrid() {
+    function initRequisitionGrid() {
         $("#gridMedicine").kendoGrid({
             dataSource: getBlankDataSource,
             height: getGridHeightKendo(),
@@ -196,27 +194,26 @@
             toolbar: kendo.template($("#gridToolbarKendoDr").html())
 
         });
-        gridMedicineSellInfo = $("#gridMedicine").data("kendoGrid");
+        gridRequisition = $("#gridMedicine").data("kendoGrid");
         $("#menuGridKendoDr").kendoMenu();
         $('#gridMedicine  > .k-grid-content').height(285);
     }
 
     function initObservable() {
-        medicineSellInfoModel = kendo.observable(
+        requisitionModel = kendo.observable(
                 {
-                    medicineSell: {
+                    requisition: {
                         id: "",
                         version: "",
                         medicineId: "",
                         genericName: "",
                         strength: "",
                         quantity: "",
-                        amount: "",
-                        sellDate: ""
+                        amount: ""
                     }
                 }
         );
-        kendo.bind($("#application_top_panel"), medicineSellInfoModel);
+        kendo.bind($("#application_top_panel"), requisitionModel);
     }
 
 
@@ -283,12 +280,12 @@
         }
     }
 
-    function getVoucherNo(){
+    function getRequisitionNo(){
         $.ajax({
-            url: "${createLink(controller: 'medicineSellInfo', action:  'retrieveVoucherNo')}",
+            url: "${createLink(controller: 'requisition', action:  'retrieveRequisitionNo')}",
             success: function (data, textStatus) {
-                voucherNo = data.voucherNo;
-                $("#voucherNo").val(voucherNo);
+                requisitionNo = data.requisitionNo;
+                $("#requisitionNo").val(requisitionNo);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus)
@@ -301,18 +298,18 @@
         });
     }
     function editMedicine(com, grid) {
-        if (executeCommonPreConditionForSelectKendo(gridMedicineSellInfo, 'medicine') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridRequisition, 'medicine') == false) {
             return;
         }
-        var row = gridMedicineSellInfo.select();
-        var data = gridMedicineSellInfo.dataItem(row);
+        var row = gridRequisition.select();
+        var data = gridRequisition.dataItem(row);
         dropDownMedicine.value(data.medicineId);
         quantity.value(data.quantity);
         $("#amount").val(data.amount);
         if(data.unit!=null){
             $("#unit").text(data.unit);
         }
-        gridMedicineSellInfo.dataSource.remove(data);
+        gridRequisition.dataSource.remove(data);
         getOnlyMedicinePrice();
         var amount = $("#amount").val();
         totalAmount=parseFloat(totalAmount,10)-parseFloat(amount,10);
@@ -321,12 +318,12 @@
         $('#gridMedicine  > .k-grid-content').height(285);
     }
     function deleteMedicine(com, grid) {
-        if (executeCommonPreConditionForSelectKendo(gridMedicineSellInfo, 'medicine') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridRequisition, 'medicine') == false) {
             return;
         }
-        var data = gridMedicineSellInfo.dataItem(gridMedicineSellInfo.select());
+        var data = gridRequisition.dataItem(gridRequisition.select());
         totalAmount=parseFloat(totalAmount,10)-parseFloat(data.amount,10);
-        gridMedicineSellInfo.dataSource.remove(data);
+        gridRequisition.dataSource.remove(data);
         $("#footerSpan").text('');
         $("#footerSpan").text(formatAmount(totalAmount));
         $('#gridMedicine  > .k-grid-content').height(285);
