@@ -30,9 +30,9 @@
             type: 'post',
             url: loc,
             success: function (data, textStatus) {
+                markLeftMenu(loc);
                 $('#page-wrapper').height(window.height-20);
                 $('#page-wrapper').html(data);
-                markLeftMenu(loc);
             },
             complete: function (XMLHttpRequest, textStatus) {
                 showLoadingSpinner(false);

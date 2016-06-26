@@ -8,13 +8,14 @@ class RequisitionDetails {
     double reqQty
     double approvedQty
     double procurementQty
+    double amount
 
     static constraints = {
         approvedQty(nullable: true)
         procurementQty(nullable: true)
     }
     static mapping = {
-        medicineId index: 'requisition_details_medicine_id_idx'
         reqNo index: 'requisition_details_req_no_idx'
+        medicineId index: 'requisition_details_medicine_id_idx'
     }
 }

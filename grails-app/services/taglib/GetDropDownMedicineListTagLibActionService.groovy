@@ -143,7 +143,6 @@ class GetDropDownMedicineListTagLibActionService extends BaseService implements 
                         suggest         : true,
                         dataSource      : ${jsonData},
                         value           :'${strDefaultValue}'
-                        ${strOnChange}
                     });
                 });
                 ${dataModelName} = \$("#${escapeChar(name)}").data("kendoDropDownList");

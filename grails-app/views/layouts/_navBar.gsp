@@ -109,11 +109,6 @@
                                     <a href="#diseaseInfo/show"><i class="fa fa-crosshairs"></i>&nbsp;Disease Info</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/medicineInfo/show">
-                                <li>
-                                    <a href="#medicineInfo/show"><i class="fa fa-hospital-o"></i>&nbsp;Medicine</a>
-                                </li>
-                            </sec:access>
                             <sec:access url="/calendar/show">
                                 <li>
                                     <a href="#calendar/show"><i class="fa fa-calendar-o"></i>&nbsp;Office Calendar</a>
@@ -122,6 +117,24 @@
                             <sec:access url="/hospitalLocation/show">
                                 <li>
                                     <a href="#hospitalLocation/show"><i class="fa fa-hospital-o"></i>&nbsp;Hospital</a>
+                                </li>
+                            </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/medicineInfo/show,/requisition/show">
+                    <li>
+                        <a href="#"><i class="fa fa-database"></i>&nbsp;Inventory<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/medicineInfo/show">
+                                <li>
+                                    <a href="#medicineInfo/show"><i class="fa fa-medkit"></i>&nbsp;Medicine</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/requisition/show">
+                                <li>
+                                    <a href="#requisition/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition</a>
                                 </li>
                             </sec:access>
                         </ul>

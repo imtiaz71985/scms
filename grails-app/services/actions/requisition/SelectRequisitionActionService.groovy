@@ -1,8 +1,8 @@
-package actions.medicineSellInfo
+package actions.requisition
 
 import com.scms.MedicineInfo
-import com.scms.MedicineSellInfo
-import com.scms.MedicineSellInfoDetails
+import com.scms.Requisition
+import com.scms.RequisitionDetails
 import com.scms.SystemEntity
 import grails.converters.JSON
 import grails.transaction.Transactional
@@ -11,12 +11,13 @@ import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class SelectMedicineSellInfoActionService extends BaseService implements ActionServiceIntf {
+class SelectRequisitionActionService extends BaseService implements ActionServiceIntf {
 
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
     private static final String TOTAL_AMOUNT = "totalAmount"
-    private static final String VOUCHER_NO = "voucherNo"
-    private static final String MEDICINE_DETAILS = "requisitionDetails"
+    private static final String REQUISITION_NO = "requisitionNo"
+    private static final String REQUISITION = "requisition"
+    private static final String REQUISITION_DETAILS = "requisitionDetails"
     private static final String GRID_MODEL_MEDICINE = "gridModelMedicine"
 
     private Logger log = Logger.getLogger(getClass())
@@ -26,13 +27,13 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
     public Map executePreCondition(Map params) {
         try {
             long id = Long.parseLong(params.id.toString())
-            MedicineSellInfo sellInfo = MedicineSellInfo.read(id)
-            if (!sellInfo) {
+            Requisition requisition = Requisition.read(id)
+            if (!requisition) {
                 return super.setError(params, NOT_FOUND_MASSAGE)
             }
-            params.put(TOTAL_AMOUNT, sellInfo.totalAmount)
-            params.put(VOUCHER_NO, sellInfo.voucherNo)
-            params.put(MEDICINE_DETAILS, sellInfo)
+            params.put(TOTAL_AMOUNT, requisition.totalAmount)
+            params.put(REQUISITION_NO, requisition.reqNo)
+            params.put(REQUISITION, requisition)
             return params
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -43,9 +44,9 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            MedicineSellInfo sellInfo = (MedicineSellInfo) result.get(MEDICINE_DETAILS)
-            List<MedicineSellInfoDetails> lstMedicine = (List<MedicineSellInfoDetails>) MedicineSellInfoDetails.findAllByVoucherNo(sellInfo.voucherNo)
-            result.put(MEDICINE_DETAILS, lstMedicine)
+            Requisition requisition = (Requisition) result.get(REQUISITION)
+            List<RequisitionDetails> lstMedicine = (List<RequisitionDetails>) RequisitionDetails.findAllByReqNo(requisition.reqNo)
+            result.put(REQUISITION_DETAILS, lstMedicine)
             return result
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -59,7 +60,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
 
     public Map buildSuccessResultForUI(Map result) {
         try {
-            List<MedicineSellInfoDetails> lstMedicine = (List<MedicineSellInfoDetails>) result.get(MEDICINE_DETAILS)
+            List<RequisitionDetails> lstMedicine = (List<RequisitionDetails>) result.get(REQUISITION_DETAILS)
             Map gridObjects = wrapEducationGrid(lstMedicine)
             result.put(GRID_MODEL_MEDICINE, gridObjects.lstMedicine as JSON)
             return result
@@ -77,33 +78,39 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
         return result
     }
 
-    private static Map wrapEducationGrid(List<MedicineSellInfoDetails> lstMedicine) {
+    private static Map wrapEducationGrid(List<RequisitionDetails> lstMedicine) {
         List lstRows = []
-        MedicineSellInfoDetails singleRow
+        RequisitionDetails singleRow
         for (int i = 0; i < lstMedicine.size(); i++) {
             singleRow = lstMedicine[i]
             long id = singleRow.id
             long version = singleRow.version
-            String voucherNo = singleRow.voucherNo
+            String voucherNo = singleRow.reqNo
             long medicineId = singleRow.medicineId
-            int quantity = singleRow.quantity
+            int quantity = singleRow.reqQty
             double amount = singleRow.amount
             String medicineName = EMPTY_SPACE
 
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
             SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
-            if(medicineInfo.strength){
+            if (medicineInfo.strength) {
                 medicineName = medicineInfo.genericName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name
-            }else{
+            } else {
                 medicineName = medicineInfo.genericName + ' - ' + medicineType.name
             }
 
-            Map eachDetails = [ id:id,version:version,voucherNo:voucherNo,medicineName:medicineName,
-                               medicineId:medicineId,quantity:quantity,amount:amount
+            Map eachDetails = [
+                    id          : id,
+                    version     : version,
+                    voucherNo   : voucherNo,
+                    medicineName: medicineName,
+                    medicineId  : medicineId,
+                    unitPrice   : medicineInfo.unitPrice,
+                    quantity    : quantity,
+                    amount      : amount
             ]
             lstRows << eachDetails
         }
         return [lstMedicine: lstRows]
     }
-
 }

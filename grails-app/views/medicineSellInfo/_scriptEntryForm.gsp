@@ -170,6 +170,13 @@
                     filterable: false
                 },
                 {
+                    field: "quantity",
+                    title: "Quantity",
+                    width: 50,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "amount",
                     title: "Amount",
                     attributes: {style: setAlignRight()},
@@ -177,13 +184,6 @@
                     template: "#=formatAmount(amount)#",
                     sortable: false,filterable: false,width: 50,
                     footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
-                },
-                {
-                    field: "quantity",
-                    title: "Quantity",
-                    width: 50,
-                    sortable: false,
-                    filterable: false
                 }
             ],
             filterable: {
