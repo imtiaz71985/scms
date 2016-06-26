@@ -1,5 +1,6 @@
 package actions.requisition
 
+import com.scms.MedicineSellInfo
 import com.scms.Requisition
 import com.scms.RequisitionDetails
 import grails.converters.JSON
@@ -10,7 +11,7 @@ import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class UpdateRequisitionActionService extends BaseService implements ActionServiceIntf {
+class AdjustmentRequisitionRequestActionService extends BaseService implements ActionServiceIntf {
 
     private static final String UPDATE_SUCCESS_MESSAGE = "Data has been updated successfully"
     private static final String REQUISITION = "requisition"
@@ -46,10 +47,10 @@ class UpdateRequisitionActionService extends BaseService implements ActionServic
             deleteAllChild(requisition.reqNo)
             List<RequisitionDetails> lstReqDetails = (List<RequisitionDetails>) result.get(REQUISITION_DETAILS)
             for (int i = 0; i < lstReqDetails.size(); i++) {
-                totalAmount+=lstReqDetails[i].amount
+                totalAmount+=lstReqDetails[i].approveAmount
                 lstReqDetails[i].save()
             }
-            requisition.totalAmount = totalAmount
+            requisition.approvedAmount = totalAmount
             requisition.save()
             return result
         } catch (Exception ex) {
@@ -85,9 +86,9 @@ class UpdateRequisitionActionService extends BaseService implements ActionServic
         RequisitionDetails details = new RequisitionDetails(params)
         details.reqNo = requisitionNo
         try{
-            details.reqQty = params.quantity
+            details.approvedQty = params.approvedQty
         }catch (Exception e){
-            details.reqQty = Double.parseDouble(params.quantity)
+            details.approvedQty = Double.parseDouble(params.approvedQty)
         }
         return details
     }

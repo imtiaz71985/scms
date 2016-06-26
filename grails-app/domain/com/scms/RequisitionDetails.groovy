@@ -9,10 +9,14 @@ class RequisitionDetails {
     double approvedQty
     double procurementQty
     double amount
+    double approveAmount
+    double procAmount
 
     static constraints = {
         approvedQty(nullable: true)
         procurementQty(nullable: true)
+        approveAmount(nullable: true)
+        procAmount(nullable: true)
     }
     static mapping = {
         reqNo index: 'requisition_details_req_no_idx'

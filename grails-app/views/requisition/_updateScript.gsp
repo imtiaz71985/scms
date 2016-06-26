@@ -51,8 +51,6 @@
         var formData=jQuery('#frmRequisitionUpt').serializeArray();
         formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridRequisition.dataSource.data())});
 
-        console.log(formData);
-
         jQuery.ajax({
             type: 'post',
             data: formData,
@@ -179,11 +177,27 @@
                     filterable: false
                 },
                 {
+                    field: "approvedQty",
+                    title: "Approve Quantity",
+                    width: 50,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "amount",
                     title: "Amount",
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(amount)#",
+                    sortable: false,filterable: false,width: 50,
+                    footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
+                },
+                {
+                    field: "approveAmount",
+                    title: "Approve Amount",
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(approveAmount)#",
                     sortable: false,filterable: false,width: 50,
                     footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
                 }
@@ -261,6 +275,7 @@
             url: actionUrl,
             success: function (data, textStatus) {
                 unitPrice = data.amount;
+                medicineName = data.name;
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
             },

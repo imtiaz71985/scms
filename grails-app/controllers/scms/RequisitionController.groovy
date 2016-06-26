@@ -1,8 +1,13 @@
 package scms
 
+import actions.requisition.AdjustmentRequisitionRequestActionService
+import actions.requisition.ApproveRequisitionRequestActionService
 import actions.requisition.CreateRequisitionActionService
+import actions.requisition.ListAllMedicineActionService
 import actions.requisition.ListRequisitionActionService
+import actions.requisition.ListRequisitionPRActionService
 import actions.requisition.SelectRequisitionActionService
+import actions.requisition.SelectRequisitionPRActionService
 import actions.requisition.SendRequisitionRequestActionService
 import actions.requisition.UpdateRequisitionActionService
 import com.scms.Requisition
@@ -22,6 +27,11 @@ class RequisitionController extends BaseController {
     ListRequisitionActionService listRequisitionActionService
     SelectRequisitionActionService selectRequisitionActionService
     SendRequisitionRequestActionService sendRequisitionRequestActionService
+    ListRequisitionPRActionService listRequisitionPRActionService
+    ApproveRequisitionRequestActionService approveRequisitionRequestActionService
+    AdjustmentRequisitionRequestActionService adjustmentRequisitionRequestActionService
+    SelectRequisitionPRActionService selectRequisitionPRActionService
+    ListAllMedicineActionService listAllMedicineActionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST", select: "POST", list: "POST"
@@ -55,6 +65,10 @@ class RequisitionController extends BaseController {
         renderOutput(listRequisitionActionService, params)
     }
 
+    def listMedicine() {
+        renderOutput(listAllMedicineActionService, params)
+    }
+
     private String generateRequisitionNo() {
         Date date = DateUtility.parseDateForDB(DateUtility.getDBDateFormatAsString(new Date()))
         String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
@@ -77,5 +91,21 @@ class RequisitionController extends BaseController {
     }
     def sendRequest() {
         renderOutput(sendRequisitionRequestActionService, params)
+    }
+    def showPR() {
+        render(view: "/requisition/showPR")
+    }
+    def listPR() {
+        renderOutput(listRequisitionPRActionService, params)
+    }
+    def approveRequest() {
+        renderOutput(approveRequisitionRequestActionService, params)
+    }
+    def selectPR(){
+        String view = '/requisition/updatePR'
+        renderView(selectRequisitionPRActionService, params, view)
+    }
+    def updatePR(){
+        renderOutput(adjustmentRequisitionRequestActionService, params)
     }
 }

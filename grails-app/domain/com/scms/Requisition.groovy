@@ -16,6 +16,8 @@ class Requisition {
     long sendTo
     Date sendDate
     double totalAmount
+    double approvedAmount
+    double procAmount
 
     static constraints = {
         approvedDate(nullable: true)
@@ -27,6 +29,8 @@ class Requisition {
         isReceived(nullable: true)
         isSend(nullable: true)
         totalAmount(nullable: true)
+        approvedAmount(nullable: true)
+        procAmount(nullable: true)
     }
     static mapping = {
         createDate type:'date'
@@ -34,6 +38,5 @@ class Requisition {
         procAdjDate type:'date'
         sendDate type:'date'
         hospitalCode index: 'requisition_hospital_code_idx'
-
     }
 }

@@ -137,6 +137,11 @@
                                     <a href="#requisition/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/requisition/showPR">
+                                <li>
+                                    <a href="#requisition/showPR"><i class="fa fa-hand-paper-o"></i>&nbsp;Purchase Request</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
