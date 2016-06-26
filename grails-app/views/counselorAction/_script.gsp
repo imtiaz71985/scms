@@ -389,7 +389,7 @@
             $('#pathologyCharges').val('');
             $('#divPathology').hide();
         }
-        else if (serviceTypeId > 2) {
+        else if (serviceTypeId ==3) {
             $('#divCharges').show();
             $('#divPathology').show();
             $('#divServiceCharges').hide();

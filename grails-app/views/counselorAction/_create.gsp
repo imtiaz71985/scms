@@ -206,7 +206,7 @@
 
 
                             <div class="form-group " id="divDiseaseGroup" style="display:none;">
-                                <label class="col-md-3 control-label label-required"
+                                <label class="col-md-3 control-label"
                                        for="diseaseGroupId">Disease Group:</label>
 
                                 <div class="col-md-9">

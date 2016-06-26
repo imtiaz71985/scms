@@ -36,7 +36,7 @@ class UpdateServiceTokenInfoActionService extends BaseService implements ActionS
             catch (Exception ex){
                 return super.setError(params, 'Invalid amount.')
             }
-            try{
+            /*try{
                 String  len=params.selectedDiseaseCode
                 if(len.length()<1){
                     return super.setError(params, 'Sorry! Please select at least one disease.')
@@ -44,7 +44,7 @@ class UpdateServiceTokenInfoActionService extends BaseService implements ActionS
             }
             catch (Exception ex){
                 return super.setError(params, 'Sorry! Please select at least one disease.')
-            }
+            }*/
 
             ServiceTokenInfo oldServiceTokenInfo = ServiceTokenInfo.findByServiceTokenNo(params.serviceTokenNo.toString())
 
@@ -81,18 +81,20 @@ class UpdateServiceTokenInfoActionService extends BaseService implements ActionS
                 }
             }
             String str = result.selectedDiseaseCode
-            List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
-            for (int i = 0; i < lst.size(); i++) {
-                TokenAndDiseaseMapping tokenAndDiseaseMapping=new TokenAndDiseaseMapping()
-                tokenAndDiseaseMapping.createDate = DateUtility.getSqlDate(new Date())
-                tokenAndDiseaseMapping.createBy = springSecurityService.principal.id
-                tokenAndDiseaseMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
-                try {
-                    if(lst.get(i)!='') {
-                        tokenAndDiseaseMapping.diseaseCode = lst.get(i)
-                        tokenAndDiseaseMapping.save()
+            if(str.length()>1) {
+                List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
+                for (int i = 0; i < lst.size(); i++) {
+                    TokenAndDiseaseMapping tokenAndDiseaseMapping = new TokenAndDiseaseMapping()
+                    tokenAndDiseaseMapping.createDate = DateUtility.getSqlDate(new Date())
+                    tokenAndDiseaseMapping.createBy = springSecurityService.principal.id
+                    tokenAndDiseaseMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
+                    try {
+                        if (lst.get(i) != '') {
+                            tokenAndDiseaseMapping.diseaseCode = lst.get(i)
+                            tokenAndDiseaseMapping.save()
+                        }
+                    } catch (Exception ex) {
                     }
-                } catch (Exception ex) {
                 }
             }
 
