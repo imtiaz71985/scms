@@ -25,9 +25,10 @@ class CounselorActionController extends BaseController {
     UpdateServiceTokenInfoActionService updateServiceTokenInfoActionService
     ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
     ServiceHeadInfoService serviceHeadInfoService
-
+    BaseService baseService
 
     def show() {
+
         render(view: "/counselorAction/show")
     }
     def create() {
@@ -127,6 +128,13 @@ class CounselorActionController extends BaseController {
         result.put('totalHealthCharge', lst[0].totalHealthCharge)
         result.put('serviceTypeId', lst[0].service_type_id)
 
+        render result as JSON
+    }
+    def retrieveTokenNoByRegNo() {
+        String regNo=params.regNo.toString()
+        List<ServiceTokenInfo> lst=ServiceTokenInfo.findAllByRegNo(regNo,[sort: "serviceDate",order: "DESC"])
+        lst=baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
+        Map result = [lstTokenNo: lst]
         render result as JSON
     }
 }

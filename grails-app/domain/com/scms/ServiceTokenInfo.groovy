@@ -13,11 +13,11 @@ class ServiceTokenInfo {
     boolean isExit
     Date modifyDate
     long modifyBy
+    String referenceServiceTokenNo
     static constraints = {
-        serviceDate type: 'date'
-        modifyDate type:'date'
         modifyDate(nullable: true)
         modifyBy (nullable: true)
+        referenceServiceTokenNo (nullable: true)
         prescriptionTypeId (nullable: true)
     }
     static mapping = {

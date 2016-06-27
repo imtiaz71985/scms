@@ -11,7 +11,8 @@
 
 <script language="javascript">
     var gridCounselorAction, dataSource, registrationInfoModel, dropDownServiceType, dropDownReferTo, dropDownPrescriptionType,
-            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo, dropDownServiceTokenNo;
+            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo, dropDownServiceTokenNo,
+            dropDownreferenceServiceNoDDL;
     var checkedIds = {}; // declare an object to hold selected grid ids
     var checkedDiseaseCodes = {}; // declare an object to hold selected disease codes
     var chargeAmt = 0;
@@ -373,7 +374,11 @@
     }
     function getServiceHeadInfo() {
         var serviceTypeId = $("#serviceTypeId").val();
-
+        $('#divReferenceServiceNo').hide();
+        $('#divServiceCharges').hide();
+        $('#divPathology').hide();
+        $('#divCharges').hide();
+        $('#divReferTo').hide();
         if (serviceTypeId == '') {
             dropDownServiceType.value('');
             $('#divServiceDetails').hide();
@@ -389,7 +394,7 @@
             $('#pathologyCharges').val('');
             $('#divPathology').hide();
         }
-        else if (serviceTypeId ==3) {
+        else if (serviceTypeId == 3) {
             $('#divCharges').show();
             $('#divPathology').show();
             $('#divServiceCharges').hide();
@@ -398,13 +403,57 @@
             //$('#divPayable').hide();
             $('#serviceCharges').val('');
         }
-        $('#divServiceDetails').show();
-        var serviceTypeId = $('#serviceTypeId').val();
-        resetBasicData();
-        var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
-        populateGridKendo(gridServiceHeadInfo,url);
-    }
+        else if (serviceTypeId == 5) {
+            $('#divCharges').show();
+            $('#divReferTo').show();
+            $('#divServiceDetails').hide();
+            $('#divReferenceServiceNo').show();
+            $('#referenceServiceNoDDL').kendoDropDownList({
+                dataTextField: 'serviceTokenNo',
+                dataValueField: 'id',
+                filter: "contains",
+                suggest: true
+            });
+            dropDownreferenceServiceNoDDL = $('#referenceServiceNoDDL').data('kendoDropDownList');
+            var regNo = $('#regNo').val();
+            populateServiceNoDDL(regNo)
+        }
+        if (serviceTypeId != 5) {
 
+            $('#divServiceDetails').show();
+            resetBasicData();
+            var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
+            populateGridKendo(gridServiceHeadInfo, url);
+        }
+    }
+    function populateServiceNoDDL(regNo) {
+
+        if (regNo == '') {
+            dropDownreferenceServiceNoDDL.setDataSource(getKendoEmptyDataSource(dropDownreferenceServiceNoDDL, null));
+            dropDownreferenceServiceNoDDL.value('');
+            return false;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'counselorAction', action: 'retrieveTokenNoByRegNo')}?regNo=" + regNo,
+            success: function (data) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
+                dropDownreferenceServiceNoDDL.setDataSource(data.lstTokenNo);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
     function initDataSourceForServiceHeadInfo() {
         dataSource = new kendo.data.DataSource({
             transport: {

@@ -24,19 +24,30 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         try {
             //Check parameters
 
-            if (!params.serviceTokenNo||!params.serviceTypeId||!params.regNo||!params.referToId) {
+            if (!params.serviceTokenNo || !params.serviceTypeId || !params.regNo||!params.referToId) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            try{
-                String  len=params.selectedChargeId
-               if(len.length()<1){
-                   return super.setError(params, 'Sorry! Please select at least one service.')
-               }
+            long serviceTypeId = 0
+            try {
+                serviceTypeId=Long.parseLong(params.serviceTypeId)
+            } catch (Exception ex) {
             }
-            catch (Exception ex){
-                return super.setError(params, 'Sorry! Please select at least one service.')
+            if (serviceTypeId == 5) {
+                if (!params.referenceServiceNoDDL){
+                    return super.setError(params, 'Sorry! Please select reference service no.')
+                }
+            }else {
+                try {
+                    String len = params.selectedChargeId
+                    if (len.length() < 1) {
+                        return super.setError(params, 'Sorry! Please select at least one service.')
+                    }
+                }
+                catch (Exception ex) {
+                    return super.setError(params, 'Sorry! Please select at least one service.')
+                }
             }
-            ServiceTokenInfo serviceTokenInfo = buildObject(params)
+            ServiceTokenInfo serviceTokenInfo = buildObject(params,serviceTypeId)
             params.put(SERVICE_TOKEN_INFO, serviceTokenInfo)
             return params
         } catch (Exception ex) {
@@ -52,26 +63,32 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         try {
             ServiceTokenInfo serviceTokenInfo = (ServiceTokenInfo) result.get(SERVICE_TOKEN_INFO)
             serviceTokenInfo.save()
-
-            //In future use this format
-            // def lst=result.List('paramName')
-            //see in internet
-            String str=result.selectedChargeId
-            List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
-            for(int i=0;i<lst.size();i++) {
-                TokenAndChargeMapping tokenAndChargeMapping = new TokenAndChargeMapping()
-                tokenAndChargeMapping.createDate = DateUtility.getSqlDate(new Date())
-                tokenAndChargeMapping.createBy = springSecurityService.principal.id
-                tokenAndChargeMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
-                try {
-                    if(lst.get(i)!='') {
-                        tokenAndChargeMapping.serviceChargeId = Long.parseLong(lst.get(i))
-                        tokenAndChargeMapping.save()
+            long serviceTypeId = 0
+            try {
+                serviceTypeId=Long.parseLong(result.serviceTypeId)
+            } catch (Exception ex) {
+            }
+            if (serviceTypeId != 5) {
+                //In future use this format
+                // def lst=result.List('paramName')
+                //see in internet
+                String str = result.selectedChargeId
+                List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
+                for (int i = 0; i < lst.size(); i++) {
+                    TokenAndChargeMapping tokenAndChargeMapping = new TokenAndChargeMapping()
+                    tokenAndChargeMapping.createDate = DateUtility.getSqlDate(new Date())
+                    tokenAndChargeMapping.createBy = springSecurityService.principal.id
+                    tokenAndChargeMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
+                    try {
+                        if (lst.get(i) != '') {
+                            tokenAndChargeMapping.serviceChargeId = Long.parseLong(lst.get(i))
+                            tokenAndChargeMapping.save()
+                        }
+                    }
+                    catch (Exception ex) {
                     }
                 }
-                catch (Exception ex){}
             }
-
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -100,24 +117,30 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
      * @param parameterMap -serialized parameters from UI
      * @return -new systemEntity object
      /*    */
-    private ServiceTokenInfo buildObject(Map parameterMap) {
-        int count = ServiceTokenInfo.countByRegNo(parameterMap.regNo)
+    private ServiceTokenInfo buildObject(Map parameterMap,long serviceTypeId) {
+
         ServiceTokenInfo serviceTokenInfo = new ServiceTokenInfo()
         serviceTokenInfo.serviceTokenNo=parameterMap.serviceTokenNo
         serviceTokenInfo.regNo=parameterMap.regNo
         serviceTokenInfo.referToId=Long.parseLong(parameterMap.referToId)
         serviceTokenInfo.serviceDate=DateUtility.getSqlDate(new Date())
         serviceTokenInfo.createBy= springSecurityService.principal.id
-        if(count>0){
-            serviceTokenInfo.visitTypeId=2L // re-visit
-        }else{
-            serviceTokenInfo.visitTypeId=1L
+        if(serviceTypeId==5) {
+            serviceTokenInfo.visitTypeId =3L // Follow-Up
+            serviceTokenInfo.referenceServiceTokenNo=parameterMap.referenceServiceNoDDL
         }
-        serviceTokenInfo.isExit =false
-        try {
-            if (Long.parseLong(parameterMap.serviceTypeId)>2)
+        else {
+            int count = ServiceTokenInfo.countByRegNo(parameterMap.regNo)
+            if (count > 0) {
+                serviceTokenInfo.visitTypeId = 2L // re-visit
+            } else {
+                serviceTokenInfo.visitTypeId = 1L
+            }
+            serviceTokenInfo.isExit = false
+        }
+        if (serviceTypeId>2)
                 serviceTokenInfo.isExit = true
-        }catch (Exception ex){}
+
         return serviceTokenInfo
     }
 }

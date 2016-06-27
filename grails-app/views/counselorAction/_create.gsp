@@ -149,7 +149,6 @@
                         </div>
 
                         <div class="col-md-6" id="divCharges" style="display:none;">
-
                             <div class="form-group" id="divReferTo" style="display:none;">
                                 <label class="col-md-3 control-label label-required" for="referToId">Refer To:</label>
 
@@ -160,6 +159,18 @@
                                             class="kendo-drop-down" type="Refer Type"
                                             data-bind="value: counselorAction.referToId">
                                     </app:dropDownSystemEntity>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group" id="divReferenceServiceNo" style="display:none;">
+                                <label class="col-md-3 control-label label-required">Reference Service No:</label>
+
+                                <div class="col-md-6">
+                                    <select id="referenceServiceNoDDL"
+                                            name="referenceServiceNoDDL"
+                                            class="kendo-drop-down">
+                                    </select>
                                 </div>
 
                             </div>
@@ -224,11 +235,11 @@
                     </div>
 
                     <div class="form-group ">
-                        <div class="col-md-5 " id="divServiceDetails" style="display:none;height: 200px;">
+                        <div class="col-md-5 " id="divServiceDetails" style="display:none;height: 250px;">
                             <div id="gridServiceHeadInfo"></div>
                         </div>
 
-                        <div class="col-md-5 pull-right" id="divDiseaseDetails" style="display:none;height: 200px;">
+                        <div class="col-md-5 pull-right" id="divDiseaseDetails" style="display:none;height: 250px;">
                             <div id="gridDiseaseDetails"></div>
                         </div>
                     </div>
