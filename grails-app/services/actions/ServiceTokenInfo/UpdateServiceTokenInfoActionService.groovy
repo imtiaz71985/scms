@@ -1,7 +1,5 @@
 package actions.ServiceTokenInfo
 
-import com.model.ListServiceHeadInfoActionServiceModel
-import com.scms.ServiceCharges
 import com.scms.ServiceTokenInfo
 import com.scms.TokenAndChargeMapping
 import com.scms.TokenAndDiseaseMapping

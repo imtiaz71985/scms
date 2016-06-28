@@ -66,13 +66,13 @@
                     </li>
                 </sec:ifAnyUrls>
                 <sec:ifAnyUrls
-                        urls="/medicineSellInfo/showMonthlyStatus,/medicineSellInfo/listMonthlyStatus,/medicineSellInfo/downloadMonthWiseSell">
+                        urls="/reports/showMonthlyStatus,/reports/listMonthlyStatus,/reports/downloadMonthlyDetails">
                     <li>
                         <a href="#"><i class="fa fa-file"></i>&nbsp;Reports<span class="fa arrow-down"></span></a>
                         <ul class="nav nav-second-level">
-                            <sec:access url="/medicineSellInfo/showMonthlyStatus">
+                            <sec:access url="/reports/showMonthlyStatus">
                                 <li>
-                                    <a href="#medicineSellInfo/showMonthlyStatus"><i
+                                    <a href="#reports/showMonthlyStatus"><i
                                             class="fa fa-file-pdf-o"></i>&nbsp;Monthly Status</a>
                                 </li>
                             </sec:access>

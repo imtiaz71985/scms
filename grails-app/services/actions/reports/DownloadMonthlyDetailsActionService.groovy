@@ -1,4 +1,4 @@
-package actions.medicineSellInfo
+package actions.reports
 
 import com.scms.HospitalLocation
 import com.scms.SecUser
@@ -15,13 +15,13 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
-class DownloadMonthWiseMedicineSellInfoActionService extends BaseService implements ActionServiceIntf {
+class DownloadMonthlyDetailsActionService extends BaseService implements ActionServiceIntf {
 
     JasperService jasperService
     SpringSecurityService springSecurityService
 
-    private static final String REPORT_FOLDER = 'medicineSellInfo'
-    private static final String JASPER_FILE = 'monthWiseMedicineSellReport'
+    private static final String REPORT_FOLDER = 'financial'
+    private static final String JASPER_FILE = 'monthlyDetailsReport'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = 'Monthly Report'
     private static final String OUTPUT_FILE_NAME = "monthly_report"

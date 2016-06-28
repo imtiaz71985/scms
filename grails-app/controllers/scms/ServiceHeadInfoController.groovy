@@ -2,10 +2,7 @@ package scms
 
 import actions.serviceHeadInfo.CreateServiceHeadInfoActionService
 import actions.serviceHeadInfo.DeleteServiceHeadInfoActionService
-import actions.serviceHeadInfo.ListServiceHeadInfoActionService
 import actions.serviceHeadInfo.UpdateServiceHeadInfoActionService
-import com.scms.RegistrationInfo
-import com.scms.SecUser
 import com.scms.ServiceHeadInfo
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
@@ -13,11 +10,8 @@ import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import service.ServiceHeadInfoService
 
-import java.text.SimpleDateFormat
-
 class ServiceHeadInfoController extends BaseController{
     SpringSecurityService springSecurityService
-    BaseService baseService
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
     ]
@@ -49,7 +43,6 @@ class ServiceHeadInfoController extends BaseController{
         result.put('list', lst)
         result.put('count', lst.size())
         render result as JSON
-        //renderOutput(listServiceHeadInfoActionService, params)
     }
     def retrieveServiceCode() {
         long serviceTypeId = Long.parseLong(params.serviceTypeId.toString())
@@ -60,11 +53,9 @@ class ServiceHeadInfoController extends BaseController{
 
         String serviceNo= (c<10? '000' :c<100? '00' :c<1000? '000' : '')+c.toString()
         String serviceCode=typeId+serviceNo
-        // def result = [:]
         Map result=new HashedMap()
         result.put('serviceCode', serviceCode)
 
         render result as JSON
-        //render(view: "/registrationInfo/show", model: [key:'value'])
     }
 }

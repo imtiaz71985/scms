@@ -1,18 +1,10 @@
 package scms
 
-import actions.DiseaseGroup.CreateDiseaseGroupActionService
-import actions.DiseaseGroup.ListDiseaseGroupActionService
-import actions.DiseaseGroup.UpdateDiseaseGroupActionService
 import actions.DiseaseInfo.CreateDiseaseInfoActionService
 import actions.DiseaseInfo.DeleteDiseaseInfoActionService
 import actions.DiseaseInfo.ListDiseaseInfoActionService
 import actions.DiseaseInfo.UpdateDiseaseInfoActionService
-import actions.serviceHeadInfo.CreateServiceHeadInfoActionService
-import actions.serviceHeadInfo.DeleteServiceHeadInfoActionService
-import actions.serviceHeadInfo.ListServiceHeadInfoActionService
-import actions.serviceHeadInfo.UpdateServiceHeadInfoActionService
 import com.scms.DiseaseInfo
-import com.scms.ServiceHeadInfo
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import org.apache.commons.collections.map.HashedMap
