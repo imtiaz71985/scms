@@ -142,11 +142,8 @@
             pageable: false,
             columns: [
                 {
-                    field: "date_field",
-                    title: "Date",
-                    width: 60,
-                    sortable: false,
-                    filterable: false,
+                    field: "date_field",title: "Date",
+                    width: 60,sortable: false,filterable: false,
                     headerAttributes: {style: setAlignCenter()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignCenter()},
@@ -156,8 +153,7 @@
                 {title: "Patient",headerAttributes:{style:setAlignCenter()},
                     columns: [
                         {
-                            field: "new_patient",
-                            title: "New",
+                            field: "new_patient", title: "New",
                             width: 30,sortable: false,filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
@@ -166,8 +162,7 @@
                             footerTemplate: "#=sum#"
                         },
                         {
-                            field: "patient_followup",
-                            title: "Followup",
+                            field: "patient_followup", title: "Followup",
                             width: 40,sortable: false,filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
@@ -176,8 +171,7 @@
                             footerTemplate: "#=sum#"
                         },
                         {
-                            field: "patient_revisit",
-                            title: "Re-visit",
+                            field: "patient_revisit", title: "Re-visit",
                             width: 40,sortable: false,filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
@@ -186,8 +180,7 @@
                             footerTemplate: "#=sum#"
                         },
                         {
-                            field: "total_patient",
-                            title: "Total",
+                            field: "total_patient", title: "Total",
                             width: 40,sortable: false,filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
@@ -200,8 +193,7 @@
                 {title: "Charges",headerAttributes:{style:setAlignCenter()},
                     columns: [
                         {
-                            field: "registration_amount",
-                            title: "Membership",
+                            field: "registration_amount",title: "Membership",
                             width: 50,sortable: false,filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
@@ -210,8 +202,7 @@
                             footerTemplate: "#=sum#"
                         },
                         {
-                            field: "re_registration_amount",
-                            title: "Card Re-issue",
+                            field: "re_registration_amount",title: "Card Re-issue",
                             width: 60,sortable: false,filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
@@ -222,8 +213,7 @@
                         {title: "Consultation",headerAttributes:{style:setAlignCenter()},
                             columns: [
                                 {
-                                    field: "consultation_count",
-                                    title: "Count",
+                                    field: "consultation_count",title: "Count",
                                     width: 30,sortable: false,filterable: false,
                                     headerAttributes: {style: setAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
@@ -232,8 +222,7 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "consultation_amount",
-                                    title: "Amount",
+                                    field: "consultation_amount",title: "Amount",
                                     width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
@@ -246,8 +235,7 @@
                         {title: "Subsidy",headerAttributes:{style:setAlignCenter()},
                             columns: [
                                 {
-                                    field: "subsidy_count",
-                                    title: "Count",
+                                    field: "subsidy_count",title: "Count",
                                     width: 30,sortable: false,filterable: false,
                                     headerAttributes: {style: setAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
@@ -256,8 +244,7 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "subsidy_amount",
-                                    title: "Amount",
+                                    field: "subsidy_amount",title: "Amount",
                                     width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
@@ -270,8 +257,7 @@
                         {title: "Diagnostic",headerAttributes:{style:setAlignCenter()},
                             columns: [
                                 {
-                                    field: "pathology_count",
-                                    title: "Count",
+                                    field: "pathology_count",title: "Count",
                                     width: 30,sortable: false,filterable: false,
                                     headerAttributes: {style: setAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
@@ -280,8 +266,7 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "pathology_amount",
-                                    title: "Amount",
+                                    field: "pathology_amount",title: "Amount",
                                     width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
@@ -294,8 +279,7 @@
                     ]
                 },
                 {
-                    field: "medicine_sales",
-                    title: "Medicine Sales",
+                    field: "medicine_sales",title: "Medicine Sales",
                     width: 60,sortable: false,filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
