@@ -410,7 +410,7 @@
             $('#divReferenceServiceNo').show();
             $('#referenceServiceNoDDL').kendoDropDownList({
                 dataTextField: 'serviceTokenNo',
-                dataValueField: 'id',
+                dataValueField: 'serviceTokenNo',
                 filter: "contains",
                 suggest: true
             });
