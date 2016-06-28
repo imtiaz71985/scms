@@ -17,9 +17,9 @@
         });
         var currentDate = moment().format('MMMM YYYY');
         $('#month').val(currentDate);
-        initializeForm($("#monthWiseSellForm"), onSubmitForm);
+        initializeForm($("#detailsForm"), onSubmitForm);
         // update page title
-        defaultPageTile("Month Wise Report", null);
+        defaultPageTile("Monthly Report", null);
     }
 
     function executePreCondition() {
@@ -47,7 +47,7 @@
     }
 
     function resetForm() {
-        clearForm($("#monthWiseSellForm"), $('#month'));
+        clearForm($("#detailsForm"), $('#month'));
     }
     function dataBoundGrid(e) {
         var grid = e.sender;
