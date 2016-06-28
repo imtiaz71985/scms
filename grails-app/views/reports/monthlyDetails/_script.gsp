@@ -162,17 +162,17 @@
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=new_patient#",
+                            template: "#=is_holiday?'':new_patient#",
                             footerTemplate: "#=sum#"
                         },
                         {
                             field: "patient_followup",
-                            title: "Follow-up",
-                            width: 50,sortable: false,filterable: false,
+                            title: "Followup",
+                            width: 40,sortable: false,filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=patient_followup#",
+                            template: "#=is_holiday?'':patient_followup#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -182,7 +182,7 @@
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=patient_revisit#",
+                            template: "#=is_holiday?'':patient_revisit#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -192,7 +192,7 @@
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=total_patient#",
+                            template: "#=is_holiday?'':total_patient#",
                             footerTemplate: "#=sum#"
                         }
                     ]
