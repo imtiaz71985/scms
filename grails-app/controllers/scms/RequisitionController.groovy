@@ -60,7 +60,6 @@ class RequisitionController extends BaseController {
 
     def listOfMedicine() {
         List<GroovyRowResult> lst=requisitionService.listOfMedicine()
-
         Map result=new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())
