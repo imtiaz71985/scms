@@ -1,6 +1,6 @@
 package com.scms
 
-class MedicineReceive {
+class Receive {
     long id
     long version
     String receiveNo
