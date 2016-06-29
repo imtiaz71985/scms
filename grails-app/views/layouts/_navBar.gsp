@@ -123,15 +123,10 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/medicineInfo/show,/requisition/show">
+                <sec:ifAnyUrls urls="/requisition/show">
                     <li>
                         <a href="#"><i class="fa fa-database"></i>&nbsp;Inventory<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <sec:access url="/medicineInfo/show">
-                                <li>
-                                    <a href="#medicineInfo/show"><i class="fa fa-medkit"></i>&nbsp;Medicine</a>
-                                </li>
-                            </sec:access>
                             <sec:access url="/requisition/show">
                                 <li>
                                     <a href="#requisition/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition</a>

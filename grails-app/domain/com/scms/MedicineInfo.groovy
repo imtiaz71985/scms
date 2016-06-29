@@ -12,9 +12,10 @@ class MedicineInfo {
     String unitType
     double unitPrice
     double mrpPrice
+    double stockQty
 
     static constraints = {
-
+            stockQty  nullable: true
     }
     static mapping = {
         type  index: 'system_entity_medicine_type_id_idx'

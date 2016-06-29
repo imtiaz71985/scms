@@ -2,18 +2,13 @@ package scms
 
 import actions.serviceHeadInfo.CreateServiceHeadInfoActionService
 import actions.serviceHeadInfo.DeleteServiceHeadInfoActionService
-import actions.serviceHeadInfo.ListServiceHeadInfoActionService
 import actions.serviceHeadInfo.UpdateServiceHeadInfoActionService
-import com.scms.RegistrationInfo
-import com.scms.SecUser
 import com.scms.ServiceHeadInfo
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import service.ServiceHeadInfoService
-
-import java.text.SimpleDateFormat
 
 class ServiceHeadInfoController extends BaseController{
     SpringSecurityService springSecurityService

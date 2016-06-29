@@ -13,8 +13,8 @@
     <sec:access url="/requisition/update">
         <li onclick="editRecord();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-    <sec:access url="/requisition/sendRequest">
-        <li onclick="sendRequest();"><i class="fa fa-mail-forward"></i>Send</li>
+    <sec:access url="/requisition/sendRequisition">
+        <li onclick="sendRequisition();"><i class="fa fa-mail-forward"></i>Send</li>
     </sec:access>
 </ul>
 </script>
@@ -167,11 +167,11 @@
         }
         showLoadingSpinner(true);
         var id = getSelectedIdFromGridKendo(gridRequisition);
-        var loc = "${createLink(controller: 'requisition', action: 'select')}?id=" + id;
+        var loc = "${createLink(controller: 'requisition', action: 'selectForEdit')}?id=" + id;
         router.navigate(formatLink(loc));
         return false;
     }
-    function sendRequest() {
+    function sendRequisition() {
         if (executeCommonPreConditionForSelectKendo(gridRequisition, 'requisition') == false) {
             return;
         }
@@ -181,7 +181,7 @@
             return false;
         }
         showLoadingSpinner(true);
-        var actionUrl = "${createLink(controller: 'requisition', action: 'sendRequest')}?id=" + obj.id;
+        var actionUrl = "${createLink(controller: 'requisition', action: 'sendRequisition')}?id=" + obj.id;
         jQuery.ajax({
             type: 'post',
             url: actionUrl,

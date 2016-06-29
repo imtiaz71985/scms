@@ -1,21 +1,14 @@
 package scms
 
-import actions.requisition.AdjustmentRequisitionRequestActionService
-import actions.requisition.ApproveRequisitionRequestActionService
-import actions.requisition.CreateRequisitionActionService
-import actions.requisition.ListAllMedicineActionService
-import actions.requisition.ListRequisitionActionService
-import actions.requisition.ListRequisitionPRActionService
-import actions.requisition.SelectRequisitionActionService
-import actions.requisition.SelectRequisitionPRActionService
-import actions.requisition.SendRequisitionRequestActionService
-import actions.requisition.UpdateRequisitionActionService
+import actions.requisition.*
 import com.scms.Requisition
 import com.scms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
+import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
+import service.RequisitionService
 
 import java.text.SimpleDateFormat
 
@@ -31,7 +24,7 @@ class RequisitionController extends BaseController {
     ApproveRequisitionRequestActionService approveRequisitionRequestActionService
     AdjustmentRequisitionRequestActionService adjustmentRequisitionRequestActionService
     SelectRequisitionPRActionService selectRequisitionPRActionService
-    ListAllMedicineActionService listAllMedicineActionService
+   RequisitionService requisitionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST", select: "POST", list: "POST"
@@ -45,7 +38,7 @@ class RequisitionController extends BaseController {
         String requisitionNo = generateRequisitionNo()
         render(view: "/requisition/create", model: [requisitionNo: requisitionNo])
     }
-    def select(){
+    def selectForEdit(){
         String view = '/requisition/update'
         renderView(selectRequisitionActionService, params, view)
     }
@@ -65,8 +58,13 @@ class RequisitionController extends BaseController {
         renderOutput(listRequisitionActionService, params)
     }
 
-    def listMedicine() {
-        renderOutput(listAllMedicineActionService, params)
+    def listOfMedicine() {
+        List<GroovyRowResult> lst=requisitionService.listOfMedicine()
+
+        Map result=new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
     }
 
     private String generateRequisitionNo() {
@@ -89,7 +87,7 @@ class RequisitionController extends BaseController {
         result.put('requisitionNo', requisitionNo)
         render result as JSON
     }
-    def sendRequest() {
+    def sendRequisition() {
         renderOutput(sendRequisitionRequestActionService, params)
     }
     def showPR() {

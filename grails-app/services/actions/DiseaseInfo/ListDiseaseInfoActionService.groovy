@@ -1,7 +1,6 @@
 package actions.DiseaseInfo
 
 import com.model.ListDiseaseInfoActionServiceModel
-import com.model.ListServiceHeadInfoActionServiceModel
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
