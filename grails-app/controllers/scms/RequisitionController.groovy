@@ -15,16 +15,17 @@ import java.text.SimpleDateFormat
 class RequisitionController extends BaseController {
 
     SpringSecurityService springSecurityService
+    RequisitionService requisitionService
     CreateRequisitionActionService createRequisitionActionService
     UpdateRequisitionActionService updateRequisitionActionService
     ListRequisitionActionService listRequisitionActionService
     SelectRequisitionActionService selectRequisitionActionService
+    SelectForEditRequisitionActionService selectForEditRequisitionActionService
     SendRequisitionRequestActionService sendRequisitionRequestActionService
     ListRequisitionPRActionService listRequisitionPRActionService
     ApproveRequisitionRequestActionService approveRequisitionRequestActionService
     AdjustmentRequisitionRequestActionService adjustmentRequisitionRequestActionService
     SelectRequisitionPRActionService selectRequisitionPRActionService
-   RequisitionService requisitionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST", select: "POST", list: "POST"
@@ -40,7 +41,7 @@ class RequisitionController extends BaseController {
     }
     def selectForEdit(){
         String view = '/requisition/update'
-        renderView(selectRequisitionActionService, params, view)
+        renderView(selectForEditRequisitionActionService, params, view)
     }
     def details(){
         String view = '/requisition/details'
