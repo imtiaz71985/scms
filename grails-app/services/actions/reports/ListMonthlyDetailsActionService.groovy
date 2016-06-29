@@ -1,4 +1,4 @@
-package actions.medicineSellInfo
+package actions.reports
 
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
@@ -12,7 +12,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
-class ListMonthWiseMedicineSellInfoActionService extends BaseService implements ActionServiceIntf {
+class ListMonthlyDetailsActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -66,32 +66,60 @@ class ListMonthWiseMedicineSellInfoActionService extends BaseService implements 
                 WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_amount,
 
+                COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                GROUP BY tcm2.service_token_no),0) AS consultation_count,
+
                 COALESCE((SELECT SUM(sti.subsidy_amount)
                 FROM service_token_info sti
                         WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
                         GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_amount,
+
+                COALESCE((SELECT COUNT(sti.service_token_no)
+                FROM service_token_info sti
+                        WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field AND sti.subsidy_amount > 0
+                        GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_count,
+
                 COALESCE((SELECT SUM(sc3.charge_amount)
                          FROM token_and_charge_mapping tcm3
                         LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                         WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
                         GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_amount,
 
+                COALESCE((SELECT COUNT(sc3.id)
+                         FROM token_and_charge_mapping tcm3
+                        RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
+                        WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+                        GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_count,
+
                 COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
                     WHERE ri.create_date = c.date_field GROUP BY ri.create_date ),0) AS new_patient,
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
-                    WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_revisit,
+                    WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
+                    GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_revisit,
+
+                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
+                    WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
+                    GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_followup,
 
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
-                WHERE ri.create_date = c.date_field GROUP BY ri.create_date ),0)+
+                WHERE ri.create_date = c.date_field GROUP BY ri.create_date ),0) +
+
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
-                WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)) AS total_patient
+                WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
+                GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) +
+
+                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
+                WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
+                GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)) AS total_patient
 
                 FROM calendar c
                 LEFT JOIN registration_info ri ON ri.create_date = c.date_field
                 LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
             WHERE c.date_field BETWEEN :fromDate AND :toDate
-            GROUP BY c.date_field;;
+            GROUP BY c.date_field;
         """
 
         String queryCount = """

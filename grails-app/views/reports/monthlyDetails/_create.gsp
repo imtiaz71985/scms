@@ -7,10 +7,10 @@
                 </div>
             </div>
 
-            <g:form name='monthWiseSellForm' id='monthWiseSellForm' class="form-horizontal form-widgets" role="form">
+            <g:form name='detailsForm' id='detailsForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
                     <div class="form-group">
-                        <label class="col-md-1 control-label label-required" for="month">From:</label>
+                        <label class="col-md-1 control-label label-required" for="month">Month:</label>
 
                         <div class="col-md-3">
                             <input type='text' tabindex="2" required="required" onkeydown="return false;"
@@ -31,12 +31,17 @@
                             role="button" tabindex="3"
                             aria-disabled="false"><span class="k-icon k-i-search"></span>View Result
                     </button>
+                        <button id="download" name="download" type="button" data-role="button"
+                                class="k-button k-button-icontext pull-right" role="button"
+                                onclick="downloadMonthlyDetails()"
+                                aria-disabled="false"><span class="fa fa-file-pdf-o"></span> &nbsp;Download
+                        </button>
                 </div>
             </g:form>
         </div>
     </div>
 
     <div class="row">
-        <div id="gridSellReportInfo"></div>
+        <div id="gridDetails"></div>
     </div>
 </div>

@@ -1,12 +1,6 @@
 package scms
 
-import actions.medicineSellInfo.CreateMedicineSellInfoActionService
-import actions.medicineSellInfo.DeleteMedicineSellInfoActionService
-import actions.medicineSellInfo.DownloadMonthWiseMedicineSellInfoActionService
-import actions.medicineSellInfo.ListMedicineSellInfoActionService
-import actions.medicineSellInfo.ListMonthWiseMedicineSellInfoActionService
-import actions.medicineSellInfo.SelectMedicineSellInfoActionService
-import actions.medicineSellInfo.UpdateMedicineSellInfoActionService
+import actions.medicineSellInfo.*
 import com.scms.MedicineInfo
 import com.scms.MedicineSellInfo
 import com.scms.SecUser
@@ -26,8 +20,6 @@ class MedicineSellInfoController extends BaseController {
     DeleteMedicineSellInfoActionService deleteMedicineSellInfoActionService
     ListMedicineSellInfoActionService listMedicineSellInfoActionService
     SelectMedicineSellInfoActionService selectMedicineSellInfoActionService
-    ListMonthWiseMedicineSellInfoActionService listMonthWiseMedicineSellInfoActionService
-    DownloadMonthWiseMedicineSellInfoActionService downloadMonthWiseMedicineSellInfoActionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
@@ -96,16 +88,6 @@ class MedicineSellInfoController extends BaseController {
         return voucherNo
     }
 
-    //////////+++++++++++++++++ Reports ++++++++++++++++++++///////////////////////
-    def showMonthlyStatus() {
-        render(view: "/reports/medicineSellInfo/show")
-    }
-    def listMonthlyStatus() {
-        renderOutput(listMonthWiseMedicineSellInfoActionService, params)
-    }
-    def downloadMonthWiseSell() {
-        Map result = (Map) getReportResponse(downloadMonthWiseMedicineSellInfoActionService, params).report
-        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
-    }
+
 
 }
