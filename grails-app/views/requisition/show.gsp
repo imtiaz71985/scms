@@ -23,7 +23,7 @@
     var gridRequisition, dataSource;
 
     $(document).ready(function () {
-        onLoadgRequisitionPage();
+        onLoadRequisitionPage();
         initRequisitionGrid();
     });
 
@@ -33,7 +33,7 @@
         router.navigate(formatLink(loc));
         return false;
     }
-    function onLoadgRequisitionPage() {
+    function onLoadRequisitionPage() {
         defaultPageTile("Medicine Requisition", null);
     }
 
@@ -165,9 +165,13 @@
         if (executeCommonPreConditionForSelectKendo(gridRequisition, 'requisition') == false) {
             return;
         }
+        var obj = getSelectedObjectFromGridKendo(gridRequisition);
+        if (obj.isSend) {
+            showError('Could not update this requisition');
+            return false;
+        }
         showLoadingSpinner(true);
-        var id = getSelectedIdFromGridKendo(gridRequisition);
-        var loc = "${createLink(controller: 'requisition', action: 'selectForEdit')}?id=" + id;
+        var loc = "${createLink(controller: 'requisition', action: 'selectForEdit')}?id=" + obj.id;
         router.navigate(formatLink(loc));
         return false;
     }

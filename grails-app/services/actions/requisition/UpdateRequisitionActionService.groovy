@@ -75,8 +75,10 @@ class UpdateRequisitionActionService extends BaseService implements ActionServic
         String requisitionNo = parameterMap.requisitionNo
         List lstRowsMedicine = (List) gridModelMedicine
         for (int i = 0; i < lstRowsMedicine.size(); i++) {
-            RequisitionDetails medicine = buildMedicineDetailsObject(lstRowsMedicine[i],requisitionNo)
-            lstMedicine.add(medicine)
+            if(lstRowsMedicine[i].reqQty>0){
+                RequisitionDetails medicine = buildMedicineDetailsObject(lstRowsMedicine[i],requisitionNo)
+                lstMedicine.add(medicine)
+            }
         }
         return lstMedicine
     }
@@ -84,11 +86,6 @@ class UpdateRequisitionActionService extends BaseService implements ActionServic
     private static RequisitionDetails buildMedicineDetailsObject(def params, String requisitionNo) {
         RequisitionDetails details = new RequisitionDetails(params)
         details.reqNo = requisitionNo
-        try{
-            details.reqQty = params.quantity
-        }catch (Exception e){
-            details.reqQty = Double.parseDouble(params.quantity)
-        }
         return details
     }
 

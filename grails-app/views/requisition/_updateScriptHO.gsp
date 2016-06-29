@@ -1,13 +1,11 @@
 <script language="javascript">
-    var frmRequisition, gridMedicineRequisition, dataSourceForMedicine, requisitionNo, totalAmount = 0,isUpdate=false;
+    var frmRequisition, gridMedicineRequisition, dataSourceForMedicine, requisitionNo, totalAmount = 0;
 
     $(document).ready(function () {
         requisitionNo = '${requisitionNo}';
         $("#requisitionNo").val(requisitionNo);
+        $("#hospitalName").val('${hospitalName}');
         totalAmount = ${totalAmount?totalAmount:0};
-        if(totalAmount>0){
-            isUpdate=true;
-        }
         initMedicineRequisitionGrid();
         defaultPageTile("Requisition details", null);
     });
@@ -29,17 +27,13 @@
         }
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
-        var actionUrl = "${createLink(controller:'requisition', action: 'create')}";
-        if(isUpdate){
-            actionUrl = "${createLink(controller:'requisition', action: 'update')}";
-        }
         var formData = jQuery('#frmRequisition').serializeArray();
         formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineRequisition.dataSource.data())});
 
         jQuery.ajax({
             type: 'post',
             data: formData,
-            url: actionUrl,
+            url: "${createLink(controller:'requisition', action: 'updateHO')}",
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -87,8 +81,8 @@
                         unitPrice: {editable: false, type: "number"},
                         unitType: {editable: false, type: "string"},
                         stockQty: {editable: false, type: "number"},
-                        reqQty: {type: "number"},
-                        approveQty: {editable: false, type: "number"},
+                        reqQty: {editable: false,type: "number"},
+                        approvedQty: { type: "number"},
                         procQty: {editable: false, type: "number"},
                         amount: {type: "number"}
                     }
@@ -122,7 +116,7 @@
                 var input = e.container.find(".k-input");
                 var value = input.val(),
                         minus = input.val();
-                $("[name='reqQty']", e.container).blur(function () {
+                $("[name='approvedQty']", e.container).blur(function () {
                     var input = $(this);
                     value = input.val();
                     var row = $(this).closest("tr");
@@ -151,13 +145,13 @@
                 {
                     field: "unitType",
                     title: "Unit",
-                    width: 30,
+                    width: 20,
                     sortable: false,
                     filterable: false
                 }, {
                     field: "unitPrice",
-                    title: "Price",
-                    width: 50,
+                    title: "Unit Price",
+                    width: 30,
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(unitPrice)#",
@@ -166,15 +160,25 @@
                 }, {
                     field: "stockQty",
                     title: "Stock Qty",
-                    width: 50,
+                    width: 30,
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     sortable: false,
                     filterable: false
-                }, {
+                },
+                {
                     field: "reqQty",
-                    title: "Req Qty",
-                    width: 50,
+                    title: "Requisition Qty",
+                    width: 40,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    sortable: false,
+                    filterable: false
+                },
+                {
+                    field: "approvedQty",
+                    title: "Approved Qty",
+                    width: 40,
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     sortable: false,
@@ -198,4 +202,5 @@
 
 
     }
+
 </script>

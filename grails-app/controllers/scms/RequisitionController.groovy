@@ -1,6 +1,7 @@
 package scms
 
 import actions.requisition.*
+import com.scms.HospitalLocation
 import com.scms.Requisition
 import com.scms.SecUser
 import grails.converters.JSON
@@ -20,12 +21,10 @@ class RequisitionController extends BaseController {
     UpdateRequisitionActionService updateRequisitionActionService
     ListRequisitionActionService listRequisitionActionService
     SelectRequisitionActionService selectRequisitionActionService
-    SelectForEditRequisitionActionService selectForEditRequisitionActionService
     SendRequisitionRequestActionService sendRequisitionRequestActionService
-    ListRequisitionPRActionService listRequisitionPRActionService
+    ListRequisitionHOActionService listRequisitionHOActionService
     ApproveRequisitionRequestActionService approveRequisitionRequestActionService
     AdjustmentRequisitionRequestActionService adjustmentRequisitionRequestActionService
-    SelectRequisitionPRActionService selectRequisitionPRActionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST", select: "POST", list: "POST"
@@ -39,14 +38,18 @@ class RequisitionController extends BaseController {
         String requisitionNo = generateRequisitionNo()
         render(view: "/requisition/create", model: [requisitionNo: requisitionNo])
     }
-    def selectForEdit(){
-        String view = '/requisition/update'
-        renderView(selectForEditRequisitionActionService, params, view)
+
+    def selectForEdit() {
+        long id = Long.parseLong(params.id.toString())
+        Requisition requisition = Requisition.read(id)
+        render(view: "/requisition/create", model: [requisitionNo: requisition.reqNo, totalAmount: requisition.totalAmount])
     }
-    def details(){
+
+    def details() {
         String view = '/requisition/details'
         renderView(selectRequisitionActionService, params, view)
     }
+
     def create() {
         renderOutput(createRequisitionActionService, params)
     }
@@ -60,8 +63,9 @@ class RequisitionController extends BaseController {
     }
 
     def listOfMedicine() {
-        List<GroovyRowResult> lst=requisitionService.listOfMedicine()
-        Map result=new HashedMap()
+        String requisitionNo = params.requisitionNo
+        List<GroovyRowResult> lst = requisitionService.listOfMedicine(requisitionNo)
+        Map result = new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())
         render result as JSON
@@ -87,23 +91,35 @@ class RequisitionController extends BaseController {
         result.put('requisitionNo', requisitionNo)
         render result as JSON
     }
+
     def sendRequisition() {
         renderOutput(sendRequisitionRequestActionService, params)
     }
-    def showPR() {
-        render(view: "/requisition/showPR")
+
+    def showHO() {
+        render(view: "/requisition/showHO")
     }
-    def listPR() {
-        renderOutput(listRequisitionPRActionService, params)
+
+    def listHO() {
+        renderOutput(listRequisitionHOActionService, params)
     }
+
     def approveRequest() {
         renderOutput(approveRequisitionRequestActionService, params)
     }
-    def selectPR(){
-        String view = '/requisition/updatePR'
-        renderView(selectRequisitionPRActionService, params, view)
+
+    def selectHO() {
+        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        HospitalLocation hospital = HospitalLocation.findByCode(hospital_code)
+        long id = Long.parseLong(params.id.toString())
+        Requisition requisition = Requisition.read(id)
+        render(view: "/requisition/updateHO", model: [requisitionNo: requisition.reqNo,
+                                                      totalAmount  : requisition.totalAmount,
+                                                      hospitalName : hospital.name])
+
     }
-    def updatePR(){
+
+    def updateHO() {
         renderOutput(adjustmentRequisitionRequestActionService, params)
     }
 }

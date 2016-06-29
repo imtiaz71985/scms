@@ -132,9 +132,9 @@
                                     <a href="#requisition/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/requisition/showPR">
+                            <sec:access url="/requisition/showHO">
                                 <li>
-                                    <a href="#requisition/showPR"><i class="fa fa-hand-paper-o"></i>&nbsp;Purchase Request</a>
+                                    <a href="#requisition/showHO"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition Approval</a>
                                 </li>
                             </sec:access>
                         </ul>

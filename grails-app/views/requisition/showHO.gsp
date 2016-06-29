@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div id="gridRequisitionPR"></div>
+        <div id="gridRequisitionHO"></div>
     </div>
 </div>
 
@@ -10,21 +10,21 @@
     <sec:access url="/requisition/update">
         <li onclick="editRecord();"><i class="fa fa-edit"></i>Adjustment</li>
     </sec:access>
-    <sec:access url="/requisition/sendRequest">
+    <sec:access url="/requisition/approveRequest">
         <li onclick="sendRequest();"><i class="fa fa-check-circle-o"></i>Approve</li>
     </sec:access>
 </ul>
 </script>
 
 <script language="javascript">
-    var gridRequisitionPR, dataSource;
+    var gridRequisitionHO, dataSource;
 
     $(document).ready(function () {
-        onLoadgRequisitionPRPage();
+        onLoadgRequisitionHOPage();
         initRequisitionPRGrid();
     });
 
-    function onLoadgRequisitionPRPage() {
+    function onLoadgRequisitionHOPage() {
         defaultPageTile("Requisition Request", null);
     }
 
@@ -32,7 +32,7 @@
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'requisition', action: 'listPR')}",
+                    url: "${createLink(controller: 'requisition', action: 'listHO')}",
                     dataType: "json",
                     type: "post"
                 }
@@ -65,7 +65,7 @@
 
     function initRequisitionPRGrid() {
         initDataSource();
-        $("#gridRequisitionPR").kendoGrid({
+        $("#gridRequisitionHO").kendoGrid({
             dataSource: dataSource,
             height: getGridHeightKendo(),
             selectable: true,
@@ -132,7 +132,7 @@
             },
             toolbar: kendo.template($("#gridToolbar").html())
         });
-        gridRequisitionPR = $("#gridRequisitionPR").data("kendoGrid");
+        gridRequisitionHO = $("#gridRequisitionHO").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
     function showDetails(e) {
@@ -143,20 +143,20 @@
     }
 
     function editRecord() {
-        if (executeCommonPreConditionForSelectKendo(gridRequisitionPR, 'requisition') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridRequisitionHO, 'requisition') == false) {
             return;
         }
         showLoadingSpinner(true);
-        var id = getSelectedIdFromGridKendo(gridRequisitionPR);
-        var loc = "${createLink(controller: 'requisition', action: 'selectPR')}?id=" + id;
+        var id = getSelectedIdFromGridKendo(gridRequisitionHO);
+        var loc = "${createLink(controller: 'requisition', action: 'selectHO')}?id=" + id;
         router.navigate(formatLink(loc));
         return false;
     }
     function sendRequest() {
-        if (executeCommonPreConditionForSelectKendo(gridRequisitionPR, 'requisition') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridRequisitionHO, 'requisition') == false) {
             return;
         }
-        var obj = getSelectedObjectFromGridKendo(gridRequisitionPR);
+        var obj = getSelectedObjectFromGridKendo(gridRequisitionHO);
         if (obj.isSend) {
             showError('Already send this requisition');
             return false;
@@ -186,11 +186,11 @@
             showLoadingSpinner(false);
         } else {
             var newEntry = result.requisition;
-            var selectedRow = gridRequisitionPR.select();
-            var allItems = gridRequisitionPR.items();
+            var selectedRow = gridRequisitionHO.select();
+            var allItems = gridRequisitionHO.items();
             var selectedIndex = allItems.index(selectedRow);
-            gridRequisitionPR.removeRow(selectedRow);
-            gridRequisitionPR.dataSource.insert(selectedIndex, newEntry);
+            gridRequisitionHO.removeRow(selectedRow);
+            gridRequisitionHO.dataSource.insert(selectedIndex, newEntry);
             showSuccess(result.message);
         }
     }

@@ -1,19 +1,24 @@
 <div id="application_top_panel" class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
-            Medicine requisition
+            Approve Medicine requisition
         </div>
     </div>
 
     <form id="frmRequisition" name="frmRequisition" class="form-horizontal form-widgets" role="form">
         <div class="panel-body">
-                <div class="form-group">
-                    <label class="col-md-2 control-label label-optional" for="requisitionNo">Requisition No:</label>
+            <div class="form-group">
+                <label class="col-md-1 control-label label-optional" for="requisitionNo">Hospital:</label>
 
-                    <div class="col-md-3">
-                        <input type="text" class="form-control" id="requisitionNo" name="requisitionNo" readonly="true" />
-                    </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="hospitalName" name="hospitalName" readonly="true" />
                 </div>
+                <label class="col-md-2 control-label label-optional" for="requisitionNo">Requisition No:</label>
+
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="requisitionNo" name="requisitionNo" readonly="true" />
+                </div>
+            </div>
             <div class="form-group">
                 <div id="gridMedicine"></div>
             </div>

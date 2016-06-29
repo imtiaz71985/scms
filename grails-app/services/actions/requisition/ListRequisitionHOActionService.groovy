@@ -7,7 +7,7 @@ import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class ListRequisitionPRActionService extends BaseService implements ActionServiceIntf {
+class ListRequisitionHOActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
