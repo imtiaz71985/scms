@@ -11,7 +11,7 @@ import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class SelectRequisitionActionService extends BaseService implements ActionServiceIntf {
+class SelectForEditRequisitionActionService extends BaseService implements ActionServiceIntf {
 
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
     private static final String TOTAL_AMOUNT = "totalAmount"

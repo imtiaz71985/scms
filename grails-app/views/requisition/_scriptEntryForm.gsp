@@ -1,6 +1,5 @@
-
 <script language="javascript">
-    var frmRequisition,quantity,gridMedicineRequisition, dataSourceForMedicine, dropDownMedicine,
+    var frmRequisition, quantity, gridMedicineRequisition, dataSourceForMedicine, dropDownMedicine,
             requisitionNo, medicineName, unitPrice = 0, totalAmount = 0;
 
     $(document).ready(function () {
@@ -11,13 +10,12 @@
         defaultPageTile("Requisition details", null);
     });
 
-    function  resetForm(){
+    function resetForm() {
         window.history.back();
     }
 
     function executePreCondition() {
-        var count = gridMedicineRequisition.dataSource.total();
-        if (count == 0) {
+        if (totalAmount == 0) {
             showError('No data found to save');
             return false;
         }
@@ -29,7 +27,7 @@
         }
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
-        var formData=jQuery('#frmRequisition').serializeArray();
+        var formData = jQuery('#frmRequisition').serializeArray();
         formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineRequisition.dataSource.data())});
 
         jQuery.ajax({
@@ -55,13 +53,8 @@
         if (result.isError) {
             showError(result.message);
             showLoadingSpinner(false);
-            $("#unit").text('');
         } else {
             showSuccess(result.message);
-            //clearForm($("#frmRequisition"), $('#medicineId'));
-
-           // gridMedicineRequisition.setDataSource(dsDr);
-            //$("#unit").text('');
             window.history.back();
         }
     }
@@ -82,15 +75,16 @@
                     fields: {
                         id: {type: "number"},
                         version: {type: "number"},
+                        medicineId: {type: "number"},
                         genericName: {editable: false, type: "string"},
-                        medicineName:{editable: false, type: "string"},
+                        medicineName: {editable: false, type: "string"},
                         unitPrice: {editable: false, type: "number"},
                         unitType: {editable: false, type: "string"},
                         stockQty: {editable: false, type: "number"},
                         reqQty: {type: "number"},
                         approveQty: {editable: false, type: "number"},
                         procQty: {editable: false, type: "number"},
-                        amount: { type: "number"}
+                        amount: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -115,58 +109,65 @@
             reorderable: true,
             pageable: false,
             editable: true,
-            edit: function(e) {
-            var input = e.container.find(".k-input");
-            var value = input.val(),
-                    minus = input.val();
-            $("[name='reqQty']", e.container).blur(function(){
-                var input = $(this);
-                value = input.val();
-                var row = $(this).closest("tr");
-                var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
-                totalAmount-=minus*data.unitPrice;
-                data.set('amount',value*data.unitPrice);
-                totalAmount=parseFloat(totalAmount,10)+parseFloat(value*data.unitPrice,10);
-                $("#footerSpan").text(formatAmount(totalAmount));
-            });
-        },
+            edit: function (e) {
+                var input = e.container.find(".k-input");
+                var value = input.val(),
+                        minus = input.val();
+                $("[name='reqQty']", e.container).blur(function () {
+                    var input = $(this);
+                    value = input.val();
+                    var row = $(this).closest("tr");
+                    var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
+                    totalAmount -= minus * data.unitPrice;
+                    data.set('amount', value * data.unitPrice);
+                    totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
+                    $("#footerSpan").text(formatAmount(totalAmount));
+                });
+            },
 
-        columns: [
+            columns: [
                 {
                     field: "genericName",
                     title: "Generic Name",
-                    width: 100,
+                    width: 60,
                     sortable: false,
                     filterable: false
                 }, {
                     field: "medicineName",
                     title: "Medicine Name",
-                    width: 100,
+                    width: 120,
                     sortable: false,
                     filterable: false
                 },
                 {
                     field: "unitType",
                     title: "Unit",
-                    width: 50,
+                    width: 30,
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "unitPrice",
                     title: "Price",
                     width: 50,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(unitPrice)#",
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "stockQty",
                     title: "Stock Qty",
                     width: 50,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "reqQty",
                     title: "Req Qty",
                     width: 50,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
                     sortable: false,
                     filterable: false
                 },
@@ -176,8 +177,8 @@
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(amount)#",
-                    sortable: false,filterable: false,width: 50,
-                    footerTemplate:"<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
+                    sortable: false, filterable: false, width: 50,
+                    footerTemplate: "<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
                 }
             ],
             filterable: {
@@ -187,10 +188,9 @@
         gridMedicineRequisition = $("#gridMedicine").data("kendoGrid");
 
 
-
     }
 
-    function getRequisitionNo(){
+    function getRequisitionNo() {
         $.ajax({
             url: "${createLink(controller: 'requisition', action:  'retrieveRequisitionNo')}",
             success: function (data, textStatus) {
