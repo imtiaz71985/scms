@@ -34,7 +34,7 @@
                 COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                 INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                GROUP BY tcm2.service_token_no),0) AS consultation_count,
+                GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_count,
 
                 COALESCE((SELECT SUM(sti.subsidy_amount)
                 FROM service_token_info sti
