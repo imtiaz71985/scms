@@ -11,6 +11,8 @@ class Requisition {
     String hospitalCode
     boolean isApproved
     boolean isReceived
+    boolean isDelivered
+    Date deliveryDate
     Date procAdjDate
     boolean isSend
     long sendTo
@@ -31,12 +33,15 @@ class Requisition {
         totalAmount(nullable: true)
         approvedAmount(nullable: true)
         procAmount(nullable: true)
+        deliveryDate(nullable: true)
+        isDelivered(nullable: true)
     }
     static mapping = {
         createDate type:'date'
         approvedDate type:'date'
         procAdjDate type:'date'
         sendDate type:'date'
+        deliveryDate type:'date'
         hospitalCode index: 'requisition_hospital_code_idx'
     }
 }

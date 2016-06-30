@@ -8,6 +8,7 @@ class RequisitionDetails {
     double reqQty
     double approvedQty
     double procurementQty
+    double receiveQty
     double amount
     double approveAmount
     double procAmount
@@ -15,6 +16,7 @@ class RequisitionDetails {
     static constraints = {
         approvedQty(nullable: true)
         procurementQty(nullable: true)
+        receiveQty(nullable: true)
         approveAmount(nullable: true)
         procAmount(nullable: true)
     }
