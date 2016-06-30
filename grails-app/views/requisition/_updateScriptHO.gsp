@@ -63,7 +63,7 @@
         dataSourceForMedicine = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'requisition', action: 'listOfMedicine')}?requisitionNo=" + requisitionNo,
+                    url: "${createLink(controller: 'requisition', action: 'listOfMedicineHO')}?requisitionNo=" + requisitionNo,
                     dataType: "json",
                     type: "post"
                 }
@@ -81,10 +81,11 @@
                         unitPrice: {editable: false, type: "number"},
                         unitType: {editable: false, type: "string"},
                         stockQty: {editable: false, type: "number"},
-                        reqQty: {editable: false,type: "number"},
-                        approvedQty: { type: "number"},
+                        reqQty: {editable: false, type: "number"},
+                        approvedQty: {type: "number"},
                         procQty: {editable: false, type: "number"},
-                        amount: {type: "number"}
+                        amount: {editable: false,type: "number"},
+                        approveAmount: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -93,7 +94,8 @@
                 }
             },
             aggregate: [
-                {field: "amount", aggregate: "sum"}
+                {field: "amount", aggregate: "sum"},
+                {field: "approveAmount", aggregate: "sum"}
             ],
             serverPaging: false,
             serverFiltering: true,
@@ -122,7 +124,7 @@
                     var row = $(this).closest("tr");
                     var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
                     totalAmount -= minus * data.unitPrice;
-                    data.set('amount', value * data.unitPrice);
+                    data.set('approveAmount', value * data.unitPrice);
                     totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
                     $("#footerSpan").text(formatAmount(totalAmount));
                 });
@@ -167,31 +169,52 @@
                     filterable: false
                 },
                 {
-                    field: "reqQty",
-                    title: "Requisition Qty",
-                    width: 40,
-                    attributes: {style: setAlignRight()},
-                    headerAttributes: {style: setAlignRight()},
-                    sortable: false,
-                    filterable: false
+                    title: "Requisition", headerAttributes: {style: setAlignCenter()},
+                    columns: [
+
+                        {
+                            field: "reqQty",
+                            title: "Qty",
+                            width: 30,
+                            attributes: {style: setAlignRight()},
+                            headerAttributes: {style: setAlignRight()},
+                            sortable: false,
+                            filterable: false
+                        },
+                        {
+                            field: "amount",
+                            title: "Amount",
+                            attributes: {style: setAlignRight()},
+                            headerAttributes: {style: setAlignRight()},
+                            template: "#=formatAmount(amount)#",
+                            sortable: false, filterable: false, width: 50,
+                            footerTemplate: "<div style='text-align: right'>Total : #=formatAmount(sum)#</div>"
+                        }
+                    ]
                 },
                 {
-                    field: "approvedQty",
-                    title: "Approved Qty",
-                    width: 40,
-                    attributes: {style: setAlignRight()},
-                    headerAttributes: {style: setAlignRight()},
-                    sortable: false,
-                    filterable: false
-                },
-                {
-                    field: "amount",
-                    title: "Amount",
-                    attributes: {style: setAlignRight()},
-                    headerAttributes: {style: setAlignRight()},
-                    template: "#=formatAmount(amount)#",
-                    sortable: false, filterable: false, width: 50,
-                    footerTemplate: "<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(sum)#</span></div>"
+                    title: "Approved", headerAttributes: {style: setAlignCenter()},
+                    columns: [
+
+                        {
+                            field: "approvedQty",
+                            title: "Qty",
+                            width: 40,
+                            attributes: {style: setAlignRight()},
+                            headerAttributes: {style: setAlignRight()},
+                            sortable: false,
+                            filterable: false
+                        },
+                        {
+                            field: "approveAmount",
+                            title: "Amount",
+                            attributes: {style: setAlignRight()},
+                            headerAttributes: {style: setAlignRight()},
+                            template: "#=formatAmount(approveAmount)#",
+                            sortable: false, filterable: false, width: 50,
+                            footerTemplate: "<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(sum)#</span></div>"
+                        }
+                    ]
                 }
             ],
             filterable: {
@@ -199,8 +222,6 @@
             }
         });
         gridMedicineRequisition = $("#gridMedicine").data("kendoGrid");
-
-
     }
 
 </script>

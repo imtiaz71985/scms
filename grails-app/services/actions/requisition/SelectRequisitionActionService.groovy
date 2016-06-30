@@ -15,6 +15,8 @@ class SelectRequisitionActionService extends BaseService implements ActionServic
 
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
     private static final String TOTAL_AMOUNT = "totalAmount"
+    private static final String APVD_AMOUNT = "apvdAmount"
+    private static final String PROC_AMOUNT = "procAmount"
     private static final String REQUISITION_NO = "requisitionNo"
     private static final String REQUISITION = "requisition"
     private static final String REQUISITION_DETAILS = "requisitionDetails"
@@ -32,6 +34,8 @@ class SelectRequisitionActionService extends BaseService implements ActionServic
                 return super.setError(params, NOT_FOUND_MASSAGE)
             }
             params.put(TOTAL_AMOUNT, requisition.totalAmount)
+            params.put(APVD_AMOUNT, requisition.approvedAmount)
+            params.put(PROC_AMOUNT, requisition.procAmount)
             params.put(REQUISITION_NO, requisition.reqNo)
             params.put(REQUISITION, requisition)
             return params
@@ -88,7 +92,11 @@ class SelectRequisitionActionService extends BaseService implements ActionServic
             String voucherNo = singleRow.reqNo
             long medicineId = singleRow.medicineId
             int quantity = singleRow.reqQty
+            int apvdQty = singleRow.approvedQty
+            int procQty = singleRow.procurementQty
             double amount = singleRow.amount
+            double apvdAmount = singleRow.approveAmount
+            double procAmount = singleRow.procAmount
             String medicineName = EMPTY_SPACE
 
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
@@ -107,7 +115,11 @@ class SelectRequisitionActionService extends BaseService implements ActionServic
                     medicineId  : medicineId,
                     unitPrice   : medicineInfo.unitPrice,
                     quantity    : quantity,
-                    amount      : amount
+                    amount      : amount,
+                    apvdQty     : apvdQty,
+                    apvdAmount  : apvdAmount,
+                    procQty     : procQty,
+                    procAmount  : procAmount
             ]
             lstRows << eachDetails
         }

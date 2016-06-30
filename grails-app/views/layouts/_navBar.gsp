@@ -134,7 +134,7 @@
                             </sec:access>
                             <sec:access url="/requisition/showHO">
                                 <li>
-                                    <a href="#requisition/showHO"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition Approval</a>
+                                    <a href="#requisition/showHO"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition Adjustment</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/requisitionReceive/show">

@@ -74,7 +74,7 @@
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(amount)#",
                     sortable: false,filterable: false,width: 50,
-                    footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
+                    footerTemplate:"<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
                 }
             ],
             filterable: {

@@ -2,13 +2,18 @@ package actions.requisition
 
 import com.model.ListRequisitionActionServiceModel
 import com.scms.Requisition
+import com.scms.RequisitionDetails
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 
 @Transactional
-class ApproveRequisitionRequestActionService  extends BaseService implements ActionServiceIntf {
+class ApproveRequisitionRequestActionService extends BaseService implements ActionServiceIntf {
+
+    SpringSecurityService springSecurityService
 
     private static final String UPDATE_SUCCESS_MESSAGE = "Requisition request send successfully"
     private static final String REQUISITION = "requisition"
@@ -35,6 +40,15 @@ class ApproveRequisitionRequestActionService  extends BaseService implements Act
     public Map execute(Map result) {
         try {
             Requisition requisition = (Requisition) result.get(REQUISITION)
+            List<RequisitionDetails> lstDetails = RequisitionDetails.findAllByReqNo(requisition.reqNo)
+            if (lstDetails[0].approvedQty == 0) {
+                for (int i = 0; i > lstDetails.size(); i++) {
+                    lstDetails[i].approvedQty = lstDetails[i].reqQty
+                    lstDetails[i].approveAmount = lstDetails[i].amount
+                    lstDetails[i].save()
+                }
+                requisition.approvedAmount = requisition.totalAmount
+            }
             requisition.save()
             return result
         } catch (Exception ex) {
@@ -58,8 +72,10 @@ class ApproveRequisitionRequestActionService  extends BaseService implements Act
         return params
     }
 
-    private static Requisition buildObject(Requisition oldRequisition) {
+    private Requisition buildObject(Requisition oldRequisition) {
         oldRequisition.isApproved = Boolean.TRUE
+        oldRequisition.approvedBy = springSecurityService.principal.id
+        oldRequisition.approvedDate = DateUtility.getSqlDate(new Date())
         return oldRequisition
     }
 }

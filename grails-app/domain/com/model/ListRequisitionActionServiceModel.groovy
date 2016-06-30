@@ -7,7 +7,8 @@ class ListRequisitionActionServiceModel {
              CREATE OR REPLACE VIEW list_requisition_action_service_model AS
 
                       SELECT r.id,r.version, r.req_no as requisition_no,r.create_date AS requisition_date, u.username AS requisition_by,
-                      r.total_amount,r.is_approved,au.username AS approved_by,r.approved_date,r.is_send,hl.code AS hospital_code,hl.name AS hospital_name
+                      r.total_amount,r.is_approved,au.username AS approved_by,r.approved_date,r.is_send,hl.code AS hospital_code,
+                      hl.name AS hospital_name,r.approved_amount AS approved_amount
                             FROM requisition r
                             LEFT JOIN sec_user u ON u.id = r.created_by
                             LEFT JOIN hospital_location hl ON hl.code = u.hospital_code
@@ -26,6 +27,7 @@ class ListRequisitionActionServiceModel {
     boolean isApproved
     boolean isSend
     double totalAmount
+    double approvedAmount
     String hospitalCode
     String hospitalName
 

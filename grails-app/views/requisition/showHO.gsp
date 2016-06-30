@@ -8,11 +8,11 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
     <sec:access url="/requisition/update">
-        <li onclick="editRecord();"><i class="fa fa-edit"></i>Adjustment</li>
+        <li onclick="editRecord();"><i class="fa fa-check-circle-o"></i>Adjustment</li>
     </sec:access>
-    <sec:access url="/requisition/approveRequest">
-        <li onclick="sendRequest();"><i class="fa fa-check-circle-o"></i>Approve</li>
-    </sec:access>
+%{--    <sec:access url="/requisition/approveRequest">
+        <li onclick="approveRequest();"><i class="fa fa-check-circle-o"></i>Approve</li>
+    </sec:access>--}%
 </ul>
 </script>
 
@@ -47,6 +47,7 @@
                         requisitionBy: {type: "string"},
                         hospitalName: {type: "string"},
                         totalAmount: {type: "number"},
+                        approvedAmount: {type: "number"},
                         requisitionDate: {type: "date"},
                         isApproved: {type: "boolean"}
                     }
@@ -82,30 +83,46 @@
                 {
                     field: "requisitionNo",
                     title: "Requisition No",
-                    width: 60,
+                    width: 50,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
                 {
                     field: "requisitionBy",
                     title: "Requisition Details",
-                    width: 100,
+                    width: 120,
                     sortable: false,
                     template: "#=hospitalName # --(By #= requisitionBy# )"
                 },
                 {
-                    field: "requisitionDate", title: "Requisition Date", width: 100, sortable: false,
-                    filterable: {cell: {template: formatFilterableDate}},
+                    field: "requisitionDate", title: "Requisition Date", width: 60, sortable: false,
+                    filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=kendo.toString(kendo.parseDate(requisitionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
                 },
                 {
                     field: "totalAmount",
-                    title: "Total Amount",
-                    width: 50,
+                    title: "Req Amount",
+                    width: 40,
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(totalAmount)#",
+                    sortable: false,
+                    filterable: false
+                },
+                {
+                    field: "approvedDate", title: "Approved Date", width: 50, sortable: false,
+                    filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=approvedDate?kendo.toString(kendo.parseDate(approvedDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
+                },
+                {
+                    field: "approvedAmount",
+                    title: "Apvd Amount",
+                    width: 40,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(approvedAmount)#",
                     sortable: false,
                     filterable: false
                 },
@@ -137,7 +154,7 @@
     }
     function showDetails(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var loc = "${createLink(controller: 'requisition', action: 'details')}?id=" + dataItem.id;
+        var loc = "${createLink(controller: 'requisition', action: 'detailsHO')}?id=" + dataItem.id;
         router.navigate(formatLink(loc));
         return false;
     }
@@ -146,19 +163,23 @@
         if (executeCommonPreConditionForSelectKendo(gridRequisitionHO, 'requisition') == false) {
             return;
         }
+        var obj = getSelectedObjectFromGridKendo(gridRequisitionHO);
+        if (obj.isApproved) {
+            showError('Approved requisition could not be updated.');
+            return false;
+        }
         showLoadingSpinner(true);
-        var id = getSelectedIdFromGridKendo(gridRequisitionHO);
-        var loc = "${createLink(controller: 'requisition', action: 'selectHO')}?id=" + id;
+        var loc = "${createLink(controller: 'requisition', action: 'selectHO')}?id=" + obj.id;
         router.navigate(formatLink(loc));
         return false;
     }
-    function sendRequest() {
+    function approveRequest() {
         if (executeCommonPreConditionForSelectKendo(gridRequisitionHO, 'requisition') == false) {
             return;
         }
         var obj = getSelectedObjectFromGridKendo(gridRequisitionHO);
-        if (obj.isSend) {
-            showError('Already send this requisition');
+        if (obj.isApproved) {
+            showError('Already approve this requisition');
             return false;
         }
         showLoadingSpinner(true);

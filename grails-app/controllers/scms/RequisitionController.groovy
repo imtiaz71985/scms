@@ -49,6 +49,10 @@ class RequisitionController extends BaseController {
         String view = '/requisition/details'
         renderView(selectRequisitionActionService, params, view)
     }
+    def detailsHO() {
+        String view = '/requisition/detailsHO'
+        renderView(selectRequisitionActionService, params, view)
+    }
 
     def create() {
         renderOutput(createRequisitionActionService, params)
@@ -65,6 +69,14 @@ class RequisitionController extends BaseController {
     def listOfMedicine() {
         String requisitionNo = params.requisitionNo
         List<GroovyRowResult> lst = requisitionService.listOfMedicine(requisitionNo)
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
+    def listOfMedicineHO() {
+        String requisitionNo = params.requisitionNo
+        List<GroovyRowResult> lst = requisitionService.listOfMedicineHO(requisitionNo)
         Map result = new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())

@@ -1,17 +1,20 @@
 package actions.requisition
 
-import com.scms.MedicineSellInfo
 import com.scms.Requisition
 import com.scms.RequisitionDetails
 import grails.converters.JSON
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.json.JSONElement
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 
 @Transactional
 class AdjustmentRequisitionRequestActionService extends BaseService implements ActionServiceIntf {
+
+    SpringSecurityService springSecurityService
 
     private static final String UPDATE_SUCCESS_MESSAGE = "Data has been updated successfully"
     private static final String REQUISITION = "requisition"
@@ -51,6 +54,9 @@ class AdjustmentRequisitionRequestActionService extends BaseService implements A
                 lstReqDetails[i].save()
             }
             requisition.approvedAmount = totalAmount
+            requisition.isApproved = Boolean.TRUE
+            requisition.approvedBy = springSecurityService.principal.id
+            requisition.approvedDate = DateUtility.getSqlDate(new Date())
             requisition.save()
             return result
         } catch (Exception ex) {
@@ -76,8 +82,10 @@ class AdjustmentRequisitionRequestActionService extends BaseService implements A
         String requisitionNo = parameterMap.requisitionNo
         List lstRowsMedicine = (List) gridModelMedicine
         for (int i = 0; i < lstRowsMedicine.size(); i++) {
-            RequisitionDetails medicine = buildMedicineDetailsObject(lstRowsMedicine[i],requisitionNo)
-            lstMedicine.add(medicine)
+            if(lstRowsMedicine[i].approvedQty>0){
+                RequisitionDetails medicine = buildMedicineDetailsObject(lstRowsMedicine[i],requisitionNo)
+                lstMedicine.add(medicine)
+            }
         }
         return lstMedicine
     }
@@ -85,11 +93,6 @@ class AdjustmentRequisitionRequestActionService extends BaseService implements A
     private static RequisitionDetails buildMedicineDetailsObject(def params, String requisitionNo) {
         RequisitionDetails details = new RequisitionDetails(params)
         details.reqNo = requisitionNo
-        try{
-            details.approvedQty = params.approvedQty
-        }catch (Exception e){
-            details.approvedQty = Double.parseDouble(params.approvedQty)
-        }
         return details
     }
 

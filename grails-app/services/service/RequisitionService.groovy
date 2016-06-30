@@ -19,7 +19,28 @@ class RequisitionService extends BaseService {
                 FROM medicine_info mi
                 LEFT JOIN system_entity se ON mi.type=se.id
                 LEFT JOIN requisition_details rq ON rq.medicine_id = mi.id AND rq.req_no = :requisitionNo
-                ORDER BY mi.brand_name
+                ORDER BY rq.amount DESC,mi.brand_name ASC
+        """
+        Map queryParams = [ requisitionNo : requisitionNo ]
+        List<GroovyRowResult> result = executeSelectSql(queryStr, queryParams)
+        return result
+    }
+    public List<GroovyRowResult> listOfMedicineHO(String requisitionNo){
+        String queryStr = """
+                SELECT mi.id AS id,mi.version,mi.id AS medicineId,generic_name AS genericName,
+                        (CASE
+                    WHEN mi.strength IS NULL THEN CONCAT(mi.brand_name,' -',se.name)
+                    ELSE CONCAT(mi.brand_name,' (',mi.strength,') -',se.name)
+                         END) AS medicineName,
+                        mi.unit_price AS unitPrice,mi.unit_type AS unitType,mi.stock_qty AS stockQty,
+                        COALESCE(rq.req_qty,0) AS reqQty ,COALESCE(rq.req_qty,0) AS approvedQty,0 AS procQty,
+                        COALESCE(rq.amount,0) AS amount,
+                        (CASE WHEN rq.approve_amount=0 THEN COALESCE(rq.amount,0) ELSE COALESCE(rq.approve_amount,0) END)
+                         AS approveAmount
+                FROM medicine_info mi
+                LEFT JOIN system_entity se ON mi.type=se.id
+                LEFT JOIN requisition_details rq ON rq.medicine_id = mi.id AND rq.req_no = :requisitionNo
+                ORDER BY rq.amount DESC,mi.brand_name ASC
         """
         Map queryParams = [ requisitionNo : requisitionNo ]
         List<GroovyRowResult> result = executeSelectSql(queryStr, queryParams)
