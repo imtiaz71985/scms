@@ -56,6 +56,7 @@
                         requisitionBy: {type: "string"},
                         totalAmount: {type: "number"},
                         requisitionDate: {type: "date"},
+                        approvedDate: {type: "date"},
                         isSend: {type: "boolean"},
                         isApproved: {type: "boolean"}
                     }
@@ -96,17 +97,14 @@
                     filterable: kendoCommonFilterable(97)
                 },
                 {
-                    field: "requisitionBy",
-                    title: "Requisition By",
-                    width: 100,
-                    sortable: false,
-                    filterable: kendoCommonFilterable(97)
+                    field: "requisitionDate", title: "Requisition", width: 100, sortable: false,filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=kendo.toString(kendo.parseDate(requisitionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#  (by - #=requisitionBy #)"
                 },
                 {
-                    field: "requisitionDate", title: "Requisition Date", width: 100, sortable: false,
-                    filterable: {cell: {template: formatFilterableDate}},
+                    field: "approvedDate", title: "Approved Date", width: 80, sortable: false,filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=kendo.toString(kendo.parseDate(requisitionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
+                    template: "#=approvedDate?kendo.toString(kendo.parseDate(approvedDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
                 },
                 {
                     field: "totalAmount",

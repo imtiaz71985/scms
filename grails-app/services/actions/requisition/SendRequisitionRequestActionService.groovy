@@ -6,6 +6,7 @@ import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 
 @Transactional
 class SendRequisitionRequestActionService extends BaseService implements ActionServiceIntf {
@@ -60,6 +61,7 @@ class SendRequisitionRequestActionService extends BaseService implements ActionS
 
     private static Requisition buildObject(Requisition oldRequisition) {
         oldRequisition.isSend = Boolean.TRUE
+        oldRequisition.sendDate = DateUtility.getSqlDate(new Date())
         return oldRequisition
     }
 }

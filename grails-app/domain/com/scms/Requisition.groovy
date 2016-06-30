@@ -15,7 +15,6 @@ class Requisition {
     Date deliveryDate
     Date procAdjDate
     boolean isSend
-    long sendTo
     Date sendDate
     double totalAmount
     double approvedAmount
@@ -24,7 +23,6 @@ class Requisition {
     static constraints = {
         approvedDate(nullable: true)
         sendDate(nullable: true)
-        sendTo(nullable: true)
         approvedBy(nullable: true)
         procAdjDate(nullable: true)
         isApproved(nullable: true)
