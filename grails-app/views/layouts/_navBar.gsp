@@ -79,6 +79,29 @@
                         </ul>
                     </li>
                 </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/requisition/show">
+                    <li>
+                        <a href="#"><i class="fa fa-database"></i>&nbsp;Inventory<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/requisition/show">
+                                <li>
+                                    <a href="#requisition/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/requisition/showHO">
+                                <li>
+                                    <a href="#requisition/showHO"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition Adjustment</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/requisitionReceive/show">
+                                <li>
+                                    <a href="#requisitionReceive/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Req Receive</a>
+                                </li>
+                            </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
                 <sec:ifAnyUrls urls="/serviceType/show,/systemEntity/show,/serviceHeadInfo/show,/diseaseGroup/show,
                                     /diseaseGroup/show,/diseaseInfo/show,/medicineInfo/show,/hospitalLocation/show">
                     <li>
@@ -117,29 +140,6 @@
                             <sec:access url="/hospitalLocation/show">
                                 <li>
                                     <a href="#hospitalLocation/show"><i class="fa fa-hospital-o"></i>&nbsp;Hospital</a>
-                                </li>
-                            </sec:access>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/requisition/show">
-                    <li>
-                        <a href="#"><i class="fa fa-database"></i>&nbsp;Inventory<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <sec:access url="/requisition/show">
-                                <li>
-                                    <a href="#requisition/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition</a>
-                                </li>
-                            </sec:access>
-                            <sec:access url="/requisition/showHO">
-                                <li>
-                                    <a href="#requisition/showHO"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition Adjustment</a>
-                                </li>
-                            </sec:access>
-                            <sec:access url="/requisitionReceive/show">
-                                <li>
-                                    <a href="#requisitionReceive/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Req Receive</a>
                                 </li>
                             </sec:access>
                         </ul>
