@@ -45,6 +45,20 @@
             pageable: false,
             columns: [
                 {
+                    field: "type",
+                    title: "Type",
+                    width: 30,
+                    sortable: false,
+                    filterable: false
+                },
+                {
+                    field: "genericName",
+                    title: "Generic Name",
+                    width: 70,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "medicineName",
                     title: "Medicine Name",
                     width: 100,
@@ -106,12 +120,8 @@
                     ]
                 }
             ],
-            filterable: {
-                mode: "row"
-            }
-
+            filterable: false
         });
         gridRequisition = $("#gridMedicine").data("kendoGrid");
-        $("#menuGridKendoDr").kendoMenu();
     }
 </script>

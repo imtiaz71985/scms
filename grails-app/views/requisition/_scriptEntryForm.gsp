@@ -82,6 +82,7 @@
                         id: {type: "number"},
                         version: {type: "number"},
                         medicineId: {type: "number"},
+                        type: {editable: false, type: "string"},
                         genericName: {editable: false, type: "string"},
                         medicineName: {editable: false, type: "string"},
                         unitPrice: {editable: false, type: "number"},
@@ -136,15 +137,23 @@
 
             columns: [
                 {
+                    field: "type",
+                    title: "Type",
+                    width: 30,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "genericName",
                     title: "Generic Name",
                     width: 60,
                     sortable: false,
                     filterable: false
-                }, {
+                },
+                {
                     field: "medicineName",
                     title: "Medicine Name",
-                    width: 120,
+                    width: 100,
                     sortable: false,
                     filterable: false
                 },

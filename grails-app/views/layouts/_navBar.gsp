@@ -79,13 +79,13 @@
                         </ul>
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/medicineInfo/show,/requisition/show,/requisition/showHO,/requisitionReceive/show">
+                <sec:ifAnyUrls urls="/medicineInfo/stock,/requisition/show,/requisition/showHO,/requisitionReceive/show">
                     <li>
                         <a href="#"><i class="fa fa-database"></i>&nbsp;Inventory<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <sec:access url="/medicineInfo/show">
+                            <sec:access url="/medicineInfo/stock">
                                 <li>
-                                    <a href="#medicineInfo/show"><i class="fa fa-hospital-o"></i>&nbsp;Medicine</a>
+                                    <a href="#medicineInfo/stock"><i class="fa fa-university"></i>&nbsp;Medicine Stock</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/requisition/show">
@@ -95,12 +95,12 @@
                             </sec:access>
                             <sec:access url="/requisition/showHO">
                                 <li>
-                                    <a href="#requisition/showHO"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition Adjustment</a>
+                                    <a href="#requisition/showHO"><i class="fa fa-hand-pointer-o"></i>&nbsp;Requisition Adjustment</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/requisitionReceive/show">
                                 <li>
-                                    <a href="#requisitionReceive/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Req Receive</a>
+                                    <a href="#requisitionReceive/show"><i class="fa fa-hand-rock-o"></i>&nbsp;Requisition Receive</a>
                                 </li>
                             </sec:access>
                         </ul>
@@ -135,6 +135,11 @@
                             <sec:access url="/diseaseInfo/show">
                                 <li>
                                     <a href="#diseaseInfo/show"><i class="fa fa-crosshairs"></i>&nbsp;Disease Info</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/medicineInfo/show">
+                                <li>
+                                    <a href="#medicineInfo/show"><i class="fa fa-hospital-o"></i>&nbsp;Medicine</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/calendar/show">

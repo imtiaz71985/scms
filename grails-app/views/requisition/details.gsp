@@ -44,6 +44,20 @@
             pageable: false,
             columns: [
                 {
+                    field: "type",
+                    title: "Type",
+                    width: 30,
+                    sortable: false,
+                    filterable: false
+                },
+                {
+                    field: "genericName",
+                    title: "Generic Name",
+                    width: 70,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "medicineName",
                     title: "Medicine Name",
                     width: 100,
@@ -77,12 +91,8 @@
                     footerTemplate:"<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
                 }
             ],
-            filterable: {
-                mode: "row"
-            }
-
+            filterable: false
         });
         gridRequisition = $("#gridMedicine").data("kendoGrid");
-        $("#menuGridKendoDr").kendoMenu();
     }
 </script>

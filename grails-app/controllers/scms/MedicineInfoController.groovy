@@ -34,4 +34,7 @@ class MedicineInfoController extends BaseController {
     def list() {
         renderOutput(listMedicineInfoActionService, params)
     }
+    def stock() {
+        render(view: "/medicineInfo/stock")
+    }
 }
