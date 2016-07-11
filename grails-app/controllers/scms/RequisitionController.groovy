@@ -121,12 +121,13 @@ class RequisitionController extends BaseController {
     }
 
     def selectHO() {
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        HospitalLocation hospital = HospitalLocation.findByCode(hospital_code)
         long id = Long.parseLong(params.id.toString())
         Requisition requisition = Requisition.read(id)
+        HospitalLocation hospital = HospitalLocation.findByCode(requisition.hospitalCode)
+        SecUser user = SecUser.read(requisition.createdBy)
         render(view: "/requisition/updateHO", model: [requisitionNo: requisition.reqNo,
                                                       totalAmount  : requisition.totalAmount,
+                                                      createdBy    : user.username,
                                                       hospitalName : hospital.name])
 
     }

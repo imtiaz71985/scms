@@ -5,6 +5,7 @@
         requisitionNo = '${requisitionNo}';
         $("#requisitionNo").val(requisitionNo);
         $("#hospitalName").val('${hospitalName}');
+        $("#requisitionBy").val('${createdBy}');
         totalAmount = ${totalAmount?totalAmount:0};
         initMedicineRequisitionGrid();
         defaultPageTile("Requisition details", null);
