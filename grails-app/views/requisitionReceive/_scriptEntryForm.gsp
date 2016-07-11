@@ -1,6 +1,6 @@
 
 <script language="javascript">
-    var frmRequisition,quantity,gridMedicineRequisition, dataSourceForMedicine, dropDownMedicine,
+    var frmRequisitionReceive,quantity,gridMedicineReqReceive, dataSourceForMedicine, dropDownMedicine,
             requisitionNo, medicineName, unitPrice = 0, totalAmount = 0;
 
     $(document).ready(function () {
@@ -16,7 +16,7 @@
     }
 
     function executePreCondition() {
-        var count = gridMedicineRequisition.dataSource.total();
+        var count = gridMedicineReqReceive.dataSource.total();
         if (count == 0) {
             showError('No data found to save');
             return false;
@@ -29,13 +29,13 @@
         }
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
-        var formData=jQuery('#frmRequisition').serializeArray();
-        formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineRequisition.dataSource.data())});
+        var formData=jQuery('#frmRequisitionReceive').serializeArray();
+        formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineReqReceive.dataSource.data())});
 
         jQuery.ajax({
             type: 'post',
             data: formData,
-            url: "${createLink(controller:'requisitionReceive', action: 'update')}",
+            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo,
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -58,9 +58,9 @@
             $("#unit").text('');
         } else {
             showSuccess(result.message);
-            //clearForm($("#frmRequisition"), $('#medicineId'));
+            //clearForm($("#frmRequisitionReceive"), $('#medicineId'));
 
-           // gridMedicineRequisition.setDataSource(dsDr);
+           // gridMedicineReqReceive.setDataSource(dsDr);
             //$("#unit").text('');
             window.history.back();
         }
@@ -201,7 +201,7 @@
                 mode: "row"
             }
         });
-        gridMedicineRequisition = $("#gridMedicine").data("kendoGrid");
+        gridMedicineReqReceive = $("#gridMedicine").data("kendoGrid");
 
 
 

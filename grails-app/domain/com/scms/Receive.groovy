@@ -8,8 +8,10 @@ class Receive {
     Date createDate
     long createdBy
     String hospitalCode
+    String reqNo
 
     static constraints = {
+        chalanNo(nullable: true)
     }
     static mapping = {
         createDate type:'date'

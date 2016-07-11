@@ -5,7 +5,7 @@
         </div>
     </div>
 
-    <form id="frmRequisition" name="frmRequisition" class="form-horizontal form-widgets" role="form">
+    <form id="frmRequisition" name="frmRequisitionReceive" class="form-horizontal form-widgets" role="form">
         <div class="panel-body">
                 <div class="form-group">
                     <label class="col-md-2 control-label label-optional" for="requisitionNo">Requisition No:</label>

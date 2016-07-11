@@ -1,6 +1,7 @@
 package scms
 
 import actions.requisition.*
+import actions.requisitionReceive.CreateRequisitionReceiveActionService
 import com.scms.Requisition
 import com.scms.SecUser
 import grails.converters.JSON
@@ -12,13 +13,7 @@ import service.RequisitionService
 class RequisitionReceiveController extends BaseController {
 
     SpringSecurityService springSecurityService
-    CreateRequisitionActionService createRequisitionActionService
-    UpdateRequisitionActionService updateRequisitionActionService
-    ListRequisitionActionService listRequisitionActionService
-    SelectRequisitionActionService selectRequisitionActionService
-    SendRequisitionRequestActionService sendRequisitionRequestActionService
-    ApproveRequisitionRequestActionService approveRequisitionRequestActionService
-    AdjustmentRequisitionRequestActionService adjustmentRequisitionRequestActionService
+    CreateRequisitionReceiveActionService createRequisitionReceiveActionService
     RequisitionService requisitionService
 
     static allowedMethods = [
@@ -35,8 +30,8 @@ class RequisitionReceiveController extends BaseController {
         render(view: "/requisitionReceive/create", model: [requisitionNo: requisition.reqNo])
 
     }
-    def update() {
-        renderOutput(updateRequisitionActionService, params)// need to work
+    def create() {
+        renderOutput(createRequisitionReceiveActionService, params)// need to work
     }
 
     def list() {

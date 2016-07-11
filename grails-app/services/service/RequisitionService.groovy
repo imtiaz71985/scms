@@ -54,7 +54,7 @@ class RequisitionService extends BaseService {
             ELSE CONCAT(mi.brand_name,' (',mi.strength,') -',se.name)
             END) AS medicineName,
             mi.unit_price AS unitPrice,mi.unit_type AS unitType,mi.stock_qty AS stockQty,COALESCE(rd.req_qty,0) AS reqQty,
-            COALESCE(rd.approved_qty) AS approveQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(rd.procurement_qty) AS receiveQty,0 AS amount
+            COALESCE(rd.approved_qty) AS approvedQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(rd.procurement_qty) AS receiveQty,0 AS amount
             FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no = :requisitionNo
             AND r.is_approved=TRUE AND r.is_delivered=TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id
@@ -74,7 +74,7 @@ class RequisitionService extends BaseService {
                             FROM requisition r
                             LEFT JOIN sec_user u ON u.id = r.created_by
                             LEFT JOIN sec_user au ON au.id = r.approved_by
-                            WHERE r.is_approved=TRUE AND r.is_delivered=TRUE  AND u.hospital_code=${hospitalCode}
+                            WHERE r.is_approved=TRUE AND r.is_delivered=TRUE  AND u.hospital_code=${hospitalCode} AND r.is_received=FALSE
                       ORDER BY r.id ASC;
         """
 

@@ -7,7 +7,7 @@
 
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-    <sec:access url="/requisitionReceive/update">
+    <sec:access url="/requisitionReceive/create">
         <li onclick="editRecord();"><i class="fa fa-edit"></i>Receive</li>
     </sec:access>
 </ul>

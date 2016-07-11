@@ -100,7 +100,7 @@
                             </sec:access>
                             <sec:access url="/requisitionReceive/show">
                                 <li>
-                                    <a href="#requisitionReceive/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Req Receive</a>
+                                    <a href="#requisitionReceive/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition Receive</a>
                                 </li>
                             </sec:access>
                         </ul>
