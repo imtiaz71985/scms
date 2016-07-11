@@ -30,7 +30,7 @@
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'requisition', action: 'list')}",
+                    url: "${createLink(controller: 'requisitionReceive', action: 'list')}",
                     dataType: "json",
                     type: "post"
                 }
@@ -43,9 +43,11 @@
                         id: {type: "number"},
                         version: {type: "number"},
                         requisitionBy: {type: "string"},
-                        totalAmount: {type: "number"},
+                        reqAmount: {type: "number"},
+                        approvedAmount: {type: "number"},
                         requisitionDate: {type: "date"},
-                        isSend: {type: "boolean"},
+                        approvedDate: {type: "date"},
+                        deliveryDate: {type: "date"},
                         isApproved: {type: "boolean"}
                     }
                 },
@@ -85,47 +87,42 @@
                     filterable: kendoCommonFilterable(97)
                 },
                 {
-                    field: "requisitionBy",
-                    title: "Requisition By",
-                    width: 100,
-                    sortable: false,
-                    filterable: kendoCommonFilterable(97)
-                },
-                {
-                    field: "requisitionDate", title: "Requisition Date", width: 100, sortable: false,
-                    filterable: {cell: {template: formatFilterableDate}},
+                    field: "requisitionDate", title: "Requisition Date", width: 60, sortable: false,
+                    filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=kendo.toString(kendo.parseDate(requisitionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
                 },
                 {
-                    field: "totalAmount",
-                    title: "Total Amount",
+                    field: "reqAmount",
+                    title: "Req Amount",
                     width: 50,
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
-                    template: "#=formatAmount(totalAmount)#",
+                    template: "#=formatAmount(reqAmount)#",
                     sortable: false,
                     filterable: false
                 },
                 {
-                    field: "isSend",
-                    title: "Send",
-                    width: 20,
-                    attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()},
-                    template: "#=isSend?'YES':'NO'#",
+                    field: "approvedDate", title: "Approved Date", width: 50, sortable: false,
+                    filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=approvedDate?kendo.toString(kendo.parseDate(approvedDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
+                },
+                {
+                    field: "approvedAmount",
+                    title: "Apvd Amount",
+                    width: 40,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(approvedAmount)#",
                     sortable: false,
                     filterable: false
                 },
                 {
-                    field: "isApproved",
-                    title: "Approved",
-                    width: 30,
-                    attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()},
-                    template: "#=isApproved?'YES':'NO'#",
-                    sortable: false,
-                    filterable: false
+                    field: "deliveryDate", title: "Delivery Date", width: 50, sortable: false,
+                    filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=deliveryDate?kendo.toString(kendo.parseDate(deliveryDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
                 },
                 {
                     command: {

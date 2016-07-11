@@ -2,6 +2,7 @@ package scms
 
 import actions.requisition.*
 import com.scms.Requisition
+import com.scms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
@@ -35,11 +36,16 @@ class RequisitionReceiveController extends BaseController {
 
     }
     def update() {
-        renderOutput(updateRequisitionActionService, params)
+        renderOutput(updateRequisitionActionService, params)// need to work
     }
 
     def list() {
-        renderOutput(listRequisitionActionService, params)
+        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        List<GroovyRowResult> lst=requisitionService.listOfDeliveredMedicine(hospital_code)
+        Map result=new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
     }
 
     def listOfMedicine() {
