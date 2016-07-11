@@ -35,7 +35,7 @@
         jQuery.ajax({
             type: 'post',
             data: formData,
-            url: "${createLink(controller:'requisition', action: 'create')}",
+            url: "${createLink(controller:'requisitionReceive', action: 'update')}",
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -70,7 +70,7 @@
         dataSourceForMedicine = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'requisition', action: 'listOfMedicine')}",
+                    url: "${createLink(controller: 'requisitionReceive', action: 'listOfMedicine')}?requisitionNo=" + requisitionNo,
                     dataType: "json",
                     type: "post"
                 }
@@ -82,15 +82,18 @@
                     fields: {
                         id: {type: "number"},
                         version: {type: "number"},
+                        medicineId: {type: "number"},
                         genericName: {editable: false, type: "string"},
-                        medicineName:{editable: false, type: "string"},
+                        medicineName: {editable: false, type: "string"},
                         unitPrice: {editable: false, type: "number"},
                         unitType: {editable: false, type: "string"},
                         stockQty: {editable: false, type: "number"},
-                        reqQty: {type: "number"},
-                        approveQty: {editable: false, type: "number"},
+                        reqQty: {editable: false, type: "number"},
+                        approvedQty: {editable: false,type: "number"},
                         procQty: {editable: false, type: "number"},
-                        amount: { type: "number"}
+                        receiveQty: { type: "number"},
+                        amount: {type: "number"}
+
                     }
                 },
                 parse: function (data) {
@@ -119,7 +122,7 @@
             var input = e.container.find(".k-input");
             var value = input.val(),
                     minus = input.val();
-            $("[name='reqQty']", e.container).blur(function(){
+            $("[name='receiveQty']", e.container).blur(function(){
                 var input = $(this);
                 value = input.val();
                 var row = $(this).closest("tr");
@@ -157,18 +160,32 @@
                     width: 50,
                     sortable: false,
                     filterable: false
-                },{
-                    field: "stockQty",
-                    title: "Stock Qty",
-                    width: 50,
-                    sortable: false,
-                    filterable: false
-                },{
+                },
+                {
                     field: "reqQty",
                     title: "Req Qty",
                     width: 50,
                     sortable: false,
                     filterable: false
+                },{
+                field: "approvedQty",
+                title: "Approve Qty",
+                width: 50,
+                sortable: false,
+                filterable: false
+                },{
+                field: "procQty",
+                title: "Delivery Qty",
+                width: 50,
+                sortable: false,
+                filterable: false
+                },
+                {
+                field: "receiveQty",
+                title: "Receive Qty",
+                width: 50,
+                sortable: false,
+                filterable: false
                 },
                 {
                     field: "amount",
@@ -190,23 +207,5 @@
 
     }
 
-    function getRequisitionNo(){
-        $.ajax({
-            url: "${createLink(controller: 'requisition', action:  'retrieveRequisitionNo')}",
-            success: function (data, textStatus) {
-                requisitionNo = data.requisitionNo;
-                $("#requisitionNo").val(requisitionNo);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus)
-
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
-        });
-    }
 
 </script>

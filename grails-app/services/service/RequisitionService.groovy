@@ -54,7 +54,7 @@ class RequisitionService extends BaseService {
             ELSE CONCAT(mi.brand_name,' (',mi.strength,') -',se.name)
             END) AS medicineName,
             mi.unit_price AS unitPrice,mi.unit_type AS unitType,mi.stock_qty AS stockQty,COALESCE(rd.req_qty,0) AS reqQty,
-            COALESCE(rd.approved_qty) AS approveQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(rd.procurement_qty) AS receiveQty
+            COALESCE(rd.approved_qty) AS approveQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(rd.procurement_qty) AS receiveQty,0 AS amount
             FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no = :requisitionNo
             AND r.is_approved=TRUE AND r.is_delivered=TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id
@@ -63,6 +63,22 @@ class RequisitionService extends BaseService {
         """
         Map queryParams = [ requisitionNo : requisitionNo ]
         List<GroovyRowResult> result = executeSelectSql(queryStr, queryParams)
+        return result
+    }
+    public List<GroovyRowResult> listOfDeliveredMedicine(String hospitalCode){
+        String queryStr = """
+
+ SELECT r.id,r.version, r.req_no AS requisitionNo,r.create_date AS requisitionDate, u.username AS requisitionBy,
+                      r.total_amount AS reqAmount,r.is_approved AS isApproved,au.username AS approvedBy,r.approved_date AS approvedDate,r.is_send AS isSend,
+                      r.approved_amount AS approvedAmount,r.delivery_date AS deliveryDate
+                            FROM requisition r
+                            LEFT JOIN sec_user u ON u.id = r.created_by
+                            LEFT JOIN sec_user au ON au.id = r.approved_by
+                            WHERE r.is_approved=TRUE AND r.is_delivered=TRUE  AND u.hospital_code=${hospitalCode}
+                      ORDER BY r.id ASC;
+        """
+
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
     }
 }
