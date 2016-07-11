@@ -55,6 +55,7 @@
                         version: {type: "number"},
                         requisitionBy: {type: "string"},
                         totalAmount: {type: "number"},
+                        approvedAmount: {type: "number"},
                         requisitionDate: {type: "date"},
                         approvedDate: {type: "date"},
                         isSend: {type: "boolean"},
@@ -92,7 +93,7 @@
                 {
                     field: "requisitionNo",
                     title: "Requisition No",
-                    width: 100,
+                    width: 80,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
@@ -102,17 +103,27 @@
                     template: "#=kendo.toString(kendo.parseDate(requisitionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#  (by - #=requisitionBy #)"
                 },
                 {
-                    field: "approvedDate", title: "Approved Date", width: 80, sortable: false,filterable: false,
+                    field: "approvedDate", title: "Approved Date", width: 50, sortable: false,filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=approvedDate?kendo.toString(kendo.parseDate(approvedDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
                 },
                 {
                     field: "totalAmount",
-                    title: "Total Amount",
+                    title: "Req Amount",
                     width: 50,
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(totalAmount)#",
+                    sortable: false,
+                    filterable: false
+                },
+                {
+                    field: "approvedAmount",
+                    title: "Appvd Amount",
+                    width: 50,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(approvedAmount)#",
                     sortable: false,
                     filterable: false
                 },

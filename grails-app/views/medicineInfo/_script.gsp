@@ -147,6 +147,7 @@
                         type: {type: "string"},
                         genericName: {type: "string"},
                         brandName: {type: "string"},
+                        medicineName: {type: "string"},
                         strength: {type: "string"},
                         unitType: {type: "string"},
                         unitPrice: {type: "number"},
@@ -185,13 +186,13 @@
                 {
                     field: "genericName",
                     title: "Generic Name",
-                    width: 70,
+                    width: 50,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
                 {
-                    field: "brandName",
-                    title: "Brand Name",
+                    field: "medicineName",
+                    title: "Medicine Name",
                     width: 70,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
@@ -213,7 +214,6 @@
                     attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(mrpPrice)#"
                 },
-                {field: "strength", title: "Strength", width: 40, sortable: false, filterable: false},
                 {field: "unitType", title: "Unit Type", width: 40, sortable: false, filterable: false}
             ],
             filterable: {

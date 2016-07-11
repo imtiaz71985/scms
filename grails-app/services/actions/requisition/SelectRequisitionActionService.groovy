@@ -101,17 +101,22 @@ class SelectRequisitionActionService extends BaseService implements ActionServic
 
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
             SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
+            String genericName = medicineInfo.genericName
+            String type = medicineType.name
+
             if (medicineInfo.strength) {
-                medicineName = medicineInfo.brandName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name
+                medicineName = medicineInfo.brandName + ' (' + medicineInfo.strength + ')'
             } else {
-                medicineName = medicineInfo.brandName + ' - ' + medicineType.name
+                medicineName = medicineInfo.brandName
             }
 
             Map eachDetails = [
                     id          : id,
                     version     : version,
                     voucherNo   : voucherNo,
+                    type        : type,
                     medicineName: medicineName,
+                    genericName : genericName,
                     medicineId  : medicineId,
                     unitPrice   : medicineInfo.unitPrice,
                     quantity    : quantity,
