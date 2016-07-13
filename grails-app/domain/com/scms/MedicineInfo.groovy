@@ -12,13 +12,18 @@ class MedicineInfo {
     String unitType
     double unitPrice
     double mrpPrice
-    double stockQty
+    Double stockQty
+    Integer boxSize
+    Double boxRate
 
     static constraints = {
-            stockQty  nullable: true
+        strength (nullable: true)
+        stockQty (nullable: true)
+        boxSize (nullable: true)
+        boxRate (nullable: true)
     }
     static mapping = {
-        type  index: 'system_entity_medicine_type_id_idx'
+        type index: 'system_entity_medicine_type_id_idx'
         vendorId index: 'vendor_id_idx'
     }
 }

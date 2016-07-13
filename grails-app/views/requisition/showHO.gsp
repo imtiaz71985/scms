@@ -83,15 +83,13 @@
                 {
                     field: "requisitionNo",
                     title: "Requisition No",
-                    width: 50,
-                    sortable: false,
+                    width: 50, sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
                 {
                     field: "requisitionBy",
                     title: "Requisition Details",
-                    width: 120,
-                    sortable: false,
+                    width: 120, sortable: false,
                     template: "#=hospitalName # --(By #= requisitionBy# )"
                 },
                 {
@@ -107,8 +105,7 @@
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(totalAmount)#",
-                    sortable: false,
-                    filterable: false
+                    sortable: false, filterable: false
                 },
                 {
                     field: "approvedDate", title: "Approved Date", width: 50, sortable: false,
@@ -123,8 +120,7 @@
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(approvedAmount)#",
-                    sortable: false,
-                    filterable: false
+                    sortable: false, filterable: false
                 },
                 {
                     field: "isApproved",
@@ -133,8 +129,7 @@
                     attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()},
                     template: "#=isApproved?'YES':'NO'#",
-                    sortable: false,
-                    filterable: false
+                    sortable: false, filterable: false
                 },
                 {
                     command: {

@@ -125,8 +125,7 @@
                 grid.select(sel);
             }
             if(row.isHoliday){
-//                $('tr[data-uid="' + row.uid + '"] ').css("background-color", "#fee7df");  //light red
-                $('tr[data-uid="' + row.uid + '"] ').css("color", "red"); // light black
+                $('tr[data-uid="' + row.uid + '"] ').css("color", "red");
             }
         });
     }

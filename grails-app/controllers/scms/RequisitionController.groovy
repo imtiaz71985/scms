@@ -25,6 +25,7 @@ class RequisitionController extends BaseController {
     ListRequisitionHOActionService listRequisitionHOActionService
     ApproveRequisitionRequestActionService approveRequisitionRequestActionService
     AdjustmentRequisitionRequestActionService adjustmentRequisitionRequestActionService
+    DownloadPurchaseRequestActionService downloadPurchaseRequestActionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST", select: "POST", list: "POST"
@@ -134,5 +135,10 @@ class RequisitionController extends BaseController {
 
     def updateHO() {
         renderOutput(adjustmentRequisitionRequestActionService, params)
+    }
+
+    def generatePR(){
+        Map result = (Map) getReportResponse(downloadPurchaseRequestActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
 }

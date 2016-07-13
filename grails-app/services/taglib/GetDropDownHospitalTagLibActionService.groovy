@@ -157,7 +157,7 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
 
     private List<GroovyRowResult> listServiceTokenNo() {
         String queryForList = """
-            SELECT code AS id,name FROM hospital_location ORDER BY id ASC;
+            SELECT code AS id,name FROM hospital_location ORDER BY code ASC;
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)
         return lst

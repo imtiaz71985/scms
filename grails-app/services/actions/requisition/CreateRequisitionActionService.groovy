@@ -36,8 +36,6 @@ class CreateRequisitionActionService extends BaseService implements ActionServic
             log.error(ex.getMessage())
             throw new RuntimeException(ex)
         }
-
-
     }
 
     @Transactional
