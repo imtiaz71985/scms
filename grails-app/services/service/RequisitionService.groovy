@@ -48,17 +48,21 @@ class RequisitionService extends BaseService {
     }
     public List<GroovyRowResult> listOfRegMedicineForReceive(String requisitionNo){
         String queryStr = """
-                SELECT rd.id AS id,rd.version,mi.id AS medicineId,generic_name AS genericName,se.name AS type,
+                SELECT rd.id AS id,rd.version,mi.id AS medicineId,generic_name AS genericName,se.name AS TYPE,
                          (CASE
                     WHEN mi.strength IS NULL THEN mi.brand_name
                     ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
                          END) AS medicineName,
             mi.unit_price AS unitPrice,mi.unit_type AS unitType,mi.stock_qty AS stockQty,COALESCE(rd.req_qty,0) AS reqQty,
-            COALESCE(rd.approved_qty) AS approvedQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(rd.procurement_qty) AS receiveQty,0 AS amount
-            FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no = :requisitionNo
+            COALESCE(rd.approved_qty) AS approvedQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(SUM(receive_details.receive_qty),0) AS prevReceiveQty ,
+            (rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0)) AS receiveQty,
+            ((rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0))*mi.unit_price) AS amount
+            FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no  =:requisitionNo
             AND r.is_approved=TRUE AND r.is_delivered=TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id
             LEFT JOIN system_entity se ON mi.type=se.id
+            LEFT JOIN receive ON receive.req_no=r.req_no INNER JOIN receive_details ON receive.id=receive_details.receive_id
+            AND receive_details.medicine_id= rd.medicine_id GROUP BY receive.req_no,receive_details.medicine_id
             ORDER BY mi.brand_name
         """
         Map queryParams = [ requisitionNo : requisitionNo ]
@@ -80,5 +84,30 @@ class RequisitionService extends BaseService {
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
+    }
+    public List<GroovyRowResult> listRequisitionNoForReceive(String hospitalCode,String vendorId) {
+        String queryForList=""
+        if(vendorId.isEmpty()|| vendorId==null) {
+            queryForList = """
+             SELECT req_no as id, req_no as name FROM requisition
+                WHERE is_received=FALSE AND is_approved=TRUE AND hospital_code=${
+                hospitalCode
+            } ORDER BY id DESC
+        """
+        }
+        else{
+            queryForList = """
+            SELECT DISTINCT r.req_no as id, r.req_no as name FROM requisition r
+                INNER JOIN requisition_details rd ON  r.req_no=rd.req_no
+                INNER JOIN medicine_info mi ON rd.medicine_id=mi.id
+            WHERE r.is_received=FALSE
+                    AND r.is_approved=TRUE
+                    AND r.hospital_code=${hospitalCode}
+                    AND mi.vendor_id=${vendorId}
+                     ORDER BY id DESC
+        """
+        }
+        List<GroovyRowResult> lstMedicine = executeSelectSql(queryForList)
+        return lstMedicine
     }
 }

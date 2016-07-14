@@ -4,6 +4,7 @@ import actions.requisition.*
 import actions.requisitionReceive.CreateRequisitionReceiveActionService
 import com.scms.Requisition
 import com.scms.SecUser
+import com.scms.Upazila
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
@@ -15,6 +16,7 @@ class RequisitionReceiveController extends BaseController {
     SpringSecurityService springSecurityService
     CreateRequisitionReceiveActionService createRequisitionReceiveActionService
     RequisitionService requisitionService
+    BaseService baseService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST", select: "POST", list: "POST"
@@ -24,23 +26,17 @@ class RequisitionReceiveController extends BaseController {
         render(view: "/requisitionReceive/show")
     }
 
-    def selectForEdit(){
-        long id = Long.parseLong(params.id.toString())
-        Requisition requisition = Requisition.read(id)
-        render(view: "/requisitionReceive/create", model: [requisitionNo: requisition.reqNo])
+    def requisitionByVendorId(){
+        String vendorId = params.id.toString()
+        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        List<Requisition> lst = requisitionService.listRequisitionNoForReceive(hospital_code,vendorId)
+        lst = baseService.listForKendoDropdown(lst, null, null)
+        Map result = [lst: lst]
+        render result as JSON
 
     }
     def create() {
         renderOutput(createRequisitionReceiveActionService, params)// need to work
-    }
-
-    def list() {
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        List<GroovyRowResult> lst=requisitionService.listOfDeliveredMedicine(hospital_code)
-        Map result=new HashedMap()
-        result.put('list', lst)
-        result.put('count', lst.size())
-        render result as JSON
     }
 
     def listOfMedicine() {

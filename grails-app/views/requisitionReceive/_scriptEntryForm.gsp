@@ -1,27 +1,67 @@
 
 <script language="javascript">
-    var frmRequisitionReceive,quantity,gridMedicineReqReceive, dataSourceForMedicine, dropDownMedicine,
-            requisitionNo, medicineName, unitPrice = 0, totalAmount = 0;
+    var frmRequisitionReceive,gridMedicineReqReceive, dataSourceForMedicine, dropDownVendor,dropDownRequisitionNo,
+            requisitionNo, unitPrice = 0, totalAmount = 0;
 
     $(document).ready(function () {
-        requisitionNo = '${requisitionNo}';
-        $("#requisitionNo").val(requisitionNo);
+        /*requisitionNo = '${requisitionNo}';
+        $("#requisitionNo").val(requisitionNo);*/
+
+         requisitionNo ='';
+        onLoadRequisitionPage();
+        populateDDLRequisitionNo();
         initMedicineRequisitionGrid();
 
         defaultPageTile("Requisition details", null);
     });
+    function onLoadRequisitionPage() {
 
+        dropDownRequisitionNo = initKendoDropdown($('#ddlRequisition'), null, null, null);
+    }
+    function populateDDLRequisitionNo(){
+        var vendorId = dropDownVendor.value();
+
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'requisitionReceive', action: 'requisitionByVendorId')}?id=" + vendorId,
+            success: function (data) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
+                dropDownRequisitionNo.setDataSource(data.lst);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
     function  resetForm(){
-        window.history.back();
+        dropDownVendor.value('');
+        populateDDLRequisitionNo();
+        initMedicineRequisitionGrid();
+        $("input:radio").removeAttr("checked");
+
     }
 
     function executePreCondition() {
         var count = gridMedicineReqReceive.dataSource.total();
+        var check=$("input:radio").is(':checked');
         if (count == 0) {
             showError('No data found to save');
             return false;
         }
-        return true;
+        else if(!check){
+            showError('Need to select completion status.');
+            return false;
+        }
+      return true;
     }
     function onSubmitForm() {
         if (executePreCondition() == false) {
@@ -31,6 +71,10 @@
         showLoadingSpinner(true);
         var formData=jQuery('#frmRequisitionReceive').serializeArray();
         formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineReqReceive.dataSource.data())});
+        var isComplete=false;
+        if($('#rbComplete').is(':checked')) {
+            isComplete=true;
+        }
 
         jQuery.ajax({
             type: 'post',
@@ -62,7 +106,7 @@
 
            // gridMedicineReqReceive.setDataSource(dsDr);
             //$("#unit").text('');
-            window.history.back();
+           resetForm();
         }
     }
 
@@ -91,6 +135,7 @@
                         reqQty: {editable: false, type: "number"},
                         approvedQty: {editable: false,type: "number"},
                         procQty: {editable: false, type: "number"},
+                        prevReceiveQty: {editable: false, type: "number"},
                         receiveQty: { type: "number"},
                         amount: {type: "number"}
 
@@ -101,6 +146,9 @@
                     return data;
                 }
             },
+            aggregate: [
+                {field: "amount", aggregate: "sum"}
+            ],
             serverPaging: false,
             serverFiltering: true,
             serverSorting: true
@@ -120,16 +168,17 @@
             editable: true,
             edit: function(e) {
             var input = e.container.find(".k-input");
-            var value = input.val(),
-                    minus = input.val();
+            var value = input.val(), minus = input.val();
             $("[name='receiveQty']", e.container).blur(function(){
                 var input = $(this);
                 value = input.val();
                 var row = $(this).closest("tr");
                 var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
-                totalAmount-=minus*data.unitPrice;
-                data.set('amount',value*data.unitPrice);
-                totalAmount=parseFloat(totalAmount,10)+parseFloat(value*data.unitPrice,10);
+                var a=$("#footerSpan").text();
+                totalAmount=parseFloat((a.substring(1, a.length)).replace(/[^\d\.]/g,'') );
+                totalAmount -= minus * data.unitPrice;
+                data.set('amount', value * data.unitPrice);
+                totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
                 $("#footerSpan").text(formatAmount(totalAmount));
             });
         },
@@ -154,35 +203,45 @@
                     width: 50,
                     sortable: false,
                     filterable: false
-                },{
+                },
+                {
                     field: "unitPrice",
                     title: "Price",
                     width: 50,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(unitPrice)#",
                     sortable: false,
                     filterable: false
-                },
-                {
+                },{
                     field: "reqQty",
                     title: "Req Qty",
                     width: 50,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
                     sortable: false,
                     filterable: false
                 },{
                 field: "approvedQty",
                 title: "Approve Qty",
                 width: 50,
+                attributes: {style: setAlignRight()},
+                headerAttributes: {style: setAlignRight()},
                 sortable: false,
                 filterable: false
                 },{
-                field: "procQty",
-                title: "Delivery Qty",
+                field: "prevReceiveQty",
+                title: "Prev Receive",
                 width: 50,
+                attributes: {style: setAlignRight()},
+                headerAttributes: {style: setAlignRight()},
                 sortable: false,
                 filterable: false
-                },
-                {
+                },{
                 field: "receiveQty",
                 title: "Receive Qty",
+                attributes: {style: setAlignRight()},
+                headerAttributes: {style: setAlignRight()},
                 width: 50,
                 sortable: false,
                 filterable: false
@@ -194,7 +253,7 @@
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(amount)#",
                     sortable: false,filterable: false,width: 50,
-                    footerTemplate:"<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
+                    footerTemplate:"<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(sum)#</span></div>"
                 }
             ],
             filterable: {
@@ -206,6 +265,9 @@
 
 
     }
-
+function editRecord(){
+    requisitionNo = dropDownRequisitionNo.value();
+    initMedicineRequisitionGrid();
+}
 
 </script>

@@ -3,7 +3,6 @@ package com.scms
 class Receive {
     long id
     long version
-    String receiveNo
     String chalanNo
     Date createDate
     long createdBy
@@ -17,6 +16,7 @@ class Receive {
         createDate type:'date'
 
         hospitalCode index: 'medicine_receive_hospital_code_idx'
+        reqNo index: 'medicine_receive_req_no_idx'
 
     }
 }

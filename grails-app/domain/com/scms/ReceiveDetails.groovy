@@ -3,7 +3,7 @@ package com.scms
 class ReceiveDetails {
     long id
     long version
-    String receiveNo
+    long receiveId
     long medicineId
     double receiveQty
 
@@ -12,6 +12,7 @@ class ReceiveDetails {
     static mapping = {
 
         medicineId index: 'receive_details_medicine_id_idx'
+        receiveId index: 'receive_details_receive_id_idx'
 
     }
 }

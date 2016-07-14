@@ -26,7 +26,7 @@
                             <div class="col-md-3">
                                 <app:dropDownRegistrationNo
                                         data_model_name="dropDownRegistrationNo"
-                                        id="regNoDDL" name="regNoDDL"
+                                        id="regNoDDL" name="regNoDDL" tabindex="1"
                                         class="kendo-drop-down">
                                 </app:dropDownRegistrationNo>
                             </div>
@@ -34,7 +34,7 @@
                             <div class="col-md-2">
 
                                 <button id="btnNewService" name="btnNewService" type="button"
-                                        class="k-button"
+                                        class="k-button" tabindex="2"
                                         role="button" onclick="LoadDetailsByRegNo()"
                                         aria-disabled="false"><span
                                         class="k-icon k-i-plus"></span> Take New Service
@@ -47,7 +47,7 @@
                                 <app:dropDownServiceTokenNo
                                         data_model_name="dropDownServiceTokenNo"
                                         id="serviceTokenNoDDL" name="serviceTokenNoDDL"
-                                        class="kendo-drop-down">
+                                        class="kendo-drop-down" tabindex="3">
                                 </app:dropDownServiceTokenNo>
                             </div>
 
@@ -109,7 +109,7 @@
                                     <app:dropDownServiceType
                                             data_model_name="dropDownServiceType"
                                             type="counselor"
-                                            id="serviceTypeId" name="serviceTypeId" tabindex="1"
+                                            id="serviceTypeId" name="serviceTypeId" tabindex="4"
                                             class="kendo-drop-down" onchange="javascript: getServiceHeadInfo();"
                                             data-bind="value: counselorAction.serviceTypeId"
                                             required="true" validationmessage="Required">
@@ -128,7 +128,7 @@
                                 <div class="col-md-6">
                                     <app:dropDownSystemEntity
                                             data_model_name="dropDownPrescriptionType"
-                                            id="prescriptionTypeId" name="prescriptionTypeId" tabindex="2"
+                                            id="prescriptionTypeId" name="prescriptionTypeId" tabindex="5"
                                             class="kendo-drop-down" type="Prescription Type"
                                             data-bind="value: counselorAction.prescriptionTypeId">
                                     </app:dropDownSystemEntity>
@@ -141,7 +141,7 @@
                                 <div class="col-md-6">
                                     <button id="btnPathologyService" name="btnPathologyService" type="button"
                                             class="k-button k-button-icontext" style="display:none;"
-                                            role="button" tabindex="3" onclick='loadPathologyServicesToComplete();'
+                                            role="button" tabindex="6" onclick='loadPathologyServicesToComplete();'
                                             aria-disabled="false">Pathology Services
                                     </button>
                                 </div>
@@ -155,7 +155,7 @@
                                 <div class="col-md-6">
                                     <app:dropDownSystemEntity
                                             data_model_name="dropDownReferTo"
-                                            id="referToId" name="referToId" tabindex="4"
+                                            id="referToId" name="referToId" tabindex="7"
                                             class="kendo-drop-down" type="Refer Type"
                                             data-bind="value: counselorAction.referToId">
                                     </app:dropDownSystemEntity>
@@ -189,7 +189,7 @@
                                     <label class="col-md-3 control-label label-required">Subsidy Amount:</label>
 
                                     <div class="col-md-3">
-                                        <input id="subsidyAmount" name="subsidyAmount" type="number" tabindex="5"
+                                        <input id="subsidyAmount" name="subsidyAmount" type="number" tabindex="8"
                                                class="form-control" onchange="javascript: getPayableAmount();"/>
                                     </div>
                                 </div>
@@ -201,7 +201,7 @@
 
                                     <div class="col-md-3">
                                         <input id="pathologyCharges" name="pathologyCharges" type="text" readonly="true"
-                                               class="form-control" tabindex="6"/>
+                                               class="form-control"/>
                                     </div>
                                 </div>
 
@@ -210,7 +210,7 @@
 
                                     <div class="col-md-3">
                                         <input id="payableAmount" name="payableAmount" type="text" readonly="true"
-                                               class="form-control" tabindex="7"/>
+                                               class="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +223,7 @@
                                 <div class="col-md-9">
                                     <app:dropDownDiseaseGroup
                                             data_model_name="dropDownDiseaseGroup" hints_text="All"
-                                            id="diseaseGroupId" name="diseaseGroupId" tabindex="8"
+                                            id="diseaseGroupId" name="diseaseGroupId" tabindex="9"
                                             class="kendo-drop-down" onchange="loadDisease();">
                                     </app:dropDownDiseaseGroup>
                                 </div>
@@ -250,12 +250,12 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="9"
+                            role="button" tabindex="10"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="10"
+                            class="k-button k-button-icontext" role="button" tabindex="11"
                             aria-disabled="false" onclick='resetForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>
