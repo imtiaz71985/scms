@@ -4,6 +4,7 @@ class Receive {
     long id
     long version
     String chalanNo
+    String prNo
     Date createDate
     long createdBy
     String hospitalCode
@@ -11,6 +12,7 @@ class Receive {
 
     static constraints = {
         chalanNo(nullable: true)
+        prNo(nullable: true)
     }
     static mapping = {
         createDate type:'date'

@@ -40,8 +40,11 @@
     function  resetForm(){
         dropDownVendor.value('');
         populateDDLRequisitionNo();
+        requisitionNo='';
         initMedicineRequisitionGrid();
         $("input:radio").removeAttr("checked");
+        $('#prNo').val('');
+        $('#chalanNo').val('');
 
     }
 

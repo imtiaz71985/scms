@@ -44,20 +44,23 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
     public Map execute(Map result) {
         try {
             Receive receive = (Receive) result.get(RECEIVE)
-            receive.save()
             List<ReceiveDetails> lstDetails = (List<ReceiveDetails>) result.get(RECEIVE_DETAILS)
-            for (int i = 0; i < lstDetails.size(); i++) {
-                MedicineInfo medicineInfo=MedicineInfo.read(lstDetails[i].medicineId)
-                medicineInfo.stockQty+=lstDetails[i].receiveQty
-                medicineInfo.save()
+            if(lstDetails.size()>0) {
+                receive.save()
 
-                lstDetails[i].receiveId= receive.id
-                lstDetails[i].save()
-            }
-            if(result.isReceived) {
-                Requisition requisition = Requisition.findByReqNo(receive.reqNo)
-                requisition.isReceived = result.isReceived
-                requisition.save()
+                for (int i = 0; i < lstDetails.size(); i++) {
+                    MedicineInfo medicineInfo = MedicineInfo.read(lstDetails[i].medicineId)
+                    medicineInfo.stockQty += lstDetails[i].receiveQty
+                    medicineInfo.save()
+
+                    lstDetails[i].receiveId = receive.id
+                    lstDetails[i].save()
+                }
+                if (result.isReceived) {
+                    Requisition requisition = Requisition.findByReqNo(receive.reqNo)
+                    requisition.isReceived = result.isReceived
+                    requisition.save()
+                }
             }
             return result
         } catch (Exception ex) {
