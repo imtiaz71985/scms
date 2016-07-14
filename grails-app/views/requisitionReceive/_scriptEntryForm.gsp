@@ -79,7 +79,7 @@
         jQuery.ajax({
             type: 'post',
             data: formData,
-            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo,
+            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo+"&isReceived=" + isComplete,
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -174,12 +174,20 @@
                 value = input.val();
                 var row = $(this).closest("tr");
                 var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
-                var a=$("#footerSpan").text();
-                totalAmount=parseFloat((a.substring(1, a.length)).replace(/[^\d\.]/g,'') );
-                totalAmount -= minus * data.unitPrice;
-                data.set('amount', value * data.unitPrice);
-                totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
-                $("#footerSpan").text(formatAmount(totalAmount));
+
+                 if(value > (data.approvedQty-data.prevReceiveQty)){
+                            showError("Wrong quantity.");
+                            data.set('receiveQty', minus);
+                            data.set('amount', minus * data.unitPrice);
+                        }
+                        else {
+                     var a = $("#footerSpan").text();
+                     totalAmount = parseFloat((a.substring(1, a.length)).replace(/[^\d\.]/g, ''));
+                     totalAmount -= minus * data.unitPrice;
+                     data.set('amount', value * data.unitPrice);
+                     totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
+                     $("#footerSpan").text(formatAmount(totalAmount));
+                 }
             });
         },
 
