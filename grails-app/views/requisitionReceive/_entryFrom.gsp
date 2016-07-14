@@ -1,21 +1,22 @@
-<div id="application_top_panel" class="panel panel-primary">
+<div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
             Medicine requisition
         </div>
     </div>
 
-    <form id="frmRequisition" name="frmRequisitionReceive" class="form-horizontal form-widgets" role="form">
+    <form id="frmRequisitionReceive" name="frmRequisitionReceive" class="form-horizontal form-widgets" role="form">
         <div class="panel-body">
 
-            <div class="container">
-                <div class="col-md-9"></div>
-                <div class="radio col-md-3">
-                   <label> <input type="radio" id="rbComplete" name="requisitionStatus" value="Complete" tabindex="3" >Complete</label>
+            <div class="form-group">
+                <div class="radio col-md-3 pull-right">
+                    <label><input type="radio" id="rbComplete" name="requisitionStatus" value="Complete"
+                                  tabindex="3">Complete</label>
                     &nbsp;&nbsp;
-                    <label><input type="radio" id="rbNotComplete" name="requisitionStatus" value="Not Complete" tabindex="4">Not Complete</label>
-                </div>
-            </div>
+                    <label><input type="radio" id="rbNotComplete" name="requisitionStatus" value="Not Complete"
+                                  tabindex="4">Not Complete</label>
+                </div></div>
+
             <div class="form-group">
                 <div id="gridMedicine"></div>
             </div>

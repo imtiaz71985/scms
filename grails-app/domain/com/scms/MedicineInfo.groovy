@@ -21,6 +21,7 @@ class MedicineInfo {
         stockQty (nullable: true)
         boxSize (nullable: true)
         boxRate (nullable: true)
+        unitType (nullable: true)
     }
     static mapping = {
         type index: 'system_entity_medicine_type_id_idx'

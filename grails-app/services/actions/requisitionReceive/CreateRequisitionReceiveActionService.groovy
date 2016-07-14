@@ -47,7 +47,6 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
             receive.save()
             List<ReceiveDetails> lstDetails = (List<ReceiveDetails>) result.get(RECEIVE_DETAILS)
             for (int i = 0; i < lstDetails.size(); i++) {
-
                 MedicineInfo medicineInfo=MedicineInfo.read(lstDetails[i].medicineId)
                 medicineInfo.stockQty+=lstDetails[i].receiveQty
                 medicineInfo.save()
@@ -56,12 +55,10 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                 lstDetails[i].save()
             }
             if(result.isReceived) {
-                Requisition requisition = Requisition.read(receive.reqNo)
+                Requisition requisition = Requisition.findByReqNo(receive.reqNo)
                 requisition.isReceived = result.isReceived
                 requisition.save()
             }
-
-
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

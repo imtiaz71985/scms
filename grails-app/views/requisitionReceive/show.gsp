@@ -1,6 +1,6 @@
 <div class="container-fluid">
-    <div class="row" id="searchCriteriaRow">
-        <div id="application_top_panel" class="panel panel-primary">
+    <div class="row" id="application_top_panel">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
                     Search Criteria
@@ -14,19 +14,22 @@
                             <div class="col-md-1" align="center">
                                 <label class="control-label">Vendor:</label>
                             </div>
+
                             <div class="col-md-3">
                                 <app:dropDownVendor
                                         data_model_name="dropDownVendor"
                                         id="vendorDDL" name="vendorDDL"
                                         tabindex="1" class="kendo-drop-down"
-                                        onchange="javascript:populateDDLRequisitionNo();"
-                                            >
+                                        onchange="javascript:populateDDLRequisitionNo();">
                                 </app:dropDownVendor>
                             </div>
+
                             <div class="col-md-1"></div>
+
                             <div class="col-md-2" align="center">
                                 <label class="control-label ">Registration No:</label>
                             </div>
+
                             <div class="col-md-3">
                                 <select id="ddlRequisition"
                                         name="ddlRequisition"
@@ -35,20 +38,18 @@
                                         class="kendo-drop-down">
                                 </select>
                             </div>
-                            <div class="col-md-2">
-
-                            </div>
-
+                        </div>
                     </div>
                 </div>
+
             </g:form>
         </div>
     </div>
-    </div>
+
     <div class="row">
         <g:render template='/requisitionReceive/entryFrom'/>
-        <g:render template='/requisitionReceive/scriptEntryForm'/>
     </div>
-
 </div>
+<g:render template='/requisitionReceive/scriptEntryForm'/>
+
 

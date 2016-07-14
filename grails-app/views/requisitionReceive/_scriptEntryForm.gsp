@@ -1,21 +1,16 @@
 
 <script language="javascript">
     var frmRequisitionReceive,gridMedicineReqReceive, dataSourceForMedicine, dropDownVendor,dropDownRequisitionNo,
-            requisitionNo, unitPrice = 0, totalAmount = 0;
+            requisitionNo='', unitPrice = 0, totalAmount = 0;
 
     $(document).ready(function () {
-        /*requisitionNo = '${requisitionNo}';
-        $("#requisitionNo").val(requisitionNo);*/
-
-         requisitionNo ='';
         onLoadRequisitionPage();
         populateDDLRequisitionNo();
         initMedicineRequisitionGrid();
-
         defaultPageTile("Requisition details", null);
     });
-    function onLoadRequisitionPage() {
 
+    function onLoadRequisitionPage() {
         dropDownRequisitionNo = initKendoDropdown($('#ddlRequisition'), null, null, null);
     }
     function populateDDLRequisitionNo(){
@@ -102,10 +97,6 @@
             $("#unit").text('');
         } else {
             showSuccess(result.message);
-            //clearForm($("#frmRequisitionReceive"), $('#medicineId'));
-
-           // gridMedicineReqReceive.setDataSource(dsDr);
-            //$("#unit").text('');
            resetForm();
         }
     }
@@ -159,7 +150,7 @@
         initDataSource();
         $("#gridMedicine").kendoGrid({
             dataSource: dataSourceForMedicine,
-            height: getGridHeightKendo(),
+            height: getGridHeightKendo()-140,
             selectable: true,
             sortable: true,
             resizable: true,
@@ -252,8 +243,10 @@
                 headerAttributes: {style: setAlignRight()},
                 width: 50,
                 sortable: false,
-                filterable: false
-                },
+                filterable: false,
+                footerTemplate:"<div style='text-align: right'>Total : </div>"
+
+            },
                 {
                     field: "amount",
                     title: "Amount",
@@ -261,7 +254,7 @@
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(amount)#",
                     sortable: false,filterable: false,width: 50,
-                    footerTemplate:"<div style='text-align: right'>Total : <span id='footerSpan'>#=formatAmount(sum)#</span></div>"
+                    footerTemplate:"<div style='text-align: right'><span id='footerSpan'>#=formatAmount(sum)#</span></div>"
                 }
             ],
             filterable: {
