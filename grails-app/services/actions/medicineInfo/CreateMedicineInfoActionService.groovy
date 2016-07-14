@@ -21,7 +21,7 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
     public Map executePreCondition(Map params) {
         try {
             //Check parameters
-            if (!params.typeId||!params.genericName||!params.strength) {
+            if (!params.typeId||!params.genericName) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long typeId = Long.parseLong(params.typeId)
@@ -29,7 +29,8 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
                 int duplicateCount = MedicineInfo.countByGenericNameIlikeAndTypeAndStrength(params.name,typeId,params.strength)
                 if (duplicateCount > 0) {
                     return super.setError(params, ALREADY_EXIST)
-                }            }
+                }
+            }
             MedicineInfo medicineInfo = buildObject(params)
             params.put(MEDICINE_INFO, medicineInfo)
             return params
@@ -90,6 +91,8 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
         MedicineInfo medicineInfo = new MedicineInfo(parameterMap)
         medicineInfo.unitPrice = Double.parseDouble(parameterMap.unitPrice)
         medicineInfo.mrpPrice = Double.parseDouble(parameterMap.mrpPrice)
+        if(parameterMap.boxSize) medicineInfo.boxSize = Double.parseDouble(parameterMap.boxSize)
+        if(parameterMap.boxRate) medicineInfo.boxRate = Double.parseDouble(parameterMap.boxRate)
         medicineInfo.type = Double.parseDouble(parameterMap.typeId)
         medicineInfo.vendorId = Long.parseLong(parameterMap.vendorId)
         return medicineInfo

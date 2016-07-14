@@ -16,7 +16,7 @@
 </script>
 
 <script language="javascript">
-    var gridMedicine, dataSource, medicineInfoModel, unitPrice, mrpPrice, dropDownType, dropDownVendor;
+    var gridMedicine, dataSource, medicineInfoModel, unitPrice, mrpPrice, boxSize,boxRate,dropDownType, dropDownVendor;
 
     $(document).ready(function () {
         onLoadMedicineInfoPage();
@@ -41,6 +41,20 @@
 
         });
         mrpPrice = $("#mrpPrice").data("kendoNumericTextBox");
+
+        $('#boxSize').kendoNumericTextBox({
+            format: "#####",
+            decimals: 0
+        });
+        boxSize = $("#boxSize").data("kendoNumericTextBox");
+        $('#boxRate').kendoNumericTextBox({
+            min: 0,
+            step: 1,
+            max: 999999999999.99,
+            format: "#.##"
+
+        });
+        boxRate = $("#boxRate").data("kendoNumericTextBox");
 
         $("#medicineInfoRow").hide();
         // initialize form with kendo validator & bind onSubmit event
@@ -151,7 +165,9 @@
                         strength: {type: "string"},
                         unitType: {type: "string"},
                         unitPrice: {type: "number"},
-                        mrpPrice: {type: "number"}
+                        mrpPrice: {type: "number"},
+                        boxSize: {type: "number"},
+                        boxRate: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -239,7 +255,9 @@
                         strength: "",
                         unitType: "",
                         unitPrice: "",
-                        mrpPrice: ""
+                        mrpPrice: "",
+                        boxSize: "",
+                        boxRate: ""
                     }
                 }
         );

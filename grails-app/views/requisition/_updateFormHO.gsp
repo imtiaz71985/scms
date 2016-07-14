@@ -13,10 +13,15 @@
                 <div class="col-md-3">
                     <input type="text" class="form-control" id="hospitalName" name="hospitalName" readonly="true" />
                 </div>
-                <label class="col-md-2 control-label label-optional" for="requisitionNo">Requisition No:</label>
+                <label class="col-md-1 control-label label-optional" for="requisitionNo">Req No:</label>
+
+                <div class="col-md-2">
+                    <input type="text" class="form-control" id="requisitionNo" name="requisitionNo" readonly="true" />
+                </div>
+                <label class="col-md-1 control-label label-optional" for="requisitionBy">Req By:</label>
 
                 <div class="col-md-3">
-                    <input type="text" class="form-control" id="requisitionNo" name="requisitionNo" readonly="true" />
+                    <input type="text" class="form-control" id="requisitionBy" name="requisitionBy" readonly="true" />
                 </div>
             </div>
             <div class="form-group">

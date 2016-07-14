@@ -25,6 +25,7 @@ class RequisitionController extends BaseController {
     ListRequisitionHOActionService listRequisitionHOActionService
     ApproveRequisitionRequestActionService approveRequisitionRequestActionService
     AdjustmentRequisitionRequestActionService adjustmentRequisitionRequestActionService
+    DownloadPurchaseRequestActionService downloadPurchaseRequestActionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST", select: "POST", list: "POST"
@@ -121,17 +122,23 @@ class RequisitionController extends BaseController {
     }
 
     def selectHO() {
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        HospitalLocation hospital = HospitalLocation.findByCode(hospital_code)
         long id = Long.parseLong(params.id.toString())
         Requisition requisition = Requisition.read(id)
+        HospitalLocation hospital = HospitalLocation.findByCode(requisition.hospitalCode)
+        SecUser user = SecUser.read(requisition.createdBy)
         render(view: "/requisition/updateHO", model: [requisitionNo: requisition.reqNo,
                                                       totalAmount  : requisition.totalAmount,
+                                                      createdBy    : user.username,
                                                       hospitalName : hospital.name])
 
     }
 
     def updateHO() {
         renderOutput(adjustmentRequisitionRequestActionService, params)
+    }
+
+    def generatePR(){
+        Map result = (Map) getReportResponse(downloadPurchaseRequestActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
 }

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="commonFooter" language="groovy" pageWidth="555" pageHeight="18" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="06cc1690-f9bc-425f-92ec-cb82b083fa9e">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="commonFooter" language="groovy" pageWidth="595" pageHeight="18" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="0" bottomMargin="0" uuid="06cc1690-f9bc-425f-92ec-cb82b083fa9e">
 	<property name="ireport.zoom" value="1.2722928551174546"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<title>
 		<band height="18" splitType="Stretch">
 			<staticText>
-				<reportElement x="344" y="0" width="211" height="18" forecolor="#2C2A2B" uuid="1d01fb13-653c-4d58-aeb7-81041653d316"/>
+				<reportElement x="353" y="0" width="211" height="18" forecolor="#2C2A2B" uuid="1d01fb13-653c-4d58-aeb7-81041653d316"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Cambria" size="6"/>
@@ -22,11 +22,11 @@
 				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" mode="Transparent" x="0" y="0" width="555" height="1" backcolor="#FFFFFF" uuid="731dc29a-0466-4de0-b781-13c4399f656e"/>
+				<reportElement positionType="Float" mode="Transparent" x="0" y="0" width="564" height="1" backcolor="#FFFFFF" uuid="731dc29a-0466-4de0-b781-13c4399f656e"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
 					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
 				</box>
 				<textElement verticalAlignment="Top">
