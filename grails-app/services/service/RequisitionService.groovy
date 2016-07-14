@@ -61,8 +61,8 @@ class RequisitionService extends BaseService {
             AND r.is_approved=TRUE AND r.is_delivered=TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id
             LEFT JOIN system_entity se ON mi.type=se.id
-            LEFT JOIN receive ON receive.req_no=r.req_no INNER JOIN receive_details ON receive.id=receive_details.receive_id
-            AND receive_details.medicine_id= rd.medicine_id GROUP BY receive.req_no,receive_details.medicine_id
+            LEFT JOIN receive ON receive.req_no=r.req_no LEFT JOIN receive_details ON receive.id=receive_details.receive_id
+            AND receive_details.medicine_id= rd.medicine_id GROUP BY r.req_no,rd.medicine_id
             ORDER BY mi.brand_name
         """
         Map queryParams = [ requisitionNo : requisitionNo ]
