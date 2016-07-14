@@ -23,7 +23,7 @@
                                   tabindex="3">Complete</label>
                     &nbsp;&nbsp;
                     <label><input type="radio" id="rbNotComplete" name="requisitionStatus" value="Not Complete"
-                                  tabindex="4">Not Complete</label>
+                                  tabindex="4">Incomplete</label>
                 </div>
             </div>
 
