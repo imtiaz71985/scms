@@ -1,6 +1,6 @@
 
 <script language="javascript">
-    var gridDetails, dataSource, isApplicable;
+    var gridDetails, dataSource, isApplicable,dropDownHospitalCode;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -17,13 +17,19 @@
         });
         var currentDate = moment().format('MMMM YYYY');
         $('#month').val(currentDate);
+
+        if(!${isAdmin}){
+         dropDownHospitalCode.value('${hospitalCode}');
+            dropDownHospitalCode.readonly(true);
+        }
+
         initializeForm($("#detailsForm"), onSubmitForm);
         // update page title
         defaultPageTile("Monthly Report", null);
     }
 
     function executePreCondition() {
-        if (!$('#month').val()) {
+        if (!validateForm($("#detailsForm"))) {
             return false;
         }
         return true;
@@ -39,8 +45,9 @@
 
     function loadGridValue() {
         var month = $('#month').val();
+        var hospitalCode = dropDownHospitalCode.value();
         showLoadingSpinner(true);
-        var params = "?month=" + month;
+        var params = "?month=" + month + "&hospitalCode=" + hospitalCode;
         var url = "${createLink(controller:'reports', action: 'listMonthlyStatus')}" + params;
         populateGridKendo(gridDetails, url);
         showLoadingSpinner(false);
@@ -94,9 +101,11 @@
                         is_holiday: {type: "boolean"},
                         holiday_status: {type: "string"},
                         new_patient: {type: "number"},
+                        re_reg_patient: {type: "number"},
                         patient_followup: {type: "number"},
                         patient_revisit: {type: "number"},
-                        total_patient: {type: "number"}
+                        total_patient: {type: "number"},
+                        total_service: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -116,9 +125,11 @@
                 {field: "pathology_count", aggregate: "sum" },
                 {field: "medicine_sales", aggregate: "sum" },
                 {field: "new_patient", aggregate: "sum" },
+                {field: "re_reg_patient", aggregate: "sum" },
                 {field: "patient_followup", aggregate: "sum" },
                 {field: "patient_revisit", aggregate: "sum" },
-                {field: "total_patient", aggregate: "sum" }
+                {field: "total_patient", aggregate: "sum" },
+                {field: "total_service", aggregate: "sum" }
             ],
             sort: [{field: 'date_field', dir: 'asc'}],
             pageSize: false,
@@ -127,7 +138,12 @@
             serverSorting: true
         });
     }
-
+    function setCAlignRight() {
+        return "text-align:right;font-size:8pt;";
+    }
+    function setCAlignCenter() {
+        return "text-align:right;font-size:8pt;";
+    }
     function initInfoGrid() {
         initDataSource();
         $("#gridDetails").kendoGrid({
@@ -155,7 +171,7 @@
                         {
                             field: "new_patient", title: "New",
                             width: 30,sortable: false,filterable: false,
-                            headerAttributes: {style: setAlignRight()},
+                            headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
                             template: "#=is_holiday?'':new_patient#",
@@ -163,8 +179,8 @@
                         },
                         {
                             field: "patient_followup", title: "Followup",
-                            width: 40,sortable: false,filterable: false,
-                            headerAttributes: {style: setAlignRight()},
+                            width: 38,sortable: false,filterable: false,
+                            headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
                             template: "#=is_holiday?'':patient_followup#",
@@ -172,8 +188,8 @@
                         },
                         {
                             field: "patient_revisit", title: "Re-visit",
-                            width: 40,sortable: false,filterable: false,
-                            headerAttributes: {style: setAlignRight()},
+                            width: 35,sortable: false,filterable: false,
+                            headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
                             template: "#=is_holiday?'':patient_revisit#",
@@ -182,40 +198,75 @@
                         {
                             field: "total_patient", title: "Total",
                             width: 40,sortable: false,filterable: false,
-                            headerAttributes: {style: setAlignRight()},
+                            headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
                             template: "#=is_holiday?'':total_patient#",
+                            footerTemplate: "#=sum#"
+                        },
+                        {
+                            field: "total_service", title: "Total <br/> Service",
+                            width: 40,sortable: false,filterable: false,
+                            headerAttributes: {style: setCAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=is_holiday?'':total_service#",
                             footerTemplate: "#=sum#"
                         }
                     ]
                 },
                 {title: "Charges",headerAttributes:{style:setAlignCenter()},
                     columns: [
-                        {
-                            field: "registration_amount",title: "Membership",
-                            width: 50,sortable: false,filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            footerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':registration_amount#",
-                            footerTemplate: "#=sum#"
+                        {title: "Membership",headerAttributes:{style:setAlignCenter()},
+                            columns: [
+                                {
+                                    field: "new_patient",title: "Count",
+                                    width: 30,sortable: false,filterable: false,
+                                    headerAttributes: {style: setCAlignCenter()},
+                                    footerAttributes: {style: setAlignCenter()},
+                                    attributes: {style: setAlignCenter()},
+                                    template: "#=is_holiday?'':new_patient#",
+                                    footerTemplate: "#=sum#"
+                                },
+                                {
+                                    field: "registration_amount",title: "Amount",
+                                    width: 50,sortable: false,filterable: false,
+                                    headerAttributes: {style: setCAlignRight()},
+                                    footerAttributes: {style: setAlignRight()},
+                                    attributes: {style: setAlignRight()},
+                                    template: "#=is_holiday?'':formatAmount(registration_amount)#",
+                                    footerTemplate: "#=formatAmount(sum)#"
+                                }
+                            ]
                         },
-                        {
-                            field: "re_registration_amount",title: "Card Re-issue",
-                            width: 60,sortable: false,filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            footerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':formatAmount(re_registration_amount)#",
-                            footerTemplate: "#=formatAmount(sum)#"
+                        {title: "Card Re-issue",headerAttributes:{style:setAlignCenter()},
+                            columns: [
+                                {
+                                    field: "re_reg_patient",title: "Count",
+                                    width: 30,sortable: false,filterable: false,
+                                    headerAttributes: {style: setCAlignCenter()},
+                                    footerAttributes: {style: setAlignCenter()},
+                                    attributes: {style: setAlignCenter()},
+                                    template: "#=is_holiday?'':re_reg_patient#",
+                                    footerTemplate: "#=sum#"
+                                },
+                                {
+                                    field: "re_registration_amount",title: "Amount",
+                                    width: 50,sortable: false,filterable: false,
+                                    headerAttributes: {style: setCAlignRight()},
+                                    footerAttributes: {style: setAlignRight()},
+                                    attributes: {style: setAlignRight()},
+                                    template: "#=is_holiday?'':formatAmount(re_registration_amount)#",
+                                    footerTemplate: "#=formatAmount(sum)#"
+                                }
+                            ]
                         },
                         {title: "Consultation",headerAttributes:{style:setAlignCenter()},
                             columns: [
                                 {
                                     field: "consultation_count",title: "Count",
                                     width: 30,sortable: false,filterable: false,
-                                    headerAttributes: {style: setAlignCenter()},
+                                    headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
                                     template: "#=is_holiday?'':consultation_count#",
@@ -224,7 +275,7 @@
                                 {
                                     field: "consultation_amount",title: "Amount",
                                     width: 50,sortable: false,filterable: false,
-                                    headerAttributes: {style: setAlignRight()},
+                                    headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
                                     template: "#=is_holiday?'':formatAmount(consultation_amount)#",
@@ -237,7 +288,7 @@
                                 {
                                     field: "subsidy_count",title: "Count",
                                     width: 30,sortable: false,filterable: false,
-                                    headerAttributes: {style: setAlignCenter()},
+                                    headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
                                     template: "#=is_holiday?'':subsidy_count#",
@@ -246,7 +297,7 @@
                                 {
                                     field: "subsidy_amount",title: "Amount",
                                     width: 50,sortable: false,filterable: false,
-                                    headerAttributes: {style: setAlignRight()},
+                                    headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
                                     template: "#=is_holiday?'':formatAmount(subsidy_amount)#",
@@ -259,7 +310,7 @@
                                 {
                                     field: "pathology_count",title: "Count",
                                     width: 30,sortable: false,filterable: false,
-                                    headerAttributes: {style: setAlignCenter()},
+                                    headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
                                     template: "#=is_holiday?'':pathology_count#",
@@ -268,7 +319,7 @@
                                 {
                                     field: "pathology_amount",title: "Amount",
                                     width: 50,sortable: false,filterable: false,
-                                    headerAttributes: {style: setAlignRight()},
+                                    headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
                                     template: "#=is_holiday?'':formatAmount(pathology_amount)#",
@@ -279,7 +330,7 @@
                     ]
                 },
                 {
-                    field: "medicine_sales",title: "Medicine Sales",
+                    field: "medicine_sales",title: "Medicine <br/> Sales",
                     width: 60,sortable: false,filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
@@ -297,8 +348,9 @@
         if (isApplicable) {
             showLoadingSpinner(true);
             var month = $('#month').val(),
+                    hospitalCode = dropDownHospitalCode.value(),
                     msg = 'Do you want to download the sell report now?',
-                    url = "${createLink(controller: 'reports', action: 'downloadMonthlyDetails')}?month=" + month;
+                    url = "${createLink(controller: 'reports', action: 'downloadMonthlyDetails')}?month=" + month + "&hospitalCode="+hospitalCode;
             confirmDownload(msg, url);
         } else {
             showError('No record to download');

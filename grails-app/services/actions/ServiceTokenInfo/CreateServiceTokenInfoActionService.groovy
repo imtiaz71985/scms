@@ -69,9 +69,6 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             } catch (Exception ex) {
             }
             if (serviceTypeId != 5) {
-                //In future use this format
-                // def lst=result.List('paramName')
-                //see in internet
                 String str = result.selectedChargeId
                 List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
                 for (int i = 0; i < lst.size(); i++) {
@@ -101,10 +98,6 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     }
 
     public Map buildSuccessResultForUI(Map result) {
-       /* ServiceTokenInfo serviceTokenInfo = (ServiceTokenInfo) result.get(SERVICE_TOKEN_INFO)
-        ListSystemEntityActionServiceModel model = ListSystemEntityActionServiceModel.read(serviceTokenInfo.serviceCode)
-        result.put(SERVICE_TOKEN_INFO, model)*/
-        ///return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
         return super.setSuccess(result, 'Data Saved successfully. Token No:'+result.serviceTokenNo)
     }
 

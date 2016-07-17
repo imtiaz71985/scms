@@ -1,8 +1,5 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-%{--  <sec:access url="/counselorAction/create">
-      <li onclick="showForm();"><i class="fa fa-plus-square-o"></i>Take New Service</li>
-  </sec:access>--}%
     <sec:access url="/counselorAction/update">
         <li onclick="editRecord();"><i class="fa fa-edit"></i>Counselor Action</li>
     </sec:access>
