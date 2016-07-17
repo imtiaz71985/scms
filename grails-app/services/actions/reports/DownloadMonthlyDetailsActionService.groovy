@@ -1,8 +1,6 @@
 package actions.reports
 
 import com.scms.HospitalLocation
-import com.scms.SecUser
-import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
 import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
@@ -18,10 +16,11 @@ import java.text.SimpleDateFormat
 class DownloadMonthlyDetailsActionService extends BaseService implements ActionServiceIntf {
 
     JasperService jasperService
-    SpringSecurityService springSecurityService
 
     private static final String REPORT_FOLDER = 'financial'
+    private static final String JASPER_FILE_ALL = 'monthlyDetailsReportAll'
     private static final String JASPER_FILE = 'monthlyDetailsReport'
+    private static final String JASPER_FILE_LBL = 'jesperFileLbl'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = 'Monthly Report'
     private static final String OUTPUT_FILE_NAME = "monthly_report"
@@ -29,6 +28,8 @@ class DownloadMonthlyDetailsActionService extends BaseService implements ActionS
     private static final String TO_DATE = "toDate"
     private static final String MONTH_NAME = "monthName"
     private static final String HOSPITAL_NAME = "hospitalName"
+    private static final String HOSPITAL_CODE = "hospitalCode"
+    private static final String FRIEND_SHIP_HEALTH_CLINIC = "Friendship Health Clinic"
 
     /**
      * Get parameters from UI
@@ -53,9 +54,20 @@ class DownloadMonthlyDetailsActionService extends BaseService implements ActionS
         String end = DateUtility.getDBDateFormatAsString(ce.getTime())
         String monthName = new SimpleDateFormat("MMMM yyyy").format(c.getTime());
 
-        String hospitalName = HospitalLocation.findByCode(SecUser.read(springSecurityService.principal.id).hospitalCode).name
+        String hospitalCode = params.hospitalCode
+        String hospitalName = EMPTY_SPACE
+        String jesperFile = EMPTY_SPACE
+        if (hospitalCode.equals(EMPTY_SPACE)) {
+            hospitalName = FRIEND_SHIP_HEALTH_CLINIC
+            jesperFile = JASPER_FILE_ALL
+        } else {
+            hospitalName = HospitalLocation.findByCode(params.hospitalCode).name
+            jesperFile = JASPER_FILE
+        }
 
         params.put(HOSPITAL_NAME, hospitalName)
+        params.put(HOSPITAL_CODE, hospitalCode)
+        params.put(JASPER_FILE_LBL, jesperFile)
         params.put(FROM_DATE, start)
         params.put(TO_DATE, end)
         params.put(MONTH_NAME, monthName)
@@ -122,7 +134,8 @@ class DownloadMonthlyDetailsActionService extends BaseService implements ActionS
         reportParams.put(TO_DATE, result.get(TO_DATE))
         reportParams.put(MONTH_NAME, result.get(MONTH_NAME))
         reportParams.put(HOSPITAL_NAME, result.get(HOSPITAL_NAME))
-        JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
+        reportParams.put(HOSPITAL_CODE, result.get(HOSPITAL_CODE))
+        JasperReportDef reportDef = new JasperReportDef(name: result.get(JASPER_FILE_LBL), fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)
         ByteArrayOutputStream report = jasperService.generateReport(reportDef)
         return [report: report, reportFileName: outputFileName, format: REPORT_FILE_FORMAT]

@@ -10,6 +10,7 @@ class ServiceHeadInfo {
     Date modifyDate
     long modifyBy
     long createdBy
+
     static constraints = {
         createDate type:'date'
         modifyDate type:'date'

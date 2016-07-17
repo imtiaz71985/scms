@@ -1,6 +1,6 @@
 
 <script language="javascript">
-    var gridDetails, dataSource, isApplicable;
+    var gridDetails, dataSource, isApplicable,dropDownHospitalCode;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -17,13 +17,19 @@
         });
         var currentDate = moment().format('MMMM YYYY');
         $('#month').val(currentDate);
+
+        if(!${isAdmin}){
+         dropDownHospitalCode.value('${hospitalCode}');
+            dropDownHospitalCode.readonly(true);
+        }
+
         initializeForm($("#detailsForm"), onSubmitForm);
         // update page title
         defaultPageTile("Monthly Report", null);
     }
 
     function executePreCondition() {
-        if (!$('#month').val()) {
+        if (!validateForm($("#detailsForm"))) {
             return false;
         }
         return true;
@@ -39,8 +45,9 @@
 
     function loadGridValue() {
         var month = $('#month').val();
+        var hospitalCode = dropDownHospitalCode.value();
         showLoadingSpinner(true);
-        var params = "?month=" + month;
+        var params = "?month=" + month + "&hospitalCode=" + hospitalCode;
         var url = "${createLink(controller:'reports', action: 'listMonthlyStatus')}" + params;
         populateGridKendo(gridDetails, url);
         showLoadingSpinner(false);
@@ -172,7 +179,7 @@
                         },
                         {
                             field: "patient_followup", title: "Followup",
-                            width: 40,sortable: false,filterable: false,
+                            width: 38,sortable: false,filterable: false,
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
@@ -181,7 +188,7 @@
                         },
                         {
                             field: "patient_revisit", title: "Re-visit",
-                            width: 40,sortable: false,filterable: false,
+                            width: 35,sortable: false,filterable: false,
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
@@ -341,8 +348,9 @@
         if (isApplicable) {
             showLoadingSpinner(true);
             var month = $('#month').val(),
+                    hospitalCode = dropDownHospitalCode.value(),
                     msg = 'Do you want to download the sell report now?',
-                    url = "${createLink(controller: 'reports', action: 'downloadMonthlyDetails')}?month=" + month;
+                    url = "${createLink(controller: 'reports', action: 'downloadMonthlyDetails')}?month=" + month + "&hospitalCode="+hospitalCode;
             confirmDownload(msg, url);
         } else {
             showError('No record to download');
