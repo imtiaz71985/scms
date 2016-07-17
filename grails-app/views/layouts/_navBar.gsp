@@ -108,6 +108,11 @@
                                     <a href="#requisitionReceive/show"><i class="fa fa-hand-rock-o"></i>&nbsp;Receive</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/requisitionReceive/showList">
+                                <li>
+                                    <a href="#requisitionReceive/showList"><i class="fa fa-hand-lizard-o"></i>&nbsp;Receive Details</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
