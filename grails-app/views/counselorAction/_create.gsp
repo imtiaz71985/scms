@@ -201,7 +201,7 @@
 
                                     <div class="col-md-3">
                                         <input id="pathologyCharges" name="pathologyCharges" type="text" readonly="true"
-                                               class="form-control"/>
+                                               class="form-control" value="0"/>
                                     </div>
                                 </div>
 

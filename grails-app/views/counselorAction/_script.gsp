@@ -232,7 +232,7 @@
         });
         $("#selectedChargeId").val('');
         $("#serviceCharges").val('');
-        $("#pathologyCharges").val('');
+        $("#pathologyCharges").val('0');
         $('#actualPaid').val('');
         $('#subsidyAmount').val('');
         $('#divServiceDetails').hide();
@@ -388,7 +388,7 @@
             $('#divServiceCharges').show();
             //$('#divSubsidy').show();
             // $('#divPayable').show();
-            $('#pathologyCharges').val('');
+            $('#pathologyCharges').val('0');
             $('#divPathology').hide();
         }
         else if (serviceTypeId == 3) {

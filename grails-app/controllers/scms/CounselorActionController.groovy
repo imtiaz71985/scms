@@ -10,6 +10,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
+import service.SecUserService
 import service.ServiceHeadInfoService
 import service.ServiceTokenRelatedInfoService
 
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat
 
 class CounselorActionController extends BaseController {
     SpringSecurityService springSecurityService
+    SecUserService secUserService
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
     ]
@@ -42,7 +44,13 @@ class CounselorActionController extends BaseController {
     def list() {
         Date start = DateUtility.getSqlFromDateWithSeconds(new Date())
         Date end = DateUtility.getSqlToDateWithSeconds(new Date())
-        List<GroovyRowResult> lst=serviceTokenRelatedInfoService.RegAndServiceDetails(start,end)
+
+        String hospital_code=""
+        if(secUserService.isLoggedUserAdmin(springSecurityService.principal.id)){
+            hospital_code= SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        }
+        List<GroovyRowResult> lst=serviceTokenRelatedInfoService.RegAndServiceDetails(start,end,hospital_code)
+
 
         Map result=new HashedMap()
         result.put('list', lst)

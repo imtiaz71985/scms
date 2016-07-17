@@ -30,8 +30,10 @@ class ServiceTokenRelatedInfoService extends BaseService{
         String service_token_no=(String)result[0].service_token_no
         return service_token_no
     }
-    public List<GroovyRowResult> RegAndServiceDetails(Date start,Date end){
-        String queryStr = """
+    public List<GroovyRowResult> RegAndServiceDetails(Date start,Date end, String hospital_code){
+        String queryStr =""
+        if(hospital_code.isEmpty()) {
+            queryStr = """
             SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
                   COALESCE(st.is_exit,FALSE) AS isExit,
                   COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,
@@ -39,9 +41,23 @@ class ServiceTokenRelatedInfoService extends BaseService{
    ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no GROUP BY tcm.service_token_no),0) AS totalCharge
                    FROM registration_info ri
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
-                  WHERE st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
+                  WHERE
                    ORDER BY isExit,serviceDate ASC
         """
+        }
+        else {
+            queryStr = """
+            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
+                  COALESCE(st.is_exit,FALSE) AS isExit,
+                  COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,
+                  COALESCE(( SELECT SUM(sc.charge_amount) AS Charge FROM token_and_charge_mapping tcm LEFT JOIN service_charges sc
+   ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no GROUP BY tcm.service_token_no),0) AS totalCharge
+                   FROM registration_info ri
+                  INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
+                  WHERE SUBSTRING(st.service_token_no,2,2)='${hospital_code}' AND st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
+                   ORDER BY isExit,serviceDate ASC
+        """
+        }
         List<GroovyRowResult> result = executeSelectSql(queryStr)
 
         return result
