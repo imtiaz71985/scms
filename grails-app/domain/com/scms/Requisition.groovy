@@ -18,7 +18,6 @@ class Requisition {
     Date sendDate
     double totalAmount
     double approvedAmount
-    double procAmount
 
     static constraints = {
         approvedDate(nullable: true)
@@ -30,7 +29,6 @@ class Requisition {
         isSend(nullable: true)
         totalAmount(nullable: true)
         approvedAmount(nullable: true)
-        procAmount(nullable: true)
         deliveryDate(nullable: true)
         isDelivered(nullable: true)
     }

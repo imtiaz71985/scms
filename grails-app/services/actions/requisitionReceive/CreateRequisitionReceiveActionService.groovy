@@ -56,7 +56,7 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                     lstDetails[i].receiveId = receive.id
                     lstDetails[i].save()
                 }
-                if (result.isReceived) {
+                if (Boolean.parseBoolean(result.isReceived)) {
                     Requisition requisition = Requisition.findByReqNo(receive.reqNo)
                     requisition.isReceived = result.isReceived
                     requisition.save()
