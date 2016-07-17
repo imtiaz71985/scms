@@ -4,6 +4,7 @@ import com.scms.MedicineInfo
 import com.scms.ReceiveDetails
 import com.scms.Receive
 import com.scms.Requisition
+import com.scms.RequisitionDetails
 import com.scms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
@@ -52,6 +53,10 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                     MedicineInfo medicineInfo = MedicineInfo.read(lstDetails[i].medicineId)
                     medicineInfo.stockQty += lstDetails[i].receiveQty
                     medicineInfo.save()
+
+                    RequisitionDetails requisitionDetails=RequisitionDetails.findByMedicineIdAndReqNo(lstDetails[i].medicineId,receive.reqNo)
+                    requisitionDetails.receiveQty+=lstDetails[i].receiveQty
+                    requisitionDetails.save()
 
                     lstDetails[i].receiveId = receive.id
                     lstDetails[i].save()
