@@ -79,8 +79,7 @@
                         </ul>
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/medicineInfo/stock,/requisition/show,/requisition/showHO,/requisitionReceive/show,
-                /requisitionReceive/showList">
+                <sec:ifAnyUrls urls="/medicineInfo/stock">
                     <li>
                         <a href="#"><i class="fa fa-database"></i>&nbsp;Inventory<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -89,6 +88,15 @@
                                     <a href="#medicineInfo/stock"><i class="fa fa-university"></i>&nbsp;Medicine Stock</a>
                                 </li>
                             </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/requisition/show,/requisition/showHO,/requisitionReceive/show,
+                /requisitionReceive/showList">
+                    <li>
+                        <a href="#"><i class="fa fa-cart-arrow-down"></i>&nbsp;Requisition<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
                             <sec:access url="/requisition/show">
                                 <li>
                                     <a href="#requisition/show"><i class="fa fa-hand-paper-o"></i>&nbsp;Requisition</a>
@@ -118,6 +126,7 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
+
                 <sec:ifAnyUrls urls="/serviceType/show,/systemEntity/show,/serviceHeadInfo/show,/diseaseGroup/show,
                                     /diseaseGroup/show,/diseaseInfo/show,/medicineInfo/show,/hospitalLocation/show">
                     <li>
