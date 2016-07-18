@@ -131,9 +131,16 @@ class FeatureManagementService extends BaseService{
         String queryStr = """
             UPDATE feature_management
             SET config_attribute = CONCAT(config_attribute, ',${roleAuthority}')
+            SET config_attribute = CONCAT(config_attribute, ',${roleAuthority}')
             WHERE url LIKE '/'
         """
+        String queryStr2 = """
+            UPDATE feature_management
+            SET config_attribute = CONCAT(config_attribute, ',${roleAuthority}')
+            WHERE url LIKE '/secUser/resetPassword'
+        """
         executeUpdateSql(queryStr)
+        executeUpdateSql(queryStr2)
     }
     public void removeRoleFromRoot(String roleAuthority){
         String queryStr = """
