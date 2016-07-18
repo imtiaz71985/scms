@@ -1,6 +1,7 @@
 package scms
 
 import actions.requisitionReceive.CreateRequisitionReceiveActionService
+import actions.requisitionReceive.DownloadPurchaseReceiveActionService
 import actions.requisitionReceive.ListRequisitionReceiveActionService
 import actions.requisitionReceive.SelectRequisitionReceiveActionService
 import com.scms.Requisition
@@ -13,12 +14,13 @@ import service.RequisitionService
 
 class RequisitionReceiveController extends BaseController {
 
+    BaseService baseService
     SpringSecurityService springSecurityService
+    RequisitionService requisitionService
     CreateRequisitionReceiveActionService createRequisitionReceiveActionService
     ListRequisitionReceiveActionService listRequisitionReceiveActionService
     SelectRequisitionReceiveActionService selectRequisitionReceiveActionService
-    RequisitionService requisitionService
-    BaseService baseService
+    DownloadPurchaseReceiveActionService downloadPurchaseReceiveActionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST", select: "POST", list: "POST"
@@ -31,7 +33,7 @@ class RequisitionReceiveController extends BaseController {
     def requisitionByVendorId(){
         String vendorId = params.id.toString()
         String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        List<Requisition> lst = requisitionService.listRequisitionNoForReceive(hospital_code,vendorId)
+        List<GroovyRowResult> lst = requisitionService.listRequisitionNoForReceive(hospital_code,vendorId)
         lst = baseService.listForKendoDropdown(lst, null, null)
         Map result = [lst: lst]
         render result as JSON
@@ -59,5 +61,9 @@ class RequisitionReceiveController extends BaseController {
     def detailsReceive() {
         String view = '/requisitionReceive/detailsReceive'
         renderView(selectRequisitionReceiveActionService, params, view)
+    }
+    def downloadReqReceive(){
+        Map result = (Map) getReportResponse(downloadPurchaseReceiveActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
 }
