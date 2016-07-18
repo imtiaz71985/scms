@@ -107,11 +107,6 @@
                                     <a href="#requisition/showHO"><i class="fa fa-hand-pointer-o"></i>&nbsp;Requisition HO</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/requisition/showProc">
-                                <li>
-                                    <a href="#requisition/showProc"><i class="fa fa-hand-pointer-o"></i>&nbsp;Requisition PROC</a>
-                                </li>
-                            </sec:access>
                             <sec:access url="/requisitionReceive/show">
                                 <li>
                                     <a href="#requisitionReceive/show"><i class="fa fa-hand-rock-o"></i>&nbsp;Receive</a>
