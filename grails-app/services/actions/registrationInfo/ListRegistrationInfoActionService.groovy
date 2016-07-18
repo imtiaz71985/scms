@@ -1,14 +1,16 @@
 package actions.registrationInfo
 
 import com.model.ListRegistrationInfoActionServiceModel
+import com.scms.SecUser
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import service.SecUserService
 
 @Transactional
-class ListRegistrationInfoActionService extends BaseService implements ActionServiceIntf{
-
+class ListRegistrationInfoActionService extends BaseService implements ActionServiceIntf {
+    SecUserService secUserService
     private Logger log = Logger.getLogger(getClass())
 
     /**
@@ -34,7 +36,18 @@ class ListRegistrationInfoActionService extends BaseService implements ActionSer
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Map resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class)
+            Map resultMap
+
+            if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+                resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class)
+            } else {
+                String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+
+                Closure param = {
+                    'eq'('hospitalCode', hospitalCode)
+                }
+                resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
+            }
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result
