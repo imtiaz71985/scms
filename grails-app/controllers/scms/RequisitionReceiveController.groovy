@@ -1,10 +1,10 @@
 package scms
 
-import actions.requisition.*
 import actions.requisitionReceive.CreateRequisitionReceiveActionService
+import actions.requisitionReceive.ListRequisitionReceiveActionService
+import actions.requisitionReceive.SelectRequisitionReceiveActionService
 import com.scms.Requisition
 import com.scms.SecUser
-import com.scms.Upazila
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
@@ -15,6 +15,8 @@ class RequisitionReceiveController extends BaseController {
 
     SpringSecurityService springSecurityService
     CreateRequisitionReceiveActionService createRequisitionReceiveActionService
+    ListRequisitionReceiveActionService listRequisitionReceiveActionService
+    SelectRequisitionReceiveActionService selectRequisitionReceiveActionService
     RequisitionService requisitionService
     BaseService baseService
 
@@ -46,5 +48,16 @@ class RequisitionReceiveController extends BaseController {
         result.put('list', lst)
         result.put('count', lst.size())
         render result as JSON
+    }
+
+    def showList() {
+        render(view: "/requisitionReceive/showList")
+    }
+    def list() {
+        renderOutput(listRequisitionReceiveActionService, params)
+    }
+    def detailsReceive() {
+        String view = '/requisitionReceive/detailsReceive'
+        renderView(selectRequisitionReceiveActionService, params, view)
     }
 }
