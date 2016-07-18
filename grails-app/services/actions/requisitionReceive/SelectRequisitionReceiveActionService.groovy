@@ -17,6 +17,7 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
     private static final String APVD_AMOUNT = "apvdAmount"
     private static final String REQUISITION_NO = "requisitionNo"
     private static final String REQUISITION = "requisition"
+    private static final String IS_RECEIVED = "isReceived"
     private static final String REQUISITION_DETAILS = "requisitionDetails"
     private static final String GRID_MODEL_MEDICINE = "gridModelMedicine"
 
@@ -34,6 +35,7 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
             params.put(APVD_AMOUNT, requisition.approvedAmount)
             params.put(REQUISITION_NO, requisition.reqNo)
             params.put(REQUISITION, requisition)
+            params.put(IS_RECEIVED, requisition.isReceived)
             return params
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -60,8 +62,9 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
 
     public Map buildSuccessResultForUI(Map result) {
         try {
+            boolean isReceived = result.get(IS_RECEIVED)
             List<RequisitionDetails> lstMedicine = (List<RequisitionDetails>) result.get(REQUISITION_DETAILS)
-            Map gridObjects = wrapEducationGrid(lstMedicine)
+            Map gridObjects = wrapEducationGrid(lstMedicine, isReceived)
             result.put(GRID_MODEL_MEDICINE, gridObjects.lstMedicine as JSON)
             return result
         } catch (Exception e) {
@@ -78,7 +81,7 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
         return result
     }
 
-    private static Map wrapEducationGrid(List<RequisitionDetails> lstMedicine) {
+    private static Map wrapEducationGrid(List<RequisitionDetails> lstMedicine,boolean isReceived) {
         List lstRows = []
         RequisitionDetails singleRow
         for (int i = 0; i < lstMedicine.size(); i++) {
@@ -94,6 +97,8 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
             double apvdAmount = singleRow.approveAmount
             double recvdAmount = singleRow.receiveQty
             String medicineName = EMPTY_SPACE
+            int reminingQty = apvdQty-recvdQty
+            if(isReceived) reminingQty = 0
 
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
             SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
@@ -120,7 +125,8 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
                     apvdQty     : apvdQty,
                     apvdAmount  : apvdAmount,
                     recvdQty    : recvdQty,
-                    recvdAmount : recvdAmount
+                    recvdAmount : recvdAmount,
+                    reminingQty : reminingQty
             ]
             lstRows << eachDetails
         }

@@ -12,8 +12,13 @@
     </div>
 
     <div class="panel-footer">
-        <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
+        <button id="create" name="create" type="button" data-role="button"
                 class="k-button k-button-icontext" role="button" tabindex="1"
+                onclick='requisitionAcknowledgement();' aria-disabled="false">
+            <span class="k-icon k-i-plus"></span>Generate Acknowledgement
+        </button>
+        <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
+                class="k-button k-button-icontext" role="button" tabindex="2"
                 aria-disabled="false" onclick='resetForm();'>
             <span class="k-icon k-i-close"></span>Close
         </button>
@@ -21,11 +26,16 @@
 </div>
 
 <script language="javascript">
-    var gridMedicine, dataSource, requisitionNo;
+    var gridMedicine, dataSource, requisitionNo,isReceived=false;
 
     $(document).ready(function () {
         initRequisitionGrid();
+        $("#create").hide();
         requisitionNo = '${requisitionNo}';
+        isReceived = '${isReceived}';
+        if(isReceived=='true'){
+            $("#create").show();
+        }
         gridMedicine.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
         $("#footerSpanApvd").text(formatAmount(${apvdAmount}));
         defaultPageTile("Receive details", 'requisitionReceive/showList');
@@ -113,27 +123,13 @@
                     ]
                 },
                 {
-                    title: "Remaining", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "recvdQty",
-                            title: "Qty",
-                            width: 30,
-                            attributes: {style: setAlignRight()},
-                            headerAttributes: {style: setAlignRight()},
-                            sortable: false,
-                            filterable: false
-                        },
-                        {
-                            field: "recvdAmount",
-                            title: "Amount",
-                            attributes: {style: setAlignRight()},
-                            headerAttributes: {style: setAlignRight()},
-                            template: "#=formatAmount(recvdAmount)#",
-                            sortable: false, filterable: false, width: 50,
-                            footerTemplate: "<div style='text-align: right'>Total : #=formatAmount(0)#</div>"
-                        }
-                    ]
+                    field: "reminingQty",
+                    title: "Remaining<br/> Oty",
+                    width: 30,
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    sortable: false,
+                    filterable: false
                 }
             ],
             filterable: false
@@ -142,6 +138,18 @@
     }
 
     function resetForm() {
+        $("#create").hide();
         window.history.back();
+    }
+
+    function requisitionAcknowledgement() {
+        if(isReceived == 'true'){
+            showLoadingSpinner(true);
+            var msg = 'Do you want to download this report?',
+                    url = "${createLink(controller: 'requisitionReceive', action: 'downloadReqReceive')}?requisitionNo=" + requisitionNo;
+            confirmDownload(msg, url);
+        }else{
+            showError("Could not download this report");
+        }
     }
 </script>
