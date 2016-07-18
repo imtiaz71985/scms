@@ -31,7 +31,7 @@
     $(document).ready(function () {
         initRequisitionGrid();
         requisitionNo = '${requisitionNo}';
-        if(!${requisition.isApproved}){
+        if(${requisition.isApproved}){
             isApplicable = true;
         }
         gridRequisition.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));

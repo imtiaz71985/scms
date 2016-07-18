@@ -14,8 +14,10 @@
 		<![CDATA[select (CASE WHEN mi.strength IS NULL THEN mi.brand_name
           ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
           END) AS medicineName,DATE_FORMAT(rq.send_date,'%d %b %Y') AS send_date,
-mi.generic_name,rd.approved_qty,type.name as type,v.short_name as vendor,rd.req_no,
-mi.unit_price,mi.unit_type,mi.box_size,mi.box_rate,(rd.approved_qty*mi.unit_price) as total_price,
+mi.generic_name,rd.approved_qty,type.name as type,
+COALESCE(v.short_name,v.name) as vendor,rd.req_no,
+mi.unit_price,mi.unit_type,mi.box_size,mi.box_rate,
+(rd.approved_qty*mi.unit_price) as total_price,
 concat("<b>",pre.name,"</b><br/>",pre.designation,"<br/>","Friendship","<br/>",
 coalesce(prelo.address,"")) as prepared_by,
 concat("<b>",rec.name,"</b><br/>",rec.designation,"<br/>","Friendship") as recommended_by,
@@ -318,7 +320,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 				</textElement>
 				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="292" y="0" width="76" height="12" uuid="66bad81f-5321-4cec-9d5a-141a562a6fbf"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="0.1" lineColor="#000000"/>
