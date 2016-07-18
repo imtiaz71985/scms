@@ -1,5 +1,6 @@
 package actions.secuser
 
+import com.model.ListSecUserActionServiceModel
 import com.scms.SecUser
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
@@ -76,6 +77,9 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
      * @return - map containing success message
      */
     public Map buildSuccessResultForUI(Map result) {
+        SecUser serviceType = (SecUser) result.get(SEC_USER)
+        ListSecUserActionServiceModel model = ListSecUserActionServiceModel.read(serviceType.id)
+        result.put(SEC_USER, model)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
     /**

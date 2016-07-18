@@ -79,7 +79,8 @@
                         </ul>
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/medicineInfo/stock,/requisition/show,/requisition/showHO,/requisitionReceive/show">
+                <sec:ifAnyUrls urls="/medicineInfo/stock,/requisition/show,/requisition/showHO,/requisitionReceive/show,
+                /requisitionReceive/showList">
                     <li>
                         <a href="#"><i class="fa fa-database"></i>&nbsp;Inventory<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

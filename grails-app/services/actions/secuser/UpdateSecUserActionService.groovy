@@ -1,5 +1,6 @@
 package actions.secuser
 
+import com.model.ListSecUserActionServiceModel
 import com.scms.SecUser
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
@@ -27,15 +28,7 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
-            //long version = Long.parseLong(params.version.toString())
-
-            //Check existing of Obj and version matching
             SecUser oldUser = (SecUser) secUserService.read(id)
-            /*if ((!oldUser) || oldUser.version != version) {
-                return super.setError(params, OBJ_CHANGED_MSG)
-            }*/
-
-            // Check existing of same secUser name
             String name = params.username.toString()
             int duplicateCount = secUserService.countByUsernameIlikeAndIdNotEqual(name, id)
             if (duplicateCount > 0) {
@@ -75,6 +68,9 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
      * @return - map with success message
      */
     public Map buildSuccessResultForUI(Map result) {
+        SecUser serviceType = (SecUser) result.get(SEC_USER)
+        ListSecUserActionServiceModel model = ListSecUserActionServiceModel.read(serviceType.id)
+        result.put(SEC_USER, model)
         return super.setSuccess(result, UPDATE_SUCCESS_MESSAGE)
     }
 
@@ -100,6 +96,7 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
         oldSecUser.password = springSecurityService.encodePassword(user.password)
         oldSecUser.accountExpired = user.accountExpired
         oldSecUser.accountLocked = user.accountLocked
+        oldSecUser.hospitalCode = user.hospitalCode
         return oldSecUser
     }
 }
