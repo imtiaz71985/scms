@@ -160,38 +160,38 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
                 LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND SUBSTRING(tcm2.service_token_no, 1, 2) = :hospitalCode
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND SUBSTRING(tcm2.service_token_no, 2, 2) = :hospitalCode
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_amount,
 
                 COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                 INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND SUBSTRING(tcm2.service_token_no, 1, 2) = :hospitalCode
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND SUBSTRING(tcm2.service_token_no, 2, 2) = :hospitalCode
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_count,
 
                 COALESCE((SELECT SUM(sti.subsidy_amount)
                 FROM service_token_info sti
                         WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
-                        AND SUBSTRING(sti.service_token_no, 1, 2) = :hospitalCode
+                        AND SUBSTRING(sti.service_token_no, 2, 2) = :hospitalCode
                         GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_amount,
 
                 COALESCE((SELECT COUNT(sti.service_token_no)
                 FROM service_token_info sti
                         WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field AND sti.subsidy_amount > 0
-                        AND SUBSTRING(sti.service_token_no, 1, 2) = :hospitalCode
+                        AND SUBSTRING(sti.service_token_no, 2, 2) = :hospitalCode
                         GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_count,
 
                 COALESCE((SELECT SUM(sc3.charge_amount)
                          FROM token_and_charge_mapping tcm3
                         LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                         WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                        AND SUBSTRING(tcm3.service_token_no, 1, 2) = :hospitalCode
+                        AND SUBSTRING(tcm3.service_token_no, 2, 2) = :hospitalCode
                         GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_amount,
 
                 COALESCE((SELECT COUNT(sc3.id)
                          FROM token_and_charge_mapping tcm3
                         RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                         WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                        AND SUBSTRING(tcm3.service_token_no, 1, 2) = :hospitalCode
+                        AND SUBSTRING(tcm3.service_token_no, 2, 2) = :hospitalCode
                         GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_count,
 
                     COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
@@ -203,12 +203,12 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                     WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                    AND SUBSTRING(sti.service_token_no, 1, 2) = :hospitalCode
+                    AND SUBSTRING(sti.service_token_no, 2, 2) = :hospitalCode
                     GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_revisit,
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                     WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                    AND SUBSTRING(sti.service_token_no, 1, 2) = :hospitalCode
+                    AND SUBSTRING(sti.service_token_no, 2, 2) = :hospitalCode
                     GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_followup,
 
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
@@ -216,12 +216,12 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                 WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                AND SUBSTRING(sti.service_token_no, 1, 2) = :hospitalCode
+                AND SUBSTRING(sti.service_token_no, 2, 2) = :hospitalCode
                 GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) +
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                 WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                AND SUBSTRING(sti.service_token_no, 1, 2) = :hospitalCode
+                AND SUBSTRING(sti.service_token_no, 2, 2) = :hospitalCode
                 GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)) AS total_patient,
 
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
@@ -235,20 +235,20 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                 INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                AND SUBSTRING(tcm2.service_token_no, 1, 2) = :hospitalCode
+                AND SUBSTRING(tcm2.service_token_no, 2, 2) = :hospitalCode
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
 
                 COALESCE((SELECT COUNT(sti.service_token_no)
                 FROM service_token_info sti
                         WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field AND sti.subsidy_amount > 0
-                        AND SUBSTRING(sti.service_token_no, 1, 2) = :hospitalCode
+                        AND SUBSTRING(sti.service_token_no, 2, 2) = :hospitalCode
                         GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) +
 
                 COALESCE((SELECT COUNT(sc3.id)
                         FROM token_and_charge_mapping tcm3
                 RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                 WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                AND SUBSTRING(tcm3.service_token_no, 1, 2) = :hospitalCode
+                AND SUBSTRING(tcm3.service_token_no, 2, 2) = :hospitalCode
                 GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0)) AS total_service
 
                 FROM calendar c
