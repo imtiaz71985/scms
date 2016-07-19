@@ -59,7 +59,8 @@
                         requisitionDate: {type: "date"},
                         approvedDate: {type: "date"},
                         isSend: {type: "boolean"},
-                        isApproved: {type: "boolean"}
+                        isApproved: {type: "boolean"},
+                        isReceived: {type: "boolean"}
                     }
                 },
                 parse: function (data) {
@@ -144,6 +145,16 @@
                     attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()},
                     template: "#=isApproved?'YES':'NO'#",
+                    sortable: false,
+                    filterable: false
+                },
+                {
+                    field: "isReceived",
+                    title: "Received",
+                    width: 30,
+                    attributes: {style: setAlignCenter()},
+                    headerAttributes: {style: setAlignCenter()},
+                    template: "#=isReceived?'YES':'NO'#",
                     sortable: false,
                     filterable: false
                 },
