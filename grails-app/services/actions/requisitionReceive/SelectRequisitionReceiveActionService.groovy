@@ -1,11 +1,9 @@
 package actions.requisitionReceive
 
-import com.scms.MedicineInfo
 import com.scms.Requisition
-import com.scms.RequisitionDetails
-import com.scms.SystemEntity
 import grails.converters.JSON
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
@@ -14,12 +12,8 @@ import scms.BaseService
 class SelectRequisitionReceiveActionService extends BaseService implements ActionServiceIntf {
 
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
-    private static final String APVD_AMOUNT = "apvdAmount"
-    private static final String TOTAL_RECVD_AMOUNT = "totalRecvdAmount"
     private static final String REQUISITION_NO = "requisitionNo"
     private static final String REQUISITION = "requisition"
-    private static final String IS_RECEIVED = "isReceived"
-    private static final String REQUISITION_DETAILS = "requisitionDetails"
     private static final String GRID_MODEL_MEDICINE = "gridModelMedicine"
 
     private Logger log = Logger.getLogger(getClass())
@@ -33,10 +27,7 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
             if (!requisition) {
                 return super.setError(params, NOT_FOUND_MASSAGE)
             }
-            params.put(APVD_AMOUNT, requisition.approvedAmount)
             params.put(REQUISITION_NO, requisition.reqNo)
-            params.put(REQUISITION, requisition)
-            params.put(IS_RECEIVED, requisition.isReceived)
             return params
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -47,9 +38,10 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Requisition requisition = (Requisition) result.get(REQUISITION)
-            List<RequisitionDetails> lstMedicine = (List<RequisitionDetails>) RequisitionDetails.findAllByReqNo(requisition.reqNo)
-            result.put(REQUISITION_DETAILS, lstMedicine)
+            String requisitionNo = result.get(REQUISITION_NO)
+            LinkedHashMap resultMap = getDetails(requisitionNo)
+            List<GroovyRowResult> lst = resultMap.rowResults
+            result.put(LIST, lst)
             return result
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -63,17 +55,14 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
 
     public Map buildSuccessResultForUI(Map result) {
         try {
-            boolean isReceived = result.get(IS_RECEIVED)
-            List<RequisitionDetails> lstMedicine = (List<RequisitionDetails>) result.get(REQUISITION_DETAILS)
-            Map gridObjects = wrapEducationGrid(lstMedicine, isReceived)
+            List<GroovyRowResult> lstMedicine = (List<GroovyRowResult>) result.get(LIST)
+            Map gridObjects = wrapMedicineGrid(lstMedicine)
             result.put(GRID_MODEL_MEDICINE, gridObjects.lstMedicine as JSON)
-            result.put(TOTAL_RECVD_AMOUNT, gridObjects.grandRecvTotal)
             return result
         } catch (Exception e) {
             log.error(e.getMessage())
             throw new RuntimeException(e)
-        }
-    }
+        }    }
     /**
      * Build failure result in case of any error
      * @param result -map returned from previous methods, can be null
@@ -83,56 +72,50 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
         return result
     }
 
-    private static Map wrapEducationGrid(List<RequisitionDetails> lstMedicine,boolean isReceived) {
+    private LinkedHashMap getDetails(String requisitionNo) {
+
+        String queryStr = """
+            SELECT req.req_no,rec.create_date AS receive_date,rd.medicine_id,rd.receive_qty,
+                md.generic_name,se.name AS type,
+                CASE WHEN md.strength IS NULL THEN md.brand_name ELSE CONCAT(md.brand_name,' (',md.strength,')') END AS medicine_name,
+                COALESCE(v.short_name,v.name) AS vendor
+                    FROM requisition req
+                RIGHT JOIN receive rec ON rec.req_no = req.req_no
+                LEFT JOIN receive_details rd ON rd.receive_id=rec.id
+                LEFT JOIN medicine_info md ON md.id=rd.medicine_id
+                LEFT JOIN vendor v ON v.id = md.vendor_id
+                LEFT JOIN system_entity se ON se.id = md.type AND se.type="Medicine Type"
+                    WHERE req.req_no = '${requisitionNo}'
+                GROUP BY req.req_no,rec.create_date,rd.medicine_id
+                ORDER BY rec.create_date,md.brand_name ASC;
+        """
+
+        List<GroovyRowResult> rowResults = executeSelectSql(queryStr)
+        return [rowResults: rowResults]
+    }
+
+    private static Map wrapMedicineGrid(List<GroovyRowResult> lstMedicine) {
         List lstRows = []
-        Double grandRecvTotal = 0.00d
-        RequisitionDetails singleRow
+        GroovyRowResult singleRow
         for (int i = 0; i < lstMedicine.size(); i++) {
             singleRow = lstMedicine[i]
-            long id = singleRow.id
-            long version = singleRow.version
-            String voucherNo = singleRow.reqNo
-            long medicineId = singleRow.medicineId
-            int quantity = singleRow.reqQty
-            int apvdQty = singleRow.approvedQty
-            int recvdQty = singleRow.receiveQty
-            double amount = singleRow.amount
-            double apvdAmount = singleRow.approveAmount
-            String medicineName = EMPTY_SPACE
-            int reminingQty = apvdQty-recvdQty
-            if(isReceived) reminingQty = 0
-
-            MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
-            SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
-            String genericName = medicineInfo.genericName
-            String type = medicineType.name
-            double recvdAmount = singleRow.receiveQty*medicineInfo.unitPrice
-            grandRecvTotal+=recvdAmount
-            if (medicineInfo.strength) {
-                medicineName = medicineInfo.brandName + ' (' + medicineInfo.strength + ')'
-            } else {
-                medicineName = medicineInfo.brandName
-            }
+            Date receiveDate  = singleRow.receive_date
+            String medicineName = singleRow.medicine_name
+            String vendor       = singleRow.vendor
+            String type         = singleRow.type
+            String genericName  = singleRow.generic_name
+            int receiveQty      = singleRow.receive_qty
 
             Map eachDetails = [
-                    id          : id,
-                    version     : version,
-                    voucherNo   : voucherNo,
-                    type        : type,
-                    medicineName: medicineName,
-                    genericName : genericName,
-                    medicineId  : medicineId,
-                    unitPrice   : medicineInfo.unitPrice,
-                    quantity    : quantity,
-                    amount      : amount,
-                    apvdQty     : apvdQty,
-                    apvdAmount  : apvdAmount,
-                    recvdQty    : recvdQty,
-                    recvdAmount : recvdAmount,
-                    reminingQty : reminingQty
+                    receiveDate   : receiveDate,
+                    type          : type,
+                    genericName   : genericName,
+                    medicineName  : medicineName,
+                    vendor        : vendor,
+                    receiveQty    : receiveQty
             ]
             lstRows << eachDetails
         }
-        return [lstMedicine: lstRows,grandRecvTotal:grandRecvTotal]
+        return [lstMedicine: lstRows]
     }
 }

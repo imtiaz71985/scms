@@ -65,7 +65,7 @@ class SelectRequisitionAcknowledgementActionService extends BaseService implemen
         try {
             boolean isReceived = result.get(IS_RECEIVED)
             List<RequisitionDetails> lstMedicine = (List<RequisitionDetails>) result.get(REQUISITION_DETAILS)
-            Map gridObjects = wrapEducationGrid(lstMedicine, isReceived)
+            Map gridObjects = wrapMedicineGrid(lstMedicine, isReceived)
             result.put(GRID_MODEL_MEDICINE, gridObjects.lstMedicine as JSON)
             result.put(TOTAL_RECVD_AMOUNT, gridObjects.grandRecvTotal)
             return result
@@ -83,7 +83,7 @@ class SelectRequisitionAcknowledgementActionService extends BaseService implemen
         return result
     }
 
-    private static Map wrapEducationGrid(List<RequisitionDetails> lstMedicine,boolean isReceived) {
+    private static Map wrapMedicineGrid(List<RequisitionDetails> lstMedicine,boolean isReceived) {
         List lstRows = []
         Double grandRecvTotal = 0.00d
         RequisitionDetails singleRow

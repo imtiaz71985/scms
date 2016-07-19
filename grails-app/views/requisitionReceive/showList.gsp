@@ -1,3 +1,10 @@
+<script type="text/x-kendo-template" id="gridToolbar">
+<ul id="menuGrid" class="kendoGridMenu">
+    <sec:access url="/requisitionReceive/acknowledgement">
+        <li onclick="acknowledgement();"><i class="fa fa-certificate fa-2x"></i>Acknowledgement</li>
+    </sec:access>
+</ul>
+</script>
 <div class="container-fluid">
     <div class="row">
         <div id="gridRequisitionReceive"></div>
@@ -94,14 +101,6 @@
                 {
                     command: {
                         text: " ",
-                        click: acknowledgement,
-                        className: "fa fa-certificate fa-2x"
-                    }, width: 35,title: "Acknowledgement"
-
-                },
-                {
-                    command: {
-                        text: " ",
                         click: showDetails,
                         className: "fa fa-search-plus fa-2x"
                     }, width: 30,title: "Details"
@@ -109,20 +108,28 @@
             ],
             filterable: {
                 mode: "row"
-            }
+            },
+            toolbar: kendo.template($("#gridToolbar").html())
         });
         gridRequisitionReceive = $("#gridRequisitionReceive").data("kendoGrid");
+        $("#menuGrid").kendoMenu();
     }
-    function acknowledgement(e) {
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var loc = "${createLink(controller: 'requisitionReceive', action: 'acknowledgement')}?id=" + dataItem.id;
-        router.navigate(formatLink(loc));
+
+    function showDetails(e) {
+        var dataItem2 = this.dataItem($(e.currentTarget).closest("tr"));
+        var loc2 = "${createLink(controller: 'requisitionReceive', action: 'detailsReceive')}?id=" + dataItem2.id;
+        router.navigate(formatLink(loc2));
         return false;
     }
-    function showDetails(e) {
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var loc = "${createLink(controller: 'requisitionReceive', action: 'detailsReceive')}?id=" + dataItem.id;
-        router.navigate(formatLink(loc));
+
+    function acknowledgement(e) {
+        if (executeCommonPreConditionForSelectKendo(gridRequisitionReceive, 'record') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGridKendo(gridRequisitionReceive);
+        var loc1 = "${createLink(controller: 'requisitionReceive', action: 'acknowledgement')}?id=" + id;
+        router.navigate(formatLink(loc1));
         return false;
     }
 

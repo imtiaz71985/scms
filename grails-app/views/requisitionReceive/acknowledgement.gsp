@@ -1,4 +1,4 @@
-<div id="application_top_panel" class="panel panel-primary">
+<div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
             Requisition receive details
@@ -140,8 +140,8 @@
 
     function resetForm() {
         $("#create").hide();
-        window.history.back();
-    }
+        var loc = "${createLink(controller: 'requisitionReceive', action: 'showList')}";
+        router.navigate(formatLink(loc));    }
 
     function requisitionAcknowledgement() {
         if (isReceived == 'true') {
