@@ -11,6 +11,7 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
+import org.h2.util.MathUtils
 import service.RequisitionService
 
 class RequisitionReceiveController extends BaseController {
@@ -52,8 +53,12 @@ class RequisitionReceiveController extends BaseController {
         result.put('list', lst)
         result.put('count', lst.size())
         if(!requisitionNo.equals("")){
-            Requisition requisition = Requisition.findByReqNo(requisitionNo)
-            result.put('totalAmount', requisition.approvedAmount)
+
+           double totalAmount=0.00
+            for(int i=0;i<lst.size();i++){
+                totalAmount+=lst[i]["amount"]
+            }
+            result.put('totalAmount', totalAmount)
         }
         render result as JSON
     }

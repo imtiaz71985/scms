@@ -40,7 +40,10 @@
         dropDownVendor.value('');
         populateDDLRequisitionNo();
         requisitionNo = '';
-        initMedicineRequisitionGrid();
+       //initMedicineRequisitionGrid();
+        clearGridKendo(gridMedicineReqReceive);
+        totalAmount=0;
+        setFooter();
         $("input:radio").removeAttr("checked");
         $('#prNo').val('');
         $('#chalanNo').val('');

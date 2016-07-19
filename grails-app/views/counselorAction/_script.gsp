@@ -100,8 +100,6 @@
         //$('#btnDiseaseInfo').show();
         $('#divDiseaseGroup').show();
         $('#divDiseaseDetails').show();
-        initDiseaseInfoGrid();
-
         showLoadingSpinner(true);
         var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveServiceTokenNo')}?regNo=" + regNo;
 
@@ -128,8 +126,7 @@
             },
             dataType: 'json'
         });
-        var url = "${createLink(controller: 'diseaseInfo', action: 'list')}?diseaseGroupId=" ;
-        populateGridKendo(gridDiseaseDetails,url);
+        loadDisease();
 
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
@@ -147,15 +144,16 @@
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
+        var checked = [];
+        for (var i in checkedIds) {
+            if (checkedIds[i]) {
+                checked.push(i);
+            }
+        }
+        $('#selectedChargeId').val(checked);
         if ($('#id').val().isEmpty()) {
             actionUrl = "${createLink(controller:'counselorAction', action: 'create')}";
-            var checked = [];
-            for (var i in checkedIds) {
-                if (checkedIds[i]) {
-                    checked.push(i);
-                }
-            }
-            $('#selectedChargeId').val(checked);
+
         } else {
             actionUrl = "${createLink(controller:'counselorAction', action: 'update')}";
             var checkedDisease = [];
@@ -230,6 +228,7 @@
                 this.value = "";
             }
         });
+        $('#selectedDiseaseCode').val('');
         $("#selectedChargeId").val('');
         $("#serviceCharges").val('');
         $("#pathologyCharges").val('0');
