@@ -49,6 +49,10 @@ class RequisitionReceiveController extends BaseController {
         Map result=new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())
+        if(!requisitionNo.equals("")){
+            Requisition requisition = Requisition.findByReqNo(requisitionNo)
+            result.put('totalAmount', requisition.approvedAmount)
+        }
         render result as JSON
     }
 
