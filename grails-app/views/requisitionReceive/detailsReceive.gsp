@@ -28,10 +28,11 @@
 
     $(document).ready(function () {
         dataSource = new kendo.data.DataSource({data: ${gridModelMedicine}});
-        dataSource.group({ field: "receiveDate" });
+        dataSource.group({field: "receiveDate" });
         initRequisitionGrid();
         requisitionNo = '${requisitionNo}';
         $("#reqNo").text(requisitionNo);
+        $("#gridMedicine").data("kendoGrid").hideColumn("receiveDate");
         defaultPageTile("Receive details", 'requisitionReceive/showList');
     });
 
@@ -46,6 +47,12 @@
             pageable: false,
             columns: [
                 {
+                    field: "receiveDate",
+                    title: "Received Date",
+                    width: 30,
+                    sortable: false,
+                    filterable: false
+                },                {
                     field: "type",
                     title: "Type",
                     width: 30,
