@@ -7,6 +7,9 @@
 
     <div class="panel-body">
         <div class="form-group">
+            <div class="form-group">
+                <label>Requisition No : <label id="reqNo"></label></label>
+            </div>
             <div id="gridMedicine"></div>
         </div>
     </div>
@@ -28,13 +31,14 @@
         dataSource.group({ field: "receiveDate" });
         initRequisitionGrid();
         requisitionNo = '${requisitionNo}';
+        $("#reqNo").text(requisitionNo);
         defaultPageTile("Receive details", 'requisitionReceive/showList');
     });
 
     function initRequisitionGrid() {
         $("#gridMedicine").kendoGrid({
             dataSource: dataSource,
-            height: $("#page-wrapper").height() - 120,
+            height: $("#page-wrapper").height() - 150,
             selectable: true,
             sortable: true,
             resizable: true,
