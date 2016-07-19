@@ -11,7 +11,7 @@ import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class SelectRequisitionReceiveActionService extends BaseService implements ActionServiceIntf {
+class SelectRequisitionAcknowledgementActionService extends BaseService implements ActionServiceIntf {
 
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
     private static final String APVD_AMOUNT = "apvdAmount"
