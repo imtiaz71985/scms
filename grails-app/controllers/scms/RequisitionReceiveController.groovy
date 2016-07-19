@@ -3,6 +3,7 @@ package scms
 import actions.requisitionReceive.CreateRequisitionReceiveActionService
 import actions.requisitionReceive.DownloadPurchaseReceiveActionService
 import actions.requisitionReceive.ListRequisitionReceiveActionService
+import actions.requisitionReceive.SelectRequisitionAcknowledgementActionService
 import actions.requisitionReceive.SelectRequisitionReceiveActionService
 import com.scms.Requisition
 import com.scms.SecUser
@@ -21,6 +22,7 @@ class RequisitionReceiveController extends BaseController {
     CreateRequisitionReceiveActionService createRequisitionReceiveActionService
     ListRequisitionReceiveActionService listRequisitionReceiveActionService
     SelectRequisitionReceiveActionService selectRequisitionReceiveActionService
+    SelectRequisitionAcknowledgementActionService selectRequisitionAcknowledgementActionService
     DownloadPurchaseReceiveActionService downloadPurchaseReceiveActionService
 
     static allowedMethods = [
@@ -66,6 +68,10 @@ class RequisitionReceiveController extends BaseController {
     }
     def list() {
         renderOutput(listRequisitionReceiveActionService, params)
+    }
+    def acknowledgement() {
+        String view = '/requisitionReceive/acknowledgement'
+        renderView(selectRequisitionAcknowledgementActionService, params, view)
     }
     def detailsReceive() {
         String view = '/requisitionReceive/detailsReceive'

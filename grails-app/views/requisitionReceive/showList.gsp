@@ -94,9 +94,17 @@
                 {
                     command: {
                         text: " ",
+                        click: acknowledgement,
+                        className: "fa fa-certificate fa-2x"
+                    }, width: 35,title: "Acknowledgement"
+
+                },
+                {
+                    command: {
+                        text: " ",
                         click: showDetails,
                         className: "fa fa-search-plus fa-2x"
-                    }, width: 30
+                    }, width: 30,title: "Details"
                 }
             ],
             filterable: {
@@ -104,6 +112,12 @@
             }
         });
         gridRequisitionReceive = $("#gridRequisitionReceive").data("kendoGrid");
+    }
+    function acknowledgement(e) {
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var loc = "${createLink(controller: 'requisitionReceive', action: 'acknowledgement')}?id=" + dataItem.id;
+        router.navigate(formatLink(loc));
+        return false;
     }
     function showDetails(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
