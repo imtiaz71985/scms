@@ -2,6 +2,7 @@ package actions.medicineSellInfo
 
 import com.model.ListMedicineSellInfoActionServiceModel
 import com.scms.SecUser
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -11,6 +12,7 @@ import service.SecUserService
 @Transactional
 class ListMedicineSellInfoActionService extends BaseService implements ActionServiceIntf {
     SecUserService secUserService
+    SpringSecurityService springSecurityService
 
     private Logger log = Logger.getLogger(getClass())
 
