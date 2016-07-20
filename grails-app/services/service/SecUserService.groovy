@@ -12,9 +12,11 @@ class SecUserService extends BaseService {
         SecUser user = SecUser.read(userId)
         SecRole roleAdmin = SecRole.findByAuthority("ROLE_ADMIN")
         SecRole roleHOAdmin = SecRole.findByAuthority("ROLE_Clinic Administration HO")
+        SecRole roleSup = SecRole.findByAuthority("ROLE_SUPERVISOR")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
         int count2 = SecUserSecRole.countBySecRoleAndSecUser(roleHOAdmin, user)
-        return count>0||count2 >0
+        int count3 = SecUserSecRole.countBySecRoleAndSecUser(roleSup, user)
+        return count>0||count2 >0||count3 >0
     }
 
     public SecUser read(long id) {
