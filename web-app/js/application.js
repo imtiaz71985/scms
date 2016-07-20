@@ -627,17 +627,15 @@ function evaluateDateRange(date1, date2){
     var years = diff.getUTCFullYear() - 1970;
     var months = diff.getUTCMonth();
     var days = diff.getUTCDate() - 1;
+    var hours = diff.getUTCHours();
 
     var strDifference = years > 0 ? (years + '  Y   ') : ''
-    if(years > 10){
-        return strDifference;
-    }
+    if(years > 10) return strDifference;
     strDifference += months > 0 ? (months + '  M   ') : ''
-    if(years > 1){
-        return strDifference;
-    }
+    if(years > 1) return strDifference;
     strDifference += days > 0 ? (days + '  D') : ''
     if (strDifference.size == 0) strDifference = 0 + ' ' + ' Day(s)'
+    if(years == 0 && months == 0 && days == 0) strDifference = 0 + ' Day(s)';
     return strDifference
 }
 function minToHourMin(a){
