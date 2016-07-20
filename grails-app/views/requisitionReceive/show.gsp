@@ -27,7 +27,7 @@
                             <div class="col-md-1"></div>
 
                             <div class="col-md-2" align="center">
-                                <label class="control-label ">Registration No:</label>
+                                <label class="control-label ">Requisition No:</label>
                             </div>
 
                             <div class="col-md-3">

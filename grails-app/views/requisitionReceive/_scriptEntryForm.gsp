@@ -4,8 +4,9 @@
 
     $(document).ready(function () {
         onLoadRequisitionPage();
-        populateDDLRequisitionNo();
         initMedicineRequisitionGrid();
+        populateDDLRequisitionNo();
+
         defaultPageTile("Requisition details", null);
     });
 
@@ -13,8 +14,11 @@
         dropDownRequisitionNo = initKendoDropdown($('#ddlRequisition'), null, null, null);
     }
     function populateDDLRequisitionNo() {
+        requisitionNo = '';
+        clearGridKendo(gridMedicineReqReceive);
+        totalAmount=0;
+        setFooter();
         var vendorId = dropDownVendor.value();
-
         showLoadingSpinner(true);
         $.ajax({
             url: "${createLink(controller: 'requisitionReceive', action: 'requisitionByVendorId')}?id=" + vendorId,
