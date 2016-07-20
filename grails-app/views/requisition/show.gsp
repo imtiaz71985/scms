@@ -60,7 +60,8 @@
                         approvedDate: {type: "date"},
                         isSend: {type: "boolean"},
                         isApproved: {type: "boolean"},
-                        isReceived: {type: "boolean"}
+                        isReceived: {type: "boolean"},
+                        receiveInProcess: {type: "boolean"}
                     }
                 },
                 parse: function (data) {
@@ -154,7 +155,7 @@
                     width: 30,
                     attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()},
-                    template: "#=isReceived?'YES':'NO'#",
+                    template: "#=isReceived?'YES':receiveInProcess?'Partial Receive':'NO'#",
                     sortable: false,
                     filterable: false
                 },

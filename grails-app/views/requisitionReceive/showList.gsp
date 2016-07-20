@@ -42,7 +42,8 @@
                         requisitionBy: {type: "string"},
                         requisitionDate: {type: "date"},
                         approvedDate: {type: "date"},
-                        isActionComplete: {type: "boolean"}
+                        isActionComplete: {type: "boolean"},
+                        receiveInProcess: {type: "boolean"}
                     }
                 },
                 parse: function (data) {
@@ -95,7 +96,7 @@
                     field: "isActionComplete", title: "Transaction Completed",
                     attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()},
-                    template: "#=isActionComplete?'YES':'NO'#",
+                    template: "#=isActionComplete?'YES':receiveInProcess?'Partial Receive':'NO'#",
                     sortable: false,filterable: false,width: 50
                 },
                 {
