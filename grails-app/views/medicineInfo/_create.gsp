@@ -156,6 +156,19 @@
                                 <span class="k-invalid-msg" data-for="boxRate"></span>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label label-optional" for="warnQty">Warn Qty:</label>
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="warnQty" name="warnQty"
+                                       placeholder="Warn Qty" tabindex="11"
+                                       data-bind="value: medicineInfo.warnQty"/>
+                            </div>
+
+                            <div class="col-md-3 pull-left">
+                                <span class="k-invalid-msg" data-for="warnQty"></span>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -163,12 +176,12 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="11"
+                            role="button" tabindex="12"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="12"
+                            class="k-button k-button-icontext" role="button" tabindex="13"
                             aria-disabled="false" onclick='resetForm("hide");'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

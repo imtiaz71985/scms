@@ -15,6 +15,7 @@ class MedicineInfo {
     Double stockQty
     Integer boxSize
     Double boxRate
+    Integer warnQty = 0
 
     static constraints = {
         strength (nullable: true)
@@ -22,6 +23,7 @@ class MedicineInfo {
         boxSize (nullable: true)
         boxRate (nullable: true)
         unitType (nullable: true)
+        warnQty (nullable: true)
     }
     static mapping = {
         type index: 'system_entity_medicine_type_id_idx'

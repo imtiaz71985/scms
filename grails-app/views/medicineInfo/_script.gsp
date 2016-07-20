@@ -16,7 +16,8 @@
 </script>
 
 <script language="javascript">
-    var gridMedicine, dataSource, medicineInfoModel, unitPrice, mrpPrice, boxSize,boxRate,dropDownType, dropDownVendor;
+    var gridMedicine, dataSource, medicineInfoModel, unitPrice, mrpPrice, boxSize,boxRate,warnQty,
+            dropDownType, dropDownVendor;
 
     $(document).ready(function () {
         onLoadMedicineInfoPage();
@@ -55,6 +56,14 @@
 
         });
         boxRate = $("#boxRate").data("kendoNumericTextBox");
+        $('#warnQty').kendoNumericTextBox({
+            min: 0,
+            step: 1,
+            max: 1000,
+            format: "#####"
+
+        });
+        warnQty = $("#warnQty").data("kendoNumericTextBox");
 
         $("#medicineInfoRow").hide();
         // initialize form with kendo validator & bind onSubmit event
@@ -167,7 +176,8 @@
                         unitPrice: {type: "number"},
                         mrpPrice: {type: "number"},
                         boxSize: {type: "number"},
-                        boxRate: {type: "number"}
+                        boxRate: {type: "number"},
+                        warnQty: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -230,6 +240,10 @@
                     attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(mrpPrice)#"
                 },
+                {
+                    field: "warnQty", title: "Warn Qty", width: 30, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
                 {field: "unitType", title: "Unit Type", width: 40, sortable: false, filterable: false}
             ],
             filterable: {
@@ -257,7 +271,8 @@
                         unitPrice: "",
                         mrpPrice: "",
                         boxSize: "",
-                        boxRate: ""
+                        boxRate: "",
+                        warnQty: ""
                     }
                 }
         );

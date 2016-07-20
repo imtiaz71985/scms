@@ -88,6 +88,7 @@ class UpdateMedicineInfoActionService extends BaseService implements ActionServi
         oldMedicineInfo.vendorId = Long.parseLong(parameterMap.vendorId)
         oldMedicineInfo.strength = medicineInfo.strength
         if(parameterMap.boxSize) oldMedicineInfo.boxSize = medicineInfo.boxSize
+        if(parameterMap.warnQty) oldMedicineInfo.warnQty = medicineInfo.warnQty
         if(parameterMap.boxRate) oldMedicineInfo.boxRate = medicineInfo.boxRate
         oldMedicineInfo.unitType = medicineInfo.unitType
         return oldMedicineInfo

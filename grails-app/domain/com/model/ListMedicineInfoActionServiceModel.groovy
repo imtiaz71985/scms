@@ -11,7 +11,7 @@ class ListMedicineInfoActionServiceModel {
                  WHEN mi.strength IS NOT NULL THEN CONCAT(mi.brand_name,' (',mi.strength,')')
                  ELSE mi.brand_name END) AS medicine_name,
                  mi.strength,mi.unit_type,mi.unit_price,mi.mrp_price,v.id AS vendor_id, v.name AS vendor_name,
-                 0 AS amount,mi.stock_qty,mi.box_size,mi.box_rate
+                 0 AS amount,mi.stock_qty,mi.box_size,mi.box_rate,mi.warn_qty
                     FROM medicine_info mi
                     LEFT JOIN system_entity se ON se.id=mi.type
                     LEFT JOIN vendor v ON v.id=mi.vendor_id
@@ -34,6 +34,7 @@ class ListMedicineInfoActionServiceModel {
     double amount
     Double stockQty
     Integer boxSize
+    Integer warnQty
     Double boxRate
 
     static mapping = {
