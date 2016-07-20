@@ -91,11 +91,11 @@
                 {
                     field: "requisitionBy",
                     title: "Requisition Details",
-                    width: 120, sortable: false,
+                    width: 100, sortable: false,
                     template: "#=hospitalName # --(By #= requisitionBy# )"
                 },
                 {
-                    field: "requisitionDate", title: "Requisition Date", width: 60, sortable: false,
+                    field: "requisitionDate", title: "Requisition Date", width: 50, sortable: false,
                     filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=kendo.toString(kendo.parseDate(requisitionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
@@ -110,7 +110,7 @@
                     sortable: false, filterable: false
                 },
                 {
-                    field: "approvedDate", title: "Approved Date", width: 50, sortable: false,
+                    field: "approvedDate", title: "Approved Date", width: 40, sortable: false,
                     filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=approvedDate?kendo.toString(kendo.parseDate(approvedDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"

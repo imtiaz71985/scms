@@ -15,7 +15,7 @@
         <button id="create" name="create" type="button" data-role="button"
                 class="k-button k-button-icontext" role="button" tabindex="1"
                 onclick='generatePR();' aria-disabled="false">
-            <span class="k-icon k-i-plus"></span>Generate PR
+            <span class="k-icon k-i-plus"></span>Generate Requisition
         </button>
         <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                 class="k-button k-button-icontext" role="button" tabindex="2"
