@@ -633,7 +633,7 @@ function evaluateDateRange(date1, date2){
         return strDifference;
     }
     strDifference += months > 0 ? (months + '  M   ') : ''
-    if(10 > years > 1){
+    if(years > 1){
         return strDifference;
     }
     strDifference += days > 0 ? (days + '  D') : ''
