@@ -229,7 +229,7 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "registration_amount",title: "Amount",
+                                    field: "registration_amount",title: "Amount(৳)",
                                     width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
@@ -251,7 +251,7 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "re_registration_amount",title: "Amount",
+                                    field: "re_registration_amount",title: "Amount(৳)",
                                     width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
@@ -273,7 +273,7 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "consultation_amount",title: "Amount",
+                                    field: "consultation_amount",title: "Amount(৳)",
                                     width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
@@ -295,7 +295,7 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "subsidy_amount",title: "Amount",
+                                    field: "subsidy_amount",title: "Amount(৳)",
                                     width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
@@ -317,7 +317,7 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "pathology_amount",title: "Amount",
+                                    field: "pathology_amount",title: "Amount(৳)",
                                     width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
@@ -330,7 +330,7 @@
                     ]
                 },
                 {
-                    field: "medicine_sales",title: "Medicine <br/> Sales",
+                    field: "medicine_sales",title: "Medicine <br/> Sales(৳)",
                     width: 60,sortable: false,filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},

@@ -513,7 +513,7 @@ function setAlignRight() {
 }
 
 function formatAmount(amount) {
-    return "৳ " + formatNumberTwo(amount);
+    return formatNumberTwo(amount);
 }
 
 function formatNumberTwo(amount) {

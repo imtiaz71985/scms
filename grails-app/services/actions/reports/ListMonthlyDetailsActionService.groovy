@@ -130,11 +130,6 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
 
-                COALESCE((SELECT COUNT(sti.service_token_no)
-                FROM service_token_info sti
-                        WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field AND sti.subsidy_amount > 0
-                        GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) +
-
                 COALESCE((SELECT COUNT(sc3.id)
                         FROM token_and_charge_mapping tcm3
                 RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
@@ -237,12 +232,6 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
                 AND SUBSTRING(tcm2.service_token_no, 2, 2) = :hospitalCode
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
-
-                COALESCE((SELECT COUNT(sti.service_token_no)
-                FROM service_token_info sti
-                        WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field AND sti.subsidy_amount > 0
-                        AND SUBSTRING(sti.service_token_no, 2, 2) = :hospitalCode
-                        GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) +
 
                 COALESCE((SELECT COUNT(sc3.id)
                         FROM token_and_charge_mapping tcm3
