@@ -20,9 +20,6 @@ class RegistrationInfo {
     boolean isReissue
 
     static constraints = {
-        createDate type:'date'
-        modifyDate type:'date'
-        dateOfBirth type:'date'
         fatherOrMotherName(nullable: true)
         mobileNo(nullable: true)
         modifyDate(nullable: true)
@@ -32,6 +29,8 @@ class RegistrationInfo {
 
     static mapping = {
         id name: 'regNo'
+        modifyDate type:'date'
+        dateOfBirth type:'date'
         version false
         id generator: 'assigned'
         sexId index: 'registration_info_sex_id_idx'

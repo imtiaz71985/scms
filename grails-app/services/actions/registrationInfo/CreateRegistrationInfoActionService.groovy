@@ -47,8 +47,6 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
                 village.save()
                 villageId = village.id
             }
-
-
             RegistrationInfo registrationInfo = buildObject(params,villageId)
             params.put(REGISTRATION_INFO, registrationInfo)
             return params
