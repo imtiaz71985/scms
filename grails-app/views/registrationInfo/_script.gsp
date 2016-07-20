@@ -163,6 +163,7 @@
                         patientName: { type: "string" },
                         fatherOrMotherName: { type: "string" },
                         dateOfBirth: { type: "date" },
+                        createDate: { type: "date" },
                         sexId: { type: "number" },
                         maritalStatusId: { type: "number" },
                         mobileNo: { type: "string" },
@@ -178,6 +179,8 @@
                     return data;
                 }
             },
+            sort: {field: 'createDate', dir: 'desc'},
+
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
@@ -450,7 +453,7 @@
         }
 
         bootbox.prompt({
-            title: 'Are you sure you want to re issue registration card?',
+            title: 'Re issue registration card?',
             placeholder: 'Short description',
             buttons: {
                 confirm: {
