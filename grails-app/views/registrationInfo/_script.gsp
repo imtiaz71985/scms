@@ -72,6 +72,7 @@
         if (executePreCondition() == false) {
             return false;
         }
+
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
@@ -447,38 +448,57 @@
         }
     }
     function reIssueRegNo(){
-
         if (executeCommonPreConditionForSelectKendo(gridRegistrationInfo, 'record') == false) {
             return;
         }
-        showLoadingSpinner(true);
-
-        var regNo = getSelectedIdFromGridKendo(gridRegistrationInfo);
-        var loc = "${createLink(controller: 'registrationInfo', action: 'showReIssue')}?regNo=" + regNo;
-        router.navigate(formatLink(loc));
-        return false;
-
+        var data = getSelectedObjectFromGridKendo(gridRegistrationInfo);
+        showReIssueModal(data);
 
     }
 
-    function saveReIssueRegNo(){
-        if (!validateForm($("#regReIssueInfoForm"))) {
-            return false;
-        }
-        var regNo = $('#regNo').val();
+    function showReIssueModal(data) {
+        $("#createRegReIssueModal").modal('show');
 
+        $('#reissueRegNo').text(data.regNo);
+        $('#hidReIssueRegNo').val(data.regNo);
+        $('#reissueName').text(data.patientName);
+        $('#reissueAddress').text(data.address);
+    }
+
+    function onClickCreateRegReIssueModal(){
+        if (!validateForm($('#createRegReIssueForm'))) {
+            return
+        }
+        var regNo = $('#hidReIssueRegNo').val(),
+        description = $('#descriptionReissueModal').val();
+        var param = "?regNo=" + regNo+"&description="+description;
         $.ajax({
-            url: "${createLink(controller: 'registrationInfo', action:  'reIssue')}?regNo=" + regNo+"&description="+value,
-            success: executePostCondition,
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus)
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                //  showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
+            type: "POST",
+            url: "${createLink(controller:'registrationInfo', action: 'reIssue')}"+param,
+            data: $('#updateAttendance').serialize(),
+            success: function (result, textStatus) {
+                var data = JSON.parse(result);
+                clearReIssueModal();
+                if (data.isError == true) {
+                    showError(data.message);
+                    return false;
+                }
+                showSuccess(data.message);
+                executePostCondition();
+            }
         });
+    }
+    function hideCreateRegReIssueModal(){
+        clearReIssueModal();
+    }
+
+    function clearReIssueModal(){
+        $('#reissueRegNo').text('');
+        $('#reissueName').text('');
+        $('#reissueAddress').text('');
+        $('#hidReIssueRegNo').val('');
+        $('#descriptionReissueModal').val('');
+        $("#createRegReIssueModal").modal('hide');
     }
 
 </script>
