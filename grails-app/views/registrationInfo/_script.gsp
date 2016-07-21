@@ -72,7 +72,6 @@
         if (executePreCondition() == false) {
             return false;
         }
-
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
@@ -448,40 +447,38 @@
         }
     }
     function reIssueRegNo(){
+
         if (executeCommonPreConditionForSelectKendo(gridRegistrationInfo, 'record') == false) {
             return;
         }
+        showLoadingSpinner(true);
 
-        bootbox.prompt({
-            title: 'Re issue registration card?',
-            placeholder: 'Short description',
-            buttons: {
-                confirm: {
-                    label: 'Submit'
-                }
+        var regNo = getSelectedIdFromGridKendo(gridRegistrationInfo);
+        var loc = "${createLink(controller: 'registrationInfo', action: 'showReIssue')}?regNo=" + regNo;
+        router.navigate(formatLink(loc));
+        return false;
+
+
+    }
+
+    function saveReIssueRegNo(){
+        if (!validateForm($("#regReIssueInfoForm"))) {
+            return false;
+        }
+        var regNo = $('#regNo').val();
+
+        $.ajax({
+            url: "${createLink(controller: 'registrationInfo', action:  'reIssue')}?regNo=" + regNo+"&description="+value,
+            success: executePostCondition,
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus)
             },
-            callback: function(value){
-                if(value ==null) {
-                    return;
-                }else{
-                var regNo = getSelectedValueFromGridKendo(gridRegistrationInfo, 'regNo');
-
-               $.ajax({
-                    url: "${createLink(controller: 'registrationInfo', action:  'reIssue')}?regNo=" + regNo+"&description="+value,
-                    success: executePostCondition,
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        afterAjaxError(XMLHttpRequest, textStatus)
-                    },
-                    complete: function (XMLHttpRequest, textStatus) {
-                      //  showLoadingSpinner(false);
-                    },
-                    dataType: 'json',
-                    type: 'post'
-                });
-                }
-            }
+            complete: function (XMLHttpRequest, textStatus) {
+                //  showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
         });
-
     }
 
 </script>
