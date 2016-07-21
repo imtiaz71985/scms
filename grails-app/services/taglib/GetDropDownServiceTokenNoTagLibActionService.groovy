@@ -62,7 +62,15 @@ class GetDropDownServiceTokenNoTagLibActionService  extends BaseService implemen
      */
     public Map execute(Map result) {
         try {
-            List<GroovyRowResult> lstRegistrationNo = (List<GroovyRowResult>) listServiceTokenNo()
+            String type = result.type
+            List<GroovyRowResult> lstRegistrationNo
+            if (type.equals('Last Month Token')) {
+                lstRegistrationNo = (List<GroovyRowResult>) listServiceTokenNoOfLastMonth()
+            }
+             else {
+                lstRegistrationNo = (List<GroovyRowResult>) listServiceTokenNo()
+            }
+
             String html = buildDropDown(lstRegistrationNo, result)
             result.html = html
             return result
@@ -157,7 +165,21 @@ class GetDropDownServiceTokenNoTagLibActionService  extends BaseService implemen
 
     private List<GroovyRowResult> listServiceTokenNo() {
         String queryForList = """
-            SELECT service_token_no AS id,service_token_no AS name FROM service_token_info WHERE is_exit !=TRUE ORDER BY service_date DESC;
+            SELECT s.service_token_no AS id,CONCAT(s.service_token_no,'(',ri.patient_name,')') AS name
+            FROM service_token_info s INNER JOIN registration_info ri ON s.reg_no=ri.reg_no WHERE s.is_exit !=TRUE
+            ORDER BY s.service_date DESC;
+
+        """
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        return lst
+    }
+    private List<GroovyRowResult> listServiceTokenNoOfLastMonth() {
+        String queryForList = """
+           SELECT s.service_token_no AS id,CONCAT(s.service_token_no,'(',ri.patient_name,')') AS NAME
+            FROM service_token_info s INNER JOIN registration_info ri ON s.reg_no=ri.reg_no
+            WHERE s.is_exit !=TRUE AND DATE(s.service_date)>=DATE(NOW() - INTERVAL 1 MONTH)
+            ORDER BY s.service_date DESC;
+
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)
         return lst

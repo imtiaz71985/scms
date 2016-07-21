@@ -14,6 +14,7 @@ import service.SecUserService
 import service.ServiceHeadInfoService
 import service.ServiceTokenRelatedInfoService
 
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
 class CounselorActionController extends BaseController {
@@ -140,7 +141,12 @@ class CounselorActionController extends BaseController {
     }
     def retrieveTokenNoByRegNo() {
         String regNo=params.regNo.toString()
-        List<ServiceTokenInfo> lst=ServiceTokenInfo.findAllByRegNo(regNo,[sort: "serviceDate",order: "DESC"])
+        Timestamp fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
+        Calendar calNow = Calendar.getInstance()
+        calNow.add(Calendar.MONTH, -3);
+        Date dateBeforeAMonth = calNow.getTime();
+        Timestamp toDate=DateUtility.getSqlToDateWithSeconds(dateBeforeAMonth)
+        List<ServiceTokenInfo> lst=ServiceTokenInfo.findAllByRegNoAndServiceDateBetween(regNo,fromDate,toDate,[sort: "serviceDate",order: "DESC"])
         lst=baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
         Map result = [lstTokenNo: lst]
         render result as JSON

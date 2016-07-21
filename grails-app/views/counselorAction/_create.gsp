@@ -45,7 +45,7 @@
 
                             <div class="col-md-3">
                                 <app:dropDownServiceTokenNo
-                                        data_model_name="dropDownServiceTokenNo"
+                                        data_model_name="dropDownServiceTokenNo" type="Last Month Token"
                                         id="serviceTokenNoDDL" name="serviceTokenNoDDL"
                                         class="kendo-drop-down" tabindex="3">
                                 </app:dropDownServiceTokenNo>
