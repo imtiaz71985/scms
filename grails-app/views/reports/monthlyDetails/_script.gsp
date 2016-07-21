@@ -203,17 +203,17 @@
                             attributes: {style: setAlignRight()},
                             template: "#=is_holiday?'':total_patient#",
                             footerTemplate: "#=sum#"
-                        },
-                        {
-                            field: "total_service", title: "Total <br/> Service",
-                            width: 40,sortable: false,filterable: false,
-                            headerAttributes: {style: setCAlignRight()},
-                            footerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':total_service#",
-                            footerTemplate: "#=sum#"
                         }
                     ]
+                },
+                {
+                    field: "total_service", title: "Total <br/> Service",
+                    width: 40,sortable: false,filterable: false,
+                    headerAttributes: {style: setCAlignRight()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=is_holiday?'':total_service#",
+                    footerTemplate: "#=sum#"
                 },
                 {title: "Charges",headerAttributes:{style:setAlignCenter()},
                     columns: [
@@ -336,6 +336,15 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=is_holiday?holiday_status:formatAmount(medicine_sales)#",
+                    footerTemplate: "#=formatAmount(sum)#"
+                },
+                {
+                    field: "medicine_sales",title: "Day <br/> Collection(৳)",
+                    width: 60,sortable: false,filterable: false,
+                    headerAttributes: {style: setAlignRight()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=formatAmount(medicine_sales+pathology_amount+registration_amount+re_registration_amount+consultation_amount-subsidy_amount)#",
                     footerTemplate: "#=formatAmount(sum)#"
                 }
             ],

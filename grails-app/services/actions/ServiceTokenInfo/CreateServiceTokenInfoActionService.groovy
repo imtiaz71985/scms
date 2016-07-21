@@ -24,13 +24,16 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         try {
             //Check parameters
 
-            if (!params.serviceTokenNo || !params.serviceTypeId || !params.regNo||!params.referToId) {
+            if (!params.serviceTokenNo || !params.serviceTypeId || !params.regNo) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long serviceTypeId = 0
             try {
                 serviceTypeId=Long.parseLong(params.serviceTypeId)
             } catch (Exception ex) {
+            }
+            if(serviceTypeId<4 && !params.referToId){
+                return super.setError(params, INVALID_INPUT_MSG)
             }
             if (serviceTypeId == 5) {
                 if (!params.referenceServiceNoDDL){
@@ -115,7 +118,13 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         ServiceTokenInfo serviceTokenInfo = new ServiceTokenInfo()
         serviceTokenInfo.serviceTokenNo=parameterMap.serviceTokenNo
         serviceTokenInfo.regNo=parameterMap.regNo
-        serviceTokenInfo.referToId=Long.parseLong(parameterMap.referToId)
+        if(parameterMap.referToId)
+        {
+            serviceTokenInfo.referToId = Long.parseLong(parameterMap.referToId)
+        }
+        else{
+            serviceTokenInfo.referToId =0 // When give general counselling
+        }
         serviceTokenInfo.serviceDate=DateUtility.getSqlDate(new Date())
         serviceTokenInfo.createBy= springSecurityService.principal.id
         if(serviceTypeId==5) {
