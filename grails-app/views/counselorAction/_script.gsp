@@ -299,7 +299,14 @@
             serverSorting: true
         });
     }
-
+    function gridDataBound(e) {
+        var grid = e.sender;
+        if (grid.dataSource.total() == 0) {
+            $(e.sender.wrapper)
+                    .find('tbody')
+                    .append('<tr><td colspan="' + 9 + '" class="no-data"><center>Sorry, no data found <i class="fa fa-frown-o"></i></center></td></tr>');
+        }
+    }
     function initRegAndServiceInfoGrid() {
         initDataSourceRegAndServiceInfo();
         $("#gridCounselorAction").kendoGrid({
@@ -318,7 +325,6 @@
                     columns: [
                         {field: "regNo", title: "Reg No", width: 80, sortable: false, filterable: false},
                         {field: "serviceTokenNo", title: "Token No", width: 80, sortable: false, filterable: false},
-
                         {field: "patientName", title: "Name", width: 150, sortable: false, filterable: false},
                         {
                             field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
@@ -354,17 +360,9 @@
                         {
                             field: "isExit",
                             title: "Action <br/> Completed",
-                            width: 50,
-                            sortable: false,
-                            filterable: false,
-                            attributes: {
-                                style: setAlignCenter()
-                            }
-                            ,
-                            headerAttributes: {
-                                style: setAlignCenter()
-                            }
-                            ,
+                            width: 50, sortable: false,filterable: false,
+                            attributes: {style: setAlignCenter()},
+                            headerAttributes: {style: setAlignCenter()},
                             template: "#=isExit?'YES':'NO'#"
                         }
                     ],

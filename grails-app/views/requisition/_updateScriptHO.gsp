@@ -118,13 +118,24 @@
             editable: true,
             edit: function (e) {
                 var input = e.container.find(".k-input");
-                var value = input.val(),
-                        minus = input.val();
+                var value = input.val(), minus = input.val();
+                $("[name='approvedQty']", e.container).focus(function () {
+                    var input = $(this);
+                    if(input.val()==0){
+                        input.val('');
+                    }
+                });
                 $("[name='approvedQty']", e.container).blur(function () {
                     var input = $(this);
-                    value = input.val();
                     var row = $(this).closest("tr");
                     var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
+                    value = input.val();
+                    if(input.val()==''){
+                        input.val(0);
+                        data.set('approvedQty', 0);
+                        var dirty = $(this).closest("tr").find(".k-dirty-cell");
+                        dirty.removeClass("k-dirty-cell");
+                    }
                     totalAmount -= minus * data.unitPrice;
                     data.set('approveAmount', value * data.unitPrice);
                     totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
