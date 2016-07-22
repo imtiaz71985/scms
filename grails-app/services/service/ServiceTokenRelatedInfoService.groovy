@@ -34,18 +34,12 @@ class ServiceTokenRelatedInfoService extends BaseService{
         String queryStr =""
         if(hospital_code.isEmpty()) {
             queryStr = """
-            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,
-                ri.mobile_no AS mobileNo, COALESCE(st.is_exit,FALSE) AS isExit,
+            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
+                  COALESCE(st.is_exit,FALSE) AS isExit,
                   COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,st.subsidy_amount AS subsidyAmount,
-                  SUM(
-                 CASE WHEN SUBSTRING(sc.service_code,1,2)='02'
-                  THEN sc.charge_amount
-                  ELSE
-                  0 END) AS consultancyAmt, SUM(
-                   CASE WHEN SUBSTRING(sc.service_code,1,2)='03'
-                  THEN sc.charge_amount
-                  ELSE
-                  0 END )AS pathologyAmt,SUM(sc.charge_amount)-st.subsidy_amount AS totalCharge
+                  SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
+                  SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
+                  SUM(sc.charge_amount)-st.subsidy_amount AS totalCharge
                    FROM registration_info ri
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
                   LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
@@ -57,18 +51,12 @@ class ServiceTokenRelatedInfoService extends BaseService{
         }
         else {
             queryStr = """
-            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,
-                ri.mobile_no AS mobileNo, COALESCE(st.is_exit,FALSE) AS isExit,
+           SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
+                  COALESCE(st.is_exit,FALSE) AS isExit,
                   COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,st.subsidy_amount AS subsidyAmount,
-                  SUM(
-                 CASE WHEN SUBSTRING(sc.service_code,1,2)='02'
-                  THEN sc.charge_amount
-                  ELSE
-                  0 END) AS consultancyAmt, SUM(
-                   CASE WHEN SUBSTRING(sc.service_code,1,2)='03'
-                  THEN sc.charge_amount
-                  ELSE
-                  0 END )AS pathologyAmt,SUM(sc.charge_amount)-st.subsidy_amount AS totalCharge
+                  SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
+                  SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
+                  SUM(sc.charge_amount)-st.subsidy_amount AS totalCharge
                    FROM registration_info ri
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
                   LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
