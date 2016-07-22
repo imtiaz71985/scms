@@ -34,27 +34,48 @@ class ServiceTokenRelatedInfoService extends BaseService{
         String queryStr =""
         if(hospital_code.isEmpty()) {
             queryStr = """
-            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
-                  COALESCE(st.is_exit,FALSE) AS isExit,
-                  COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,
-                  COALESCE(( SELECT SUM(sc.charge_amount) AS Charge FROM token_and_charge_mapping tcm LEFT JOIN service_charges sc
-   ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no GROUP BY tcm.service_token_no),0) AS totalCharge
+            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,
+                ri.mobile_no AS mobileNo, COALESCE(st.is_exit,FALSE) AS isExit,
+                  COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,st.subsidy_amount AS subsidyAmount,
+                  SUM(
+                 CASE WHEN SUBSTRING(sc.service_code,1,2)='02'
+                  THEN sc.charge_amount
+                  ELSE
+                  0 END) AS consultancyAmt, SUM(
+                   CASE WHEN SUBSTRING(sc.service_code,1,2)='03'
+                  THEN sc.charge_amount
+                  ELSE
+                  0 END )AS pathologyAmt,SUM(sc.charge_amount)-st.subsidy_amount AS totalCharge
                    FROM registration_info ri
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
-                  WHERE  st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
+                  LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
+                  LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id
+                  WHERE st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
+                   GROUP BY st.service_token_no
                    ORDER BY isExit,serviceDate ASC
         """
         }
         else {
             queryStr = """
-            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
-                  COALESCE(st.is_exit,FALSE) AS isExit,
-                  COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,
-                  COALESCE(( SELECT SUM(sc.charge_amount) AS Charge FROM token_and_charge_mapping tcm LEFT JOIN service_charges sc
-   ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no GROUP BY tcm.service_token_no),0) AS totalCharge
+            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,
+                ri.mobile_no AS mobileNo, COALESCE(st.is_exit,FALSE) AS isExit,
+                  COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,st.subsidy_amount AS subsidyAmount,
+                  SUM(
+                 CASE WHEN SUBSTRING(sc.service_code,1,2)='02'
+                  THEN sc.charge_amount
+                  ELSE
+                  0 END) AS consultancyAmt, SUM(
+                   CASE WHEN SUBSTRING(sc.service_code,1,2)='03'
+                  THEN sc.charge_amount
+                  ELSE
+                  0 END )AS pathologyAmt,SUM(sc.charge_amount)-st.subsidy_amount AS totalCharge
                    FROM registration_info ri
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
-                  WHERE SUBSTRING(st.service_token_no,2,2)='${hospital_code}' AND st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
+                  LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
+                  LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id
+                  WHERE SUBSTRING(st.service_token_no,2,2)='${hospital_code}'
+                    AND st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
+                   GROUP BY st.service_token_no
                    ORDER BY isExit,serviceDate ASC
         """
         }

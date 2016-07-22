@@ -182,7 +182,7 @@
         return false;
     }
 
-    function resetBasicData(){
+    function resetBasicData() {
         for (var i in checkedIds) delete checkedIds[i];
         for (var i in checkedDiseaseCodes) delete checkedDiseaseCodes[i];
         chargeAmt = 0;
@@ -280,7 +280,10 @@
                         mobileNo: {type: "string"},
                         address: {type: "string"},
                         serviceTokenNo: {type: "string"},
-                        totalCharge: {type: "string"},
+                        subsidyAmount: {type: "number"},
+                        consultancyAmt: {type: "number"},
+                        pathologyAmt: {type: "number"},
+                        totalCharge: {type: "number"},
                         serviceDate: {type: "string"},
                         isExit: {type: "boolean"}
                     }
@@ -300,41 +303,75 @@
     function initRegAndServiceInfoGrid() {
         initDataSourceRegAndServiceInfo();
         $("#gridCounselorAction").kendoGrid({
-            dataSource: dataSource,
-            height: getGridHeightKendo(),
-            selectable: true,
-            sortable: true,
-            resizable: true,
-            reorderable: true,
-            dataBound: gridDataBound,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4
-            },
-            columns: [
-                {field: "regNo", title: "Reg No", width: 80, sortable: false, filterable: false},
-                {field: "serviceTokenNo", title: "Token No", width: 80, sortable: false, filterable: false},
+                    dataSource: dataSource,
+                    height: getGridHeightKendo(),
+                    selectable: true,
+                    sortable: true,
+                    resizable: true,
+                    reorderable: true,
+                    dataBound: gridDataBound,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: getDefaultPageSizes(),
+                        buttonCount: 4
+                    },
+                    columns: [
+                        {field: "regNo", title: "Reg No", width: 80, sortable: false, filterable: false},
+                        {field: "serviceTokenNo", title: "Token No", width: 80, sortable: false, filterable: false},
 
-                {field: "patientName", title: "Name", width: 150, sortable: false, filterable: false},
-                {
-                    field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
-                    template: "#=evaluateDateRange(dateOfBirth, new Date())#"
-                },
-                {field: "totalCharge", title: "Total Charges", width: 80, sortable: false, filterable: false},
-                {
-                    field: "isExit",
-                    title: "Action Completed",
-                    width: 80,
-                    sortable: false,
-                    filterable: false,
-                    attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()},
-                    template: "#=isExit?'YES':'NO'#"
+                        {field: "patientName", title: "Name", width: 150, sortable: false, filterable: false},
+                        {
+                            field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
+                            template: "#=evaluateDateRange(dateOfBirth, new Date())#"
+                        }, {
+                            title: "Charges", headerAttributes: {style: setAlignCenter()},
+                            columns: [
+
+                                {
+                                    field: "consultancyAmt",
+                                    title: "Consultancy(৳)",
+                                    width: 60,
+                                    sortable: false,
+                                    filterable: false
+                                },
+                                {
+                                    field: "subsidyAmount",
+                                    title: "Subsidy(৳)",
+                                    width: 50,
+                                    sortable: false,
+                                    filterable: false
+                                },
+                                {
+                                    field: "pathologyAmt",
+                                    title: "Pathology(৳)",
+                                    width: 70,
+                                    sortable: false,
+                                    filterable: false
+                                },
+                                {field: "totalCharge", title: "Total(৳)", width: 70, sortable: false, filterable: false}
+                            ]
+                        },
+                        {
+                            field: "isExit",
+                            title: "Action <br/> Completed",
+                            width: 50,
+                            sortable: false,
+                            filterable: false,
+                            attributes: {
+                                style: setAlignCenter()
+                            }
+                            ,
+                            headerAttributes: {
+                                style: setAlignCenter()
+                            }
+                            ,
+                            template: "#=isExit?'YES':'NO'#"
+                        }
+                    ],
+                    toolbar: kendo.template($("#gridToolbar").html())
                 }
-            ],
-            toolbar: kendo.template($("#gridToolbar").html())
-        });
+        )
+        ;
         gridCounselorAction = $("#gridCounselorAction").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
@@ -523,11 +560,11 @@
         if (checked) {
             //-select the row
             row.addClass("k-state-selected");
-            chargeAmt+=parseFloat(dataItem.chargeAmount);
+            chargeAmt += parseFloat(dataItem.chargeAmount);
         } else {
             //-remove selection
             row.removeClass("k-state-selected");
-            chargeAmt-=parseFloat(dataItem.chargeAmount);
+            chargeAmt -= parseFloat(dataItem.chargeAmount);
 
         }
         var v = $('#pathologyCharges').is(":visible");
@@ -566,7 +603,7 @@
             var serviceTypeId = 3;
             resetBasicData();
             var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
-            populateGridKendo(gridServiceHeadInfo,url);
+            populateGridKendo(gridServiceHeadInfo, url);
         }
         else {
             $('#divPathology').hide();
@@ -587,7 +624,7 @@
         resetBasicData();
         var diseaseGroupId = $('#diseaseGroupId').val();
         var url = "${createLink(controller: 'counselorAction', action: 'diseaseListByGroup')}?diseaseGroupId=" + diseaseGroupId;
-        populateGridKendo(gridDiseaseDetails,url);
+        populateGridKendo(gridDiseaseDetails, url);
     }
 
     function initDiseaseInfoDataSource() {
@@ -643,7 +680,7 @@
                     sortable: false,
                     filterable: false
                 },
-                {field: "name", title: "Name", width: 250, sortable: false, filterable: false },
+                {field: "name", title: "Name", width: 250, sortable: false, filterable: false},
                 {
                     template: "<input type='checkbox' class='checkboxDisease' />"
                 }
@@ -752,8 +789,8 @@
         //$('#btnDiseaseInfo').show();
         $('#divDiseaseGroup').show();
         $('#divDiseaseDetails').show();
-        var url = "${createLink(controller: 'counselorAction', action: 'diseaseListByGroup')}?diseaseGroupId=" ;
-        populateGridKendo(gridDiseaseDetails,url);
+        var url = "${createLink(controller: 'counselorAction', action: 'diseaseListByGroup')}?diseaseGroupId=";
+        populateGridKendo(gridDiseaseDetails, url);
     }
 
 </script>
