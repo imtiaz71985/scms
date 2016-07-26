@@ -58,12 +58,17 @@ class MedicineSellInfoController extends BaseController {
         SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
         Map result = new HashedMap()
         if(medicineInfo.strength){
-            result.put('name', medicineInfo.genericName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name)
+            result.put('name', medicineInfo.brandName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name)
         }else{
-            result.put('name', medicineInfo.genericName + ' - ' + medicineType.name)
+            result.put('name', medicineInfo.brandName + ' - ' + medicineType.name)
+        }
+        if(medicineInfo.unitType){
+            result.put('unitPriceTxt', medicineInfo.unitPrice+' /'+medicineInfo.unitType)
+        }else{
+            result.put('unitPriceTxt', medicineInfo.unitPrice)
         }
         result.put('amount', medicineInfo.unitPrice)
-        result.put('unit', medicineInfo.unitType)
+        result.put('stockQty', medicineInfo.stockQty)
         render result as JSON
     }
 

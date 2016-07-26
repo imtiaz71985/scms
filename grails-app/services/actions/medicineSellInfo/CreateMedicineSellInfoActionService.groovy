@@ -48,14 +48,16 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
             double totalAmount = 0.0d
             List<MedicineSellInfoDetails> lstMedicineInfoDetails = (List<MedicineSellInfoDetails>) result.get(MEDICINE_SELL_DETAILS_MAP)
             for (int i = 0; i < lstMedicineInfoDetails.size(); i++) {
-                MedicineInfo medicineInfo =MedicineInfo.findById(lstMedicineInfoDetails[i].medicineId)
-                medicineInfo.stockQty-=lstMedicineInfoDetails[i].quantity
-                medicineInfo.save()
                 totalAmount+=lstMedicineInfoDetails[i].amount
                 lstMedicineInfoDetails[i].save()
+
+                MedicineInfo medicineInfo = MedicineInfo.read(lstMedicineInfoDetails[i].medicineId)
+                medicineInfo.stockQty = medicineInfo.stockQty - lstMedicineInfoDetails[i].quantity
+                medicineInfo.save()
             }
             sellInfo.totalAmount = totalAmount
             sellInfo.save()
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -96,9 +98,7 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
         String hospital_code= SecUser.read(springSecurityService.principal.id)?.hospitalCode
         MedicineSellInfo sellInfo = new MedicineSellInfo(params)
         sellInfo.voucherNo = params.voucherNo
-        if(params.tokenId) {
-            sellInfo.refTokenNo = params.tokenId
-        }
+        sellInfo.refTokenNo = params.refTokenNo
         sellInfo.hospitalCode = hospital_code
         sellInfo.sellDate = DateUtility.getSqlDate(new Date())
         sellInfo.sellDateExt = DateUtility.getSqlFromDateWithSeconds(new Date())

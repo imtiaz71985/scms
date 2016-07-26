@@ -16,6 +16,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
     private static final String TOTAL_AMOUNT = "totalAmount"
     private static final String VOUCHER_NO = "voucherNo"
+    private static final String REF_TOKEN_NO = "refTokenNo"
     private static final String MEDICINE_DETAILS = "requisitionDetails"
     private static final String GRID_MODEL_MEDICINE = "gridModelMedicine"
 
@@ -32,6 +33,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
             }
             params.put(TOTAL_AMOUNT, sellInfo.totalAmount)
             params.put(VOUCHER_NO, sellInfo.voucherNo)
+            params.put(REF_TOKEN_NO, sellInfo.refTokenNo)
             params.put(MEDICINE_DETAILS, sellInfo)
             return params
         } catch (Exception e) {
@@ -89,17 +91,23 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
             int quantity = singleRow.quantity
             double amount = singleRow.amount
             String medicineName = EMPTY_SPACE
+            String unitPriceTxt = EMPTY_SPACE
 
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
             SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
             if(medicineInfo.strength){
-                medicineName = medicineInfo.genericName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name
+                medicineName = medicineInfo.brandName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name
             }else{
-                medicineName = medicineInfo.genericName + ' - ' + medicineType.name
+                medicineName = medicineInfo.brandName + ' - ' + medicineType.name
             }
-
+            if(medicineInfo.unitType){
+                unitPriceTxt= medicineInfo.unitPrice+' /'+medicineInfo.unitType
+            }else{
+                unitPriceTxt=  medicineInfo.unitPrice
+            }
             Map eachDetails = [ id:id,version:version,voucherNo:voucherNo,medicineName:medicineName,
-                               medicineId:medicineId,quantity:quantity,amount:amount
+                               medicineId:medicineId,quantity:quantity,amount:amount,
+                               stock:medicineInfo.stockQty+quantity,unitPriceTxt:unitPriceTxt
             ]
             lstRows << eachDetails
         }

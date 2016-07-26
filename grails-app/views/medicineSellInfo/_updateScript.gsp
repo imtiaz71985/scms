@@ -5,12 +5,14 @@
 </ul>
 </script>
 <script language="javascript">
-    var voucherNo,quantity,gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine, medicineName, unitPrice = 0, totalAmount = 0;
+    var voucherNo,quantity,gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine,
+            dropDownTokenId, medicineName, unitPrice = 0, totalAmount = 0, availableStock = 0;
 
     $(document).ready(function () {
         voucherNo = '${voucherNo}';
         totalAmount = ${totalAmount};
         $("#voucherNo").val(voucherNo);
+        dropDownTokenId.value('${refTokenNo}');
         initMedicineSellInfoGrid();
         initObservable();
         gridMedicineSellInfo.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
@@ -30,7 +32,7 @@
         $("#frmMedicine").submit(function (e) {
             onSubmitForm();
         });
-        $('#gridMedicine  > .k-grid-content').height(285);
+        $('#gridMedicine  > .k-grid-content').height(200);
         defaultPageTile("Sale details", null);
 
     });
@@ -96,12 +98,12 @@
             showLoadingSpinner(false);
             return false;
         }
-        var sellDate = $('#sellDate').val();
         var quantity = $('#quantity').val();
         var amount = $('#amount').val();
+        var unitPriceTxt = $('#unitPriceTxt').val();
 
         // add data into grid;
-        addToGrid(gridMedicineSellInfo, medicineId, sellDate, quantity, amount);
+        addToGrid(gridMedicineSellInfo, medicineId, quantity, amount, unitPriceTxt);
         showLoadingSpinner(false);
         setButtonDisabled($('#addMedicine'), false);
         return false;
@@ -114,6 +116,10 @@
         var quantity = $("#quantity").val();
         if(quantity==''){
             showError('Please insert medicine quantity.');
+            return false;
+        }
+        if(quantity > availableStock){
+            showError('Stock not available');
             return false;
         }
         if (checkDuplicateEntry(medicineId) == false) return false;
@@ -129,13 +135,14 @@
         });
         return success;
     }
-    function addToGrid(gridModel, medicineId, sellDate, quantity, amount) {
+    function addToGrid(gridModel, medicineId, quantity, amount, unitPriceTxt) {
         var data = {
             medicineName: medicineName,
             medicineId: medicineId,
-            sellDate: sellDate,
+            stock: availableStock,
             quantity: quantity,
-            amount: amount
+            amount: amount,
+            unitPriceTxt: unitPriceTxt
         };
 
         var gridCount = gridModel.dataSource.data().length;
@@ -146,12 +153,17 @@
             var dsDr = new kendo.data.DataSource({data: [data]});
             gridModel.setDataSource(dsDr);
         }
+        dropDownMedicine.dataSource.filter("");
+        var refNo = $("#refTokenNo").val();
         clearForm($("#frmMedicine"), $("#medicineId"));
+        dropDownTokenId.value(refNo);
+        availableStock = 0;
+        $("#stockQty").text('');
         $("#voucherNo").val(voucherNo);
         totalAmount=parseFloat(totalAmount,10)+parseFloat(amount,10);
         $("#footerSpan").text(formatAmount(totalAmount));
         unitPrice = 0;
-        $('#gridMedicine  > .k-grid-content').height(285);
+        $('#gridMedicine  > .k-grid-content').height(200);
         return false;
     }
 
@@ -181,6 +193,13 @@
                     filterable: false
                 },
                 {
+                    field: "unitPriceTxt",
+                    title: "Unit Price",
+                    width: 50,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "amount",
                     title: "Amount",
                     attributes: {style: setAlignRight()},
@@ -198,7 +217,7 @@
         });
         gridMedicineSellInfo = $("#gridMedicine").data("kendoGrid");
         $("#menuGridKendoDr").kendoMenu();
-        $('#gridMedicine  > .k-grid-content').height(285);
+        $('#gridMedicine  > .k-grid-content').height(200);
     }
 
     function initObservable() {
@@ -211,8 +230,7 @@
                         genericName: "",
                         strength: "",
                         quantity: "",
-                        amount: "",
-                        sellDate: ""
+                        amount: ""
                     }
                 }
         );
@@ -240,6 +258,8 @@
                 }
                 quantity.value(1);
                 medicineName = data.name;
+                availableStock = data.stockQty;
+                $("#stockQty").text(availableStock);
                 var quantitya = $("#quantity").val();
                 if (quantitya != '') {
                     $('#amount').val((data.amount * quantitya).toFixed(2));
@@ -309,16 +329,20 @@
         dropDownMedicine.value(data.medicineId);
         quantity.value(data.quantity);
         $("#amount").val(data.amount);
+        $("#unitPriceTxt").val(data.unitPriceTxt);
+        medicineName = data.medicineName;
+        availableStock = parseInt(data.stock, 10);
+        $("#stockQty").text(availableStock);
         if(data.unit!=null){
             $("#unit").text(data.unit);
         }
         gridMedicineSellInfo.dataSource.remove(data);
         getOnlyMedicinePrice();
         var amount = $("#amount").val();
-        totalAmount=parseFloat(totalAmount,10)-parseFloat(amount,10);
+        totalAmount = parseFloat(totalAmount,10)-parseFloat(amount,10);
         $("#footerSpan").text('');
         $("#footerSpan").text(formatAmount(totalAmount));
-        $('#gridMedicine  > .k-grid-content').height(285);
+        $('#gridMedicine  > .k-grid-content').height(200);
     }
     function deleteMedicine(com, grid) {
         if (executeCommonPreConditionForSelectKendo(gridMedicineSellInfo, 'medicine') == false) {
@@ -329,6 +353,6 @@
         gridMedicineSellInfo.dataSource.remove(data);
         $("#footerSpan").text('');
         $("#footerSpan").text(formatAmount(totalAmount));
-        $('#gridMedicine  > .k-grid-content').height(285);
+        $('#gridMedicine  > .k-grid-content').height(200);
     }
 </script>

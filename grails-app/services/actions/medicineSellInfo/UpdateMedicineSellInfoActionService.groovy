@@ -1,5 +1,6 @@
 package actions.medicineSellInfo
 
+import com.scms.MedicineInfo
 import com.scms.MedicineSellInfo
 import com.scms.MedicineSellInfoDetails
 import grails.converters.JSON
@@ -26,7 +27,7 @@ class UpdateMedicineSellInfoActionService extends BaseService implements ActionS
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             MedicineSellInfo medicineInfo = MedicineSellInfo.findByVoucherNo(params.voucherNo)
-            if(!medicineInfo){
+            if (!medicineInfo) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             List<MedicineSellInfoDetails> lstMedicineDetails = buildMedicineDetailsMap(params)
@@ -43,16 +44,31 @@ class UpdateMedicineSellInfoActionService extends BaseService implements ActionS
     @Transactional
     public Map execute(Map result) {
         try {
-            MedicineSellInfo medicineInfo = (MedicineSellInfo) result.get(MEDICINE_SELL_INFO)
+            MedicineSellInfo sellInfo = (MedicineSellInfo) result.get(MEDICINE_SELL_INFO)
             double totalAmount = 0.0d
-            deleteAllChild(medicineInfo.voucherNo)
-            List<MedicineSellInfo> lstMedicineInfo = (List<MedicineSellInfo>) result.get(MEDICINE_SELL_DETAILS_MAP)
-            for (int i = 0; i < lstMedicineInfo.size(); i++) {
-                totalAmount+=lstMedicineInfo[i].amount
-                lstMedicineInfo[i].save()
+
+            def list = MedicineSellInfoDetails.executeQuery("select medicineId, quantity from MedicineSellInfoDetails" +
+                    " where voucherNo = :voucherNo", [voucherNo: sellInfo.voucherNo])
+
+            deleteAllChild(sellInfo.voucherNo)
+            List<MedicineSellInfoDetails> lstMedicineInfoDetails = (List<MedicineSellInfoDetails>) result.get(MEDICINE_SELL_DETAILS_MAP)
+            for (int i = 0; i < lstMedicineInfoDetails.size(); i++) {
+                totalAmount += lstMedicineInfoDetails[i].amount
+                lstMedicineInfoDetails[i].save()
+
+                MedicineInfo medicineInfo = MedicineInfo.read(lstMedicineInfoDetails[i].medicineId)
+                int previousQty = 0
+                for (int j = 0; j < list.size(); j++) {
+                    if (medicineInfo.id == list[j][0]) {
+                        previousQty = list[j][1]
+                    }
+                }
+                medicineInfo.stockQty = medicineInfo.stockQty - lstMedicineInfoDetails[i].quantity + previousQty
+                medicineInfo.save()
             }
-            medicineInfo.totalAmount = totalAmount
-            medicineInfo.save()
+            sellInfo.totalAmount = totalAmount
+            sellInfo.refTokenNo = result.refTokenNo
+            sellInfo.save()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -71,13 +87,14 @@ class UpdateMedicineSellInfoActionService extends BaseService implements ActionS
     public Map buildFailureResultForUI(Map params) {
         return params
     }
+
     private static List<MedicineSellInfoDetails> buildMedicineDetailsMap(Map parameterMap) {
         List<MedicineSellInfoDetails> lstMedicine = []
         JSONElement gridModelMedicine = JSON.parse(parameterMap.gridModelMedicine.toString())
         String voucherNo = parameterMap.voucherNo
         List lstRowsMedicine = (List) gridModelMedicine
         for (int i = 0; i < lstRowsMedicine.size(); i++) {
-            MedicineSellInfoDetails medicine = buildMedicineDetailsObject(lstRowsMedicine[i],voucherNo)
+            MedicineSellInfoDetails medicine = buildMedicineDetailsObject(lstRowsMedicine[i], voucherNo)
             lstMedicine.add(medicine)
         }
         return lstMedicine
