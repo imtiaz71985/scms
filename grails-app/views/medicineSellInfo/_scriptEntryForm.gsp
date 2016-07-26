@@ -5,8 +5,8 @@
 </ul>
 </script>
 <script language="javascript">
-    var voucherNo,quantity,gridMedicineSellInfo, dataSource, dropDownMedicine,
-            dropDownTokenId, medicineName, unitPrice = 0, totalAmount = 0, availableStock = 0;
+    var voucherNo,quantity,gridMedicineSellInfo, dataSource, dropDownMedicine, dropDownTokenId,
+            medicineName, unitPrice = 0, totalAmount = 0, availableStock = 0;
 
     $(document).ready(function () {
         voucherNo = '${voucherNo}';

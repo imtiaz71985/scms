@@ -34,7 +34,6 @@
                                 data_model_name="dropDownMedicine"
                                 id="medicineId" name="medicineId" tabindex="2"
                                 class="kendo-drop-down" onchange="javascript: getMedicinePrice();"
-                                data-bind="value: medicineSell.medicineId"
                                 required="true" validationmessage="Required">
                         </app:dropDownMedicineList>
                     </div>
@@ -47,9 +46,8 @@
 
                     <div class="col-md-6">
                         <input type="text" class="form-control" id="quantity" name="quantity"
-                               placeholder="Quantity" required validationMessage="Required" tabindex="3"
-                               onKeyUp="javascript: calculateTotalPrice();"
-                               data-bind="value: medicineSell.quantity"/>
+                               placeholder="Quantity" tabindex="3"
+                               onKeyUp="javascript: calculateTotalPrice();"/>
                     </div>
                     <div class="col-md-3">
                         <b>out of <span id="stockQty"></span></b>
@@ -72,8 +70,7 @@
 
                     <div class="col-md-4">
                         <input type="text" class="form-control" id="amount" name="amount"
-                               placeholder="Total amount (৳)" readonly="true"
-                               data-bind="value: medicineSell.amount"/>
+                               placeholder="Total amount (৳)" readonly="true"/>
                     </div>
                 </div>
             </div>

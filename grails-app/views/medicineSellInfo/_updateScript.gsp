@@ -5,8 +5,8 @@
 </ul>
 </script>
 <script language="javascript">
-    var voucherNo,quantity,gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine,
-            dropDownTokenId, medicineName, unitPrice = 0, totalAmount = 0, availableStock = 0;
+    var voucherNo,quantity,gridMedicineSellInfo, dataSource, dropDownMedicine, dropDownTokenId,
+            medicineName, unitPrice = 0, totalAmount = 0, availableStock = 0;
 
     $(document).ready(function () {
         voucherNo = '${voucherNo}';
@@ -14,7 +14,6 @@
         $("#voucherNo").val(voucherNo);
         dropDownTokenId.value('${refTokenNo}');
         initMedicineSellInfoGrid();
-        initObservable();
         gridMedicineSellInfo.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
         $("#footerSpan").text(formatAmount(totalAmount));
 
@@ -219,24 +218,6 @@
         $("#menuGridKendoDr").kendoMenu();
         $('#gridMedicine  > .k-grid-content').height(200);
     }
-
-    function initObservable() {
-        medicineSellInfoModel = kendo.observable(
-                {
-                    medicineSell: {
-                        id: "",
-                        version: "",
-                        medicineId: "",
-                        genericName: "",
-                        strength: "",
-                        quantity: "",
-                        amount: ""
-                    }
-                }
-        );
-        kendo.bind($("#application_top_panel"), medicineSellInfoModel);
-    }
-
 
     function getMedicinePrice() {
         var medicineId = dropDownMedicine.value();
