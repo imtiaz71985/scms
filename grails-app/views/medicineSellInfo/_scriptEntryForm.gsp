@@ -5,14 +5,13 @@
 </ul>
 </script>
 <script language="javascript">
-    var voucherNo,quantity,gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine,
+    var voucherNo,quantity,gridMedicineSellInfo, dataSource, dropDownMedicine,
             dropDownTokenId, medicineName, unitPrice = 0, totalAmount = 0, availableStock = 0;
 
     $(document).ready(function () {
         voucherNo = '${voucherNo}';
         $("#voucherNo").val(voucherNo);
         initMedicineSellInfoGrid();
-        initObservable();
         $('#quantity').kendoNumericTextBox({
             spin: function() {
                 calculateTotalPrice();
@@ -212,24 +211,6 @@
         $("#menuGridKendoDr").kendoMenu();
         $('#gridMedicine  > .k-grid-content').height(220);
     }
-
-    function initObservable() {
-        medicineSellInfoModel = kendo.observable(
-                {
-                    medicineSell: {
-                        id: "",
-                        version: "",
-                        medicineId: "",
-                        genericName: "",
-                        strength: "",
-                        quantity: "",
-                        amount: ""
-                    }
-                }
-        );
-        kendo.bind($("#application_top_panel"), medicineSellInfoModel);
-    }
-
 
     function getMedicinePrice() {
         var medicineId = dropDownMedicine.value();

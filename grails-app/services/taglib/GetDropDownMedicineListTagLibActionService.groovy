@@ -125,7 +125,6 @@ class GetDropDownMedicineListTagLibActionService extends BaseService implements 
         }
 
         String html = "<select ${strAttributes}>\n" + SELECT_END
-        String strOnChange = paramOnChange ? ",change: function(e) {${paramOnChange};}" : EMPTY_SPACE
         String strDefaultValue = defaultValue ? defaultValue : EMPTY_SPACE
 
         if (showHints.booleanValue()) {
