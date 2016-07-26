@@ -67,6 +67,9 @@ class GetDropDownServiceTokenNoTagLibActionService  extends BaseService implemen
             if (type.equals('Last Month Token')) {
                 lstRegistrationNo = (List<GroovyRowResult>) listServiceTokenNoOfLastMonth()
             }
+            else if (type.equals('Last Three Month Token')) {
+                lstRegistrationNo = (List<GroovyRowResult>) listTokenNoOfLastThreeMonth()
+            }
              else {
                 lstRegistrationNo = (List<GroovyRowResult>) listServiceTokenNo()
             }
@@ -178,6 +181,17 @@ class GetDropDownServiceTokenNoTagLibActionService  extends BaseService implemen
            SELECT s.service_token_no AS id,CONCAT(s.service_token_no,'(',ri.patient_name,')') AS name
             FROM service_token_info s INNER JOIN registration_info ri ON s.reg_no=ri.reg_no
             WHERE s.is_exit !=TRUE AND DATE(s.service_date)>=DATE(NOW() - INTERVAL 1 MONTH)
+            ORDER BY s.service_date DESC;
+
+        """
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        return lst
+    }
+    private List<GroovyRowResult> listTokenNoOfLastThreeMonth() {
+        String queryForList = """
+           SELECT s.service_token_no AS id,CONCAT(s.service_token_no,'(',ri.patient_name,')') AS name
+            FROM service_token_info s INNER JOIN registration_info ri ON s.reg_no=ri.reg_no
+            WHERE s.is_exit =TRUE AND DATE(s.service_date)>=DATE(NOW() - INTERVAL 3 MONTH)
             ORDER BY s.service_date DESC;
 
         """

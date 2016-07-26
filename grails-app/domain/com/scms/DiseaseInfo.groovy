@@ -11,8 +11,7 @@ class DiseaseInfo {
     long modifyBy
     long createdBy
     static constraints = {
-        createDate type:'date'
-        modifyDate type:'date'
+
         modifyDate(nullable: true)
         modifyBy (nullable: true)
         description (nullable: true)
@@ -22,6 +21,8 @@ class DiseaseInfo {
         id name: 'diseaseCode'
         version false
         id generator: 'assigned'
+        createDate type:'date'
+        modifyDate type:'date'
         diseaseGroupId       index: 'disease_info_disease_group_id_idx'
     }
 }
