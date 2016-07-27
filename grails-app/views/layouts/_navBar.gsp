@@ -68,7 +68,7 @@
                 <sec:ifAnyUrls
                         urls="/reports/showMonthlyStatus,/reports/listMonthlyStatus,/reports/downloadMonthlyDetails">
                     <li>
-                        <a href="#"><i class="fa fa-file"></i>&nbsp;Reports<span class="fa arrow-down"></span></a>
+                        <a href="#"><i class="fa fa-file"></i>&nbsp;Reports<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/reports/showMonthlyStatus">
                                 <li>
