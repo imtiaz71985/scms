@@ -1,6 +1,6 @@
 <script language="javascript">
     var frmRequisitionReceive, gridMedicineReqReceive, dataSourceForMedicine, dropDownVendor, dropDownRequisitionNo,
-            requisitionNo = '', unitPrice = 0, totalAmount = 0;
+            dropDownRemarks, requisitionNo = '', unitPrice = 0, totalAmount = 0;
 
     $(document).ready(function () {
         onLoadRequisitionPage();
@@ -42,6 +42,7 @@
     }
     function resetForm() {
         dropDownVendor.value('');
+        dropDownRemarks.value('');
         populateDDLRequisitionNo();
         requisitionNo = '';
        //initMedicineRequisitionGrid();
@@ -79,11 +80,15 @@
         if ($('#rbComplete').is(':checked')) {
             isComplete = true;
         }
+        var remarks='';
 
+        if($("#remarksDDL").val()>0){
+            remarks=$("#remarksDDL").data("kendoDropDownList").text();
+        }
         jQuery.ajax({
             type: 'post',
             data: formData,
-            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo + "&isReceived=" + isComplete,
+            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo + "&isReceived=" + isComplete+"&remarks="+remarks,
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);

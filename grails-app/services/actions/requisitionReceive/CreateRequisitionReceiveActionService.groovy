@@ -108,6 +108,8 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
         receive.hospitalCode = hospital_code
         receive.createDate = DateUtility.getSqlDate(new Date())
         receive.createdBy = springSecurityService.principal.id
+        receive.remarks=params.remarks
+
         return receive
     }
 }

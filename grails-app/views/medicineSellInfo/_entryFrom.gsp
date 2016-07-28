@@ -46,7 +46,7 @@
                 <div class="form-group">
                     <label class="col-md-2 control-label label-required" for="quantity">Quantity:</label>
 
-                    <div class="col-md-6">
+                    <div class="col-md-6" style="padding-right: 0px">
                         <input type="text" class="form-control" id="quantity" name="quantity"
                                placeholder="Quantity" tabindex="3"
                                onKeyUp="javascript: calculateTotalPrice();"/>
