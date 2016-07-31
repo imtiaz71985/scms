@@ -86,7 +86,21 @@
                                 <span class="k-invalid-msg" data-for="vendorId"></span>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label label-required" for="expiryDate">Expiry Date:</label>
 
+                            <div class="col-md-6">
+                                <app:dateControl name="expiryDate"
+                                                 required="true" validationMessage="Required"
+                                                 tabindex="6" class="form-control"
+                                                 data-bind="value: medicineInfo.expiryDate">
+                                </app:dateControl>
+                            </div>
+
+                            <div class="col-md-3 pull-left">
+                                <span class="k-invalid-msg" data-for="expiryDate"></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-md-6">
@@ -96,7 +110,7 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="unitType" name="unitType"
-                                       placeholder="Unit Type" required validationMessage="Required" tabindex="6"
+                                       placeholder="Unit Type" required validationMessage="Required" tabindex="7"
                                        data-bind="value: medicineInfo.unitType"/>
                             </div>
 
@@ -109,7 +123,7 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="unitPrice" name="unitPrice"
-                                       placeholder="Unit Price" required validationMessage="Required" tabindex="7"
+                                       placeholder="Unit Price" required validationMessage="Required" tabindex="8"
                                        data-bind="value: medicineInfo.unitPrice"/>
                             </div>
 
@@ -122,7 +136,7 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="mrpPrice" name="mrpPrice"
-                                       placeholder="MRP Price" required validationMessage="Required" tabindex="8"
+                                       placeholder="MRP Price" required validationMessage="Required" tabindex="9"
                                        data-bind="value: medicineInfo.mrpPrice"/>
                             </div>
 
@@ -135,7 +149,7 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="boxSize" name="boxSize"
-                                       placeholder="Box size" tabindex="9"
+                                       placeholder="Box size" tabindex="10"
                                        data-bind="value: medicineInfo.boxSize"/>
                             </div>
 
@@ -148,7 +162,7 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="boxRate" name="boxRate"
-                                       placeholder="Box Price" tabindex="10"
+                                       placeholder="Box Price" tabindex="11"
                                        data-bind="value: medicineInfo.boxRate"/>
                             </div>
 
@@ -161,7 +175,7 @@
 
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="warnQty" name="warnQty"
-                                       placeholder="Warn Qty" tabindex="11"
+                                       placeholder="Warn Qty" tabindex="12"
                                        data-bind="value: medicineInfo.warnQty"/>
                             </div>
 
@@ -176,12 +190,12 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="12"
+                            role="button" tabindex="13"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="13"
+                            class="k-button k-button-icontext" role="button" tabindex="14"
                             aria-disabled="false" onclick='resetForm("hide");'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

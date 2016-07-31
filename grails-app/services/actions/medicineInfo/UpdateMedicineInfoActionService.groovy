@@ -7,6 +7,7 @@ import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 
 @Transactional
 class UpdateMedicineInfoActionService extends BaseService implements ActionServiceIntf {
@@ -91,6 +92,7 @@ class UpdateMedicineInfoActionService extends BaseService implements ActionServi
         if(parameterMap.warnQty) oldMedicineInfo.warnQty = medicineInfo.warnQty
         if(parameterMap.boxRate) oldMedicineInfo.boxRate = medicineInfo.boxRate
         oldMedicineInfo.unitType = medicineInfo.unitType
+        oldMedicineInfo.expiryDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.expiryDate))
         return oldMedicineInfo
     }
 }

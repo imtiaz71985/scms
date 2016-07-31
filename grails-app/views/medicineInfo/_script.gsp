@@ -177,7 +177,8 @@
                         mrpPrice: {type: "number"},
                         boxSize: {type: "number"},
                         boxRate: {type: "number"},
-                        warnQty: {type: "number"}
+                        warnQty: {type: "number"},
+                        expiryDate: { type: "date" }
                     }
                 },
                 parse: function (data) {
@@ -229,6 +230,16 @@
                     width: 100,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
+                },
+                {
+                    field: "expiryDate",
+                    title: "Expiry Date",
+                    width: 50,
+                    sortable: false,
+                    headerAttributes: {style: setAlignCenter()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignCenter()},
+                    template: "#=expiryDate?kendo.toString(kendo.parseDate(expiryDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
                 },
                 {
                     field: "unitPrice", title: "Unit Price", width: 40, sortable: false, filterable: false,
