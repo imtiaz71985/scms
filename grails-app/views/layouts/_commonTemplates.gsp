@@ -128,6 +128,53 @@
         </div>
     </div>
 </div>
+<!-- Create Receive remarks Modal for receive Qty -->
+<div class="modal fade" id="createReceiveRemarksModal" tabindex="-1" role="dialog"
+     aria-labelledby="createReceiveRemarksModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        onclick="hideCreateReceiveRemarksModal();"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="createReceiveRemarksModalLabel">Give Reason For Lower Quantity</h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal form-widgets" id="createReceiveRemarksForm" name="createReceiveRemarksForm">
+                    <input type="hidden" id="hidReceiveMedicineListRowNo" name="hidReceiveMedicineListRowNo" value=""/>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="col-md-1" align="center" style="padding-right: 0px;padding-left: 0px;">
+                                <label class="control-label label-required" for="receiveRemarksModalDDL">Remarks:</label>
+                            </div>
+
+                            <div class="col-md-7">
+                                <app:dropDownSystemEntity
+                                        data_model_name="dropDownRemarksForModal"
+                                        id="receiveRemarksModalDDL" name="receiveRemarksModalDDL"
+                                        type="Remarks" required="true" validationMessage="Required"
+                                        tabindex="1" class="kendo-drop-down">
+                                </app:dropDownSystemEntity>
+                            </div>
+                            <div class="col-md-3 pull-left">
+                                <span class="k-invalid-msg" data-for="receiveRemarksModalDDL"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="button" value="Ok" onclick="onClickCreateReceiveRemarksModal();"
+                       tabindex="2">
+                <input class="btn btn-default" type="button" value="Close" onclick="hideCreateReceiveRemarksModal();"
+                       data-dismiss="modal" tabindex="3">
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

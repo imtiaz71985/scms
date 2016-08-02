@@ -1,6 +1,6 @@
 <script language="javascript">
     var frmRequisitionReceive, gridMedicineReqReceive, dataSourceForMedicine, dropDownVendor, dropDownRequisitionNo,
-            dropDownRemarks, requisitionNo = '', unitPrice = 0, totalAmount = 0;
+            dropDownRemarksForModal, requisitionNo = '', unitPrice = 0, totalAmount = 0;
 
     $(document).ready(function () {
         onLoadRequisitionPage();
@@ -42,14 +42,13 @@
     }
     function resetForm() {
         dropDownVendor.value('');
-        dropDownRemarks.value('');
+
         populateDDLRequisitionNo();
         requisitionNo = '';
        //initMedicineRequisitionGrid();
         clearGridKendo(gridMedicineReqReceive);
         totalAmount=0;
         setFooter();
-        $("input:radio").removeAttr("checked");
         $('#prNo').val('');
         $('#chalanNo').val('');
 
@@ -57,15 +56,11 @@
 
     function executePreCondition() {
         var count = gridMedicineReqReceive.dataSource.total();
-        var check = $("input:radio").is(':checked');
         if (count == 0) {
             showError('No data found to save');
             return false;
         }
-        else if (!check) {
-            showError('Need to select completion status.');
-            return false;
-        }
+
         return true;
     }
     function onSubmitForm() {
@@ -76,19 +71,11 @@
         showLoadingSpinner(true);
         var formData = jQuery('#frmRequisitionReceive').serializeArray();
         formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineReqReceive.dataSource.data())});
-        var isComplete = false;
-        if ($('#rbComplete').is(':checked')) {
-            isComplete = true;
-        }
-        var remarks='';
 
-        if($("#remarksDDL").val()>0){
-            remarks=$("#remarksDDL").data("kendoDropDownList").text();
-        }
         jQuery.ajax({
             type: 'post',
             data: formData,
-            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo + "&isReceived=" + isComplete+"&remarks="+remarks,
+            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo ,
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -133,17 +120,18 @@
                         id             : {type: "number"},
                         version        : {type: "number"},
                         medicineId     : {type: "number"},
+                        type           : {editable: false, type: "string"},
                         genericName    : {editable: false, type: "string"},
                         medicineName   : {editable: false, type: "string"},
-                        unitPrice      : {editable: false, type: "number"},
+                        unitPrice      : {editable: false, type: "string"},
                         unitType       : {editable: false, type: "string"},
-                        stockQty       : {editable: false, type: "number"},
                         reqQty         : {editable: false, type: "number"},
                         approvedQty    : {editable: false, type: "number"},
                         procQty        : {editable: false, type: "number"},
                         prevReceiveQty : {editable: false, type: "number"},
                         receiveQty     : {type: "number"},
-                        amount         : {type: "number"}
+                        amount         : {type: "number"},
+                        remarks        : {type: "string"}
 
                     }
                 },
@@ -195,7 +183,11 @@
                         showError("Wrong quantity.");
                         data.set('receiveQty', baseValue);
                         data.set('amount', baseValue * data.unitPrice);
-                    } else {
+                    } else if(value<(data.approvedQty - data.prevReceiveQty)){
+                        var rowIdx = $("tr", $('#gridMedicine')).index(row);
+                        showRemarksModal(rowIdx);
+                    }
+                    else {
                         if(input.val()==''){
                             input.val(0);
                             value = 0;
@@ -213,21 +205,21 @@
 
             columns: [
                 {
+                    field: "type",
+                    title: "Type",
+                    width: 40,
+                    sortable: false,
+                    filterable: false
+                },{
                     field: "genericName",
                     title: "Generic Name",
-                    width: 100,
+                    width: 80,
                     sortable: false,
                     filterable: false
                 },{
                     field: "medicineName",
                     title: "Medicine Name",
                     width: 100,
-                    sortable: false,
-                    filterable: false
-                },{
-                    field: "unitType",
-                    title: "Unit",
-                    width: 50,
                     sortable: false,
                     filterable: false
                 },{
@@ -281,6 +273,12 @@
                     template: "#=formatAmount(amount)#",
                     sortable: false, filterable: false, width: 50,
                     footerTemplate: "<div style='text-align: right'><span id='footerSpan'>#=formatAmount(0)#</span></div>"
+                },{
+                    field: "remarks",
+                    title: "Remarks",
+                    width: 70,
+                    sortable: false,
+                    filterable: false
                 }
             ],
             filterable: {
@@ -292,12 +290,42 @@
 
     function editRecord() {
         requisitionNo = dropDownRequisitionNo.value();
-        var url ="${createLink(controller: 'requisitionReceive', action: 'listOfMedicine')}?requisitionNo=" + requisitionNo;
+        var vendorId=dropDownVendor.value();
+        var url ="${createLink(controller: 'requisitionReceive', action: 'listOfMedicine')}?requisitionNo=" + requisitionNo+"&vendorId="+vendorId;
         populateGridKendo(gridMedicineReqReceive,url);
     }
 
     function setFooter(){
         $("#footerSpan").text(formatAmount(totalAmount));
     }
+
+    function showRemarksModal(rowIdx) {
+        $("#createReceiveRemarksModal").modal('show');
+        $('#hidReceiveMedicineListRowNo').val(rowIdx);
+        dropDownRemarksForModal=$('#receiveRemarksModalDDL').data("kendoDropDownList");
+    }
+    function onClickCreateReceiveRemarksModal(){
+        if (!validateForm($('#createReceiveRemarksForm'))) {
+            return
+        }
+        var r=$('#hidReceiveMedicineListRowNo').val();
+
+       // var row = $("#gridMedicine").data("kendoGrid").find(2)
+        var grid = $("#gridMedicine").data("kendoGrid");
+        var dataRows = grid.items();
+        var data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r-1]);
+       var a= $("#receiveRemarksModalDDL").data("kendoDropDownList").text();
+        data.set('remarks', a);
+        $("#gridMedicine").data('kendoGrid').refresh();
+        hideCreateReceiveRemarksModal();
+    }
+
+    function hideCreateReceiveRemarksModal(){
+        $('#hidReceiveMedicineListRowNo').val('');
+        dropDownRemarksForModal.value('');
+        $("#createReceiveRemarksModal").modal('hide');
+    }
+
+
 
 </script>
