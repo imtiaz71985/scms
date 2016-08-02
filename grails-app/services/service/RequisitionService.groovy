@@ -9,7 +9,7 @@ class RequisitionService extends BaseService {
 
     public List<GroovyRowResult> listOfMedicine(String requisitionNo, hospitalCode) {
         String queryStr = """
-                SELECT mi.id AS id,mi.version,mi.id AS medicineId,generic_name AS genericName,se.name AS TYPE,
+                SELECT mi.id AS id,mi.version,mi.id AS medicineId,generic_name AS genericName,se.name AS type,
                         (CASE
                     WHEN mi.strength IS NULL THEN mi.brand_name
                     ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
@@ -62,7 +62,7 @@ class RequisitionService extends BaseService {
                     WHEN mi.strength IS NULL THEN mi.brand_name
                     ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
                          END) AS medicineName,
-            mi.unit_price AS unitPrice,mi.unit_type AS unitType,ms.stock_qty AS stockQty,COALESCE(rd.req_qty,0) AS reqQty,
+            mi.unit_price AS unitPrice,mi.unit_type AS unitType,COALESCE(rd.req_qty,0) AS reqQty,
              mi.unit_price AS unitPrice,mi.unit_type AS unitType,COALESCE(rd.req_qty,0) AS reqQty,
             COALESCE(rd.approved_qty) AS approvedQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(SUM(receive_details.receive_qty),0) AS prevReceiveQty ,
             (rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0)) AS receiveQty,
@@ -71,12 +71,10 @@ class RequisitionService extends BaseService {
             AND r.is_approved=TRUE AND r.is_delivered=TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id
             LEFT JOIN system_entity se ON mi.type=se.id
-            LEFT JOIN medicine_stock ms on ms.medicine_id=mi.id AND ms.hospital_code = SUBSTRING(:requisitionNo,2,2)
             LEFT JOIN receive ON receive.req_no=r.req_no LEFT JOIN receive_details ON receive.id=receive_details.receive_id
             AND receive_details.medicine_id= rd.medicine_id GROUP BY r.req_no,rd.medicine_id
             ORDER BY mi.brand_name
         """
-        Map queryParams = [requisitionNo: requisitionNo]
         }
         else{
             queryStr = """
