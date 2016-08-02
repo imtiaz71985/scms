@@ -2,6 +2,7 @@ package actions.hospitalLocation
 
 import com.model.ListHospitalLocationActionServiceModel
 import com.scms.HospitalLocation
+import com.scms.MedicineStock
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -42,6 +43,14 @@ class CreateHospitalLocationActionService extends BaseService implements ActionS
         try {
             HospitalLocation hospitalLocation = (HospitalLocation) result.get(HOSPITAL)
             hospitalLocation.save()
+            if(hospitalLocation.isClinic){
+                if(hospitalLocation.isClinic){
+                    int count = MedicineStock.countByHospitalCode(hospitalLocation.code)
+                    if (count==0){
+                        setMedicineStock(hospitalLocation.code)
+                    }
+                }
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -76,5 +85,13 @@ class CreateHospitalLocationActionService extends BaseService implements ActionS
         HospitalLocation hospitalLocation = new HospitalLocation(parameterMap)
         hospitalLocation.code = formatted
         return hospitalLocation
+    }
+
+    public void setMedicineStock(String code) {
+    String str = """
+           INSERT INTO medicine_stock (version, medicine_id, stock_qty,hospital_code)
+                SELECT 0,id,0, ${code} FROM medicine_info;
+    """
+        executeInsertSql(str)
     }
 }

@@ -5,7 +5,7 @@
 </ul>
 </script>
 <script language="javascript">
-    var voucherNo,quantity,gridMedicineSellInfo, dataSource, dropDownMedicine, dropDownTokenId,
+    var voucherNo,quantity,gridMedicineSellInfo, dataSource, dropDownMedicine, 
             medicineName, unitPrice = 0, totalAmount = 0, availableStock = 0;
 
     $(document).ready(function () {
@@ -24,7 +24,7 @@
         });
         quantity = $("#quantity").data("kendoNumericTextBox");
         $("#frmMedicine").submit(function (e) {
-            onSubmitForm();
+            onSubmitForm(e);
         });
         defaultPageTile("Sale details", null);
 
@@ -34,15 +34,17 @@
         window.history.back();
     }
 
-    function executePreCondition() {
+    function executePreCondition(e) {
+        e.preventDefault();
         var count = gridMedicineSellInfo.dataSource.total();
         if (count == 0) {
+            showError('No records to save');
             return false;
         }
         return true;
     }
-    function onSubmitForm() {
-        if (executePreCondition() == false) {
+    function onSubmitForm(e) {
+        if (executePreCondition(e) == false) {
             return false;
         }
         setButtonDisabled($('#create'), true);
@@ -149,13 +151,11 @@
         $("#footerSpan").text(formatAmount(totalAmount));
         unitPrice = 0;
         dropDownMedicine.dataSource.filter("");
-        var refNo = $("#refTokenNo").val();
         clearForm($("#frmMedicine"), $("#medicineId"));
-        dropDownTokenId.value(refNo);
         availableStock = 0;
         $("#stockQty").text('');
         $("#voucherNo").val(voucherNo);
-        $('#gridMedicine  > .k-grid-content').height(220);
+        $('#gridMedicine  > .k-grid-content').height(275);
         return false;
     }
 
@@ -186,7 +186,7 @@
                 },
                 {
                     field: "unitPriceTxt",
-                    title: "Unit Price",
+                    title: "Price/Unit",
                     width: 50,
                     sortable: false,
                     filterable: false
@@ -209,7 +209,7 @@
         });
         gridMedicineSellInfo = $("#gridMedicine").data("kendoGrid");
         $("#menuGridKendoDr").kendoMenu();
-        $('#gridMedicine  > .k-grid-content').height(220);
+        $('#gridMedicine  > .k-grid-content').height(275);
     }
 
     function getMedicinePrice() {
@@ -309,7 +309,7 @@
         totalAmount=parseFloat(totalAmount,10)-parseFloat(amount,10);
         $("#footerSpan").text('');
         $("#footerSpan").text(formatAmount(totalAmount));
-        $('#gridMedicine  > .k-grid-content').height(220);
+        $('#gridMedicine  > .k-grid-content').height(275);
     }
     function deleteMedicine(com, grid) {
         if (executeCommonPreConditionForSelectKendo(gridMedicineSellInfo, 'medicine') == false) {
@@ -320,6 +320,6 @@
         gridMedicineSellInfo.dataSource.remove(data);
         $("#footerSpan").text('');
         $("#footerSpan").text(formatAmount(totalAmount));
-        $('#gridMedicine  > .k-grid-content').height(220);
+        $('#gridMedicine  > .k-grid-content').height(275);
     }
 </script>

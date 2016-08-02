@@ -3,8 +3,11 @@ package actions.medicineSellInfo
 import com.scms.MedicineInfo
 import com.scms.MedicineSellInfo
 import com.scms.MedicineSellInfoDetails
+import com.scms.MedicineStock
+import com.scms.SecUser
 import com.scms.SystemEntity
 import grails.converters.JSON
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -13,10 +16,11 @@ import scms.BaseService
 @Transactional
 class SelectMedicineSellInfoActionService extends BaseService implements ActionServiceIntf {
 
+    SpringSecurityService springSecurityService
+
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
     private static final String TOTAL_AMOUNT = "totalAmount"
     private static final String VOUCHER_NO = "voucherNo"
-    private static final String REF_TOKEN_NO = "refTokenNo"
     private static final String MEDICINE_DETAILS = "requisitionDetails"
     private static final String GRID_MODEL_MEDICINE = "gridModelMedicine"
 
@@ -33,7 +37,6 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
             }
             params.put(TOTAL_AMOUNT, sellInfo.totalAmount)
             params.put(VOUCHER_NO, sellInfo.voucherNo)
-            params.put(REF_TOKEN_NO, sellInfo.refTokenNo)
             params.put(MEDICINE_DETAILS, sellInfo)
             return params
         } catch (Exception e) {
@@ -79,7 +82,8 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
         return result
     }
 
-    private static Map wrapEducationGrid(List<MedicineSellInfoDetails> lstMedicine) {
+    private Map wrapEducationGrid(List<MedicineSellInfoDetails> lstMedicine) {
+        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         List lstRows = []
         MedicineSellInfoDetails singleRow
         for (int i = 0; i < lstMedicine.size(); i++) {
@@ -94,6 +98,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
             String unitPriceTxt = EMPTY_SPACE
 
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
+            MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(medicineId,hospitalCode)
             SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
             if(medicineInfo.strength){
                 medicineName = medicineInfo.brandName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name
@@ -107,7 +112,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
             }
             Map eachDetails = [ id:id,version:version,voucherNo:voucherNo,medicineName:medicineName,
                                medicineId:medicineId,quantity:quantity,amount:amount,
-                               stock:medicineInfo.stockQty+quantity,unitPriceTxt:unitPriceTxt
+                               stock:stock.stockQty+quantity,unitPriceTxt:unitPriceTxt
             ]
             lstRows << eachDetails
         }

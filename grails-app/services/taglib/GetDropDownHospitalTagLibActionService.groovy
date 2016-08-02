@@ -14,6 +14,7 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
     private static final String CLASS = 'class'
     private static final String ON_CHANGE = 'onchange'
     private static final String HINTS_TEXT = 'hints_text'
+    private static final String IS_CLINIC = 'is_clinic'
     private static final String SHOW_HINTS = 'show_hints'
     private static final String DEFAULT_VALUE = 'default_value'
     private static final String PLEASE_SELECT = 'Please Select...'
@@ -46,6 +47,7 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
             params.put(SHOW_HINTS, params.show_hints ? new Boolean(Boolean.parseBoolean(params.show_hints.toString())) : Boolean.TRUE)
             params.put(REQUIRED, params.required ? new Boolean(Boolean.parseBoolean(params.required.toString())) : Boolean.FALSE)
             params.put(VALIDATION_MESSAGE, params.validationmessage ? params.validationmessage : DEFAULT_MESSAGE)
+            params.put(IS_CLINIC, params.is_clinic ? params.is_clinic : ALL)
 
             return params
 
@@ -62,7 +64,8 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
      */
     public Map execute(Map result) {
         try {
-            List<GroovyRowResult> lstRegistrationNo = (List<GroovyRowResult>) listServiceTokenNo()
+            String isClinic = result.get(IS_CLINIC)
+            List<GroovyRowResult> lstRegistrationNo = (List<GroovyRowResult>) listHospitalLocation(isClinic)
             String html = buildDropDown(lstRegistrationNo, result)
             result.html = html
             return result
@@ -155,11 +158,20 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
         return str.replace(SINGLE_DOT, ESCAPE_DOT)
     }
 
-    private List<GroovyRowResult> listServiceTokenNo() {
-        String queryForList = """
-            SELECT code AS id,name FROM hospital_location ORDER BY code ASC;
+    private List<GroovyRowResult> listHospitalLocation(String isClinic) {
+        String queryStr = EMPTY_SPACE
+        if(isClinic.equals(ALL)){
+            queryStr = """
+                SELECT code AS id,name FROM hospital_location ORDER BY code ASC;
         """
-        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        }else {
+            queryStr = """
+                SELECT code AS id,name FROM hospital_location
+                    WHERE is_clinic = ${isClinic}
+                 ORDER BY code ASC;
+        """
+        }
+        List<GroovyRowResult> lst = executeSelectSql(queryStr)
         return lst
     }
 }

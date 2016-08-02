@@ -97,7 +97,6 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
         if(parameterMap.boxRate) medicineInfo.boxRate = Double.parseDouble(parameterMap.boxRate)
         medicineInfo.type = Double.parseDouble(parameterMap.typeId)
         medicineInfo.vendorId = Long.parseLong(parameterMap.vendorId)
-        medicineInfo.expiryDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.expiryDate))
         return medicineInfo
     }
 }

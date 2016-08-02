@@ -1,6 +1,7 @@
 package actions.medicineSellInfo
 
 import com.scms.MedicineSellInfo
+import com.scms.MedicineSellInfoDetails
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -13,6 +14,7 @@ class DeleteMedicineSellInfoActionService extends BaseService implements ActionS
 
     private static final String DELETE_SUCCESS_MESSAGE = "Record has been deleted successfully"
     private static final String NOT_FOUND = "Selected record does not exits"
+    private static final String RECORDS_EXISTS = "Sale details exists"
     private static final String MEDICINE_SELL_INFO = "medicineSellInfo"
 
 
@@ -22,6 +24,10 @@ class DeleteMedicineSellInfoActionService extends BaseService implements ActionS
         MedicineSellInfo medicineSellInfo = MedicineSellInfo.read(id)
         if(!medicineSellInfo){
             return super.setError(params, NOT_FOUND)
+        }
+        int count = MedicineSellInfoDetails.countByVoucherNo(medicineSellInfo.voucherNo)
+        if(count>0){
+            return super.setError(params, RECORDS_EXISTS)
         }
         params.put(MEDICINE_SELL_INFO, medicineSellInfo)
         return params

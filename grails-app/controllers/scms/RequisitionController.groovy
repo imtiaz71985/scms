@@ -36,14 +36,18 @@ class RequisitionController extends BaseController {
     }
 
     def showDetails() {
+        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         String requisitionNo = generateRequisitionNo()
-        render(view: "/requisition/create", model: [requisitionNo: requisitionNo])
+        render(view: "/requisition/create", model: [requisitionNo: requisitionNo,hospitalCode:hospitalCode])
     }
 
     def selectForEdit() {
+        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         long id = Long.parseLong(params.id.toString())
         Requisition requisition = Requisition.read(id)
-        render(view: "/requisition/create", model: [requisitionNo: requisition.reqNo, totalAmount: requisition.totalAmount])
+        render(view: "/requisition/create", model: [requisitionNo: requisition.reqNo,
+                                                    totalAmount: requisition.totalAmount,
+                                                    hospitalCode:hospitalCode])
     }
 
     def details() {
@@ -69,7 +73,8 @@ class RequisitionController extends BaseController {
 
     def listOfMedicine() {
         String requisitionNo = params.requisitionNo
-        List<GroovyRowResult> lst = requisitionService.listOfMedicine(requisitionNo)
+        String hospitalCode = params.hospitalCode
+        List<GroovyRowResult> lst = requisitionService.listOfMedicine(requisitionNo,hospitalCode)
         Map result = new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())

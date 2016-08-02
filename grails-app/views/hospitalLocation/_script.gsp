@@ -121,7 +121,8 @@
                         version: { type: "number" },
                         name: { type: "string" },
                         code: { type: "string" },
-                        address: { type: "string" }
+                        address: { type: "string" },
+                        isClinic: { type: "boolean" }
                     }
                 },
                 parse: function (data) {
@@ -129,6 +130,7 @@
                     return data;
                 }
             },
+            sort: [{field: 'isClinic', dir: 'asc'}],
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
@@ -152,7 +154,9 @@
             },
             columns: [
                 {field: "name", title: "Name", width: 200, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "address", title: "Address", width: 100, sortable: false, filterable: false}
+                {field: "address", title: "Address", width: 100, sortable: false, filterable: false},
+                {field: "isClinic", title: "Clinic", width: 50, sortable: false, filterable: false,
+                template: "#=isClinic?'YES':'NO'#"}
             ],
             filterable: {
                 mode: "row"
@@ -171,7 +175,8 @@
                         version: "",
                         name: "",
                         code: "",
-                        address: ""
+                        address: "",
+                        isClinic: true
                     }
                 }
         );

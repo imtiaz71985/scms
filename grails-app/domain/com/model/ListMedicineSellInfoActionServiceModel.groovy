@@ -3,7 +3,7 @@ package com.model
 class ListMedicineSellInfoActionServiceModel {
 
     public static final String MODEL_NAME = 'list_medicine_sell_info_action_service_model'
-    public static final String SQL_LIST_SYSTEM_ENTITY_MODEL = """
+    public static final String SQL_LIST_SELL_INFO_MODEL = """
         CREATE OR REPLACE VIEW list_medicine_sell_info_action_service_model AS
 
                   SELECT msi.id, msi.version,msi.voucher_no,SUBSTRING(msi.voucher_no,2,2) AS hospital_code,

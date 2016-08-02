@@ -15,6 +15,7 @@ class ListHospitalLocationActionServiceModel {
     String name
     String address
     String code
+    boolean isClinic
 
     static mapping = {
         cache usage: "read-only"

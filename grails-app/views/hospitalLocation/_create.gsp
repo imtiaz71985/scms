@@ -3,11 +3,12 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
-                    Create Hospital 
+                    Create Clinic
                 </div>
             </div>
 
-            <g:form name='hospitalLocationForm' id='hospitalLocationForm' class="form-horizontal form-widgets" role="form">
+            <g:form name='hospitalLocationForm' id='hospitalLocationForm' class="form-horizontal form-widgets"
+                    role="form">
                 <div class="panel-body">
                     <input type="hidden" name="id" id="id" data-bind="value: hospitalLocation.id"/>
                     <input type="hidden" name="version" id="version" data-bind="value: hospitalLocation.version"/>
@@ -19,7 +20,8 @@
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="name" name="name"
-                                           placeholder="Hospital Name" required validationMessage="Required" tabindex="1"
+                                           placeholder="Hospital Name" required validationMessage="Required"
+                                           tabindex="1"
                                            data-bind="value: hospitalLocation.name"/>
                                 </div>
 
@@ -27,17 +29,31 @@
                                     <span class="k-invalid-msg" data-for="name"></span>
                                 </div>
                             </div>
+
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required" >Address:</label>
+                                <label class="col-md-2 control-label label-required">Address:</label>
 
                                 <div class="col-md-6">
                                     <textarea class="form-control" id="address" name="address"
-                                           placeholder="Short address" tabindex="3"
-                                           required validationMessage="Required"
-                                           data-bind="value: hospitalLocation.address"></textarea>
+                                              placeholder="Short address" tabindex="2"
+                                              required validationMessage="Required"
+                                              data-bind="value: hospitalLocation.address"></textarea>
                                 </div>
+
                                 <div class="col-md-3 pull-left">
                                     <span class="k-invalid-msg" data-for="address"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-md-6 control-label label-optional"
+                                       for="isClinic">Clinic:</label>
+
+                                <div class="col-md-3">
+                                    <g:checkBox class="form-control-static" name="isClinic" tabindex="3"
+                                                data-bind="checked: hospitalLocation.isClinic"/>
                                 </div>
                             </div>
                         </div>

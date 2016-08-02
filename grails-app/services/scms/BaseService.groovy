@@ -64,10 +64,12 @@ class BaseService extends Tools {
     Map<Long, FilterOption> filterOptions;
 
     public List executeInsertSql(String query) {
+        consolePrint(query)
         return groovySql.executeInsert(query)
     }
 
     public List executeInsertSql(String query, Map params) {
+        consolePrint(query)
         return groovySql.executeInsert(query, params)
     }
 
@@ -82,13 +84,12 @@ class BaseService extends Tools {
     }
 
     public boolean executeSql(String query) {
-//        Sql sql = new Sql(dataSource)
+        consolePrint(query)
         return groovySql.execute(query)
     }
 
     public boolean executeSql(String query, Map params) {
         consolePrint(query, params)
-
         return groovySql.execute(query, params)
     }
 

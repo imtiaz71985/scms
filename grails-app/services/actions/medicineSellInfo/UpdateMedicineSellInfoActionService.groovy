@@ -1,8 +1,9 @@
 package actions.medicineSellInfo
 
-import com.scms.MedicineInfo
 import com.scms.MedicineSellInfo
 import com.scms.MedicineSellInfoDetails
+import com.scms.MedicineStock
+import com.scms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
@@ -15,6 +16,7 @@ import scms.BaseService
 class UpdateMedicineSellInfoActionService extends BaseService implements ActionServiceIntf {
 
     SpringSecurityService springSecurityService
+
     private static final String UPDATE_SUCCESS_MESSAGE = "Data has been updated successfully"
     private static final String MEDICINE_SELL_INFO = "medicineSellInfo"
     private static final String MEDICINE_SELL_DETAILS_MAP = "medicineDetailsMap"
@@ -44,6 +46,7 @@ class UpdateMedicineSellInfoActionService extends BaseService implements ActionS
     @Transactional
     public Map execute(Map result) {
         try {
+            String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
             MedicineSellInfo sellInfo = (MedicineSellInfo) result.get(MEDICINE_SELL_INFO)
             double totalAmount = 0.0d
 
@@ -56,18 +59,17 @@ class UpdateMedicineSellInfoActionService extends BaseService implements ActionS
                 totalAmount += lstMedicineInfoDetails[i].amount
                 lstMedicineInfoDetails[i].save()
 
-                MedicineInfo medicineInfo = MedicineInfo.read(lstMedicineInfoDetails[i].medicineId)
+                MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(lstMedicineInfoDetails[i].medicineId,hospitalCode)
                 int previousQty = 0
                 for (int j = 0; j < list.size(); j++) {
-                    if (medicineInfo.id == list[j][0]) {
+                    if (stock.id == list[j][0]) {
                         previousQty = list[j][1]
                     }
                 }
-                medicineInfo.stockQty = medicineInfo.stockQty - lstMedicineInfoDetails[i].quantity + previousQty
-                medicineInfo.save()
+                stock.stockQty = stock.stockQty - lstMedicineInfoDetails[i].quantity + previousQty
+                stock.save()
             }
             sellInfo.totalAmount = totalAmount
-            sellInfo.refTokenNo = result.refTokenNo
             sellInfo.save()
             return result
         } catch (Exception ex) {

@@ -1,8 +1,10 @@
 package scms
 
 import actions.medicineSellInfo.*
+import com.scms.HospitalLocation
 import com.scms.MedicineInfo
 import com.scms.MedicineSellInfo
+import com.scms.MedicineStock
 import com.scms.SecUser
 import com.scms.SystemEntity
 import grails.converters.JSON
@@ -53,8 +55,12 @@ class MedicineSellInfoController extends BaseController {
     }
 
     def retrieveMedicinePrice() {
+        SecUser user = SecUser.read(springSecurityService.principal.id)
+        String hospitalCode = HospitalLocation.findByCode(user.hospitalCode).code
+
         long medicineId = Long.parseLong(params.medicineId.toString())
         MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
+        MedicineStock medicineStock = MedicineStock.findByMedicineIdAndHospitalCode(medicineId, hospitalCode)
         SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
         Map result = new HashedMap()
         if(medicineInfo.strength){
@@ -68,7 +74,7 @@ class MedicineSellInfoController extends BaseController {
             result.put('unitPriceTxt', medicineInfo.unitPrice)
         }
         result.put('amount', medicineInfo.unitPrice)
-        result.put('stockQty', medicineInfo.stockQty)
+        result.put('stockQty', medicineStock.stockQty)
         render result as JSON
     }
 

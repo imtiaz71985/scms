@@ -52,7 +52,8 @@
                     width: 30,
                     sortable: false,
                     filterable: false
-                },                {
+                },
+                {
                     field: "type",
                     title: "Type",
                     width: 30,

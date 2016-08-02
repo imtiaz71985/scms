@@ -1,7 +1,8 @@
 <script language="javascript">
-    var frmRequisition, gridMedicineRequisition, dataSourceForMedicine, requisitionNo, totalAmount = 0,isUpdate=false;
+    var frmRequisition, gridMedicineRequisition, dataSourceForMedicine, hospitalCode,requisitionNo, totalAmount = 0,isUpdate=false;
 
     $(document).ready(function () {
+        hospitalCode = '${hospitalCode}';
         requisitionNo = '${requisitionNo}';
         $("#requisitionNo").val(requisitionNo);
         totalAmount = ${totalAmount?totalAmount:0};
@@ -69,7 +70,7 @@
         dataSourceForMedicine = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'requisition', action: 'listOfMedicine')}?requisitionNo=" + requisitionNo,
+                    url: "${createLink(controller: 'requisition', action: 'listOfMedicine')}?requisitionNo=" + requisitionNo+"&hospitalCode="+hospitalCode,
                     dataType: "json",
                     type: "post"
                 }
@@ -123,11 +124,23 @@
                 var input = e.container.find(".k-input");
                 var value = input.val(),
                         minus = input.val();
+                $("[name='reqQty']", e.container).focus(function () {
+                    var input = $(this);
+                    if(input.val()==0){
+                        input.val('');
+                    }
+                });
                 $("[name='reqQty']", e.container).blur(function () {
                     var input = $(this);
-                    value = input.val();
                     var row = $(this).closest("tr");
                     var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
+                    value = input.val();
+                    if(input.val()==''){
+                        input.val(0);
+                        data.set('reqQty', 0);
+                        var dirty = $(this).closest("tr").find(".k-dirty-cell");
+                        dirty.removeClass("k-dirty-cell");
+                    }
                     totalAmount -= minus * data.unitPrice;
                     data.set('amount', value * data.unitPrice);
                     totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);

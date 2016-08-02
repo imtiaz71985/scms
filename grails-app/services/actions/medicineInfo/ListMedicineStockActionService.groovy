@@ -1,25 +1,49 @@
 package actions.medicineInfo
 
-import com.model.ListMedicineInfoActionServiceModel
+import com.model.ListMedicineStockActionServiceModel
+import com.model.ListMedicineStockForAllActionServiceModel
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class ListMedicineInfoActionService extends BaseService implements ActionServiceIntf {
+class ListMedicineStockActionService  extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
-
+    /**
+     * No pre conditions required for searching project domains
+     *
+     * @param params - Request parameters
+     * @return - same map of input-parameter containing isError(true/false)
+     */
     public Map executePreCondition(Map params) {
         return params
     }
 
+    /**
+     * 1. initialize params for pagination of list
+     *
+     * 2. pull all appUser list from database (if no criteria)
+     *
+     * 3. pull filtered result from database (if given criteria)
+     *
+     * @param result - parameter from pre-condition
+     * @return - same map of input-parameter containing isError(true/false)
+     */
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Map resultMap = super.getSearchResult(result, ListMedicineInfoActionServiceModel.class)
+            Map resultMap
+            String hospitalCode = result.hospitalCode
+            if (hospitalCode.equals(EMPTY_SPACE)) {
+                resultMap = super.getSearchResult(result, ListMedicineStockForAllActionServiceModel.class)
+            } else {
+                Closure param = {
+                    'eq'('hospitalCode', hospitalCode)
+                }
+                resultMap = super.getSearchResult(result, ListMedicineStockActionServiceModel.class,param)            }
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result

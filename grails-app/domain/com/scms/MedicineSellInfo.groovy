@@ -5,7 +5,6 @@ class MedicineSellInfo {
     long id
     long version
     String voucherNo
-    String refTokenNo
     Date sellDate
     Date sellDateExt
     long sellBy
@@ -13,7 +12,6 @@ class MedicineSellInfo {
     String hospitalCode
 
     static constraints = {
-        refTokenNo (nullable: true)
     }
     static mapping = {
         sellDate type:'date'

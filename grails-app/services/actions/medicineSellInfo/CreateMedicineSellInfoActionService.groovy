@@ -1,8 +1,8 @@
 package actions.medicineSellInfo
 
-import com.scms.MedicineInfo
 import com.scms.MedicineSellInfo
 import com.scms.MedicineSellInfoDetails
+import com.scms.MedicineStock
 import com.scms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
@@ -20,6 +20,7 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
     private static final String SAVE_SUCCESS_MESSAGE = "Data saved successfully"
     private static final String MEDICINE_SELL_INFO = "medicineSellInfo"
     private static final String MEDICINE_SELL_DETAILS_MAP = "medicineDetailsMap"
+    private static final String HOSPITAL_CODE = "hospitalCode"
     private Logger log = Logger.getLogger(getClass())
 
     @Transactional
@@ -28,10 +29,12 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
             if (!params.voucherNo) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            MedicineSellInfo medicineSellInfo = buildMedicineObject(params)
+            String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+            MedicineSellInfo medicineSellInfo = buildMedicineObject(params, hospitalCode)
             List<MedicineSellInfoDetails> lstMedicineDetails = buildMedicineDetailsMap(params)
             params.put(MEDICINE_SELL_INFO, medicineSellInfo)
             params.put(MEDICINE_SELL_DETAILS_MAP, lstMedicineDetails)
+            params.put(HOSPITAL_CODE, hospitalCode)
             return params
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -44,6 +47,7 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
     @Transactional
     public Map execute(Map result) {
         try {
+            String hospitalCode = result.get(HOSPITAL_CODE)
             MedicineSellInfo sellInfo = (MedicineSellInfo) result.get(MEDICINE_SELL_INFO)
             double totalAmount = 0.0d
             List<MedicineSellInfoDetails> lstMedicineInfoDetails = (List<MedicineSellInfoDetails>) result.get(MEDICINE_SELL_DETAILS_MAP)
@@ -51,9 +55,9 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
                 totalAmount+=lstMedicineInfoDetails[i].amount
                 lstMedicineInfoDetails[i].save()
 
-                MedicineInfo medicineInfo = MedicineInfo.read(lstMedicineInfoDetails[i].medicineId)
-                medicineInfo.stockQty = medicineInfo.stockQty - lstMedicineInfoDetails[i].quantity
-                medicineInfo.save()
+                MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(lstMedicineInfoDetails[i].medicineId,hospitalCode)
+                stock.stockQty = stock.stockQty - lstMedicineInfoDetails[i].quantity
+                stock.save()
             }
             sellInfo.totalAmount = totalAmount
             sellInfo.save()
@@ -94,12 +98,10 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
         details.voucherNo = voucherNo
         return details
     }
-    private MedicineSellInfo buildMedicineObject(Map params) {
-        String hospital_code= SecUser.read(springSecurityService.principal.id)?.hospitalCode
+    private MedicineSellInfo buildMedicineObject(Map params, String hospitalCode) {
         MedicineSellInfo sellInfo = new MedicineSellInfo(params)
         sellInfo.voucherNo = params.voucherNo
-        sellInfo.refTokenNo = params.refTokenNo
-        sellInfo.hospitalCode = hospital_code
+        sellInfo.hospitalCode = hospitalCode
         sellInfo.sellDate = DateUtility.getSqlDate(new Date())
         sellInfo.sellDateExt = DateUtility.getSqlFromDateWithSeconds(new Date())
         sellInfo.sellBy = springSecurityService.principal.id

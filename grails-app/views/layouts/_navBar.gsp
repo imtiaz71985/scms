@@ -164,7 +164,7 @@
                             </sec:access>
                             <sec:access url="/hospitalLocation/show">
                                 <li>
-                                    <a href="#hospitalLocation/show"><i class="fa fa-hospital-o"></i>&nbsp;Hospital</a>
+                                    <a href="#hospitalLocation/show"><i class="fa fa-hospital-o"></i>&nbsp;Clinic</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/requisitionAuthority/show">

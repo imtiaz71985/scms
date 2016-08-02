@@ -1,26 +1,93 @@
 <div class="container-fluid">
     <div class="row">
+        <div id="application_top_panel" class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    Inventory
+                </div>
+            </div>
+
+            <g:form name='medicineStockForm' id='medicineStockForm' class="form-horizontal form-widgets" role="form">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-md-1 control-label label-optional" for="hospitalCode">Hospital:</label>
+
+                        <div class="col-md-3">
+                            <app:dropDownHospital
+                                    data_model_name="dropDownHospitalCode"
+                                    tabindex="1"
+                                    class="kendo-drop-down"
+                                    show_hints="true"
+                                    hints_text="ALL"
+                                    is_clinic="true"
+                                    id="hospitalCode"
+                                    name="hospitalCode">
+                            </app:dropDownHospital>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="panel-footer">
+                    <button id="create" name="create" type="submit" data-role="button"
+                            class="k-button k-button-icontext"
+                            role="button" tabindex="2"
+                            aria-disabled="false"><span class="k-icon k-i-search"></span>View Result
+                    </button>
+                </div>
+            </g:form>
+        </div>
+    </div>
+
+    <div class="row">
         <div id="gridMedicineStock"></div>
     </div>
 </div>
 <script language="javascript">
-    var gridMedicineStock, dataSource;
+    var gridMedicineStock, dataSource, dropDownHospitalCode;
 
     $(document).ready(function () {
         onLoadMedicineInfoPage();
         initMedicineInfoGrid();
+        loadGridValue();
     });
 
     function onLoadMedicineInfoPage() {
+        if(!${isAdmin}){
+            dropDownHospitalCode.value('${hospitalCode}');
+            dropDownHospitalCode.readonly(true);
+        }
+        initializeForm($("#medicineStockForm"), onSubmitForm);
         // update page title
         defaultPageTile("Medicine Stock", null);
     }
-    
+    function executePreCondition() {
+        if (!validateForm($("#medicineStockForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitForm() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+        loadGridValue();
+        return false;
+    }
+    function loadGridValue() {
+        var hospitalCode = dropDownHospitalCode.value();
+        showLoadingSpinner(true);
+        var params = "?hospitalCode=" + hospitalCode;
+        var url = "${createLink(controller:'medicineInfo', action: 'listMedicineStock')}" + params;
+        populateGridKendo(gridMedicineStock, url);
+        showLoadingSpinner(false);
+    }
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'medicineInfo', action: 'list')}",
+                    url: false,
                     dataType: "json",
                     type: "post"
                 }
@@ -62,6 +129,7 @@
         initDataSource();
         $("#gridMedicineStock").kendoGrid({
             dataSource: dataSource,
+            autoBind: false,
             height: getGridHeightKendo(),
             selectable: true,
             sortable: true,

@@ -1,11 +1,6 @@
 package actions.requisitionReceive
 
-import com.scms.MedicineInfo
-import com.scms.ReceiveDetails
-import com.scms.Receive
-import com.scms.Requisition
-import com.scms.RequisitionDetails
-import com.scms.SecUser
+import com.scms.*
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
@@ -50,9 +45,9 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                 receive.save()
 
                 for (int i = 0; i < lstDetails.size(); i++) {
-                    MedicineInfo medicineInfo = MedicineInfo.read(lstDetails[i].medicineId)
-                    medicineInfo.stockQty += lstDetails[i].receiveQty
-                    medicineInfo.save()
+                    MedicineStock stock = MedicineStock.read(lstDetails[i].medicineId)
+                    stock.stockQty += lstDetails[i].receiveQty
+                    stock.save()
 
                     RequisitionDetails requisitionDetails=RequisitionDetails.findByMedicineIdAndReqNo(lstDetails[i].medicineId,receive.reqNo)
                     requisitionDetails.receiveQty+=lstDetails[i].receiveQty

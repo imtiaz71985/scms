@@ -7,8 +7,11 @@ class HospitalLocation {
     String name
     String address
     String code
+    boolean isClinic = true
 
-    static mapping = {}
+    static mapping = {
+
+    }
     static constraints = {
     }
 }
