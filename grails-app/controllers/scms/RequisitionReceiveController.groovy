@@ -48,7 +48,10 @@ class RequisitionReceiveController extends BaseController {
 
     def listOfMedicine() {
         String requisitionNo = params.requisitionNo
-        List<GroovyRowResult> lst=requisitionService.listOfRegMedicineForReceive(requisitionNo)
+        long vendorId=0
+        if(params.vendorId)
+             vendorId= Long.parseLong(params.vendorId)
+        List<GroovyRowResult> lst=requisitionService.listOfMedicineForReceive(requisitionNo,vendorId)
         Map result=new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())
