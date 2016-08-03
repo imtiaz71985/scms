@@ -89,7 +89,7 @@ class RequisitionService extends BaseService {
             ROUND(((rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0))*mi.unit_price),2) AS amount,'' AS remarks
             FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no  =:requisitionNo
             AND r.is_approved=TRUE AND r.is_delivered=TRUE
-            INNER JOIN medicine_info mi ON rd.medicine_id = mi.id AND mi.vendor_id=:vendorId
+            INNER JOIN medicine_info mi ON rd.medicine_id = mi.id AND mi.vendor_id=${vendorId}
             LEFT JOIN system_entity se ON mi.type=se.id
             LEFT JOIN receive ON receive.req_no=r.req_no LEFT JOIN receive_details ON receive.id=receive_details.receive_id
             AND receive_details.medicine_id= rd.medicine_id GROUP BY r.req_no,rd.medicine_id

@@ -6,7 +6,7 @@ class ListMedicineInfoActionServiceModel {
     public static final String SQL_LIST_ALL_MEDICINE_MODEL = """
         CREATE OR REPLACE VIEW list_medicine_info_action_service_model AS
 
-              SELECT mi.id, mi.version,se.id AS type_id,se.name AS TYPE,mi.generic_name,mi.brand_name,
+              SELECT mi.id, mi.version,se.id AS type_id,se.name AS type,mi.generic_name,mi.brand_name,
                  (CASE
                  WHEN mi.strength IS NOT NULL THEN CONCAT(mi.brand_name,' (',mi.strength,')')
                  ELSE mi.brand_name END) AS medicine_name,

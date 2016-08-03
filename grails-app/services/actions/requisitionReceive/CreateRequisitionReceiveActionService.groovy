@@ -39,30 +39,35 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
     @Transactional
     public Map execute(Map result) {
         try {
+            String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+
             Receive receive = (Receive) result.get(RECEIVE)
-            boolean isNotComplete=true
+            boolean isComplete=true
             List<ReceiveDetails> lstDetails = (List<ReceiveDetails>) result.get(RECEIVE_DETAILS)
             if(lstDetails.size()>0) {
                 receive.save()
 
                 for (int i = 0; i < lstDetails.size(); i++) {
-                    MedicineStock stock = MedicineStock.read(lstDetails[i].medicineId)
-                    stock.stockQty += lstDetails[i].receiveQty
-                    stock.save()
-
                     RequisitionDetails requisitionDetails=RequisitionDetails.findByMedicineIdAndReqNo(lstDetails[i].medicineId,receive.reqNo)
-                    requisitionDetails.receiveQty+=lstDetails[i].receiveQty
-                    requisitionDetails.save()
-
-                    if(requisitionDetails.approvedQty>requisitionDetails.receiveQty) {
-                        if (lstDetails[i].remarks=='Partial receive') {
-                                isNotComplete = false
+                    if(requisitionDetails.approvedQty!=requisitionDetails.receiveQty) {
+                        if (requisitionDetails.approvedQty > requisitionDetails.receiveQty) {
+                            if (lstDetails[i].remarks == 'Partial receive') {
+                                isComplete = false
+                            }
                         }
+
+                        MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(lstDetails[i].medicineId, hospitalCode)
+                        stock.stockQty += lstDetails[i].receiveQty
+                        stock.save()
+
+                        requisitionDetails.receiveQty += lstDetails[i].receiveQty
+                        requisitionDetails.save()
+
+                        lstDetails[i].receiveId = receive.id
+                        lstDetails[i].save()
                     }
-                    lstDetails[i].receiveId = receive.id
-                    lstDetails[i].save()
                 }
-                if (!isNotComplete) {
+                if (isComplete) {
                     Requisition requisition = Requisition.findByReqNo(receive.reqNo)
                     requisition.isReceived = true
                     requisition.save()
@@ -92,11 +97,10 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
         JSONElement gridModelMedicine = JSON.parse(parameterMap.gridModelMedicine.toString())
         List lstRowsMedicine = (List) gridModelMedicine
         for (int i = 0; i < lstRowsMedicine.size(); i++) {
-            if(lstRowsMedicine[i].receiveQty>0){
                 ReceiveDetails details = new ReceiveDetails(lstRowsMedicine[i])
                 ReceiveDetails medicine = details
                 lstMedicine.add(medicine)
-            }
+
         }
         return lstMedicine
     }
