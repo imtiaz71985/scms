@@ -83,7 +83,7 @@
                     filterable: kendoCommonFilterable(97)
                 },
                 {
-                    field: "requisitionDate", title: "Requisition", width: 80, sortable: false,filterable: false,
+                    field: "requisitionDate", title: "Requisition Date", width: 80, sortable: false,filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=kendo.toString(kendo.parseDate(requisitionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#  (by - #=requisitionBy #)"
                 },

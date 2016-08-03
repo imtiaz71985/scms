@@ -1,14 +1,20 @@
 package actions.requisitionAuthority
 
+import com.model.ListRequisitionActionServiceModel
 import com.model.ListRequisitionAuthorityActionServiceModel
+import com.scms.SecUser
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import service.SecUserService
 
 @Transactional
 class ListRequisitionAuthorityActionService extends BaseService implements ActionServiceIntf {
 
+    SpringSecurityService springSecurityService
+    SecUserService secUserService
     private Logger log = Logger.getLogger(getClass())
 
     /**
@@ -34,7 +40,16 @@ class ListRequisitionAuthorityActionService extends BaseService implements Actio
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Map resultMap = super.getSearchResult(result,  ListRequisitionAuthorityActionServiceModel.class)
+            Map resultMap
+            if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+                resultMap = super.getSearchResult(result, ListRequisitionAuthorityActionServiceModel.class)
+            } else {
+                String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+                Closure param = {
+                    'eq'('locationCode', hospitalCode)
+                }
+                resultMap = super.getSearchResult(result, ListRequisitionAuthorityActionServiceModel.class, param)
+            }
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result

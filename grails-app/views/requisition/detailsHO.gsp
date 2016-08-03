@@ -31,9 +31,8 @@
     $(document).ready(function () {
         initRequisitionGrid();
         requisitionNo = '${requisitionNo}';
-        if(${requisition.isApproved}){
-            isApplicable = true;
-        }
+        if(${requisition.isApproved}){isApplicable = true;}
+        if(${requisition.isReceived}){isApplicable = false;}
         gridRequisition.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
         $("#footerSpan").text(formatAmount(${totalAmount}));
         $("#footerSpanApvd").text(formatAmount(${apvdAmount}));
@@ -66,7 +65,7 @@
                 },
                 {
                     field: "medicineName",
-                    title: "Medicine Name",
+                    title: "Brand Name",
                     width: 100,
                     sortable: false,
                     filterable: false

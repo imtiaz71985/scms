@@ -1,20 +1,27 @@
 package taglib
 
+import com.scms.SecUser
 import grails.converters.JSON
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import service.SecUserService
 
 @Transactional
-class GetDropDownHospitalTagLibActionService extends BaseService implements ActionServiceIntf  {
+class GetDropDownHospitalTagLibActionService extends BaseService implements ActionServiceIntf {
+
+    SpringSecurityService springSecurityService
+    SecUserService secUserService
 
     private static final String NAME = 'name'
     private static final String CLASS = 'class'
     private static final String ON_CHANGE = 'onchange'
     private static final String HINTS_TEXT = 'hints_text'
     private static final String IS_CLINIC = 'is_clinic'
+    private static final String IS_LOCAL = 'is_local'
     private static final String SHOW_HINTS = 'show_hints'
     private static final String DEFAULT_VALUE = 'default_value'
     private static final String PLEASE_SELECT = 'Please Select...'
@@ -47,7 +54,8 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
             params.put(SHOW_HINTS, params.show_hints ? new Boolean(Boolean.parseBoolean(params.show_hints.toString())) : Boolean.TRUE)
             params.put(REQUIRED, params.required ? new Boolean(Boolean.parseBoolean(params.required.toString())) : Boolean.FALSE)
             params.put(VALIDATION_MESSAGE, params.validationmessage ? params.validationmessage : DEFAULT_MESSAGE)
-            params.put(IS_CLINIC, params.is_clinic ? params.is_clinic : ALL)
+            params.put(IS_CLINIC, params.is_clinic ? params.is_clinic : FALSE)
+            params.put(IS_LOCAL, params.is_local ? params.is_local : FALSE)
 
             return params
 
@@ -64,8 +72,9 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
      */
     public Map execute(Map result) {
         try {
-            String isClinic = result.get(IS_CLINIC)
-            List<GroovyRowResult> lstRegistrationNo = (List<GroovyRowResult>) listHospitalLocation(isClinic)
+            boolean isClinic = result.get(IS_CLINIC)
+            boolean isLocal = result.get(IS_LOCAL)
+            List<GroovyRowResult> lstRegistrationNo = (List<GroovyRowResult>) listHospitalLocation(isClinic, isLocal)
             String html = buildDropDown(lstRegistrationNo, result)
             result.html = html
             return result
@@ -158,19 +167,28 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
         return str.replace(SINGLE_DOT, ESCAPE_DOT)
     }
 
-    private List<GroovyRowResult> listHospitalLocation(String isClinic) {
-        String queryStr = EMPTY_SPACE
-        if(isClinic.equals(ALL)){
-            queryStr = """
-                SELECT code AS id,name FROM hospital_location ORDER BY code ASC;
-        """
-        }else {
-            queryStr = """
+    private List<GroovyRowResult> listHospitalLocation(boolean isClinic, boolean isLocal) {
+        String isLocalStr = EMPTY_SPACE
+        String isClinicStr = EMPTY_SPACE
+        if (isClinic) {
+            isClinicStr = """WHERE is_clinic = ${isClinic} """
+        }
+        if (isLocal) {
+            boolean isAdmin = secUserService.isLoggedUserAdmin(springSecurityService.principal.id)
+            if(!isAdmin){
+                String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+                if (isClinic){
+                    isLocalStr = """AND code = ${hospitalCode} """
+                }else{
+                    isLocalStr = """WHERE code = ${hospitalCode} """
+                }
+            }
+        }
+        String queryStr = """
                 SELECT code AS id,name FROM hospital_location
-                    WHERE is_clinic = ${isClinic}
+                    ${isClinicStr} ${isLocalStr}
                  ORDER BY code ASC;
         """
-        }
         List<GroovyRowResult> lst = executeSelectSql(queryStr)
         return lst
     }

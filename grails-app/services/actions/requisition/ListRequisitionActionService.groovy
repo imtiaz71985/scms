@@ -41,12 +41,10 @@ class ListRequisitionActionService extends BaseService implements ActionServiceI
     public Map execute(Map result) {
         try {
             Map resultMap
-
             if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
                 resultMap = super.getSearchResult(result, ListRequisitionActionServiceModel.class)
             } else {
                 String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-
                 Closure param = {
                     'eq'('hospitalCode', hospitalCode)
                 }

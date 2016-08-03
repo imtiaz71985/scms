@@ -3,20 +3,25 @@ package service
 import com.scms.SecRole
 import com.scms.SecUser
 import com.scms.SecUserSecRole
+import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import scms.BaseService
 
 class SecUserService extends BaseService {
 
+    SpringSecurityService springSecurityService
+
     public boolean isLoggedUserAdmin(long userId) {
         SecUser user = SecUser.read(userId)
-        SecRole roleAdmin = SecRole.findByAuthority("ROLE_ADMIN")
-        SecRole roleHOAdmin = SecRole.findByAuthority("ROLE_Clinic Administration HO")
-        SecRole roleSup = SecRole.findByAuthority("ROLE_SUPERVISOR")
+        SecRole roleAdmin = SecRole.findByAuthority("ROLE_SYSTEM_ADMIN")
+        SecRole roleHOSup = SecRole.findByAuthority("ROLE_HO_SUPERVISOR")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
-        int count2 = SecUserSecRole.countBySecRoleAndSecUser(roleHOAdmin, user)
-        int count3 = SecUserSecRole.countBySecRoleAndSecUser(roleSup, user)
-        return count>0||count2 >0||count3 >0
+        int count2 = SecUserSecRole.countBySecRoleAndSecUser(roleHOSup, user)
+        return count>0||count2 >0
+    }
+
+    public String retrieveHospitalCode(){
+        return SecUser.read(springSecurityService.principal.id)?.hospitalCode
     }
 
     public SecUser read(long id) {

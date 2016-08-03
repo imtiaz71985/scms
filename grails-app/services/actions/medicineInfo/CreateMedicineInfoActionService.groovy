@@ -1,8 +1,10 @@
 package actions.medicineInfo
 
 import com.model.ListMedicineInfoActionServiceModel
+import com.scms.HospitalLocation
 import com.scms.MedicineInfo
 import com.scms.MedicinePrice
+import com.scms.MedicineStock
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -46,6 +48,15 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
         try {
             MedicineInfo medicineInfo = (MedicineInfo) result.get(MEDICINE_INFO)
             medicineInfo.save()
+            
+            List<HospitalLocation> lstClinic = HospitalLocation.findAllByIsClinic(true)
+            for(int i =0; i<lstClinic.size(); i++){
+                MedicineStock stock = new MedicineStock()
+                stock.medicineId = medicineInfo.id
+                stock.stockQty = 0.0d
+                stock.hospitalCode=lstClinic[i].code
+                stock.save()
+            }
 
             MedicinePrice medicinePrice = new MedicinePrice()
             medicinePrice.medicineId = medicineInfo.id

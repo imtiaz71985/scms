@@ -68,7 +68,7 @@
                     filterable: false
                 },                {
                     field: "medicineName",
-                    title: "Medicine Name",
+                    title: "Brand Name",
                     width: 80,
                     sortable: false,
                     filterable: false

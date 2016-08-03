@@ -30,6 +30,7 @@
                                     class="kendo-drop-down"
                                     show_hints="true"
                                     hints_text="ALL"
+                                    is_clinic="true"
                                     id="hospitalCode"
                                     name="hospitalCode">
                             </app:dropDownHospital>

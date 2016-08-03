@@ -113,7 +113,7 @@
                     field: "approvedDate", title: "Approved Date", width: 40, sortable: false,
                     filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=approvedDate?kendo.toString(kendo.parseDate(approvedDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
+                    template: "#=approvedDate?kendo.toString(kendo.parseDate(approvedDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):'Not Approved'#"
                 },
                 {
                     field: "approvedAmount",
@@ -122,15 +122,6 @@
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(approvedAmount)#",
-                    sortable: false, filterable: false
-                },
-                {
-                    field: "isApproved",
-                    title: "Approved",
-                    width: 30,
-                    attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()},
-                    template: "#=isApproved?'YES':'NO'#",
                     sortable: false, filterable: false
                 },
                 {

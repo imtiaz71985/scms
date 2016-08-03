@@ -20,6 +20,12 @@
     });
 
     function showForm() {
+        if(${isClinic}){
+            dropDownLocation.value('${hospitalCode}');
+            dropDownLocation.readonly(true);
+            dropDownRights.value(${rightsId});
+            dropDownRights.readonly(true);
+        }
         $("#authorityRow").show();
     }
     function onLoadAuthorityPage() {
@@ -81,6 +87,8 @@
         clearErrors($("#authorityForm"));
         initObservable();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        dropDownRights.readonly(false);
+        dropDownLocation.readonly(false);
         if(hide) $("#authorityRow").hide();
     }
 
@@ -180,8 +188,9 @@
     }
 
     function showAuthority(authority) {
-        console.log(authority);
         authorityModel.set('authority', authority);
+        dropDownLocation.readonly(true);
+        dropDownRights.readonly(true);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
