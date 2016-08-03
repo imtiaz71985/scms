@@ -40,6 +40,7 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
     public Map execute(Map result) {
         try {
             Receive receive = (Receive) result.get(RECEIVE)
+            boolean isNotComplete=true
             List<ReceiveDetails> lstDetails = (List<ReceiveDetails>) result.get(RECEIVE_DETAILS)
             if(lstDetails.size()>0) {
                 receive.save()
@@ -53,12 +54,17 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                     requisitionDetails.receiveQty+=lstDetails[i].receiveQty
                     requisitionDetails.save()
 
+                    if(requisitionDetails.approvedQty>requisitionDetails.receiveQty) {
+                        if (lstDetails[i].remarks=='Partial receive') {
+                                isNotComplete = false
+                        }
+                    }
                     lstDetails[i].receiveId = receive.id
                     lstDetails[i].save()
                 }
-                if (Boolean.parseBoolean(result.isReceived)) {
+                if (!isNotComplete) {
                     Requisition requisition = Requisition.findByReqNo(receive.reqNo)
-                    requisition.isReceived = result.isReceived
+                    requisition.isReceived = true
                     requisition.save()
                 }
             }
@@ -103,7 +109,6 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
         receive.hospitalCode = hospital_code
         receive.createDate = DateUtility.getSqlDate(new Date())
         receive.createdBy = springSecurityService.principal.id
-        receive.remarks=params.remarks
 
         return receive
     }

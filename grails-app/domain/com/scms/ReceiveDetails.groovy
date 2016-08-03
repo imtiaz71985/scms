@@ -6,8 +6,10 @@ class ReceiveDetails {
     long receiveId
     long medicineId
     double receiveQty
+    String remarks
 
     static constraints = {
+        remarks (nullable:true)
     }
     static mapping = {
         medicineId index: 'receive_details_medicine_id_idx'
