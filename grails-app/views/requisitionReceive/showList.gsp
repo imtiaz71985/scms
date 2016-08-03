@@ -39,6 +39,7 @@
                     fields: {
                         id: {type: "number"},
                         version: {type: "number"},
+                        location: {type: "string"},
                         requisitionBy: {type: "string"},
                         requisitionDate: {type: "date"},
                         approvedDate: {type: "date"},
@@ -52,7 +53,7 @@
                 }
             },
             pageSize: getDefaultPageSize(),
-            sort: {field: 'isActionComplete', dir: 'asc'},
+            sort: [{field: 'requisitionDate', dir: 'desc'}],
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -82,6 +83,15 @@
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
+                <g:if test="${isAdmin}">
+                {
+                    field: "location",
+                    title: "Clinic Name",
+                    width: 60,
+                    sortable: false,
+                    filterable: kendoCommonFilterable(97)
+                },
+                </g:if>
                 {
                     field: "requisitionDate", title: "Requisition Date", width: 80, sortable: false,filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},

@@ -13,11 +13,13 @@ import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import org.h2.util.MathUtils
 import service.RequisitionService
+import service.SecUserService
 
 class RequisitionReceiveController extends BaseController {
 
     BaseService baseService
     SpringSecurityService springSecurityService
+    SecUserService secUserService
     RequisitionService requisitionService
     CreateRequisitionReceiveActionService createRequisitionReceiveActionService
     ListRequisitionReceiveActionService listRequisitionReceiveActionService
@@ -35,7 +37,7 @@ class RequisitionReceiveController extends BaseController {
 
     def requisitionByVendorId(){
         String vendorId = params.id.toString()
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        String hospital_code = secUserService.retrieveHospitalCode()
         List<GroovyRowResult> lst = requisitionService.listRequisitionNoForReceive(hospital_code,vendorId)
         lst = baseService.listForKendoDropdown(lst, null, null)
         Map result = [lst: lst]
@@ -67,7 +69,8 @@ class RequisitionReceiveController extends BaseController {
     }
 
     def showList() {
-        render(view: "/requisitionReceive/showList")
+        boolean isAdmin = secUserService.isLoggedUserAdmin(springSecurityService.principal.id)
+        render(view: "/requisitionReceive/showList",model: [isAdmin:isAdmin])
     }
     def list() {
         renderOutput(listRequisitionReceiveActionService, params)
