@@ -25,7 +25,7 @@ left join requisition rq on rq.req_no = rd.req_no
 left join medicine_info mi on mi.id = rd.medicine_id
 left join system_entity type on type.id = mi.type and type.type='Medicine Type'
 left join vendor v on v.id = mi.vendor_id
-left join requisition_authority pre on pre.is_active = true and pre.rights_id = (select id from system_entity where name = 'Prepared by')
+left join requisition_authority pre on pre.is_active = true and pre.location_code = SUBSTRING(rd.req_no,2,2) and pre.rights_id = (select id from system_entity where name = 'Prepared by')
 left join hospital_location prelo on prelo.code=pre.location_code
 left join requisition_authority rec on rec.is_active = true and rec.rights_id = (select id from system_entity where name = 'Recommended by')
 left join requisition_authority appv on appv.is_active = true and appv.rights_id =(select id from system_entity where name ='Approved by')
