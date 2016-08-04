@@ -13,7 +13,7 @@
                     <input type="hidden" name="version" id="version" data-bind="value: diseaseGroup.version"/>
 
                     <div class="form-group">
-                        <div class="col-md-8">
+                        <div class="col-md-7">
                             <div class="form-group">
                                 <label class="col-md-2 control-label label-required" for="name">Name:</label>
 
@@ -32,7 +32,7 @@
 
                                 <div class="col-md-6">
                                     <textarea class="form-control" id="description" name="description"
-                                           placeholder="Short description" tabindex="3"
+                                           placeholder="Short description" tabindex="5"
                                            data-bind="value: diseaseGroup.description"></textarea>
                                 </div>
 
@@ -40,9 +40,9 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <div class="form-group">
-                                <label class="col-md-6 control-label label-optional"
+                                <label class="col-md-3 control-label label-optional"
                                        for="isActive">Is Active:</label>
 
                                 <div class="col-md-3">
@@ -50,19 +50,43 @@
                                                 data-bind="checked: diseaseGroup.isActive"/>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label label-required"
+                                       for="chargeAmount">Charge:</label>
+
+                                <div class="col-md-6">
+                                    <input id="chargeAmount" name="chargeAmount" type="number" tabindex="3"
+                                           class="form-control" data-bind="value: diseaseGroup.chargeAmount"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label label-required" for="activationDate">Activation Date:</label>
+
+                                <div class="col-md-6">
+                                    <input type="text" name="activationDate" id="activationDate"
+                                           required="true" validationMessage="Required"
+                                           tabindex="4" class="form-control" data-bind="value: diseaseGroup.activationDate"/>
+
+                                </div>
+
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="activationDate"></span>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
 
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="4"
+                            role="button" tabindex="6"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="5"
+                            class="k-button k-button-icontext" role="button" tabindex="7"
                             aria-disabled="false" onclick='resetForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

@@ -7,11 +7,12 @@
 </script>
 
 <script language="javascript">
-    var gridCounselorAction, dataSource, registrationInfoModel, dropDownServiceType, dropDownReferTo, dropDownPrescriptionType,
-            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo, dropDownServiceTokenNo,
+    var gridCounselorAction, dataSource, registrationInfoModel, dropDownServiceType, dropDownReferTo,
+            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo,
             dropDownreferenceServiceNoDDL;
     var checkedIds = {}; // declare an object to hold selected grid ids
     var checkedDiseaseCodes = {}; // declare an object to hold selected disease codes
+    var checkedDiseaseNames = {}; // declare an object to hold selected disease names
     var chargeAmt = 0;
 
 
@@ -75,61 +76,6 @@
         });
 
     }
-    function editRecord() {
-
-        if (executeCommonPreConditionForSelectKendo(gridCounselorAction, 'record') == false) {
-            return;
-        }
-        var counselorAction = getSelectedObjectFromGridKendo(gridCounselorAction);
-        var regNo = counselorAction.regNo;
-        if (counselorAction.isExit) {
-            showError('Sorry! Selected service is completed.');
-            return;
-        }
-        $("#regNo").val(counselorAction.regNo);
-        $("#counselorActionRow").show();
-        $('#searchCriteriaRow').hide();
-        $('#counselorActionGridRow').hide();
-        $("#divPrescriptionType").show();
-        $('#serviceCharges').show();
-        $('#divCharges').show();
-        $('#divServiceCharges').show();
-        $('#divSubsidy').show();
-        $('#divPayable').show();
-        $('#btnPathologyService').show();
-        //$('#btnDiseaseInfo').show();
-        $('#divDiseaseGroup').show();
-        $('#divDiseaseDetails').show();
-        showLoadingSpinner(true);
-        var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveServiceTokenNo')}?regNo=" + regNo;
-
-        jQuery.ajax({
-            type: 'post',
-            //data: jQuery("#counselorActionForm").serialize(),
-            url: actionUrl,
-            success: function (data, textStatus) {
-                if (data.serviceTokenNo == '') {
-                    resetForm();
-                }
-                $('#serviceTokenNo').val(data.serviceTokenNo);
-                $('#id').val(data.serviceTokenNo);
-                $('#serviceCharges').val(data.totalHealthCharge);
-                $('#payableAmount').val(data.totalHealthCharge);
-                dropDownServiceType.value(data.serviceTypeId);
-                dropDownServiceType.enable(false);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json'
-        });
-        loadDisease();
-
-        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
-    }
     function executePreCondition() {
         if (!validateForm($("#counselorActionForm"))) {
             return false;
@@ -151,19 +97,14 @@
             }
         }
         $('#selectedChargeId').val(checked);
-        if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'counselorAction', action: 'create')}";
+        if( $('#chkboxPathology').is(":checked"))
+            $('#chkboxPathology').val('true');
+        if( $('#chkboxMedicine').is(":checked"))
+            $('#chkboxMedicine').val('true');
+        if( $('#chkboxDocReferral').is(":checked"))
+            $('#chkboxDocReferral').val('true');
+        actionUrl = "${createLink(controller:'counselorAction', action: 'create')}";
 
-        } else {
-            actionUrl = "${createLink(controller:'counselorAction', action: 'update')}";
-            var checkedDisease = [];
-            for (var i in checkedDiseaseCodes) {
-                if (checkedDiseaseCodes[i]) {
-                    checkedDisease.push(i);
-                }
-            }
-            $('#selectedDiseaseCode').val(checkedDisease);
-        }
         jQuery.ajax({
             type: 'post',
             data: jQuery("#counselorActionForm").serialize(),
@@ -185,6 +126,7 @@
     function resetBasicData() {
         for (var i in checkedIds) delete checkedIds[i];
         for (var i in checkedDiseaseCodes) delete checkedDiseaseCodes[i];
+        for (var j in checkedDiseaseNames) delete checkedDiseaseNames[j];
         chargeAmt = 0;
     }
 
@@ -205,11 +147,9 @@
                  gridCounselorAction.removeRow(selectedRow);
                  gridCounselorAction.dataSource.insert(selectedIndex, newEntry);
                  }*/
-                if ($('#id').val().isEmpty()) {
+
                     bootboxAlert(result.message);
-                } else {
-                    showSuccess(result.message);
-                }
+
                 resetForm();
 
             } catch (e) {
@@ -235,23 +175,22 @@
         $('#actualPaid').val('');
         $('#subsidyAmount').val('');
         $('#divServiceDetails').hide();
-        $('#divReferTo').hide();
-        $("#divPrescriptionType").hide();
-        $('#divCharges').hide();
+        $('#divReferTo').show();
+        $("#divPrescriptionType").show();
+        $('#chkboxMedicine').attr('checked', false);
+        $('#chkboxPathology').attr('checked', false);
+        $('#chkboxDocReferral').attr('checked', false);
+        $('#divCharges').show();
         $('#divServiceCharges').hide();
         $('#divSubsidy').hide();
         $('#divPayable').hide();
         $('#divPathology').hide();
         $('#btnPathologyService').hide();
-        //$('#btnDiseaseInfo').hide();
-        $('#divDiseaseGroup').hide();
         $('#divDiseaseDetails').hide();
+        $('#divSelectedDisease').hide();
         dropDownServiceType.value('');
-        dropDownServiceType.enable(true);
         dropDownReferTo.value('');
-        dropDownPrescriptionType.value('');
         dropDownRegistrationNo.value('');
-        dropDownServiceTokenNo.value('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
@@ -408,36 +347,52 @@
         $('#divReferenceServiceNo').hide();
         $('#divServiceCharges').hide();
         $('#divPathology').hide();
-        $('#divCharges').hide();
+        $('#divCharges').show();
         $('#divReferTo').hide();
+        $("#divPrescriptionType").show();
+
         if (serviceTypeId == '') {
             dropDownServiceType.value('');
             $('#divServiceDetails').hide();
-            $('#divCharges').hide();
             return false;
         }
         else if (serviceTypeId == 2) {
-            $('#divCharges').show();
+            $('#chkboxMedicine').attr('checked', false);
+            $('#chkboxPathology').attr('checked', false);
+            $('#chkboxDocReferral').attr('checked', false);
             $('#divReferTo').show();
             $('#divServiceCharges').show();
-            //$('#divSubsidy').show();
-            // $('#divPayable').show();
             $('#pathologyCharges').val('0');
             $('#divPathology').hide();
+            $('#divServiceDetails').hide();
+            $("#counselorActionRow").show();
+            $('#searchCriteriaRow').hide();
+            $('#counselorActionGridRow').hide();
+            $('#serviceCharges').show();
+            $('#divServiceCharges').show();
+            $('#divSubsidy').show();
+            $('#divPayable').show();
+            $('#divDiseaseDetails').show();
+            $('#divSelectedDisease').show();
+            loadDisease();
         }
-        else if (serviceTypeId == 3) {
-            $('#divCharges').show();
-            $('#divPathology').show();
-            $('#divServiceCharges').hide();
-            $('#divReferTo').show();
-            //$('#divSubsidy').hide();
-            //$('#divPayable').hide();
-            $('#serviceCharges').val('');
+        else if (serviceTypeId == 4) {
+            $('#divCharges').hide();
+            $("#divPrescriptionType").hide();
+            $('#divDiseaseDetails').hide();
+            $('#divSelectedDisease').hide();
+            $('#divServiceDetails').show();
+            resetBasicData();
+            var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
+            populateGridKendo(gridServiceHeadInfo, url);
         }
         else if (serviceTypeId == 5) {
-            $('#divCharges').show();
-            $('#divReferTo').show();
+            $('#divPayable').hide();
             $('#divServiceDetails').hide();
+            $("#divPrescriptionType").hide();
+            $('#divDiseaseDetails').hide();
+            $('#divSelectedDisease').hide();
+            $('#divReferTo').show();
             $('#divReferenceServiceNo').show();
             $('#referenceServiceNoDDL').kendoDropDownList({
                 dataTextField: 'serviceTokenNo',
@@ -449,13 +404,7 @@
             var regNo = $('#regNo').val();
             populateServiceNoDDL(regNo)
         }
-        if (serviceTypeId != 5) {
 
-            $('#divServiceDetails').show();
-            resetBasicData();
-            var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
-            populateGridKendo(gridServiceHeadInfo, url);
-        }
     }
     function populateServiceNoDDL(regNo) {
 
@@ -525,7 +474,7 @@
         $("#gridServiceHeadInfo").kendoGrid({
             dataSource: dataSource,
             autoBind: false,
-            height: 200,
+            height: 250,
             selectable: false,
             sortable: true,
             resizable: true,
@@ -576,9 +525,12 @@
     }
 
     function getPayableAmount() {
-        var charge = $('#serviceCharges').val();
+
+        var charge = 0
         var subsidy = 0;
         var pathCharges = 0;
+        if ($('#serviceCharges').val() > '0')
+            charge = $('#serviceCharges').val();
         var v = $('#pathologyCharges').is(":visible");
         if (v) {
             pathCharges = $('#pathologyCharges').val();
@@ -586,8 +538,9 @@
         if ($('#subsidyAmount').val() > '0') {
             subsidy = $('#subsidyAmount').val();
         }
-        if (subsidy > charge) {
-            $('#subsidyAmount').val('0');
+        if (parseFloat(subsidy) > parseFloat(charge)) {
+            subsidy=0;
+            $('#subsidyAmount').val('');
         }
 
         var payable = (parseFloat(charge) + parseFloat(pathCharges)) - parseFloat(subsidy);
@@ -605,7 +558,9 @@
         }
         else {
             $('#divPathology').hide();
+            $('#pathologyCharges').val('');
             $('#divServiceDetails').hide();
+            getPayableAmount();
         }
     }
 
@@ -619,8 +574,9 @@
 
     function loadDisease() {
         $('#divDiseaseDetails').show();
+        $('#divSelectedDisease').show();
         resetBasicData();
-        var diseaseGroupId = $('#diseaseGroupId').val();
+        var diseaseGroupId = 0;
         var url = "${createLink(controller: 'counselorAction', action: 'diseaseListByGroup')}?diseaseGroupId=" + diseaseGroupId;
         populateGridKendo(gridDiseaseDetails, url);
     }
@@ -652,9 +608,9 @@
                     return data;
                 }
             },
-            sort: {field: 'name', dir: 'asc'},
+            sort: {field: 'diseaseCode', dir: 'asc'},
             serverPaging: false,
-            serverFiltering: false,
+            serverFiltering: true,
             serverSorting: false
         });
     }
@@ -663,7 +619,7 @@
         initDiseaseInfoDataSource();
         $("#gridDiseaseDetails").kendoGrid({
             dataSource: dataSource,
-            height: 200,
+            height: 250,
             autoBind: false,
             selectable: false,
             sortable: true,
@@ -676,16 +632,16 @@
                     title: "Disease Code",
                     width: 100,
                     sortable: false,
-                    filterable: false
+                    filterable: true
                 },
-                {field: "name", title: "Name", width: 250, sortable: false, filterable: false},
+                {field: "name", title: "Name", width: 250, sortable: false, filterable: true},
                 {
                     template: "<input type='checkbox' class='checkboxDisease' />"
                 }
-            ],
-            filterable: {
+            ],filterable: {
                 mode: "row"
             }
+
         });
         gridDiseaseDetails = $("#gridDiseaseDetails").data("kendoGrid");
         $("#menuGrid").kendoMenu();
@@ -698,6 +654,7 @@
                 grid = $("#gridDiseaseDetails").data("kendoGrid"),
                 dataItem = grid.dataItem(row);
         checkedDiseaseCodes[dataItem.diseaseCode] = checked;
+        checkedDiseaseNames[dataItem.name] = checked;
         if (checked) {
             //-select the row
             row.addClass("k-state-selected");
@@ -705,7 +662,43 @@
             //-remove selection
             row.removeClass("k-state-selected");
         }
+        ShowSelectedDisease();
     }
+    function ShowSelectedDisease(){
+            var checkedDisease = [];
+            for (var i in checkedDiseaseCodes) {
+                if (checkedDiseaseCodes[i]) {
+                    checkedDisease.push(i);
+                }
+            }
+            $('#selectedDiseaseCode').val(checkedDisease);
+            var diseaseNames = [];
+            for (var j in checkedDiseaseNames) {
+                if (checkedDiseaseNames[j]) {
+                    diseaseNames.push(j);
+                }
+            }
+
+           $('#selectedDiseaseTxt').val(diseaseNames);
+            $.ajax({
+                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseCodes=" + checkedDisease,
+                success: function (data) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+                    $('#serviceCharges').val(data.totalCharge)
+                    getPayableAmount();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    afterAjaxError(XMLHttpRequest, textStatus);
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);
+                }
+
+            });
+        }
 
     function LoadDetailsByRegNo() {
         var regNo = $('#regNoDDL').val();
@@ -737,58 +730,6 @@
         $('#searchCriteriaRow').hide();
         $('#counselorActionGridRow').hide();
 
-    }
-    function LoadDetailsByTokenNo() {
-
-        var tokenNo = $('#serviceTokenNoDDL').val();
-        if (tokenNo.length > 2) {
-            $("#serviceTokenNo").val(tokenNo);
-            showLoadingSpinner(true);
-            var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDataByTokenNo')}?tokenNo=" + tokenNo;
-
-            jQuery.ajax({
-                type: 'post',
-                //data: jQuery("#counselorActionForm").serialize(),
-                url: actionUrl,
-                success: function (data, textStatus) {
-                    if (data.regNo == '') {
-                        resetForm();
-                    }
-                    $('#regNo').val(data.regNo);
-                    $('#id').val(tokenNo);
-                    $('#serviceCharges').val(data.totalHealthCharge);
-                    $('#payableAmount').val(data.totalHealthCharge);
-                    dropDownServiceType.value(data.serviceTypeId);
-                    dropDownServiceType.enable(false);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-
-                },
-                complete: function (XMLHttpRequest, textStatus) {
-                    showLoadingSpinner(false);
-                },
-                dataType: 'json'
-            });
-        }
-        else {
-            return;
-        }
-        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
-        $("#counselorActionRow").show();
-        $('#searchCriteriaRow').hide();
-        $('#counselorActionGridRow').hide();
-        $("#divPrescriptionType").show();
-        $('#serviceCharges').show();
-        $('#divCharges').show();
-        $('#divServiceCharges').show();
-        $('#divSubsidy').show();
-        $('#divPayable').show();
-        $('#btnPathologyService').show();
-        //$('#btnDiseaseInfo').show();
-        $('#divDiseaseGroup').show();
-        $('#divDiseaseDetails').show();
-        var url = "${createLink(controller: 'counselorAction', action: 'diseaseListByGroup')}?diseaseGroupId=";
-        populateGridKendo(gridDiseaseDetails, url);
     }
 
 </script>

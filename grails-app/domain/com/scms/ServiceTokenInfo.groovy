@@ -9,7 +9,7 @@ class ServiceTokenInfo {
     double subsidyAmount=0
     long visitTypeId
     long referToId
-    long prescriptionTypeId
+    String prescriptionType
     boolean isExit
     Date modifyDate
     long modifyBy
@@ -18,7 +18,7 @@ class ServiceTokenInfo {
         modifyDate(nullable: true)
         modifyBy (nullable: true)
         referenceServiceTokenNo (nullable: true)
-        prescriptionTypeId (nullable: true)
+        prescriptionType (nullable: true)
     }
     static mapping = {
         id name: 'serviceTokenNo'

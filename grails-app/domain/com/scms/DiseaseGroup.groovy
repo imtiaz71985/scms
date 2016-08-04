@@ -8,5 +8,6 @@ class DiseaseGroup {
     String description
     boolean isActive
     static constraints = {
+        description (nullable: true)
     }
 }

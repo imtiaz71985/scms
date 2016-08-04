@@ -47,7 +47,7 @@ class DiseaseInfoController extends BaseController {
         int c=DiseaseInfo.countByDiseaseGroupId(diseaseGroupId)
         c+=1
 
-        String diseaseNo= (c<10? '000' :c<100? '00' :c<1000? '000' : '')+c.toString()
+        String diseaseNo= (c<10? '0' : '')+c.toString()
         String diseaseCode=groupId+diseaseNo
         // def result = [:]
         Map result=new HashedMap()

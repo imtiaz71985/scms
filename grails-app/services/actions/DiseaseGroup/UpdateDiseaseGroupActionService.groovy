@@ -3,10 +3,13 @@ package actions.DiseaseGroup
 import com.model.ListDiseaseGroupActionServiceModel
 import com.model.ListServiceTypeActionServiceModel
 import com.scms.DiseaseGroup
+import com.scms.ServiceCharges
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 
 @Transactional
 class UpdateDiseaseGroupActionService extends BaseService implements ActionServiceIntf {
@@ -15,12 +18,12 @@ class UpdateDiseaseGroupActionService extends BaseService implements ActionServi
     private static final String ROLE_ALREADY_EXIST = "Same Type already exist"
     private static final String DISEASE_GROUP = "diseaseGroup"
 
-
+    SpringSecurityService springSecurityService
     private Logger log = Logger.getLogger(getClass())
 
     public Map executePreCondition(Map params) {
         try {
-            if ((!params.id) || (!params.name)) {
+            if ((!params.id) || (!params.name|| !params.chargeAmount || !params.activationDate)) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
@@ -44,6 +47,41 @@ class UpdateDiseaseGroupActionService extends BaseService implements ActionServi
         try {
             DiseaseGroup diseaseGroup = (DiseaseGroup) result.get(DISEASE_GROUP)
             diseaseGroup.save()
+            ServiceCharges serviceCharges = ServiceCharges.findByServiceCodeAndLastActiveDate(diseaseGroup.id.toString(),null)
+
+            Date d=DateUtility.parseMaskedDate(result.activationDate)
+            d=d.minus(1)
+            boolean newEntry=true
+            if(serviceCharges!=null) {
+                if(serviceCharges.activationDate>DateUtility.getSqlFromDateWithSeconds(new Date())) {
+                    serviceCharges.chargeAmount = Double.parseDouble(result.chargeAmount)
+                    serviceCharges.activationDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
+                    serviceCharges.createDate = DateUtility.getSqlDate(new Date())
+                    serviceCharges.createdBy = springSecurityService.principal.id
+                    newEntry=false
+                }
+                else {
+                    serviceCharges.lastActiveDate = DateUtility.getSqlDate(d)
+                }
+                serviceCharges.save()
+                if(!newEntry) {
+                    ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateGreaterThan(diseaseGroup.id.toString(),DateUtility.getSqlFromDateWithSeconds(d))
+                    if(!serviceCharges3){
+                        serviceCharges.lastActiveDate = DateUtility.getSqlDate(d)
+                        serviceCharges.save();
+                    }
+                }
+            }
+
+            if(diseaseGroup.isActive && newEntry) {
+                ServiceCharges serviceCharges2 = new ServiceCharges()
+                serviceCharges2.serviceCode = diseaseGroup.id.toString()
+                serviceCharges2.chargeAmount = Double.parseDouble(result.chargeAmount)
+                serviceCharges2.activationDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
+                serviceCharges2.createDate = DateUtility.getSqlDate(new Date())
+                serviceCharges2.createdBy = springSecurityService.principal.id
+                serviceCharges2.save()
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

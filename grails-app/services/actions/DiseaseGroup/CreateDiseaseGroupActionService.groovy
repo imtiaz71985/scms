@@ -2,10 +2,13 @@ package actions.DiseaseGroup
 
 import com.model.ListDiseaseGroupActionServiceModel
 import com.scms.DiseaseGroup
+import com.scms.ServiceCharges
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 
 @Transactional
 class CreateDiseaseGroupActionService  extends BaseService implements ActionServiceIntf{
@@ -14,14 +17,14 @@ class CreateDiseaseGroupActionService  extends BaseService implements ActionServ
     private static final String ALREADY_EXIST = "Same group already exist"
     private static final String DISEASE_GROUP = "diseaseGroup"
 
-
+    SpringSecurityService springSecurityService
     private Logger log = Logger.getLogger(getClass())
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
             //Check parameters
-            if (!params.name) {
+            if (!params.name||!params.chargeAmount|| !params.activationDate) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             int duplicateCount = DiseaseGroup.countByName(params.name)
@@ -42,6 +45,15 @@ class CreateDiseaseGroupActionService  extends BaseService implements ActionServ
         try {
             DiseaseGroup diseaseGroup = (DiseaseGroup) result.get(DISEASE_GROUP)
             diseaseGroup.save()
+
+            ServiceCharges serviceCharges=new ServiceCharges()
+            serviceCharges.serviceCode=diseaseGroup.id.toString()
+            serviceCharges.chargeAmount=Double.parseDouble(result.chargeAmount)
+            serviceCharges.activationDate=DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
+            serviceCharges.createDate=DateUtility.getSqlDate(new Date())
+            serviceCharges.createdBy = springSecurityService.principal.id
+            serviceCharges.save()
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

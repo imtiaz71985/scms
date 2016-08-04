@@ -25,6 +25,15 @@
         $("#diseaseGroupRow").hide();
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#diseaseGroupForm"), onSubmitDiseaseGroup);
+        var date = new Date();
+        date.setDate(date.getDate() + 1);
+        $("#activationDate").kendoDatePicker({
+            format: "dd/MM/yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            min: date
+        });
+        $("#activationDate").kendoMaskedTextBox({mask: "00/00/0000"});
+
         // update page title
         defaultPageTile("Create Disease Group",null);
     }
@@ -101,6 +110,7 @@
         initObservable();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#diseaseGroupRow").hide();
+        initDiseaseGroupGrid();
     }
 
     function initDataSource() {
@@ -121,7 +131,9 @@
                         version: { type: "number" },
                         name: { type: "string" },
                         description: { type: "string" },
-                        isActive: { type: "boolean" }
+                        isActive: { type: "boolean" },
+                        chargeAmount:{type:"string"},
+                        activationDate:{type:"string"}
                     }
                 },
                 parse: function (data) {
@@ -151,9 +163,18 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "name", title: "Name", width: 200, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "description", title: "Description", width: 250, sortable: false, filterable: false},
-                {field: "isActive", title: "Is Active", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
+                {field: "name", title: "Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "description", title: "Description", width: 200, sortable: false, filterable: false},
+                {
+                    field: "activationDate",
+                    title: "Activation Date",
+                    format: "{0:dd-MM-yyyy}",
+                    width: 70,
+                    sortable: false,
+                    filterable: false
+                },
+                {field: "chargeAmount", title: "Charges", width: 70, sortable: false, filterable: false},
+                {field: "isActive", title: "Active", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()}, template:"#=isActive?'YES':'NO'#"}
             ],
             filterable: {
@@ -173,7 +194,9 @@
                         version: "",
                         name: "",
                         description: "",
-                        isActive: true
+                        isActive: true,
+                        chargeAmount:"",
+                        activationDate:""
                     }
                 }
         );
