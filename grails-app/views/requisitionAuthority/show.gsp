@@ -5,5 +5,5 @@
   Time: 5:14 PM
 --%>
 
-<g:render template='/requisitionAuthority/script'/>
 <g:render template='/requisitionAuthority/create'/>
+<g:render template='/requisitionAuthority/script'/>

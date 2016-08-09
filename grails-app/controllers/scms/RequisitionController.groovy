@@ -5,17 +5,17 @@ import com.scms.HospitalLocation
 import com.scms.Requisition
 import com.scms.SecUser
 import grails.converters.JSON
-import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
 import service.RequisitionService
+import service.SecUserService
 
 import java.text.SimpleDateFormat
 
 class RequisitionController extends BaseController {
 
-    SpringSecurityService springSecurityService
+    SecUserService secUserService
     RequisitionService requisitionService
     CreateRequisitionActionService createRequisitionActionService
     UpdateRequisitionActionService updateRequisitionActionService
@@ -36,13 +36,13 @@ class RequisitionController extends BaseController {
     }
 
     def showDetails() {
-        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        String hospitalCode = secUserService.retrieveHospitalCode()
         String requisitionNo = generateRequisitionNo()
         render(view: "/requisition/create", model: [requisitionNo: requisitionNo,hospitalCode:hospitalCode])
     }
 
     def selectForEdit() {
-        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        String hospitalCode = secUserService.retrieveHospitalCode()
         long id = Long.parseLong(params.id.toString())
         Requisition requisition = Requisition.read(id)
         render(view: "/requisition/create", model: [requisitionNo: requisition.reqNo,
@@ -91,7 +91,7 @@ class RequisitionController extends BaseController {
 
     private String generateRequisitionNo() {
         Date date = DateUtility.parseDateForDB(DateUtility.getDBDateFormatAsString(new Date()))
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        String hospital_code = secUserService.retrieveHospitalCode()
         int serial = Requisition.countByCreateDateAndHospitalCode(date, hospital_code)
         serial += 1
         String DATE_FORMAT = "ddMMyy";
@@ -146,4 +146,5 @@ class RequisitionController extends BaseController {
         Map result = (Map) getReportResponse(downloadPurchaseRequestActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
+
 }

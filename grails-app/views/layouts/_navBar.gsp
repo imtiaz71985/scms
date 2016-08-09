@@ -169,7 +169,7 @@
                             </sec:access>
                             <sec:access url="/requisitionAuthority/show">
                                 <li>
-                                    <a href="#requisitionAuthority/show"><i class="fa fa-user-secret"></i>&nbsp;Req Authority</a>
+                                    <a href="#requisitionAuthority/show"><i class="fa fa-user-secret"></i>&nbsp; Requisition Authority</a>
                                 </li>
                             </sec:access>
                         </ul>

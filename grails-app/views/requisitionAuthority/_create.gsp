@@ -63,6 +63,7 @@
                                             data_model_name="dropDownLocation"
                                             required="true"
                                             validationmessage="Required"
+                                            is_local="true"
                                             class="kendo-drop-down" tabindex="4"
                                             data-bind="value: authority.locationCode"
                                             id="locationCode" name="locationCode">
@@ -83,6 +84,7 @@
                                             required="true"
                                             validationmessage="Required"
                                             type="Requisition authority"
+                                            is_local="true"
                                             class="kendo-drop-down" tabindex="5"
                                             data-bind="value: authority.rightsId"
                                             id="rightsId" name="rightsId">

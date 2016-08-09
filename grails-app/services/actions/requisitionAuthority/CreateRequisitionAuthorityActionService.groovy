@@ -5,9 +5,12 @@ import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import service.SecUserService
 
 @Transactional
 class CreateRequisitionAuthorityActionService extends BaseService implements ActionServiceIntf {
+
+    SecUserService secUserService
 
     private static final String SAVE_SUCCESS_MESSAGE = "Record has been saved successfully"
     private static final String AUTHORITY = "authority"
@@ -46,9 +49,10 @@ class CreateRequisitionAuthorityActionService extends BaseService implements Act
     public Map execute(Map result) {
         try {
             RequisitionAuthority authority = (RequisitionAuthority) result.get(AUTHORITY)
+            String hospitalCode = secUserService.retrieveHospitalCode()
             try{
                 if(authority.isActive){
-                    RequisitionAuthority au1 = RequisitionAuthority.findByRightsIdAndIsActive(authority.rightsId, Boolean.TRUE)
+                    RequisitionAuthority au1 = RequisitionAuthority.findByRightsIdAndLocationCodeAndIsActive(authority.rightsId,hospitalCode, Boolean.TRUE)
                     au1.isActive = Boolean.FALSE
                     au1.save()
                 }
