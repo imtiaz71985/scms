@@ -61,7 +61,8 @@ class UpdateServiceHeadInfoActionService extends BaseService implements ActionSe
                }
                serviceCharges.save()
                if(!newEntry) {
-                   ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateGreaterThan(serviceHeadInfo.serviceCode,DateUtility.getSqlFromDateWithSeconds(d))
+                   ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateIsNotNull(serviceHeadInfo.serviceCode,[sort:'id',order:'desc',limit: 1 ])
+                   //ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateGreaterThan(serviceHeadInfo.serviceCode,DateUtility.getSqlFromDateWithSeconds(d))
                    if(!serviceCharges3){
                        serviceCharges3.lastActiveDate = DateUtility.getSqlDate(d)
                        serviceCharges3.save();

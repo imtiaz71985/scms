@@ -67,7 +67,7 @@ class UpdateDiseaseGroupActionService extends BaseService implements ActionServi
                 }
                 serviceCharges.save()
                 if(!newEntry) {
-                    ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateGreaterThan(groupCode,DateUtility.getSqlDate(d))
+                    ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateIsNotNull(groupCode,[sort:'id',order:'desc',limit: 1 ])
                     if(serviceCharges3!=null){
                         serviceCharges3.lastActiveDate = DateUtility.getSqlDate(d)
                         serviceCharges3.save();
