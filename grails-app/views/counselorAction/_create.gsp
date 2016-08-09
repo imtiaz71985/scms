@@ -54,6 +54,7 @@
                 <input type="hidden" id="regNo" name="regNo"/>
                 <input type="hidden" id="selectedChargeId" name="selectedChargeId"/>
                 <input type="hidden" id="selectedDiseaseCode" name="selectedDiseaseCode"/>
+                <input type="hidden" id="selectedConsultancyId" name="selectedConsultancyId"/>
 
                 <div class="form-group">
                     <div class="col-md-6">

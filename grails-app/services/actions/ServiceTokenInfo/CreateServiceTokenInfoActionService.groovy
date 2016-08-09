@@ -93,7 +93,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             }
             if (serviceTypeId != 5) {
                 String str = result.selectedDiseaseCode
-                /*String groupCode = ''*/
+
                 if (str.length() > 1) {
                     List<String> lstDisease = Arrays.asList(str.split("\\s*,\\s*"));
 
@@ -104,11 +104,6 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                         tokenAndDiseaseMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
                         try {
                             if (lstDisease.get(i) != '') {
-                                /*if (groupCode.length() < 1)
-                                    groupCode = Long.parseLong(lstDisease.get(i).substring(0, 2)).toString()
-                                else
-                                    groupCode = groupCode + ',' + Long.parseLong(lstDisease.get(i).substring(0, 2)).toString()*/
-
                                 tokenAndDiseaseMapping.diseaseCode = lstDisease.get(i)
                                 tokenAndDiseaseMapping.save()
                             }
@@ -118,21 +113,9 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 }
 
                 str = result.selectedChargeId
-                /*if (groupCode.length() > 1) {
-                    Set set = new HashSet()
-                    List<String> lstGroupCode = Arrays.asList(groupCode.split("\\s*,\\s*"));
-                    set.addAll(lstGroupCode)
-
-                    String strIds = EMPTY_SPACE
-                    for (int i = 0; i < set.size(); i++) {
-                        strIds = strIds + set[i]
-                        if ((i + 1) < set.size()) strIds = strIds + COMA
-                    }
-                    if (str.length() > 1)
-                        str = str + ',' + strIds
-                    else
-                        str = strIds
-                }*/
+                String chargeIds=result.selectedConsultancyId
+                if(chargeIds.length()>1)
+                    str=str+','+chargeIds
                 if (str.length() > 1) {
                     List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
                     for (int i = 0; i < lst.size(); i++) {

@@ -47,7 +47,7 @@ class CreateDiseaseGroupActionService  extends BaseService implements ActionServ
             diseaseGroup.save()
 
             ServiceCharges serviceCharges=new ServiceCharges()
-            serviceCharges.serviceCode=diseaseGroup.id.toString()
+            serviceCharges.serviceCode='02D'+ diseaseGroup.id.toString()
             serviceCharges.chargeAmount=Double.parseDouble(result.chargeAmount)
             serviceCharges.activationDate=DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
             serviceCharges.createDate=DateUtility.getSqlDate(new Date())

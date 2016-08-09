@@ -47,12 +47,14 @@ class UpdateDiseaseGroupActionService extends BaseService implements ActionServi
         try {
             DiseaseGroup diseaseGroup = (DiseaseGroup) result.get(DISEASE_GROUP)
             diseaseGroup.save()
-            ServiceCharges serviceCharges = ServiceCharges.findByServiceCodeAndLastActiveDate(diseaseGroup.id.toString(),null)
+            String groupCode='02D'+diseaseGroup.id.toString()
+            ServiceCharges serviceCharges = ServiceCharges.findByServiceCodeAndLastActiveDate(groupCode,null)
 
             Date d=DateUtility.parseMaskedDate(result.activationDate)
             d=d.minus(1)
             boolean newEntry=true
             if(serviceCharges!=null) {
+
                 if(serviceCharges.activationDate>DateUtility.getSqlFromDateWithSeconds(new Date())) {
                     serviceCharges.chargeAmount = Double.parseDouble(result.chargeAmount)
                     serviceCharges.activationDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
@@ -65,17 +67,17 @@ class UpdateDiseaseGroupActionService extends BaseService implements ActionServi
                 }
                 serviceCharges.save()
                 if(!newEntry) {
-                    ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateGreaterThan(diseaseGroup.id.toString(),DateUtility.getSqlFromDateWithSeconds(d))
-                    if(!serviceCharges3){
-                        serviceCharges.lastActiveDate = DateUtility.getSqlDate(d)
-                        serviceCharges.save();
+                    ServiceCharges serviceCharges3 = ServiceCharges.findByServiceCodeAndLastActiveDateGreaterThan(groupCode,DateUtility.getSqlDate(d))
+                    if(serviceCharges3!=null){
+                        serviceCharges3.lastActiveDate = DateUtility.getSqlDate(d)
+                        serviceCharges3.save();
                     }
                 }
             }
 
             if(diseaseGroup.isActive && newEntry) {
                 ServiceCharges serviceCharges2 = new ServiceCharges()
-                serviceCharges2.serviceCode = diseaseGroup.id.toString()
+                serviceCharges2.serviceCode = groupCode
                 serviceCharges2.chargeAmount = Double.parseDouble(result.chargeAmount)
                 serviceCharges2.activationDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
                 serviceCharges2.createDate = DateUtility.getSqlDate(new Date())

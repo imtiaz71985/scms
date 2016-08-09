@@ -9,6 +9,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
+import scms.utility.Tools
 import service.SecUserService
 import service.ServiceChargesService
 import service.ServiceHeadInfoService
@@ -146,20 +147,36 @@ class CounselorActionController extends BaseController {
         String diseaseCodes = params.diseaseCodes
         double totalCharge = 0
         String groupCode = ''
+        List<GroovyRowResult> lstOfCharges
 
         if (diseaseCodes.length() > 0) {
             List<String> lst = Arrays.asList(diseaseCodes.split("\\s*,\\s*"));
             for (int i = 0; i < lst.size(); i++) {
-                if (lst.get(i) != '') {
-                    if (groupCode.length() < 1)
-                        groupCode = Long.parseLong(lst.get(i).substring(0, 2)).toString()
-                    else
-                        groupCode = groupCode + ',' + Long.parseLong(lst.get(i).substring(0, 2)).toString()
-                }
+                groupCode = groupCode + Long.parseLong(lst.get(i).substring(0, 2)).toString()
+                if ((i + 1) < lst.size())
+                    groupCode = groupCode + ','
             }
-            totalCharge = serviceChargesService.getTotalChargeByListofDiseaseCode(groupCode)
+            Set set = new HashSet()
+            List<String> lstGroupCode = Arrays.asList(groupCode.split("\\s*,\\s*"));
+            set.addAll(lstGroupCode)
+
+            String strIds =''
+            for (int i = 0; i < set.size(); i++) {
+                strIds = strIds + set[i]
+                if ((i + 1) < set.size()) strIds = strIds + ','
+            }
+            lstOfCharges = serviceChargesService.getTotalChargeByListOfDiseaseCode(strIds)
         }
-        Map result = [totalCharge: totalCharge]
+        String chargeIds=''
+        for(int i=0;i<lstOfCharges.size();i++) {
+            chargeIds = chargeIds + lstOfCharges[i].id
+            if ((i + 1) < lstOfCharges.size()) chargeIds = chargeIds + ','
+            totalCharge=totalCharge+ lstOfCharges[i].chargeAmount
+        }
+        Map result = new HashedMap()
+        result.put('totalCharge', totalCharge)
+        result.put('chargeIds', chargeIds)
+
         render result as JSON
     }
 }

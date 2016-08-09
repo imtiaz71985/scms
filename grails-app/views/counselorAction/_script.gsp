@@ -170,6 +170,7 @@
         });
         $('#selectedDiseaseCode').val('');
         $("#selectedChargeId").val('');
+        $("#selectedConsultancyId").val('');
         $("#serviceCharges").val('');
         $("#pathologyCharges").val('0');
         $('#actualPaid').val('');
@@ -688,6 +689,7 @@
                         return false;
                     }
                     $('#serviceCharges').val(data.totalCharge)
+                    $('#selectedConsultancyId').val(data.chargeIds)
                     getPayableAmount();
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
