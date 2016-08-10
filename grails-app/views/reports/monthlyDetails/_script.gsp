@@ -147,6 +147,12 @@
     function initInfoGrid() {
         initDataSource();
         $("#gridDetails").kendoGrid({
+            toolbar:["excel"],
+            excel:{
+                fileName:"Monthly status.xlsx",
+                allPages:true,
+                filterable:true
+            },
             dataSource: dataSource,
             autoBind: false,
             height: getGridHeightKendo(),
