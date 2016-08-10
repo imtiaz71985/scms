@@ -10,7 +10,7 @@
             isUpdate=true;
         }
         initMedicineRequisitionGrid();
-        defaultPageTile("Requisition details", null);
+        defaultPageTile("Requisition details", "requisition/show");
     });
 
     function resetForm() {
@@ -108,7 +108,17 @@
             serverSorting: true
         });
     }
-
+    function gridDataBound(e) {
+        var grid = e.sender;
+        var columns = grid.options.columns;
+        if (columns.length > 0) {
+            for (var i = 0; i < columns.length; i++) {
+                if (columns[i].field == "reqQty") {
+                     columns.addClass("no-data");
+                }
+            }
+        }
+    }
     function initMedicineRequisitionGrid() {
         initDataSource();
         $("#gridMedicine").kendoGrid({
@@ -200,7 +210,9 @@
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
                     sortable: false,
-                    filterable: false
+                    filterable: false,
+                    template: "<span style='float: left; width: 100%;" +
+                    "font-size: large; background-color:gainsboro'><b>#=reqQty#</b></div>"
                 },
                 {
                     field: "amount",
