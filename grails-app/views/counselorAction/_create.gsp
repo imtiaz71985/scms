@@ -35,10 +35,10 @@
                 </div>
 
             </div>
-            </div>
         </g:form>
+        </div>
     </div>
-</div>
+
 
 <div class="row" id="counselorActionRow">
     <div id="application_top_panel1" class="panel panel-primary">
@@ -57,7 +57,7 @@
                 <input type="hidden" id="selectedConsultancyId" name="selectedConsultancyId"/>
 
                 <div class="form-group">
-                    <div class="col-md-6">
+                    <div class="col-md-6" style=" padding-bottom: 0px;">
                         <div class="form-group">
                             <label class="col-md-3 control-label label-required"
                                    for="serviceTokenNo">Service No:</label>
@@ -128,15 +128,15 @@
 
                             </div>
                         </div>
-                        <div  class="form-group">
+                        <div  class="form-group" style=" padding-bottom: 0px;">
                             <div class="col-md-1 "></div>
-                        <div class="col-md-10 " id="divServiceDetails" style="display:none;height: 300px; padding-left: 0px;">
+                        <div class="col-md-10 " id="divServiceDetails" style="display:none;height: 300px; padding-left: 0px; padding-bottom: 0px;">
                             <div id="gridServiceHeadInfo"></div>
                         </div>
                             </div>
                     </div>
 
-                    <div class="col-md-6" id="divCharges">
+                    <div class="col-md-6" id="divCharges" style=" padding-bottom: 0px;">
 
                         <div class="form-group" id="divServiceCharges" style="display:none;">
                             <label class="col-md-3 control-label label-required"
@@ -181,7 +181,8 @@
                         </div>
 
 
-                        <div class="form-group " id="divSelectedDisease" style="display:none;">
+                        <div id="divSelectedDisease" style="display:none; padding-bottom: 0px;">
+                        <div class="form-group ">
                             <label class="col-md-3 control-label" style="padding-right: 0px;">Disease:</label>
 
                             <div class="col-md-9">
@@ -189,9 +190,10 @@
                             </div>
 
                         </div>
-                        <div class="form-group col-md-10 pull-right" id="divDiseaseDetails" style="display:none;height: 300px; padding-left: 0px;">
+                        <div class="form-group col-md-10 pull-right" style="height: 300px; padding-left: 0px; padding-bottom: 0px;">
                             <div id="gridDiseaseDetails"></div>
                         </div>
+                    </div>
                     </div>
 
                 </div>
