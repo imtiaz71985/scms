@@ -4,16 +4,19 @@ import com.scms.*
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.json.JSONElement
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
+import service.RequisitionService
 
 @Transactional
 class CreateRequisitionReceiveActionService extends BaseService implements ActionServiceIntf{
 
     SpringSecurityService springSecurityService
+    RequisitionService requisitionService
     private static final String SAVE_SUCCESS_MESSAGE = "Data saved successfully"
     private static final String RECEIVE = "receive"
     private static final String RECEIVE_DETAILS = "receiveDetails"
@@ -68,9 +71,12 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                     }
                 }
                 if (isComplete) {
-                    Requisition requisition = Requisition.findByReqNo(receive.reqNo)
-                    requisition.isReceived = true
-                    requisition.save()
+                    List<GroovyRowResult> lst= requisitionService.listOfMedicineForReceive(receive.reqNo)
+                    if(lst.size()<1) {
+                        Requisition requisition = Requisition.findByReqNo(receive.reqNo)
+                        requisition.isReceived = true
+                        requisition.save()
+                    }
                 }
             }
             return result
@@ -97,9 +103,12 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
         JSONElement gridModelMedicine = JSON.parse(parameterMap.gridModelMedicine.toString())
         List lstRowsMedicine = (List) gridModelMedicine
         for (int i = 0; i < lstRowsMedicine.size(); i++) {
-                ReceiveDetails details = new ReceiveDetails(lstRowsMedicine[i])
+
+            ReceiveDetails details = new ReceiveDetails(lstRowsMedicine[i])
+            if (details.receiveQty > 0) {
                 ReceiveDetails medicine = details
                 lstMedicine.add(medicine)
+            }
 
         }
         return lstMedicine

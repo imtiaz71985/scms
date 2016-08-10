@@ -143,4 +143,20 @@ class RequisitionService extends BaseService {
         List<GroovyRowResult> lstMedicine = executeSelectSql(queryForList)
         return lstMedicine
     }
+
+    public List<GroovyRowResult> listOfMedicineNotReceived(String reqNo){
+        String queryStr = """
+                SELECT rd.*,tbl.remarks FROM requisition_details rd LEFT JOIN(
+                            SELECT rd.medicine_id,rd.remarks,tmp.req_no FROM receive_details  rd
+                                    JOIN (SELECT  r.req_no,MAX(rd.id) receive_dtl_id FROM receive r
+                                            JOIN receive_details rd ON r.id=rd.receive_id
+                                            WHERE req_no=${reqNo} GROUP BY rd.medicine_id) tmp ON tmp.receive_dtl_id=rd.id
+                                            ) tbl ON rd.req_no=tbl.req_no AND rd.medicine_id=tbl.medicine_id
+                            WHERE rd.req_no=${reqNo} AND rd.approved_qty>rd.receive_qty
+                            AND(COALESCE(tbl.remarks,'')='' OR tbl.remarks='Partial receive')
+        """
+
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+        return result
+    }
 }
