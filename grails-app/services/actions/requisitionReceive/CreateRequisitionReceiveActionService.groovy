@@ -20,6 +20,7 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
     private static final String SAVE_SUCCESS_MESSAGE = "Data saved successfully"
     private static final String RECEIVE = "receive"
     private static final String RECEIVE_DETAILS = "receiveDetails"
+    private static final String IS_COMPLETE = "isComplete"
     private Logger log = Logger.getLogger(getClass())
 
     @Transactional
@@ -71,7 +72,7 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                     }
                 }
                 if (isComplete) {
-                    List<GroovyRowResult> lst= requisitionService.listOfMedicineForReceive(receive.reqNo)
+                    List<GroovyRowResult> lst= requisitionService.listOfMedicineNotReceived(receive.reqNo)
                     if(lst.size()<1) {
                         Requisition requisition = Requisition.findByReqNo(receive.reqNo)
                         requisition.isReceived = true
@@ -79,7 +80,7 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                     }
                 }
             }
-            result.put('isComplete',isComplete)
+            result.put(IS_COMPLETE,isComplete)
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -92,10 +93,11 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        boolean isComplete=Boolean.parseBoolean(result.isComplete)
+        boolean isComplete=(boolean) result.get(IS_COMPLETE)
         String msg='Medicine received successfully.'
-        if(isComplete)
-        msg='Received successfully and requisition is completed. Req No:' + result.reqNo
+        if(isComplete){
+            msg='Received successfully and requisition is completed. Req No:' + result.reqNo
+        }
 
         return super.setSuccess(result, msg)
     }
