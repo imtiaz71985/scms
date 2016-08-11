@@ -312,8 +312,6 @@
             return
         }
         var r=$('#hidReceiveMedicineListRowNo').val();
-
-       // var row = $("#gridMedicine").data("kendoGrid").find(2)
         var grid = $("#gridMedicine").data("kendoGrid");
         var dataRows = grid.items();
         var data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r-1]);
