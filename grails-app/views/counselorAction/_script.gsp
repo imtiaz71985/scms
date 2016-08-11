@@ -518,7 +518,7 @@
 
     function getPayableAmount() {
 
-        var charge = 0
+        var charge = 0;
         var subsidy = 0;
         var pathCharges = 0;
         if ($('#serviceCharges').val() > '0')
@@ -677,8 +677,8 @@
                         showError(data.message);
                         return false;
                     }
-                    $('#serviceCharges').val(data.totalCharge)
-                    $('#selectedConsultancyId').val(data.chargeIds)
+                    $('#serviceCharges').val(data.totalCharge);
+                    $('#selectedConsultancyId').val(data.chargeIds);
                     getPayableAmount();
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {

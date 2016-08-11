@@ -88,17 +88,7 @@
                             </div>
 
                         </div>
-                        <div class="form-group" id="divReferenceServiceNo" style="display:none;">
-                            <label class="col-md-3 control-label label-required"
-                                   style="padding-right: 0px;">Reference Service No:</label>
 
-                            <div class="col-md-6">
-                                <select id="referenceServiceNoDDL"
-                                        name="referenceServiceNoDDL"
-                                        class="kendo-drop-down">
-                                </select>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label label-required"
                                    for="serviceTypeId">Service Type:</label>
@@ -112,8 +102,17 @@
                                         data-bind="value: counselorAction.serviceTypeId">
                                 </app:dropDownServiceType>
                             </div>
+                        </div>
+                        <div class="form-group" id="divReferenceServiceNo" style="display:none;">
+                            <label class="col-md-3 control-label label-required"
+                                   style="padding-right: 0px;">Reference Service No:</label>
 
-
+                            <div class="col-md-6">
+                                <select id="referenceServiceNoDDL"
+                                        name="referenceServiceNoDDL"
+                                        class="kendo-drop-down">
+                                </select>
+                            </div>
                         </div>
 
                         <div class="form-group" id="divPrescriptionType">
