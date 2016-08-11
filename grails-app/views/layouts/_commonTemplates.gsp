@@ -134,9 +134,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-               %{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="hideCreateReceiveRemarksModal();"><span
-                        aria-hidden="true">&times;</span></button>--}%
+                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="createReceiveRemarksModalLabel">Give Reason For Lower Quantity</h4>
             </div>
 
@@ -169,8 +169,8 @@
             <div class="modal-footer">
                 <input class="btn btn-primary" type="button" value="Ok" onclick="onClickCreateReceiveRemarksModal();"
                        tabindex="2">
-                %{--<input class="btn btn-default" type="button" value="Close" onclick="hideCreateReceiveRemarksModal();"
-                       data-dismiss="modal" tabindex="3">--}%
+                <input class="btn btn-default" type="button" value="Close" onclick="hideCreateReceiveRemarksModal();"
+                       data-dismiss="modal" tabindex="3">
             </div>
         </div>
     </div>
