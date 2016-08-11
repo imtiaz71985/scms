@@ -79,6 +79,7 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                     }
                 }
             }
+            result.put('isComplete',isComplete)
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -91,7 +92,12 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
+        boolean isComplete=Boolean.parseBoolean(result.isComplete)
+        String msg='Medicine received successfully.'
+        if(isComplete)
+        msg='Received successfully and requisition is completed. Req No:' + result.reqNo
+
+        return super.setSuccess(result, msg)
     }
 
     public Map buildFailureResultForUI(Map result) {
