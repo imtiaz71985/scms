@@ -42,7 +42,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 }
             }
             if (serviceTypeId != 4 && !params.referToId) {
-                return super.setError(params, INVALID_INPUT_MSG)
+                return super.setError(params, 'Sorry! Please select refer to.')
             }
             if (serviceTypeId == 5) {
                 if (!params.referenceServiceNoDDL) {
