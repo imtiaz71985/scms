@@ -97,7 +97,8 @@
             showLoadingSpinner(false);
             $("#unit").text('');
         } else {
-            showSuccess(result.message);
+            //showSuccess(result.message);
+            bootboxAlert(result.message);
             resetForm();
         }
     }
