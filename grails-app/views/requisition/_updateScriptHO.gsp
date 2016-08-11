@@ -223,7 +223,9 @@
                             attributes: {style: setAlignRight()},
                             headerAttributes: {style: setAlignRight()},
                             sortable: false,
-                            filterable: false
+                            filterable: false,
+                            template: "<span style='float: left; width: 100%;" +
+                            "font-size: large; background-color:gainsboro'><b>#=approvedQty#</b></div>"
                         },
                         {
                             field: "approveAmount",
