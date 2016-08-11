@@ -129,7 +129,7 @@
     </div>
 </div>
 <!-- Create Receive remarks Modal for receive Qty -->
-<div class="modal fade" id="createReceiveRemarksModal" tabindex="-1" role="dialog"
+<div class="modal fade" id="createReceiveRemarksModal" role="dialog"
      aria-labelledby="createReceiveRemarksModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -151,10 +151,12 @@
                             </div>
 
                             <div class="col-md-7">
-                                <select id="receiveRemarksModalDDL" name="receiveRemarksModalDDL"
-                                        required="true" validationMessage="Required"
+                                <app:dropDownSystemEntity
+                                        data_model_name="dropDownRemarksForModal"
+                                        id="receiveRemarksModalDDL" name="receiveRemarksModalDDL"
+                                        type="Remarks" required="true" validationMessage="Required"
                                         tabindex="1" class="kendo-drop-down">
-                                </select>
+                                </app:dropDownSystemEntity>
                             </div>
                             <div class="col-md-3 pull-left">
                                 <span class="k-invalid-msg" data-for="receiveRemarksModalDDL"></span>

@@ -305,15 +305,15 @@
         $("#createReceiveRemarksModal").modal('show');
         $('#hidReceiveMedicineListRowNo').val(rowIdx);
         $('#hidBaseValueRow').val(baseVal);
-        $('#receiveRemarksModalDDL').kendoDropDownList({
-            dataTextField: 'name',
-            dataValueField: 'id',
-            dataSource: [
-                {name: "Please Select", id: ""},
-                {name: "Short but complete", id: "39"},
-                {name: "Partial receive", id: "40"}
-            ]
-        });
+        /*        $('#receiveRemarksModalDDL').kendoDropDownList({
+         dataTextField: 'name',
+         dataValueField: 'id',
+         dataSource: [
+         {name: "Please Select", id: ""},
+         {name: "Short but complete", id: "39"},
+         {name: "Partial receive", id: "40"}
+         ]
+         });*/
         dropDownRemarksForModal = $('#receiveRemarksModalDDL').data("kendoDropDownList");
     }
     function onClickCreateReceiveRemarksModal() {
@@ -326,25 +326,24 @@
         var data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r - 1]);
         var a = $("#receiveRemarksModalDDL").data("kendoDropDownList").text();
         data.set('remarks', a);
-        $("#gridMedicine").data('kendoGrid').refresh();
-        hideCreateReceiveRemarksModal();
+        grid.refresh();
+        clearModalValue();
     }
-
+    function clearModalValue() {
+        dropDownRemarksForModal.value('');
+        $('#hidReceiveMedicineListRowNo').val('');
+        $('#hidBaseValueRow').val('');
+        $("#createReceiveRemarksModal").modal('hide');
+    }
     function hideCreateReceiveRemarksModal() {
         var base = $('#hidBaseValueRow').val(),
                 r = $('#hidReceiveMedicineListRowNo').val(),
                 grid = $("#gridMedicine").data("kendoGrid"),
                 dataRows = grid.items(),
-                data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r - 1]),
-                a = $("#receiveRemarksModalDDL").data("kendoDropDownList").text();
-        if (a == 'Please Select') {
-            data.set('receiveQty', base);
-            grid.refresh();
-        }
-        $('#hidReceiveMedicineListRowNo').val('');
-        dropDownRemarksForModal.value('');
-        $('#hidBaseValueRow').val('');
-        $("#createReceiveRemarksModal").modal('hide');
+                data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r - 1]);
+        data.set('receiveQty', base);
+        grid.refresh();
+        clearModalValue();
     }
 
 
