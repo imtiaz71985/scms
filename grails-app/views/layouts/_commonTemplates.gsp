@@ -143,6 +143,7 @@
             <div class="modal-body">
                 <form class="form-horizontal form-widgets" id="createReceiveRemarksForm" name="createReceiveRemarksForm">
                     <input type="hidden" id="hidReceiveMedicineListRowNo" name="hidReceiveMedicineListRowNo" value=""/>
+                    <input type="hidden" id="hidBaseValueRow" name="hidBaseValueRow" value=""/>
                     <div class="form-group">
                         <div class="col-md-12">
                             <div class="col-md-1" align="center" style="padding-right: 0px;padding-left: 0px;">
@@ -150,12 +151,10 @@
                             </div>
 
                             <div class="col-md-7">
-                                <app:dropDownSystemEntity
-                                        data_model_name="dropDownRemarksForModal"
-                                        id="receiveRemarksModalDDL" name="receiveRemarksModalDDL"
-                                        type="Remarks" required="true" validationMessage="Required"
+                                <select id="receiveRemarksModalDDL" name="receiveRemarksModalDDL"
+                                        required="true" validationMessage="Required"
                                         tabindex="1" class="kendo-drop-down">
-                                </app:dropDownSystemEntity>
+                                </select>
                             </div>
                             <div class="col-md-3 pull-left">
                                 <span class="k-invalid-msg" data-for="receiveRemarksModalDDL"></span>

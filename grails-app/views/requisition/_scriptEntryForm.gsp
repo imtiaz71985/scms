@@ -6,7 +6,7 @@
         requisitionNo = '${requisitionNo}';
         $("#requisitionNo").val(requisitionNo);
         totalAmount = ${totalAmount?totalAmount:0};
-        if(totalAmount>0){
+        if(totalAmount > 0){
             isUpdate=true;
         }
         initMedicineRequisitionGrid();

@@ -16,7 +16,7 @@
     function populateDDLRequisitionNo() {
         requisitionNo = '';
         clearGridKendo(gridMedicineReqReceive);
-        totalAmount=0;
+        totalAmount = 0;
         setFooter();
         var vendorId = dropDownVendor.value();
         showLoadingSpinner(true);
@@ -45,9 +45,9 @@
 
         populateDDLRequisitionNo();
         requisitionNo = '';
-       //initMedicineRequisitionGrid();
+        //initMedicineRequisitionGrid();
         clearGridKendo(gridMedicineReqReceive);
-        totalAmount=0;
+        totalAmount = 0;
         setFooter();
         $('#prNo').val('');
         $('#chalanNo').val('');
@@ -75,7 +75,7 @@
         jQuery.ajax({
             type: 'post',
             data: formData,
-            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo ,
+            url: "${createLink(controller:'requisitionReceive', action: 'create')}?requisitionNo=" + requisitionNo,
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -97,8 +97,7 @@
             showLoadingSpinner(false);
             $("#unit").text('');
         } else {
-           // showSuccess(result.message);
-            bootboxAlert(result.message);
+            showSuccess(result.message);
             resetForm();
         }
     }
@@ -107,32 +106,32 @@
         dataSourceForMedicine = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url      : false,
-                    dataType : "json",
-                    type     : "post"
+                    url: false,
+                    dataType: "json",
+                    type: "post"
                 }
             },
             schema: {
-                type  : 'json',
-                data  : "list",
-                total : "count",
-                model : {
+                type: 'json',
+                data: "list",
+                total: "count",
+                model: {
                     fields: {
-                        id             : {type: "number"},
-                        version        : {type: "number"},
-                        medicineId     : {type: "number"},
-                        type           : {editable: false, type: "string"},
-                        genericName    : {editable: false, type: "string"},
-                        medicineName   : {editable: false, type: "string"},
-                        unitPrice      : {editable: false, type: "string"},
-                        unitType       : {editable: false, type: "string"},
-                        reqQty         : {editable: false, type: "number"},
-                        approvedQty    : {editable: false, type: "number"},
-                        procQty        : {editable: false, type: "number"},
-                        prevReceiveQty : {editable: false, type: "number"},
-                        receiveQty     : {type: "number"},
-                        amount         : {type: "number"},
-                        remarks        : {type: "string"}
+                        id: {type: "number"},
+                        version: {type: "number"},
+                        medicineId: {type: "number"},
+                        type: {editable: false, type: "string"},
+                        genericName: {editable: false, type: "string"},
+                        medicineName: {editable: false, type: "string"},
+                        unitPrice: {editable: false, type: "string"},
+                        unitType: {editable: false, type: "string"},
+                        reqQty: {editable: false, type: "number"},
+                        approvedQty: {editable: false, type: "number"},
+                        procQty: {editable: false, type: "number"},
+                        prevReceiveQty: {editable: false, type: "number"},
+                        receiveQty: {type: "number"},
+                        amount: {type: "number"},
+                        remarks: {type: "string"}
 
                     }
                 },
@@ -147,31 +146,31 @@
             serverSorting: true
         });
     }
-    function gridDataBound(e){
+    function gridDataBound(e) {
         setFooter();
     }
     function initMedicineRequisitionGrid() {
         initDataSource();
         $("#gridMedicine").kendoGrid({
-            dataSource : dataSourceForMedicine,
-            height     : getGridHeightKendo() - 140,
-            autoBind   : false,
-            selectable : true,
-            sortable   : true,
-            resizable  : true,
+            dataSource: dataSourceForMedicine,
+            height: getGridHeightKendo() - 140,
+            autoBind: false,
+            selectable: true,
+            sortable: true,
+            resizable: true,
             reorderable: true,
-            pageable   : false,
-            dataBound  : gridDataBound,
-            editable   : true,
-            edit       : function (e) {
+            pageable: false,
+            dataBound: gridDataBound,
+            editable: true,
+            edit: function (e) {
                 var input = e.container.find(".k-input");
                 var value = input.val(), baseValue = input.val();
                 $("[name='receiveQty']", e.container).focus(function () {
                     var input = $(this);
                     baseValue = input.val();
-                    if(input.val()==0){
+                    if (input.val() == 0) {
                         input.val('');
-                        baseValue=0;
+                        baseValue = 0;
                     }
                 });
                 $("[name='receiveQty']", e.container).blur(function () {
@@ -184,12 +183,12 @@
                         showError("Wrong quantity.");
                         data.set('receiveQty', baseValue);
                         data.set('amount', baseValue * data.unitPrice);
-                    } else if(value<(data.approvedQty - data.prevReceiveQty)){
+                    } else if (value < (data.approvedQty - data.prevReceiveQty)) {
                         var rowIdx = $("tr", $('#gridMedicine')).index(row);
-                        showRemarksModal(rowIdx);
+                        showRemarksModal(rowIdx, baseValue);
                     }
                     else {
-                        if(input.val()==''){
+                        if (input.val() == '') {
                             input.val(0);
                             value = 0;
                             data.set('receiveQty', 0);
@@ -211,19 +210,19 @@
                     width: 40,
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "genericName",
                     title: "Generic Name",
                     width: 80,
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "medicineName",
                     title: "Medicine Name",
                     width: 100,
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "unitPrice",
                     title: "Price",
                     width: 50,
@@ -241,7 +240,7 @@
                     headerAttributes: {style: setAlignRight()},
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "approvedQty",
                     title: "Approve Qty",
                     width: 50,
@@ -249,7 +248,7 @@
                     headerAttributes: {style: setAlignRight()},
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "prevReceiveQty",
                     title: "Prev Receive",
                     width: 50,
@@ -257,7 +256,7 @@
                     headerAttributes: {style: setAlignRight()},
                     sortable: false,
                     filterable: false
-                },{
+                }, {
                     field: "receiveQty",
                     title: "Receive Qty",
                     attributes: {style: setAlignRight()},
@@ -266,9 +265,9 @@
                     sortable: false,
                     filterable: false,
                     template: "<span style='float: left; width: 100%;" +
-                        "font-size: large; background-color:gainsboro'><b>#=receiveQty#</b></div>",
+                    "font-size: large; background-color:gainsboro'><b>#=receiveQty#</b></div>",
                     footerTemplate: "<div style='text-align: right'>Total : </div>"
-                },{
+                }, {
                     field: "amount",
                     title: "Amount",
                     attributes: {style: setAlignRight()},
@@ -276,7 +275,7 @@
                     template: "#=formatAmount(amount)#",
                     sortable: false, filterable: false, width: 50,
                     footerTemplate: "<div style='text-align: right'><span id='footerSpan'>#=formatAmount(0)#</span></div>"
-                },{
+                }, {
                     field: "remarks",
                     title: "Remarks",
                     width: 70,
@@ -293,37 +292,58 @@
 
     function editRecord() {
         requisitionNo = dropDownRequisitionNo.value();
-        var vendorId=dropDownVendor.value();
-        var url ="${createLink(controller: 'requisitionReceive', action: 'listOfMedicine')}?requisitionNo=" + requisitionNo+"&vendorId="+vendorId;
-        populateGridKendo(gridMedicineReqReceive,url);
+        var vendorId = dropDownVendor.value();
+        var url = "${createLink(controller: 'requisitionReceive', action: 'listOfMedicine')}?requisitionNo=" + requisitionNo + "&vendorId=" + vendorId;
+        populateGridKendo(gridMedicineReqReceive, url);
     }
 
-    function setFooter(){
+    function setFooter() {
         $("#footerSpan").text(formatAmount(totalAmount));
     }
 
-    function showRemarksModal(rowIdx) {
+    function showRemarksModal(rowIdx, baseVal) {
         $("#createReceiveRemarksModal").modal('show');
         $('#hidReceiveMedicineListRowNo').val(rowIdx);
-        dropDownRemarksForModal=$('#receiveRemarksModalDDL').data("kendoDropDownList");
+        $('#hidBaseValueRow').val(baseVal);
+        $('#receiveRemarksModalDDL').kendoDropDownList({
+            dataTextField: 'name',
+            dataValueField: 'id',
+            dataSource: [
+                {name: "Please Select", id: ""},
+                {name: "Short but complete", id: "39"},
+                {name: "Partial receive", id: "40"}
+            ]
+        });
+        dropDownRemarksForModal = $('#receiveRemarksModalDDL').data("kendoDropDownList");
     }
-    function onClickCreateReceiveRemarksModal(){
+    function onClickCreateReceiveRemarksModal() {
         if (!validateForm($('#createReceiveRemarksForm'))) {
             return
         }
-        var r=$('#hidReceiveMedicineListRowNo').val();
+        var r = $('#hidReceiveMedicineListRowNo').val();
         var grid = $("#gridMedicine").data("kendoGrid");
         var dataRows = grid.items();
-        var data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r-1]);
-       var a= $("#receiveRemarksModalDDL").data("kendoDropDownList").text();
+        var data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r - 1]);
+        var a = $("#receiveRemarksModalDDL").data("kendoDropDownList").text();
         data.set('remarks', a);
         $("#gridMedicine").data('kendoGrid').refresh();
         hideCreateReceiveRemarksModal();
     }
 
-    function hideCreateReceiveRemarksModal(){
+    function hideCreateReceiveRemarksModal() {
+        var base = $('#hidBaseValueRow').val(),
+                r = $('#hidReceiveMedicineListRowNo').val(),
+                grid = $("#gridMedicine").data("kendoGrid"),
+                dataRows = grid.items(),
+                data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r - 1]),
+                a = $("#receiveRemarksModalDDL").data("kendoDropDownList").text();
+        if (a == 'Please Select') {
+            data.set('receiveQty', base);
+            grid.refresh();
+        }
         $('#hidReceiveMedicineListRowNo').val('');
         dropDownRemarksForModal.value('');
+        $('#hidBaseValueRow').val('');
         $("#createReceiveRemarksModal").modal('hide');
     }
 
