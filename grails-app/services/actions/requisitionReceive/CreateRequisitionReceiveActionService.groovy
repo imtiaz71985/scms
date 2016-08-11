@@ -97,7 +97,7 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
         String msg = 'Medicine received successfully.'
         String reqNo = result.reqNo
         if(isComplete){
-            msg='Received successfully and requisition is completed. Req No:' + reqNo
+            msg='Received successfully and requisition is completed. Req No: ' + reqNo
         }
         return super.setSuccess(result, msg)
     }

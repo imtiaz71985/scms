@@ -305,27 +305,24 @@
         $("#createReceiveRemarksModal").modal('show');
         $('#hidReceiveMedicineListRowNo').val(rowIdx);
         $('#hidBaseValueRow').val(baseVal);
-        /*        $('#receiveRemarksModalDDL').kendoDropDownList({
-         dataTextField: 'name',
-         dataValueField: 'id',
-         dataSource: [
-         {name: "Please Select", id: ""},
-         {name: "Short but complete", id: "39"},
-         {name: "Partial receive", id: "40"}
-         ]
-         });*/
         dropDownRemarksForModal = $('#receiveRemarksModalDDL').data("kendoDropDownList");
     }
     function onClickCreateReceiveRemarksModal() {
         if (!validateForm($('#createReceiveRemarksForm'))) {
             return
         }
-        var r = $('#hidReceiveMedicineListRowNo').val();
-        var grid = $("#gridMedicine").data("kendoGrid");
-        var dataRows = grid.items();
-        var data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r - 1]);
-        var a = $("#receiveRemarksModalDDL").data("kendoDropDownList").text();
+        var r = $('#hidReceiveMedicineListRowNo').val(),
+            grid = $("#gridMedicine").data("kendoGrid"),
+            dataRows = grid.items(),
+            data = $("#gridMedicine").data("kendoGrid").dataItem(dataRows[r - 1]),
+            a = $("#receiveRemarksModalDDL").data("kendoDropDownList").text(),
+            base = $('#hidBaseValueRow').val(),
+            value=data.receiveQty;
+        totalAmount -= base * data.unitPrice;
+        data.set('amount', parseFloat(value, 10) * data.unitPrice);
+        totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
         data.set('remarks', a);
+        setFooter();
         grid.refresh();
         clearModalValue();
     }
