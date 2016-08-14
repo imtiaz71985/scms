@@ -39,11 +39,6 @@
         if (executePreCondition() == false) {
             return false;
         }
-/*        if ($('#id').val().isEmpty()) {
-            resetForm();
-            showError('User could not be created. Update Only.');
-            return false;
-        }*/
         var password = $('#password').val(),
             confirmPassword = $('#confirmPassword').val();
         if(password!=confirmPassword){
@@ -126,6 +121,7 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         username: { type: "string" },
+                        fullName: { type: "string" },
                         hospitalCode: { type: "string" },
                         hospitalName: { type: "string" },
                         enabled: { type: "boolean" },
@@ -161,13 +157,14 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "username", title: "Login ID", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "hospitalName", title: "Hospital", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "enabled", title: "Enabled", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
+                {field: "username", title: "Login ID", width: 80, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "fullName", title: "User Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "hospitalName", title: "Hospital", width: 80, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "enabled", title: "Enabled", width: 20, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()}, template:"#=enabled?'YES':'NO'#"},
-                {field: "accountLocked", title: "Locked", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
+                {field: "accountLocked", title: "Locked", width: 20, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()}, template:"#=accountLocked?'YES':'NO'#"},
-                {field: "accountExpired", title: "Expired", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
+                {field: "accountExpired", title: "Expired", width: 20, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()}, template:"#=accountExpired?'YES':'NO'#"}
             ],
             filterable: {
@@ -186,6 +183,7 @@
                         id: "",
                         version: "",
                         username: "",
+                        fullName: "",
                         hospitalCode: "",
                         enabled: false,
                         accountLocked: false,

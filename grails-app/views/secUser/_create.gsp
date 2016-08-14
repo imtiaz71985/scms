@@ -13,14 +13,14 @@
                     <input type="hidden" name="version" id="version" data-bind="value: secUser.version"/>
 
                     <div class="form-group">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
 
                             <div class="form-group">
                                 <label class="col-md-3 control-label label-required" for="username">Login ID:</label>
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="username" name="username" maxlength="255"
-                                           placeholder="User Name" required validationMessage="Required" tabindex="2"
+                                           placeholder="Login ID" required validationMessage="Required" tabindex="1"
                                            data-bind="value: secUser.username"/>
                                 </div>
 
@@ -35,8 +35,8 @@
 
                                 <div class="col-md-6">
                                     <input type="password" class="form-control" id="password" name="password"
-                                           placeholder="Letters,Numbers & Special Characters" required
-                                           data-required-msg="Required" tabindex="3"
+                                           placeholder="Insert password" required
+                                           data-required-msg="Required" tabindex="2"
                                            validationMessage="Invalid Combination or Length"/>
                                 </div>
 
@@ -52,61 +52,68 @@
                                 <div class="col-md-6">
                                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                                            placeholder="Confirm password" required data-required-msg="Required"
-                                           validationMessage="Invalid Combination or Length" tabindex="4"/>
+                                           validationMessage="Invalid Combination or Length" tabindex="3"/>
                                 </div>
 
                                 <div class="col-md-3 pull-left">
                                     <span class="k-invalid-msg" data-for="confirmPassword"></span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="hospitalCode">Hospital:</label>
+                                <label class="col-md-2 control-label label-required" for="fullName">Name:</label>
+
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="fullName" name="fullName" maxlength="255"
+                                           placeholder="User Name" required validationMessage="Required" tabindex="4"
+                                           data-bind="value: secUser.fullName"/>
+                                </div>
+
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="fullName"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label label-required" for="hospitalCode">Hospital:</label>
 
                                 <div class="col-md-6">
                                     <app:dropDownHospital
                                             data_model_name="dropDownHospitalCode"
-                                            required="required"
+                                            required="true" tabindex="5"
                                             validationmessage="Required"
                                             class="kendo-drop-down"
                                             data-bind="value: secUser.hospitalCode"
-                                            id="hospitalCode"
-                                            name="hospitalCode">
+                                            id="hospitalCode" name="hospitalCode">
                                     </app:dropDownHospital>
                                 </div>
 
                                 <div class="col-md-3 pull-left">
-                                    <span class="k-invalid-msg" data-for="userId"></span>
+                                    <span class="k-invalid-msg" data-for="hospitalCode"></span>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-md-4">
                             <div class="form-group">
-                                <label class="col-md-6 control-label label-optional"
+                                <label class="col-md-2 control-label label-optional"
                                        for="enabled">Enabled:</label>
 
-                                <div class="col-md-3">
-                                    <g:checkBox class="form-control-static" name="enabled" tabindex="5"
+                                <div class="col-md-2">
+                                    <g:checkBox class="form-control-static" name="enabled" tabindex="6"
                                                 data-bind="checked: secUser.enabled"/>
                                 </div>
-                            </div>
+                                <label class="col-md-2 control-label label-optional"
+                                       for="accountLocked">Locked:</label>
 
-                            <div class="form-group">
-                                <label class="col-md-6 control-label label-optional"
-                                       for="accountLocked">Account Locked:</label>
-
-                                <div class="col-md-3">
-                                    <g:checkBox class="form-control-static" name="accountLocked" tabindex="6"
+                                <div class="col-md-2">
+                                    <g:checkBox class="form-control-static" name="accountLocked" tabindex="7"
                                                 data-bind="checked: secUser.accountLocked"/>
                                 </div>
-                            </div>
+                                <label class="col-md-2 control-label label-optional"
+                                       for="accountExpired">Expired:</label>
 
-                            <div class="form-group">
-                                <label class="col-md-6 control-label label-optional"
-                                       for="accountExpired">Account Expired:</label>
-
-                                <div class="col-md-3">
-                                    <g:checkBox class="form-control-static" name="accountExpired" tabindex="7"
+                                <div class="col-md-2">
+                                    <g:checkBox class="form-control-static" name="accountExpired" tabindex="8"
                                                 data-bind="checked: secUser.accountExpired"/>
                                 </div>
                             </div>
@@ -117,12 +124,12 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="13"
+                            role="button" tabindex="9"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Create
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="14"
+                            class="k-button k-button-icontext" role="button" tabindex="10"
                             aria-disabled="false" onclick='resetForm("hide");'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>
