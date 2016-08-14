@@ -7,6 +7,7 @@ class ServiceProvider {
     long typeId
     String name
     String mobileNo
+    boolean isActive
 
     static constraints = {
     }
