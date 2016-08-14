@@ -192,7 +192,7 @@
                 },
                 {field: "chargeAmount", title: "Fees", width: 70, sortable: false, filterable: false},
                 {
-                    field: "isActive", title: "Is Active", width: 30, sortable: false, filterable: false,
+                    field: "isActive", title: "Active", width: 30, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=isActive?'YES':'NO'#"
                 }

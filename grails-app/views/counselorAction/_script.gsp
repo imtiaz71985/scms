@@ -7,7 +7,7 @@
 </script>--}%
 
 <script language="javascript">
-    var gridCounselorAction, dataSource,dataSourceForDisease, registrationInfoModel, dropDownServiceType, dropDownReferTo,
+    var gridCounselorAction, dataSource,dataSourceForDisease, registrationInfoModel, dropDownServiceType, dropDownServiceProvider,
             dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo,
             dropDownreferenceServiceNoDDL;
     var checkedIds = {}; // declare an object to hold selected grid ids
@@ -164,7 +164,7 @@
         $('#actualPaid').val('');
         $('#subsidyAmount').val('');
         $('#divServiceDetails').hide();
-        $('#divReferTo').show();
+        $('#divServiceProvider').show();
         $("#divPrescriptionType").show();
         $('#chkboxMedicine').attr('checked', false);
         $('#chkboxPathology').attr('checked', false);
@@ -177,7 +177,7 @@
         $('#btnPathologyService').hide();
         $('#divSelectedDisease').hide();
         dropDownServiceType.value('');
-        dropDownReferTo.value('');
+        dropDownServiceProvider.value('');
         dropDownRegistrationNo.value('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#counselorActionRow").hide();
@@ -334,7 +334,7 @@
         $('#divServiceCharges').hide();
         $('#divCharges').hide();
         $('#divPathology').hide();
-        $('#divReferTo').hide();
+        $('#divServiceProvider').hide();
         $("#divPrescriptionType").hide();
         $('#divSelectedDisease').hide();
         $('#searchCriteriaRow').hide();
@@ -343,12 +343,37 @@
         $('#divServiceDetails').hide();
 
         if (serviceTypeId == '') {
-            $('#divReferTo').show();
+            $('#divServiceProvider').show();
             $("#divPrescriptionType").show();
         }
-        else if (serviceTypeId == 2) {
+        else if (serviceTypeId == 4) {
+            $('#chkboxPathology').attr('checked', false);
+            $('#chkboxMedicine').attr('checked', false);
+            $('#chkboxDocReferral').attr('checked', false);
+            $('#divServiceDetails').show();
+            resetBasicData();
+            var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
+            populateGridKendo(gridServiceHeadInfo, url);
+        }
+        else if (serviceTypeId == 5) {
+            $('#chkboxPathology').attr('checked', false);
+            $('#chkboxMedicine').attr('checked', false);
+            $('#chkboxDocReferral').attr('checked', false);
+            $('#divServiceProvider').show();
+            $('#divReferenceServiceNo').show();
+            $('#referenceServiceNoDDL').kendoDropDownList({
+                dataTextField: 'serviceTokenNo',
+                dataValueField: 'serviceTokenNo',
+                filter: "contains",
+                suggest: true
+            });
+            dropDownreferenceServiceNoDDL = $('#referenceServiceNoDDL').data('kendoDropDownList');
+            var regNo = $('#regNo').val();
+            populateServiceNoDDL(regNo)
+        }
+        else{
             $("#counselorActionRow").show();
-            $('#divReferTo').show();
+            $('#divServiceProvider').show();
             $("#divPrescriptionType").show();
             $('#divCharges').show();
             $('#divServiceCharges').show();
@@ -361,32 +386,6 @@
             $('#subsidyAmount').val('');
 
             loadDisease();
-        }
-        else if (serviceTypeId == 4) {
-            $('#chkboxPathology').attr('checked', false);
-            $('#chkboxMedicine').attr('checked', false);
-            $('#chkboxDocReferral').attr('checked', false);
-            $('#divReferTo').show();
-            $('#divServiceDetails').show();
-            resetBasicData();
-            var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
-            populateGridKendo(gridServiceHeadInfo, url);
-        }
-        else if (serviceTypeId == 5) {
-            $('#chkboxPathology').attr('checked', false);
-            $('#chkboxMedicine').attr('checked', false);
-            $('#chkboxDocReferral').attr('checked', false);
-            $('#divReferTo').show();
-            $('#divReferenceServiceNo').show();
-            $('#referenceServiceNoDDL').kendoDropDownList({
-                dataTextField: 'serviceTokenNo',
-                dataValueField: 'serviceTokenNo',
-                filter: "contains",
-                suggest: true
-            });
-            dropDownreferenceServiceNoDDL = $('#referenceServiceNoDDL').data('kendoDropDownList');
-            var regNo = $('#regNo').val();
-            populateServiceNoDDL(regNo)
         }
 
         if($('#chkboxPathology').is(":checked")) {

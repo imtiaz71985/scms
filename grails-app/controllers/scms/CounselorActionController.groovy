@@ -132,11 +132,11 @@ class CounselorActionController extends BaseController {
 
     def retrieveTokenNoByRegNo() {
         String regNo = params.regNo.toString()
-        Timestamp fromDate = DateUtility.getSqlFromDateWithSeconds(new Date())
+        Timestamp toDate = DateUtility.getSqlFromDateWithSeconds(new Date())
         Calendar calNow = Calendar.getInstance()
         calNow.add(Calendar.MONTH, -3);
         Date dateBeforeAMonth = calNow.getTime();
-        Timestamp toDate = DateUtility.getSqlToDateWithSeconds(dateBeforeAMonth)
+        Timestamp fromDate = DateUtility.getSqlToDateWithSeconds(dateBeforeAMonth)
         List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndServiceDateBetween(regNo, fromDate, toDate, [sort: "serviceDate", order: "DESC"])
         lst = baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
         Map result = [lstTokenNo: lst]

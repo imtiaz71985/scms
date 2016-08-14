@@ -74,17 +74,17 @@
                             </div>
                         </div>
 
-                        <div class="form-group" id="divReferTo">
+                        <div class="form-group" id="divServiceProvider">
                             <label class="col-md-3 control-label label-required"
-                                   for="referToId">Refer To:</label>
+                                   for="serviceProviderId">Service Provider:</label>
 
                             <div class="col-md-6">
-                                <app:dropDownSystemEntity
-                                        data_model_name="dropDownReferTo"
-                                        id="referToId" name="referToId" tabindex="7"
+                                <app:dropDownServiceProvider
+                                        data_model_name="dropDownServiceProvider"
+                                        id="serviceProviderId" name="serviceProviderId" tabindex="7"
                                         class="kendo-drop-down" type="Refer Type"
                                         data-bind="value: counselorAction.referToId">
-                                </app:dropDownSystemEntity>
+                                </app:dropDownServiceProvider>
                             </div>
 
                         </div>

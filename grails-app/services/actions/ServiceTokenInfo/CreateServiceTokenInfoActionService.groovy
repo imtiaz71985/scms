@@ -5,13 +5,10 @@ import com.scms.TokenAndChargeMapping
 import com.scms.TokenAndDiseaseMapping
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
-import org.apache.ivy.util.StringUtils
 import org.apache.log4j.Logger
-import org.apache.poi.util.StringUtil
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
-import scms.utility.Tools
 import service.ServiceHeadInfoService
 
 class CreateServiceTokenInfoActionService extends BaseService implements ActionServiceIntf {
@@ -41,8 +38,8 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 } catch (Exception ex) {
                 }
             }
-            if (serviceTypeId != 4 && !params.referToId) {
-                return super.setError(params, 'Sorry! Please select refer to.')
+            if (serviceTypeId != 4 && !params.serviceProviderId) {
+                return super.setError(params, 'Sorry! Please select service provider.')
             }
             if (serviceTypeId == 5) {
                 if (!params.referenceServiceNoDDL) {
@@ -164,10 +161,10 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         ServiceTokenInfo serviceTokenInfo = new ServiceTokenInfo()
         serviceTokenInfo.serviceTokenNo = parameterMap.serviceTokenNo
         serviceTokenInfo.regNo = parameterMap.regNo
-        if (parameterMap.referToId) {
-            serviceTokenInfo.referToId = Long.parseLong(parameterMap.referToId)
+        if (parameterMap.serviceProviderId) {
+            serviceTokenInfo.serviceProviderId = Long.parseLong(parameterMap.serviceProviderId)
         } else {
-            serviceTokenInfo.referToId = 0 // When give general counselling
+            serviceTokenInfo.serviceProviderId = 0 // When give counselor service
         }
         serviceTokenInfo.serviceDate = DateUtility.getSqlDate(new Date())
         serviceTokenInfo.createBy = springSecurityService.principal.id
