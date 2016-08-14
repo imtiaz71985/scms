@@ -3,6 +3,8 @@ package actions.medicineInfo
 import com.model.ListMedicineInfoActionServiceModel
 import com.model.ListSecRoleActionServiceModel
 import com.scms.MedicineInfo
+import com.scms.MedicinePrice
+import com.scms.SubsidyOnMedicine
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -44,8 +46,33 @@ class UpdateMedicineInfoActionService extends BaseService implements ActionServi
     @Transactional
     public Map execute(Map result) {
         try {
+            double subsidyPert = Double.parseDouble(result.subsidyPert)
             MedicineInfo medicineInfo = (MedicineInfo) result.get(MEDICINE_INFO)
+            SubsidyOnMedicine som = SubsidyOnMedicine.findByMedicineIdAndIsActive(medicineInfo.id, Boolean.TRUE)
+            if(som.subsidyPert!=subsidyPert){
+                som.isActive = Boolean.FALSE
+                som.end = new Date()
+                som.save()
+
+                SubsidyOnMedicine som2 = new SubsidyOnMedicine()
+                som2.medicineId = medicineInfo.id
+                som2.isActive = Boolean.TRUE
+                som2.subsidyPert = subsidyPert
+                som2.start = new Date()
+                som2.save()
+
+                double priceAfterSubsidy=medicineInfo.mrpPrice-((medicineInfo.mrpPrice*subsidyPert)/100)
+
+                MedicinePrice medicinePrice = MedicinePrice.findByMedicineIdAndIsActive(medicineInfo.id, Boolean.TRUE)
+                medicinePrice.price = priceAfterSubsidy
+                medicinePrice.save()
+
+                medicineInfo.unitPrice = priceAfterSubsidy
+                medicineInfo.save()
+            }
+
             medicineInfo.save()
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

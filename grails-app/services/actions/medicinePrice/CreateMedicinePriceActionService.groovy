@@ -3,6 +3,7 @@ package actions.medicinePrice
 import com.model.ListMedicinePriceActionServiceModel
 import com.scms.MedicineInfo
 import com.scms.MedicinePrice
+import com.scms.SubsidyOnMedicine
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -23,7 +24,6 @@ class CreateMedicinePriceActionService  extends BaseService implements ActionSer
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            //Check parameters
             if (!params.medicineId||!params.price) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
@@ -50,10 +50,14 @@ class CreateMedicinePriceActionService  extends BaseService implements ActionSer
     public Map execute(Map result) {
         try {
             MedicinePrice medicinePrice = (MedicinePrice) result.get(MEDICINE_PRICE)
+            SubsidyOnMedicine som = SubsidyOnMedicine.findByMedicineId(medicinePrice.id)
+            double priceAfterSubsidy=medicinePrice.mrpPrice-((medicinePrice.mrpPrice*som.subsidyPert)/100)
+            medicinePrice.price = priceAfterSubsidy
             medicinePrice.save()
+
             MedicineInfo medicineInfo = MedicineInfo.read(medicinePrice.medicineId)
-            medicineInfo.unitPrice = medicinePrice.price
             medicineInfo.mrpPrice = medicinePrice.mrpPrice
+            medicineInfo.unitPrice = priceAfterSubsidy
             medicineInfo.save()
             return result
         } catch (Exception ex) {
@@ -92,7 +96,6 @@ class CreateMedicinePriceActionService  extends BaseService implements ActionSer
     private MedicinePrice buildObject(Map parameterMap,Date retDate) {
         parameterMap.start = retDate
         MedicinePrice medicinePrice = new MedicinePrice(parameterMap)
-        medicinePrice.price = Double.parseDouble(parameterMap.price)
         medicinePrice.mrpPrice = Double.parseDouble(parameterMap.mrpPrice)
         medicinePrice.isActive = Boolean.TRUE
         return medicinePrice

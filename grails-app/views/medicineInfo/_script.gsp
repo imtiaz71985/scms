@@ -16,7 +16,7 @@
 </script>
 
 <script language="javascript">
-    var gridMedicine, dataSource, medicineInfoModel, unitPrice, mrpPrice, boxSize,boxRate,warnQty,
+    var gridMedicine, dataSource, medicineInfoModel, subsidyPert, mrpPrice, boxSize,boxRate,warnQty,
             dropDownType, dropDownVendor;
 
     $(document).ready(function () {
@@ -26,14 +26,14 @@
     });
 
     function onLoadMedicineInfoPage() {
-        $('#unitPrice').kendoNumericTextBox({
+        $('#subsidyPert').kendoNumericTextBox({
             min: 0,
             step: 1,
-            max: 999999999999.99,
-            format: "#.##"
+            max: 100,
+            format: "####"
 
         });
-        unitPrice = $("#unitPrice").data("kendoNumericTextBox");
+        subsidyPert = $("#subsidyPert").data("kendoNumericTextBox");
         $('#mrpPrice').kendoNumericTextBox({
             min: 0,
             step: 1,
@@ -143,7 +143,6 @@
     function resetForm(hide) {
         clearForm($("#medicineForm"), $('#typeId'));
         initObservable();
-        unitPrice.readonly(false);
         mrpPrice.readonly(false);
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         if (hide) $("#medicineInfoRow").hide();
@@ -173,7 +172,7 @@
                         medicineName: {type: "string"},
                         strength: {type: "string"},
                         unitType: {type: "string"},
-                        unitPrice: {type: "number"},
+                        subsidyPert: {type: "number"},
                         mrpPrice: {type: "number"},
                         boxSize: {type: "number"},
                         boxRate: {type: "number"},
@@ -231,14 +230,19 @@
                     filterable: kendoCommonFilterable(97)
                 },
                 {
-                    field: "unitPrice", title: "Unit Price", width: 40, sortable: false, filterable: false,
+                    field: "subsidyPert", title: "Subsidy(%)", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
-                    template: "#=formatAmount(unitPrice)#"
+                    template: "#=subsidyPert#"
                 },
                 {
                     field: "mrpPrice", title: "MRP Price", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(mrpPrice)#"
+                },
+                {
+                    field: "unitPrice", title: "Unit Price", width: 40, sortable: false, filterable: false,
+                    attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(unitPrice)#"
                 },
                 {
                     field: "warnQty", title: "Warn Qty", width: 30, sortable: false, filterable: false,
@@ -268,7 +272,7 @@
                         brandName: "",
                         strength: "",
                         unitType: "",
-                        unitPrice: "",
+                        subsidyPert: "",
                         mrpPrice: "",
                         boxSize: "",
                         boxRate: "",
@@ -293,7 +297,6 @@
             return;
         }
         $("#medicineInfoRow").show();
-        unitPrice.readonly();
         mrpPrice.readonly();
         var medicineInfo = getSelectedObjectFromGridKendo(gridMedicine);
         showSecRole(medicineInfo);

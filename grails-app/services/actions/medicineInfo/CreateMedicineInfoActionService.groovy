@@ -5,6 +5,7 @@ import com.scms.HospitalLocation
 import com.scms.MedicineInfo
 import com.scms.MedicinePrice
 import com.scms.MedicineStock
+import com.scms.SubsidyOnMedicine
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -17,17 +18,18 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
     private static final String SAVE_SUCCESS_MESSAGE = "Medicine has been saved successfully"
     private static final String ALREADY_EXIST = "Same Medicine already exist"
     private static final String MEDICINE_INFO = "medicineInfo"
+    private static final String SUBSIDY_PERT = "subsidyPert"
 
     private Logger log = Logger.getLogger(getClass())
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            //Check parameters
             if (!params.typeId||!params.genericName) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long typeId = Long.parseLong(params.typeId)
+            double subsidyPert = Double.parseDouble(params.subsidyPert)
             if (params.strength) {
                 int duplicateCount = MedicineInfo.countByGenericNameIlikeAndTypeAndStrength(params.name,typeId,params.strength)
                 if (duplicateCount > 0) {
@@ -36,6 +38,7 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
             }
             MedicineInfo medicineInfo = buildObject(params)
             params.put(MEDICINE_INFO, medicineInfo)
+            params.put(SUBSIDY_PERT, subsidyPert)
             return params
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -46,9 +49,12 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
     @Transactional
     public Map execute(Map result) {
         try {
+            double subsidyPert = (double) result.get(SUBSIDY_PERT)
             MedicineInfo medicineInfo = (MedicineInfo) result.get(MEDICINE_INFO)
+            double priceAfterSubsidy=medicineInfo.mrpPrice-((medicineInfo.mrpPrice*subsidyPert)/100)
+            medicineInfo.unitPrice = priceAfterSubsidy
             medicineInfo.save()
-            
+
             List<HospitalLocation> lstClinic = HospitalLocation.findAllByIsClinic(true)
             for(int i =0; i<lstClinic.size(); i++){
                 MedicineStock stock = new MedicineStock()
@@ -60,10 +66,18 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
 
             MedicinePrice medicinePrice = new MedicinePrice()
             medicinePrice.medicineId = medicineInfo.id
-            medicinePrice.price = medicineInfo.unitPrice
+            medicinePrice.mrpPrice = medicineInfo.mrpPrice
+            medicinePrice.price = priceAfterSubsidy
             medicinePrice.isActive = Boolean.TRUE
             medicinePrice.start = new Date()
             medicinePrice.save()
+
+            SubsidyOnMedicine som = new SubsidyOnMedicine()
+            som.medicineId = medicineInfo.id
+            som.subsidyPert = subsidyPert
+            som.start = new Date()
+            som.isActive = Boolean.TRUE
+            som.save()
 
             return result
         } catch (Exception ex) {
@@ -101,7 +115,6 @@ class CreateMedicineInfoActionService extends BaseService implements ActionServi
 
     private MedicineInfo buildObject(Map parameterMap) {
         MedicineInfo medicineInfo = new MedicineInfo(parameterMap)
-        medicineInfo.unitPrice = Double.parseDouble(parameterMap.unitPrice)
         medicineInfo.mrpPrice = Double.parseDouble(parameterMap.mrpPrice)
         if(parameterMap.boxSize) medicineInfo.boxSize = Integer.parseInt(parameterMap.boxSize)
         if(parameterMap.warnQty) medicineInfo.warnQty = Integer.parseInt(parameterMap.warnQty)

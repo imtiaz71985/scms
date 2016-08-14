@@ -3,6 +3,8 @@ package actions.medicineInfo
 import com.scms.MedicineInfo
 import com.scms.MedicinePrice
 import com.scms.MedicineSellInfoDetails
+import com.scms.MedicineStock
+import com.scms.SubsidyOnMedicine
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -33,9 +35,17 @@ class DeleteMedicineInfoActionService extends BaseService implements ActionServi
     public Map execute(Map result) {
         try {
             MedicineInfo medicineInfo = (MedicineInfo) result.get(MEDICINE_INFO)
-            List<MedicinePrice> lstMedicinePrice=MedicinePrice.findAllByMedicineId(medicineInfo.id)
+            List<MedicinePrice> lstMedicinePrice = MedicinePrice.findAllByMedicineId(medicineInfo.id)
             for (int i=0; i<lstMedicinePrice.size();i++){
                 lstMedicinePrice[i].delete()
+            }
+            List<SubsidyOnMedicine> lstSOM = SubsidyOnMedicine.findAllByMedicineId(medicineInfo.id)
+            for (int i=0; i<lstSOM.size();i++){
+                lstSOM[i].delete()
+            }
+            List<MedicineStock> lstSTK = MedicineStock.findAllByMedicineId(medicineInfo.id)
+            for (int i=0; i<lstSTK.size();i++){
+                lstSTK[i].delete()
             }
             medicineInfo.delete()
 

@@ -104,19 +104,6 @@
                     <div class="col-md-6">
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label label-required" for="unitPrice">Unit Price:</label>
-
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" id="unitPrice" name="unitPrice"
-                                       placeholder="Unit Price" required validationMessage="Required" tabindex="7"
-                                       data-bind="value: medicineInfo.unitPrice"/>
-                            </div>
-
-                            <div class="col-md-3 pull-left">
-                                <span class="k-invalid-msg" data-for="unitPrice"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="col-md-3 control-label label-required" for="mrpPrice">MRP Price:</label>
 
                             <div class="col-md-6">
@@ -127,6 +114,19 @@
 
                             <div class="col-md-3 pull-left">
                                 <span class="k-invalid-msg" data-for="unitPrice"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label label-required" for="subsidyPert">Subsidy (%):</label>
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="subsidyPert" name="subsidyPert"
+                                       placeholder="Subsidy Percentage" required validationMessage="Required" tabindex="7"
+                                       data-bind="value: medicineInfo.subsidyPert"/>
+                            </div>
+
+                            <div class="col-md-3 pull-left">
+                                <span class="k-invalid-msg" data-for="subsidyPert"></span>
                             </div>
                         </div>
                         <div class="form-group">
