@@ -172,6 +172,11 @@
                                     <a href="#requisitionAuthority/show"><i class="fa fa-user-secret"></i>&nbsp; Requisition Authority</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/serviceProvider/show">
+                                <li>
+                                    <a href="#serviceProvider/show"><i class="fa fa-user"></i>&nbsp; Service Provider</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
