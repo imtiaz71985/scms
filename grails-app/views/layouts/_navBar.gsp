@@ -11,7 +11,7 @@
     <ul class="nav navbar-top-links navbar-right">
         <!-- /.dropdown -->
         <li class="dropdown">
-    <li style="text-align: center">Welcome &nbsp;<strong><font color="green"> <sec:username property='username'></sec:username>&nbsp;</font></strong></li>
+    <li style="text-align: center">Welcome &nbsp;<strong><font color="green"> <sec:userName property='username'></sec:userName>&nbsp;</font></strong></li>
 
     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-user" style="font-size: 20px;"></i>  <i class="fa fa-caret-down"></i>

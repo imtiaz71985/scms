@@ -54,11 +54,10 @@ class GetDropDownHospitalTagLibActionService extends BaseService implements Acti
             params.put(SHOW_HINTS, params.show_hints ? new Boolean(Boolean.parseBoolean(params.show_hints.toString())) : Boolean.TRUE)
             params.put(REQUIRED, params.required ? new Boolean(Boolean.parseBoolean(params.required.toString())) : Boolean.FALSE)
             params.put(VALIDATION_MESSAGE, params.validationmessage ? params.validationmessage : DEFAULT_MESSAGE)
-            params.put(IS_CLINIC, params.is_clinic ? params.is_clinic : FALSE)
-            params.put(IS_LOCAL, params.is_local ? params.is_local : FALSE)
+            params.put(IS_CLINIC, params.is_clinic ? new Boolean(Boolean.parseBoolean(params.is_clinic)) : Boolean.FALSE)
+            params.put(IS_LOCAL, params.is_local ? new Boolean(Boolean.parseBoolean(params.is_clinic)) : Boolean.FALSE)
 
             return params
-
         } catch (Exception e) {
             log.error(e.getMessage())
             super.setError(params, INVALID_INPUT_MSG)
