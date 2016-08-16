@@ -46,24 +46,25 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     return super.setError(params, 'Sorry! Please select reference service no.')
                 }
             } else {
-                if (serviceTypeId == 2) {
-                    String len = params.selectedDiseaseCode
-                    if (len.length() < 1) {
-                        return super.setError(params, 'Sorry! Please select at least one disease.')
-                    }
-                }
-                if (params.chkboxPathology) {
-                    String len = params.selectedChargeId
-                    if (len.length() < 1) {
-                        return super.setError(params, 'Sorry! Please select at least one pathology test.')
-                    }
-                }
                 if (serviceTypeId == 4) {
                     String len = params.selectedChargeId
                     if (len.length() < 1) {
                         return super.setError(params, 'Sorry! Please select at least one consultation.')
                     }
                 }
+                else {
+                    String len = params.selectedDiseaseCode
+                    if (len.length() < 1) {
+                        return super.setError(params, 'Sorry! Please select at least one disease.')
+                    }
+                }
+                /*if (params.chkboxPathology) {
+                    String len = params.selectedChargeId
+                    if (len.length() < 1) {
+                        return super.setError(params, 'Sorry! Please select at least one pathology test.')
+                    }
+                }*/
+
 
             }
 

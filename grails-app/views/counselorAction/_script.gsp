@@ -180,7 +180,7 @@
         dropDownServiceType.value('');
         dropDownServiceProvider.value('');
         dropDownRegistrationNo.value('');
-        dropDownreferenceServiceNoDDL.value('');
+        $('#referenceServiceNoDDL').val('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
