@@ -52,7 +52,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                         return super.setError(params, 'Sorry! Please select at least one consultation.')
                     }
                 }
-                else {
+                else if(serviceTypeId>0) {
                     String len = params.selectedDiseaseCode
                     if (len.length() < 1) {
                         return super.setError(params, 'Sorry! Please select at least one disease.')
