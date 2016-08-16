@@ -64,8 +64,6 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                         return super.setError(params, 'Sorry! Please select at least one pathology test.')
                     }
                 }*/
-
-
             }
 
             ServiceTokenInfo serviceTokenInfo = buildObject(params, serviceTypeId)
