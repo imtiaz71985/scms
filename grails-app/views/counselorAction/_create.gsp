@@ -82,11 +82,9 @@
                                 <app:dropDownServiceProvider
                                         data_model_name="dropDownServiceProvider"
                                         id="serviceProviderId" name="serviceProviderId" tabindex="7"
-                                        class="kendo-drop-down" type="Refer Type"
-                                        data-bind="value: counselorAction.referToId">
+                                        class="kendo-drop-down">
                                 </app:dropDownServiceProvider>
                             </div>
-
                         </div>
 
                         <div class="form-group">
