@@ -176,9 +176,11 @@
         $('#divPathology').hide();
         $('#btnPathologyService').hide();
         $('#divSelectedDisease').hide();
+        $('#divReferenceServiceNo').hide();
         dropDownServiceType.value('');
         dropDownServiceProvider.value('');
         dropDownRegistrationNo.value('');
+        dropDownreferenceServiceNoDDL.value('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
@@ -359,6 +361,8 @@
             $('#chkboxPathology').attr('checked', false);
             $('#chkboxMedicine').attr('checked', false);
             $('#chkboxDocReferral').attr('checked', false);
+            $("#divPrescriptionType").show();
+            $('#divCharges').show();
             $('#divServiceProvider').show();
             $('#divReferenceServiceNo').show();
             $('#referenceServiceNoDDL').kendoDropDownList({

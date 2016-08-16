@@ -186,17 +186,19 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         } else {
             serviceTokenInfo.subsidyAmount = Double.parseDouble(parameterMap.subsidyAmount)
         }
-        String presciption = (parameterMap.chkboxMedicine ? 'Medicine' : parameterMap.chkboxPathology ? 'Pathology Test' : parameterMap.chkboxDocReferral ? 'Doctors Referral' : '')
-        if (presciption == '') {
+        String presciption = ''
+
             if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
                 presciption = 'Medicine & Pathology Test & Doctors Referral'
-            if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology)
+           else if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology)
                 presciption = 'Medicine & Pathology Test'
-            if (parameterMap.chkboxMedicine && parameterMap.chkboxDocReferral)
+           else if (parameterMap.chkboxMedicine && parameterMap.chkboxDocReferral)
                 presciption = 'Medicine & Doctors Referral'
-            if (parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
+           else if (parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
                 presciption = 'Pathology Test & Doctors Referral'
-        }
+            else
+              presciption=(parameterMap.chkboxMedicine ? 'Medicine' : parameterMap.chkboxPathology ? 'Pathology Test' : parameterMap.chkboxDocReferral ? 'Doctors Referral' : '')
+
 
         serviceTokenInfo.prescriptionType = presciption
         serviceTokenInfo.modifyDate = DateUtility.getSqlDate(new Date())
