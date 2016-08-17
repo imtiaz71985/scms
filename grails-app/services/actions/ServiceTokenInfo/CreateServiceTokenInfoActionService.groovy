@@ -143,7 +143,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        return super.setSuccess(result, 'Data Saved successfully. Token No:' + result.serviceTokenNo)
+        return super.setSuccess(result, '<div style="font-size: 16px">Data Saved successfully. Token No: <b>' + result.serviceTokenNo + '</b></div>')
     }
 
     public Map buildFailureResultForUI(Map result) {

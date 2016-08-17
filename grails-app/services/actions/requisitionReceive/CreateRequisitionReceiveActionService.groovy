@@ -94,10 +94,10 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
 
     public Map buildSuccessResultForUI(Map result) {
         boolean isComplete=(boolean) result.get(IS_COMPLETE)
-        String msg = 'Medicine received successfully.'
-        String reqNo = result.requisitionNo
+        String msg = '<div style="font-size: 16px">Medicine received successfully.</div>'
         if(isComplete){
-            msg='Received successfully and requisition is completed. Req No: ' + reqNo
+            String reqNo = result.requisitionNo
+            msg='<div style="font-size: 16px">Received successfully and requisition is completed. Req No: <b>' + reqNo + '</b></div>'
         }
         return super.setSuccess(result, msg)
     }

@@ -739,7 +739,7 @@ function allowOnlyNumeric(evt) {
 }
 function bootboxAlert(msg){
     bootbox.alert({
-        size: 'small',
+        size: 'medium',
         message: msg
     })
 }
