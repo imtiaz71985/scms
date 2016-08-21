@@ -232,7 +232,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                     GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_followup,
 
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
-                WHERE DATE(ri.create_date) = c.date_field AND ri.hospital_code = :hospitalCode GROUP BY (ri.create_date) ),0) +
+                WHERE DATE(ri.create_date) = c.date_field AND ri.hospital_code = :hospitalCode GROUP BY DATE(ri.create_date) ),0) +
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                 WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
