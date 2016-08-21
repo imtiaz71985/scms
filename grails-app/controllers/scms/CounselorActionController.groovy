@@ -132,7 +132,7 @@ class CounselorActionController extends BaseController {
 
     def retrieveTokenNoByRegNo() {
         String regNo = params.regNo.toString()
-        Timestamp toDate = DateUtility.getSqlFromDateWithSeconds(new Date())
+        Timestamp toDate = DateUtility.getSqlToDateWithSeconds(new Date())
         Calendar calNow = Calendar.getInstance()
         calNow.add(Calendar.MONTH, -3);
         Date dateBeforeAMonth = calNow.getTime();
