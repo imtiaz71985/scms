@@ -118,6 +118,7 @@
                     return data;
                 }
             },
+            sort:{field:"brandName",dir:"asc"},
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,

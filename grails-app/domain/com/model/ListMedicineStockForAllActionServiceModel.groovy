@@ -6,7 +6,7 @@ class ListMedicineStockForAllActionServiceModel {
     public static final String SQL_LIST_MEDICINE_STOCK_FOR_ALL_MODEL = """
                  CREATE OR REPLACE VIEW list_medicine_stock_for_all_action_service_model AS
 
-                        SELECT mi.id, mi.version,ms.hospital_code AS hospital_code,se.id AS type_id,se.name AS TYPE,mi.generic_name,mi.brand_name,
+                        SELECT mi.id, mi.version,NULL AS hospital_code,se.id AS type_id,se.name AS TYPE,mi.generic_name,mi.brand_name,
                         (CASE
                                 WHEN mi.strength IS NOT NULL THEN CONCAT(mi.brand_name,' (',mi.strength,')')
                         ELSE mi.brand_name END) AS medicine_name,
