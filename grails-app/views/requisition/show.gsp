@@ -115,6 +115,14 @@
                     filterable: false
                 },
                 {
+                    field: "isApproved",
+                    title: "Approved",
+                    width: 20,
+                    hidden:true,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "approvedDate", title: "Approved Date", width: 50, sortable: false,filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=approvedDate?kendo.toString(kendo.parseDate(approvedDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):'Not Approved'#"

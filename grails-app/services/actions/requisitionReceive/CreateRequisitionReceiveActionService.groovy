@@ -71,14 +71,7 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
                         lstDetails[i].save()
                     }
                 }
-                if (isComplete) {
-                    List<GroovyRowResult> lst= requisitionService.listOfMedicineNotReceived(receive.reqNo)
-                    if(lst.size()<1) {
-                        Requisition requisition = Requisition.findByReqNo(receive.reqNo)
-                        requisition.isReceived = true
-                        requisition.save()
-                    }
-                }
+
             }
             result.put(IS_COMPLETE,isComplete)
             return result
@@ -95,9 +88,16 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
     public Map buildSuccessResultForUI(Map result) {
         boolean isComplete=(boolean) result.get(IS_COMPLETE)
         String msg = '<div style="font-size: 16px">Medicine received successfully.</div>'
-        if(isComplete){
-            String reqNo = result.requisitionNo
-            msg='<div style="font-size: 16px">Received successfully and requisition is completed. Req No: <b>' + reqNo + '</b></div>'
+        if (isComplete) {
+            List<GroovyRowResult> lst = requisitionService.listOfMedicineNotReceived(result.requisitionNo)
+            if (lst.size() < 1) {
+                Requisition requisition = Requisition.findByReqNo(result.requisitionNo)
+                requisition.isReceived = true
+                requisition.save()
+
+                String reqNo = result.requisitionNo
+                msg = '<div style="font-size: 16px">Received successfully and requisition is completed. Req No: <b>' + reqNo + '</b></div>'
+            }
         }
         return super.setSuccess(result, msg)
     }
@@ -113,10 +113,8 @@ class CreateRequisitionReceiveActionService extends BaseService implements Actio
         for (int i = 0; i < lstRowsMedicine.size(); i++) {
 
             ReceiveDetails details = new ReceiveDetails(lstRowsMedicine[i])
-            if (details.receiveQty > 0) {
                 ReceiveDetails medicine = details
                 lstMedicine.add(medicine)
-            }
 
         }
         return lstMedicine
