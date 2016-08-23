@@ -12,7 +12,6 @@
         $('#regNo').val(regNo);
         dropDownUpazila = initKendoDropdown($('#upazilaId'), null, null, null);
         dropDownUnion = initKendoDropdown($('#unionId'), null, null, null);
-
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#registrationInfoForm"), onSubmitRegistrationInfo);
         // update page title

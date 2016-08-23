@@ -116,7 +116,7 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required">Fees:</label>
+                                <label class="col-md-2 control-label label-optional">Fees:</label>
 
                                 <div class="col-md-6">
                                     <input id="regFees" type="text" readonly="true" class="form-control" id="fee"
@@ -126,16 +126,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="mobileNo">Mobile No:</label>
+                                <label class="col-md-2 control-label label-optional" for="mobileNo">Mobile No:</label>
 
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" id="mobileNo" name="mobileNo"
-                                           placeholder="Mobile no" required validationMessage="Required"
-                                           tabindex="6" onKeyPress="return allowOnlyNumeric(event)"
-                                           data-bind="value: registrationInfo.mobileNo"/>
+                                    <input type="text" class="form-control" data-role='maskedtextbox' pattern="\d{11}"
+                                           id="mobileNo" name="mobileNo" validationmessage="Invalid Number" onKeyPress="return allowOnlyNumeric(event)"/>
                                 </div>
 
-                                <div class="col-md-3 pull-left">
+                                <div class="col-md-4 pull-left">
                                     <span class="k-invalid-msg" data-for="mobileNo"></span>
                                 </div>
                             </div>
