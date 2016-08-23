@@ -157,20 +157,20 @@ class GetDropDownMedicineListTagLibActionService extends BaseService implements 
     }
 
     private List<GroovyRowResult> listMedicineInfo() {
-       /* String queryForList = """
+        String queryForList = """
             SELECT mi.id, CONCAT(se.name,' - ', mi.brand_name,COALESCE(CONCAT(' (',mi.strength,')'),'')) AS name
                 FROM medicine_info mi
                 LEFT JOIN system_entity se ON se.id = mi.type
-                ORDER BY se.name,mi.brand_name ASC;
-        """*/
-        SecUser user = SecUser.read(springSecurityService.principal.id)
+                ORDER BY mi.brand_name,se.name ASC;
+        """
+/*        SecUser user = SecUser.read(springSecurityService.principal.id)
         String queryForList = """
            SELECT mi.id AS id, CONCAT(se.name,'-', mi.brand_name,COALESCE(CONCAT(' (',mi.strength,')'),''),',',ms.stock_qty ,COALESCE(CONCAT('-',mi.unit_type),'')) AS name
                 FROM medicine_info mi
                 LEFT JOIN system_entity se ON se.id = mi.type
                 LEFT JOIN medicine_stock ms ON mi.id=ms.medicine_id AND ms.hospital_code='${user.hospitalCode}'
                 ORDER BY mi.brand_name,se.name ASC;
-        """
+        """*/
         List<GroovyRowResult> lstMedicine = executeSelectSql(queryForList)
         return lstMedicine
     }
