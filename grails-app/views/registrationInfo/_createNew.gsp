@@ -115,10 +115,11 @@
                                 <label class="col-md-2 control-label label-optional" for="mobileNo">Mobile No:</label>
 
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" id="mobileNo" name="mobileNo"
-                                           placeholder="Mobile no"
-                                           tabindex="6" onKeyPress="return allowOnlyNumeric(event)"
-                                           data-bind="value: registrationInfo.mobileNo"/>
+                                    <input type="text" class="form-control" data-role='maskedtextbox' pattern="\d{11}"
+                                           id="mobileNo" name="mobileNo" validationmessage="Invalid Number" onKeyPress="return allowOnlyNumeric(event)"/>
+                                </div>
+                                <div class="col-md-4 pull-left">
+                                    <span class="k-invalid-msg" data-for="mobileNo"></span>
                                 </div>
                             </div>
 
