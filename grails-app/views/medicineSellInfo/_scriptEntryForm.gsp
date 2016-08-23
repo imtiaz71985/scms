@@ -26,7 +26,7 @@
         $("#frmMedicine").submit(function (e) {
             onSubmitForm(e);
         });
-        defaultPageTile("Sale details", null);
+        defaultPageTile("Sale details", "medicineSellInfo/show");
 
     });
 
@@ -148,7 +148,7 @@
             gridModel.setDataSource(dsDr);
         }
         totalAmount=parseFloat(totalAmount,10)+parseFloat(amount,10);
-        $("#footerSpan").text(formatAmount(totalAmount));
+        $("#footerSpan").text(formatCeilAmount(totalAmount));
         unitPrice = 0;
         dropDownMedicine.dataSource.filter("");
         clearForm($("#frmMedicine"), $("#medicineId"));
@@ -198,7 +198,7 @@
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(amount)#",
                     sortable: false,filterable: false,width: 50,
-                    footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
+                    footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatCeilAmount(0)#</span></div>"
                 }
             ],
             filterable: {
@@ -308,7 +308,7 @@
         var amount = $("#amount").val();
         totalAmount=parseFloat(totalAmount,10)-parseFloat(amount,10);
         $("#footerSpan").text('');
-        $("#footerSpan").text(formatAmount(totalAmount));
+        $("#footerSpan").text(formatCeilAmount(totalAmount));
         $('#gridMedicine  > .k-grid-content').height(275);
     }
     function deleteMedicine(com, grid) {
@@ -319,7 +319,7 @@
         totalAmount=parseFloat(totalAmount,10)-parseFloat(data.amount,10);
         gridMedicineSellInfo.dataSource.remove(data);
         $("#footerSpan").text('');
-        $("#footerSpan").text(formatAmount(totalAmount));
+        $("#footerSpan").text(formatCeilAmount(totalAmount));
         $('#gridMedicine  > .k-grid-content').height(275);
     }
 </script>
