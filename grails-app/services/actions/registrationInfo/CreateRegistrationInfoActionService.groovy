@@ -12,6 +12,7 @@ import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
+import service.RegistrationInfoService
 import service.ServiceHeadInfoService
 
 @Transactional
@@ -19,7 +20,11 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
 
     private static final String SAVE_SUCCESS_MESSAGE = "Data saved successfully"
     private static final String REGISTRATION_INFO = "registrationInfo"
+    private static final String REG_NO = "regNo"
+
     private Logger log = Logger.getLogger(getClass())
+
+    RegistrationInfoService registrationInfoService
     ServiceHeadInfoService serviceHeadInfoService
 
     SpringSecurityService springSecurityService
@@ -47,7 +52,7 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
                 village.save()
                 villageId = village.id
             }
-            RegistrationInfo registrationInfo = buildObject(params,villageId)
+            RegistrationInfo registrationInfo = buildObject(params, villageId)
             params.put(REGISTRATION_INFO, registrationInfo)
             return params
         } catch (Exception ex) {
@@ -76,6 +81,8 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
         RegistrationInfo registrationInfo = (RegistrationInfo) result.get(REGISTRATION_INFO)
         ListRegistrationInfoActionServiceModel model = ListRegistrationInfoActionServiceModel.read(registrationInfo.regNo)
         result.put(REGISTRATION_INFO, model)
+        String regNo = registrationInfoService.retrieveRegNo()
+        result.put(REG_NO, regNo)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
 
@@ -84,17 +91,17 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
     }
 
 
-    private RegistrationInfo buildObject(Map parameterMap,long villageId) {
+    private RegistrationInfo buildObject(Map parameterMap, long villageId) {
 
         long serviceChargeId = serviceHeadInfoService.serviceChargeIdByServiceType(1L)
         RegistrationInfo registrationInfo = new RegistrationInfo()
-        registrationInfo.regNo=parameterMap.regNo
-        registrationInfo.dateOfBirth= DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.dateOfBirth))
-        registrationInfo.fatherOrMotherName=parameterMap.fatherOrMotherName
-        registrationInfo.maritalStatusId=Long.parseLong(parameterMap.maritalStatusId)
-        registrationInfo.sexId=Long.parseLong(parameterMap.sexId)
-        registrationInfo.mobileNo=parameterMap.mobileNo
-        registrationInfo.patientName=parameterMap.patientName
+        registrationInfo.regNo = parameterMap.regNo
+        registrationInfo.dateOfBirth = DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.dateOfBirth))
+        registrationInfo.fatherOrMotherName = parameterMap.fatherOrMotherName
+        registrationInfo.maritalStatusId = Long.parseLong(parameterMap.maritalStatusId)
+        registrationInfo.sexId = Long.parseLong(parameterMap.sexId)
+        registrationInfo.mobileNo = parameterMap.mobileNo
+        registrationInfo.patientName = parameterMap.patientName
         registrationInfo.villageId = villageId
         registrationInfo.service_charge_id = serviceChargeId
         registrationInfo.createDate = DateUtility.getSqlDate(new Date())

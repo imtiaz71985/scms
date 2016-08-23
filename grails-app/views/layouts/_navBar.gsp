@@ -37,9 +37,14 @@
                     <li>
                         <a href="#"><i class="fa fa-h-square"></i>&nbsp;Health Clinic<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
+                            <sec:access url="/registrationInfo/showNew">
+                                <li>
+                                    <a href="#registrationInfo/showNew"><i class="fa fa-user-plus"></i>&nbsp;New Registration</a>
+                                </li>
+                            </sec:access>
                             <sec:access url="/registrationInfo/show">
                                 <li>
-                                    <a href="#registrationInfo/show"><i class="fa fa-user-plus"></i>&nbsp;Registration</a>
+                                    <a href="#registrationInfo/show"><i class="fa fa-users"></i>&nbsp;Registration List</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/counselorAction/show">

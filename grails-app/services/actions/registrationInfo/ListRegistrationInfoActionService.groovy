@@ -7,6 +7,7 @@ import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 import service.SecUserService
 
 @Transactional
@@ -40,17 +41,36 @@ class ListRegistrationInfoActionService extends BaseService implements ActionSer
     public Map execute(Map result) {
         try {
             Map resultMap
+            if (result.isNew == 'Yes') {
+                if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+                    Closure param = {
+                        'between'('createDate', DateUtility.getSqlFromDateWithSeconds(new Date()), DateUtility.getSqlToDateWithSeconds(new Date()))
+                    }
+                    resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
+                } else {
+                    String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
 
-            if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
-                resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class)
-            } else {
-                String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-
-                Closure param = {
-                    'eq'('hospitalCode', hospitalCode)
+                    Closure param = {
+                        'and' {
+                            'eq'('hospitalCode', hospitalCode)
+                            'between'('createDate', DateUtility.getSqlFromDateWithSeconds(new Date()), DateUtility.getSqlToDateWithSeconds(new Date()))
+                        }
+                    }
+                    resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
                 }
-                resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
+            } else {
+                if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+                    resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class)
+                } else {
+                    String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+
+                    Closure param = {
+                        'eq'('hospitalCode', hospitalCode)
+                    }
+                    resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
+                }
             }
+
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result
