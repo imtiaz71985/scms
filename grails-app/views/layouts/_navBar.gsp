@@ -93,6 +93,11 @@
                                     <a href="#medicineInfo/stock"><i class="fa fa-university"></i>&nbsp;Medicine Stock</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/medicineInfo/stock">
+                                <li>
+                                    <a href="#medicineInfo/shortageInStock"><i class="fa fa-university"></i>&nbsp;Shortage Medicine</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
