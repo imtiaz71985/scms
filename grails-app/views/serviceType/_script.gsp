@@ -6,9 +6,6 @@
     <sec:access url="/serviceType/update">
         <li onclick="editRecord();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-    <sec:access url="/serviceType/delete">
-        <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>
 </ul>
 </script>
 
@@ -153,7 +150,7 @@
             columns: [
                 {field: "name", title: "Name", width: 200, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "description", title: "Description", width: 250, sortable: false, filterable: false},
-                {field: "isActive", title: "Is Active", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
+                {field: "isActive", title: "Active", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()}, template:"#=isActive?'YES':'NO'#"}
             ],
             filterable: {
@@ -178,15 +175,6 @@
                 }
         );
         kendo.bind($("#application_top_panel"), ServiceTypeModel);
-    }
-
-    function deleteRecord() {
-        if (executeCommonPreConditionForSelectKendo(gridServiceType, 'record') == false) {
-            return;
-        }
-        var msg = 'Are you sure you want to delete the selected record?',
-                url = "${createLink(controller: 'serviceType', action:  'delete')}";
-        confirmDelete(msg, url, gridServiceType);
     }
 
     function editRecord() {

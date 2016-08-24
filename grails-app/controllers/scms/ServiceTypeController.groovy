@@ -1,7 +1,6 @@
 package scms
 
 import actions.serviceType.CreateServiceTypeActionService
-import actions.serviceType.DeleteServiceTypeActionService
 import actions.serviceType.ListServiceTypeActionService
 import actions.serviceType.UpdateServiceTypeActionService
 
@@ -13,7 +12,6 @@ class ServiceTypeController extends BaseController {
 
     CreateServiceTypeActionService createServiceTypeActionService
     UpdateServiceTypeActionService updateServiceTypeActionService
-    DeleteServiceTypeActionService deleteServiceTypeActionService
     ListServiceTypeActionService listServiceTypeActionService
 
     def show() {
@@ -25,10 +23,6 @@ class ServiceTypeController extends BaseController {
     }
     def update() {
         renderOutput(updateServiceTypeActionService, params)
-
-    }
-    def delete() {
-        renderOutput(deleteServiceTypeActionService, params)
 
     }
     def list() {
