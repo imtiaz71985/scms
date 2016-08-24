@@ -53,7 +53,6 @@
         $("#regNo").val(counselorAction.regNo);
         if (regNo == '') {
             $("#serviceTokenNo").val('');
-            //dropDownDiseaseGroup.value('');
             return false;
         }
         showLoadingSpinner(true);
@@ -176,8 +175,12 @@
         $('#divPathology').hide();
         $('#btnPathologyService').hide();
         $('#divSelectedDisease').hide();
+        $('#divTakenService').hide();
         $('#divReferenceServiceNo').hide();
+        $('#divReferenceNoWiseDisease').hide();
+        $('#referenceNoDiseaseTxt').val('');
         dropDownServiceType.value('');
+        dropDownDiseaseGroup.value('');
         dropDownServiceProvider.value('');
         dropDownRegistrationNo.value('');
         $('#referenceServiceNoDDL').val('');
@@ -343,6 +346,12 @@
         $('#counselorActionGridRow').hide();
         $('#divPayable').hide();
         $('#divServiceDetails').hide();
+        $('#divTakenService').hide();
+        $('#divReferenceNoWiseDisease').hide();
+        $('#referenceNoDiseaseTxt').val('');
+        dropDownDiseaseGroup.value('');
+        $('#selectedConsultancyId').val('');
+        $('#selectedDiseaseCode').val('');
 
         if (serviceTypeId == '') {
             $('#divServiceProvider').show();
@@ -385,6 +394,7 @@
             $('#divSubsidy').show();
             $('#divPayable').show();
             $('#divSelectedDisease').show();
+            $('#divTakenService').show();
             $('#selectedDiseaseTxt').val('');
             $('#serviceCharges').val('0');
             $('#subsidyAmount').val('');
@@ -469,7 +479,7 @@
         $("#gridServiceHeadInfo").kendoGrid({
             dataSource: dataSource,
             autoBind: false,
-            height: 330,
+            height: 280,
             selectable: false,
             sortable: true,
             resizable: true,
@@ -542,6 +552,7 @@
         $('#payableAmount').val(payable);
     }
     function loadPathologyServicesToComplete() {
+        $("#selectedChargeId").val('');
         var v = $('#divServiceDetails').is(":visible");
         if (!v) {
             $('#divServiceDetails').show();
@@ -602,7 +613,7 @@
                     return data;
                 }
             },
-            sort: {field: 'diseaseCode', dir: 'asc'},
+            sort: {field: 'name', dir: 'asc'},
             serverPaging: false,
             serverFiltering: false,
             serverSorting: false
@@ -673,25 +684,6 @@
             }
 
            $('#selectedDiseaseTxt').val(diseaseNames);
-            $.ajax({
-                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseCodes=" + checkedDisease,
-                success: function (data) {
-                    if (data.isError) {
-                        showError(data.message);
-                        return false;
-                    }
-                    $('#serviceCharges').val(data.totalCharge);
-                    $('#selectedConsultancyId').val(data.chargeIds);
-                    getPayableAmount();
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    afterAjaxError(XMLHttpRequest, textStatus);
-                },
-                complete: function (XMLHttpRequest, textStatus) {
-                    showLoadingSpinner(false);
-                }
-
-            });
         }
 
     function LoadDetailsByRegNo() {
@@ -724,6 +716,64 @@
         $('#searchCriteriaRow').hide();
         $('#counselorActionGridRow').hide();
 
+    }
+    function getReferenceNoWiseDisease() {
+        var tokenNo=$("#referenceServiceNoDDL").val();
+     if (tokenNo == '') {
+            $('#divReferenceNoWiseDisease').hide();
+         $('#referenceNoDiseaseTxt').val('');
+        }
+        else {
+         $('#divReferenceNoWiseDisease').show();
+         var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDiseaseOfReferenceTokenNo')}?tokenNo="+tokenNo;
+
+         jQuery.ajax({
+             type: 'post',
+             //data: jQuery("#counselorActionForm").serialize(),
+             url: actionUrl,
+             success: function (data, textStatus) {
+                 $('#referenceNoDiseaseTxt').val(data.diseaseInfo);
+             },
+             error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+             },
+             complete: function (XMLHttpRequest, textStatus) {
+                 showLoadingSpinner(false);
+             },
+             dataType: 'json'
+         });
+
+
+     }
+
+    }
+    function getConsultationFees(){
+        var diseaseId=$("#diseaseGroupId").val();
+        if(diseaseId!='') {
+            $.ajax({
+                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + diseaseId,
+                success: function (data) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+                    $('#serviceCharges').val(data.totalCharge);
+                    $('#selectedConsultancyId').val(data.chargeIds);
+                    getPayableAmount();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    afterAjaxError(XMLHttpRequest, textStatus);
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);
+                }
+
+            });
+        }else{
+            $('#serviceCharges').val('0');
+            $('#subsidyAmount').val('');
+            $('#selectedConsultancyId').val('');
+        }
     }
 
 </script>

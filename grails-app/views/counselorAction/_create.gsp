@@ -28,7 +28,7 @@
                                 class="k-button" tabindex="2"
                                 role="button" onclick="LoadDetailsByRegNo()"
                                 aria-disabled="false"><span
-                                class="k-icon k-i-plus"></span> Take New Service
+                                class="k-icon k-i-plus"></span> Take Service
                         </button>
                     </div>
 
@@ -101,14 +101,28 @@
                                 </app:dropDownServiceType>
                             </div>
                         </div>
+                        <div class="form-group" id="divTakenService"  style="display:none;">
+                            <label class="col-md-3 control-label label-required" for="diseaseGroupId">Taken Service:</label>
+
+                            <div class="col-md-6">
+                                <app:dropDownDiseaseGroup
+                                        data_model_name="dropDownDiseaseGroup"
+                                        id="diseaseGroupId" name="diseaseGroupId" tabindex="12"
+                                        class="kendo-drop-down"
+                                        onchange="javascript: getConsultationFees();">
+                                </app:dropDownDiseaseGroup>
+                            </div>
+
+                        </div>
                         <div class="form-group" id="divReferenceServiceNo" style="display:none;">
                             <label class="col-md-3 control-label label-required"
-                                   style="padding-right: 0px;">Reference Service No:</label>
+                                   style="padding-right: 0px;">Reference Token No:</label>
 
                             <div class="col-md-6">
                                 <select id="referenceServiceNoDDL"
                                         name="referenceServiceNoDDL"
-                                        class="kendo-drop-down">
+                                        class="kendo-drop-down"
+                                        onchange="javascript: getReferenceNoWiseDisease();">
                                 </select>
                             </div>
                         </div>
@@ -127,7 +141,7 @@
                         </div>
                         <div  class="form-group" style=" padding-bottom: 0px;">
                             <div class="col-md-1 "></div>
-                        <div class="col-md-10 " id="divServiceDetails" style="display:none;height: 300px; padding-left: 0px; padding-bottom: 0px;">
+                        <div class="col-md-10 " id="divServiceDetails" style="display:none;height: 250px; padding-left: 0px; padding-bottom: 0px;">
                             <div id="gridServiceHeadInfo"></div>
                         </div>
                             </div>
@@ -135,6 +149,13 @@
 
                     <div class="col-md-6" id="divCharges" style=" padding-bottom: 0px;">
 
+                        <div class="form-group" id="divReferenceNoWiseDisease" style="display:none;">
+                            <label class="col-md-3 control-label" style="padding-right: 0px;">Reference Disease:</label>
+
+                            <div class="col-md-9">
+                                <textarea readonly="true" id="referenceNoDiseaseTxt" style="width:100%"></textarea>
+                            </div>
+                        </div>
                         <div class="form-group" id="divServiceCharges" style="display:none;">
                             <label class="col-md-3 control-label label-required"
                                    style="padding-right: 0px;">Service Charges:</label>

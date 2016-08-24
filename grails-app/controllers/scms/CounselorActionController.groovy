@@ -1,6 +1,7 @@
 package scms
 
 import actions.ServiceTokenInfo.CreateServiceTokenInfoActionService
+import com.scms.DiseaseGroup
 import com.scms.DiseaseInfo
 import com.scms.SecUser
 import com.scms.ServiceTokenInfo
@@ -144,38 +145,22 @@ class CounselorActionController extends BaseController {
     }
 
     def getTotalServiceChargesByDiseaseCode() {
-        String diseaseCodes = params.diseaseCodes
-        double totalCharge = 0
-        String groupCode = ''
+        long diseaseId = Long.parseLong(params.diseaseId)
         List<GroovyRowResult> lstOfCharges
 
-        if (diseaseCodes.length() > 0) {
-            List<String> lst = Arrays.asList(diseaseCodes.split("\\s*,\\s*"));
-            for (int i = 0; i < lst.size(); i++) {
-                groupCode = groupCode + Long.parseLong(lst.get(i).substring(0, 2)).toString()
-                if ((i + 1) < lst.size())
-                    groupCode = groupCode + ','
-            }
-            Set set = new HashSet()
-            List<String> lstGroupCode = Arrays.asList(groupCode.split("\\s*,\\s*"));
-            set.addAll(lstGroupCode)
-
-            String strIds =''
-            for (int i = 0; i < set.size(); i++) {
-                strIds = strIds + set[i]
-                if ((i + 1) < set.size()) strIds = strIds + ','
-            }
-            lstOfCharges = serviceChargesService.getTotalChargeByListOfDiseaseCode(strIds)
-        }
-        String chargeIds=''
-        for(int i=0;i<lstOfCharges.size();i++) {
-            chargeIds = chargeIds + lstOfCharges[i].id
-            if ((i + 1) < lstOfCharges.size()) chargeIds = chargeIds + ','
-            totalCharge=totalCharge+ lstOfCharges[i].chargeAmount
-        }
+        lstOfCharges = serviceChargesService.getTotalChargeByListOfDiseaseCode(diseaseId.toString())
         Map result = new HashedMap()
-        result.put('totalCharge', totalCharge)
-        result.put('chargeIds', chargeIds)
+        result.put('totalCharge', lstOfCharges[0].chargeAmount)
+        result.put('chargeIds', lstOfCharges[0].id)
+
+        render result as JSON
+    }
+    def retrieveDiseaseOfReferenceTokenNo() {
+        String tokenNo = params.tokenNo.toString()
+        String diseaseInfo = serviceTokenRelatedInfoService.getDiseaseOfReferenceTokenNo(tokenNo)
+        Map result = new HashedMap()
+
+        result.put('diseaseInfo', diseaseInfo)
 
         render result as JSON
     }

@@ -30,6 +30,16 @@ class ServiceTokenRelatedInfoService extends BaseService{
         String service_token_no=(String)result[0].service_token_no
         return service_token_no
     }
+    public String getDiseaseOfReferenceTokenNo(String tokenNo){
+        String queryStr = """
+            SELECT COALESCE(GROUP_CONCAT(di.name),'')  AS disease FROM token_and_disease_mapping  tdm
+            JOIN disease_info di ON tdm.disease_code=di.disease_code
+                WHERE tdm.service_token_no='${tokenNo}'
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+        String diseaseInfo=(String)result[0].disease
+        return diseaseInfo
+    }
     public List<GroovyRowResult> RegAndServiceDetails(Date start,Date end, String hospital_code){
         String queryStr =""
         if(hospital_code.isEmpty()) {

@@ -1,5 +1,6 @@
 package actions.ServiceTokenInfo
 
+import com.scms.ServiceCharges
 import com.scms.ServiceTokenInfo
 import com.scms.TokenAndChargeMapping
 import com.scms.TokenAndDiseaseMapping
@@ -45,26 +46,40 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 if (!params.referenceServiceNoDDL) {
                     return super.setError(params, 'Sorry! Please select reference service no.')
                 }
-            } else {
-                if (serviceTypeId == 4) {
+            } else if (serviceTypeId == 4) {
                     String len = params.selectedChargeId
                     if (len.length() < 1) {
                         return super.setError(params, 'Sorry! Please select at least one consultation.')
                     }
                 }
-                else if(serviceTypeId>0) {
-                    String len = params.selectedDiseaseCode
-                    if (len.length() < 1) {
+                else {
+                String diseaseCodes = params.selectedDiseaseCode
+                String chargeId=params.selectedConsultancyId
+                    if (diseaseCodes.length() < 1) {
                         return super.setError(params, 'Sorry! Please select at least one disease.')
                     }
-                }
-                /*if (params.chkboxPathology) {
-                    String len = params.selectedChargeId
-                    if (len.length() < 1) {
-                        return super.setError(params, 'Sorry! Please select at least one pathology test.')
+                    else if(chargeId.length()<1) {
+                        return super.setError(params, 'Sorry! Please select taken service.')
                     }
-                }*/
-            }
+                    else{
+                        boolean isSameGroup=false
+
+                        String groupCode=''
+                        String serviceCode=ServiceCharges.findById(Long.parseLong(chargeId)).serviceCode
+                        long groupId=Long.parseLong(serviceCode.substring(3,serviceCode.length()))
+                        if (diseaseCodes.length() > 0) {
+                            List<String> lst = Arrays.asList(diseaseCodes.split("\\s*,\\s*"));
+                            for (int i = 0; i < lst.size(); i++) {
+                                if (Long.parseLong(lst.get(i).substring(0, 2)) == groupId)
+                                    isSameGroup = true
+                            }
+
+                        }
+                        if(!isSameGroup){
+                            return super.setError(params, 'Sorry! Please select one disease from selected taken service.')
+                        }
+                    }
+                }
 
             ServiceTokenInfo serviceTokenInfo = buildObject(params, serviceTypeId)
             params.put(SERVICE_TOKEN_INFO, serviceTokenInfo)
