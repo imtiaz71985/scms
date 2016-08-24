@@ -1,7 +1,6 @@
 package scms
 
 import actions.serviceProvider.CreateServiceProviderActionService
-import actions.serviceProvider.DeleteServiceProviderActionService
 import actions.serviceProvider.ListServiceProviderActionService
 import actions.serviceProvider.UpdateServiceProviderActionService
 
@@ -13,7 +12,6 @@ class ServiceProviderController extends BaseController {
 
     CreateServiceProviderActionService createServiceProviderActionService
     UpdateServiceProviderActionService updateServiceProviderActionService
-    DeleteServiceProviderActionService deleteServiceProviderActionService
     ListServiceProviderActionService listServiceProviderActionService
 
     def show() {
