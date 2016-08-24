@@ -167,7 +167,7 @@
                     width: 50,
                     attributes: {style: setAlignRight()},
                     headerAttributes: {style: setAlignRight()},
-                    template: "#=formatAmount(totalAmount)#",
+                    template: "#=formatCeilAmount(totalAmount)#",
                     sortable: false,
                     filterable: false
                 },

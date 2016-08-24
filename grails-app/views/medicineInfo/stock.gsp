@@ -167,7 +167,7 @@
                 {
                     field: "stockQty", title: "Current Stock", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "<span style='float: left; width: 100%; background-color:lightgray'>#=formatStock(stockQty,warnQty)#</div>"
+                    template: "<span style='float: left; width: 100%;'>#=formatStock(stockQty,warnQty)#</div>"
                 },
                 {
                     field: "unitPrice", title: "Unit Price", width: 35, sortable: false, filterable: false,
@@ -189,7 +189,7 @@
     }
     function formatStock(stockQty,warnQty){
         if(stockQty==0) return "<b style='color:red;font-size: larger;'>"+ stockQty+"</b>";
-        if(stockQty<warnQty) return "<b style='color:#ffff00;font-size: larger;'>"+ stockQty+"</b>";
+        if(stockQty<warnQty) return "<b style='color:#eb9316;font-size: larger;'>"+ stockQty+"</b>";
         return "<b style='color:#000000;font-size: larger;'>"+ stockQty+"</b>";
     }
     

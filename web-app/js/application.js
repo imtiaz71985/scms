@@ -515,12 +515,12 @@ function setAlignRight() {
 function formatAmount(amount) {
     return formatNumberTwo(amount);
 }
+function formatCeilAmount(amount) {
+    return kendo.toString(amount, "##,###");
+}
 
 function formatNumberTwo(amount) {
     return kendo.toString(amount, "##,###.00");
-}
-function formatNumberFour(amount) {
-    return kendo.toString(amount, "##,###.0000");
 }
 
 /** applicable only for filterable fields those have long value(e.g- id) to show

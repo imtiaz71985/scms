@@ -14,7 +14,7 @@
         $("#voucherNo").val(voucherNo);
         initMedicineSellInfoGrid();
         gridMedicineSellInfo.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
-        $("#footerSpan").text(formatAmount(totalAmount));
+        $("#footerSpan").text(formatCeilAmount(totalAmount));
 
         $('#quantity').kendoNumericTextBox({
             spin: function() {
@@ -31,7 +31,7 @@
             onSubmitForm(e);
         });
         $('#gridMedicine  > .k-grid-content').height(275);
-        defaultPageTile("Sale details", null);
+        defaultPageTile("Sale details", "medicineSellInfo/show");
 
     });
     function  resetForm(){
@@ -158,7 +158,7 @@
         $("#stockQty").text('');
         $("#voucherNo").val(voucherNo);
         totalAmount=parseFloat(totalAmount,10)+parseFloat(amount,10);
-        $("#footerSpan").text(formatAmount(totalAmount));
+        $("#footerSpan").text(formatCeilAmount(totalAmount));
         unitPrice = 0;
         $('#gridMedicine  > .k-grid-content').height(275);
         return false;
@@ -203,7 +203,7 @@
                     headerAttributes: {style: setAlignRight()},
                     template: "#=formatAmount(amount)#",
                     sortable: false,filterable: false,width: 50,
-                    footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatAmount(0)#</span></div>"
+                    footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatCeilAmount(0)#</span></div>"
                 }
             ],
             filterable: {
@@ -320,7 +320,7 @@
         var amount = $("#amount").val();
         totalAmount = parseFloat(totalAmount,10)-parseFloat(amount,10);
         $("#footerSpan").text('');
-        $("#footerSpan").text(formatAmount(totalAmount));
+        $("#footerSpan").text(formatCeilAmount(totalAmount));
         $('#gridMedicine  > .k-grid-content').height(275);
     }
     function deleteMedicine(com, grid) {
@@ -331,7 +331,7 @@
         totalAmount=parseFloat(totalAmount,10)-parseFloat(data.amount,10);
         gridMedicineSellInfo.dataSource.remove(data);
         $("#footerSpan").text('');
-        $("#footerSpan").text(formatAmount(totalAmount));
+        $("#footerSpan").text(formatCeilAmount(totalAmount));
         $('#gridMedicine  > .k-grid-content').height(275);
     }
 </script>
