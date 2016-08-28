@@ -24,7 +24,7 @@ class CreateMedicinePriceActionService  extends BaseService implements ActionSer
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if (!params.medicineId||!params.price) {
+            if (!params.medicineId||!params.mrpPrice) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long medicineId = Long.parseLong(params.medicineId)
