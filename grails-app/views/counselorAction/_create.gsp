@@ -101,6 +101,43 @@
                                 </app:dropDownServiceType>
                             </div>
                         </div>
+                        <div class="form-group" id="divReferralCenter" style="display: none;">
+                            <label class="col-md-3 control-label label-required"
+                                   for="referralCenterId">Refer To:</label>
+
+                            <div class="col-md-6">
+                                <app:dropDownReferralCenter
+                                        data_model_name="dropDownReferralCenter"
+                                        type="counselor"
+                                        id="referralCenterId" name="referralCenterId" tabindex="4"
+                                        class="kendo-drop-down"
+                                        data-bind="value: counselorAction.referralCenterId">
+                                </app:dropDownReferralCenter>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="divPrescriptionType">
+                            <label class="col-md-3 control-label label-required"
+                                   style="padding-top: 0px;">Prescription:</label>
+
+                            <div class="col-md-9" style="padding-top: 0px;">
+                                <input type="checkbox" value="" id="chkboxMedicine" name="chkboxMedicine">&nbsp;Medicine
+                                <input type="checkbox" value="" id="chkboxPathology" name="chkboxPathology"
+                                       onclick="loadPathologyServicesToComplete();">&nbsp;Pathology Test
+                                <input type="checkbox" value="" id="chkboxDocReferral" name="chkboxDocReferral"
+                                       onclick="loadReferralCenter();">&nbsp;Doctors Referral
+
+                            </div>
+                        </div>
+                        <div  class="form-group" style=" padding-bottom: 0px;">
+                            <div class="col-md-1 "></div>
+                        <div class="col-md-10 " id="divServiceDetails" style="display:none;height: 250px; padding-left: 0px; padding-bottom: 0px;">
+                            <div id="gridServiceHeadInfo"></div>
+                        </div>
+                            </div>
+                    </div>
+
+                    <div class="col-md-6" id="divCharges" style=" padding-bottom: 0px;">
                         <div class="form-group" id="divTakenService"  style="display:none;">
                             <label class="col-md-3 control-label label-required" for="diseaseGroupId">Taken Service:</label>
 
@@ -126,28 +163,6 @@
                                 </select>
                             </div>
                         </div>
-
-                        <div class="form-group" id="divPrescriptionType">
-                            <label class="col-md-3 control-label label-required"
-                                   style="padding-top: 0px;">Prescription:</label>
-
-                            <div class="col-md-9" style="padding-top: 0px;">
-                                <input type="checkbox" value="" id="chkboxMedicine" name="chkboxMedicine">&nbsp;Medicine
-                                <input type="checkbox" value="" id="chkboxPathology" name="chkboxPathology"
-                                       onclick="loadPathologyServicesToComplete();">&nbsp;Pathology Test
-                                <input type="checkbox" value="" id="chkboxDocReferral" name="chkboxDocReferral">&nbsp;Doctors Referral
-
-                            </div>
-                        </div>
-                        <div  class="form-group" style=" padding-bottom: 0px;">
-                            <div class="col-md-1 "></div>
-                        <div class="col-md-10 " id="divServiceDetails" style="display:none;height: 250px; padding-left: 0px; padding-bottom: 0px;">
-                            <div id="gridServiceHeadInfo"></div>
-                        </div>
-                            </div>
-                    </div>
-
-                    <div class="col-md-6" id="divCharges" style=" padding-bottom: 0px;">
 
                         <div class="form-group" id="divReferenceNoWiseDisease" style="display:none;">
                             <label class="col-md-3 control-label" style="padding-right: 0px;">Reference Disease:</label>
@@ -208,7 +223,7 @@
                             </div>
 
                         </div>
-                        <div class="form-group col-md-10 pull-right" style="height: 300px; padding-left: 0px; padding-bottom: 0px;">
+                        <div class="form-group col-md-10 pull-right" style="height: 270px; padding-left: 0px; padding-bottom: 0px;">
                             <div id="gridDiseaseDetails"></div>
                         </div>
                     </div>

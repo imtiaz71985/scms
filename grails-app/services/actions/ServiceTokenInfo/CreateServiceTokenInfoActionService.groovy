@@ -32,6 +32,10 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             if (!params.serviceTypeId && !params.chkboxPathology) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
+            if (params.chkboxDocReferral) {
+                if(!params.referralCenterId)
+                    return super.setError(params, 'Sorry! Please select referral center.')
+            }
             long serviceTypeId = 0
             if (params.serviceTypeId) {
                 try {
@@ -202,17 +206,19 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         }
         String presciption = ''
 
-            if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
-                presciption = 'Medicine & Pathology Test & Doctors Referral'
-           else if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology)
-                presciption = 'Medicine & Pathology Test'
-           else if (parameterMap.chkboxMedicine && parameterMap.chkboxDocReferral)
-                presciption = 'Medicine & Doctors Referral'
-           else if (parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
-                presciption = 'Pathology Test & Doctors Referral'
-            else
-              presciption=(parameterMap.chkboxMedicine ? 'Medicine' : parameterMap.chkboxPathology ? 'Pathology Test' : parameterMap.chkboxDocReferral ? 'Doctors Referral' : '')
+        if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
+            presciption = 'Medicine & Pathology Test & Doctors Referral'
+        else if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology)
+            presciption = 'Medicine & Pathology Test'
+        else if (parameterMap.chkboxMedicine && parameterMap.chkboxDocReferral)
+            presciption = 'Medicine & Doctors Referral'
+        else if (parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
+            presciption = 'Pathology Test & Doctors Referral'
+        else
+            presciption = (parameterMap.chkboxMedicine ? 'Medicine' : parameterMap.chkboxPathology ? 'Pathology Test' : parameterMap.chkboxDocReferral ? 'Doctors Referral' : '')
 
+        if (parameterMap.chkboxDocReferral)
+            serviceTokenInfo.referralCenterId = parameterMap.referralCenterId
 
         serviceTokenInfo.prescriptionType = presciption
         serviceTokenInfo.modifyDate = DateUtility.getSqlDate(new Date())

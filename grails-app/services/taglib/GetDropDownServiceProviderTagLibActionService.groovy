@@ -1,6 +1,5 @@
 package taglib
 
-import com.scms.DiseaseGroup
 import com.scms.ServiceProvider
 import grails.converters.JSON
 import grails.transaction.Transactional

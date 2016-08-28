@@ -14,11 +14,13 @@ class ServiceTokenInfo {
     Date modifyDate
     long modifyBy
     String referenceServiceTokenNo
+    long referralCenterId
     static constraints = {
         modifyDate(nullable: true)
         modifyBy (nullable: true)
         referenceServiceTokenNo (nullable: true)
         prescriptionType (nullable: true)
+        referralCenterId (nullable: true)
     }
     static mapping = {
         id name: 'serviceTokenNo'
@@ -27,6 +29,7 @@ class ServiceTokenInfo {
         regNo index: 'service_token_info_reg_no_idx'
         visitTypeId index: 'service_token_info_visit_type_id_idx'
         serviceProviderId index: 'service_token_info_service_provider_id_idx'
+        referralCenterId index: 'service_token_info_referral_center_id_idx'
 
     }
 }

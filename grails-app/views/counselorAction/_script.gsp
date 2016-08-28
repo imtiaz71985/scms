@@ -8,7 +8,7 @@
 
 <script language="javascript">
     var gridCounselorAction, dataSource,dataSourceForDisease, registrationInfoModel, dropDownServiceType, dropDownServiceProvider,
-            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo,
+            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo,dropDownReferralCenter,
             dropDownreferenceServiceNoDDL;
     var checkedIds = {}; // declare an object to hold selected grid ids
     var checkedDiseaseCodes = {}; // declare an object to hold selected disease codes
@@ -178,16 +178,21 @@
         $('#divTakenService').hide();
         $('#divReferenceServiceNo').hide();
         $('#divReferenceNoWiseDisease').hide();
+        $('#divReferralCenter').hide();
         $('#referenceNoDiseaseTxt').val('');
         dropDownServiceType.value('');
         dropDownDiseaseGroup.value('');
         dropDownServiceProvider.value('');
         dropDownRegistrationNo.value('');
+        dropDownReferralCenter.value('');
         $('#referenceServiceNoDDL').val('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
         $('#counselorActionGridRow').show();
+        $('#chkboxPathology').val('');
+        $('#chkboxMedicine').val('');
+        $('#chkboxDocReferral').val('');
         initRegAndServiceInfoGrid();
         resetBasicData();
     }
@@ -361,6 +366,7 @@
             $('#chkboxPathology').attr('checked', false);
             $('#chkboxMedicine').attr('checked', false);
             $('#chkboxDocReferral').attr('checked', false);
+            $('#divReferralCenter').hide();
             $('#divServiceDetails').show();
             resetBasicData();
             var url = "${createLink(controller: 'counselorAction', action: 'serviceHeadInfoListByType')}?serviceTypeId=" + serviceTypeId;
@@ -370,6 +376,7 @@
             $('#chkboxPathology').attr('checked', false);
             $('#chkboxMedicine').attr('checked', false);
             $('#chkboxDocReferral').attr('checked', false);
+            $('#divReferralCenter').hide();
             $("#divPrescriptionType").show();
             $('#divCharges').show();
             $('#divServiceProvider').show();
@@ -624,7 +631,7 @@
         initDiseaseInfoDataSource();
         $("#gridDiseaseDetails").kendoGrid({
             dataSource: dataSourceForDisease,
-            height: 330,
+            height: 300,
             autoBind: false,
             selectable: true,
             sortable: true,
@@ -773,6 +780,15 @@
             $('#serviceCharges').val('0');
             $('#subsidyAmount').val('');
             $('#selectedConsultancyId').val('');
+        }
+    }
+    function loadReferralCenter() {
+        if ($('#chkboxDocReferral').is(":checked")) {
+            $('#divReferralCenter').show();
+        }
+        else {
+            $('#divReferralCenter').hide();
+            dropDownReferralCenter.value('');
         }
     }
 

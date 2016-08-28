@@ -1,7 +1,6 @@
 package scms
 
 import actions.ServiceTokenInfo.CreateServiceTokenInfoActionService
-import com.scms.DiseaseGroup
 import com.scms.DiseaseInfo
 import com.scms.SecUser
 import com.scms.ServiceTokenInfo
@@ -10,7 +9,6 @@ import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
-import scms.utility.Tools
 import service.SecUserService
 import service.ServiceChargesService
 import service.ServiceHeadInfoService

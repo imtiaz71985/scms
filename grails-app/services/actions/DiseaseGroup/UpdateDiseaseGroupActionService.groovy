@@ -1,7 +1,6 @@
 package actions.DiseaseGroup
 
 import com.model.ListDiseaseGroupActionServiceModel
-import com.model.ListServiceTypeActionServiceModel
 import com.scms.DiseaseGroup
 import com.scms.ServiceCharges
 import grails.plugin.springsecurity.SpringSecurityService

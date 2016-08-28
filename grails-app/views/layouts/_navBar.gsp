@@ -177,6 +177,11 @@
                                     <a href="#hospitalLocation/show"><i class="fa fa-hospital-o"></i>&nbsp;Clinic</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/referralCenter/show">
+                                <li>
+                                    <a href="#referralCenter/show"><i class="fa fa-hospital-o"></i>&nbsp;Referral Center</a>
+                                </li>
+                            </sec:access>
                             <sec:access url="/requisitionAuthority/show">
                                 <li>
                                     <a href="#requisitionAuthority/show"><i class="fa fa-user-secret"></i>&nbsp; Requisition Authority</a>

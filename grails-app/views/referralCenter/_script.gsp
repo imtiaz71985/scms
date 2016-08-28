@@ -1,30 +1,27 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-    <sec:access url="/diseaseGroup/create">
+    <sec:access url="/referralCenter/create">
         <li onclick="showForm();"><i class="fa fa-plus-square-o"></i>New</li>
     </sec:access>
-    <sec:access url="/diseaseGroup/update">
+    <sec:access url="/referralCenter/update">
         <li onclick="editRecord();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-   %{-- <sec:access url="/diseaseGroup/delete">
-        <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>--}%
 </ul>
 </script>
 
 <script language="javascript">
-    var gridDiseaseGroup, dataSource, DiseaseGroupModel;
+    var gridReferralCenter, dataSource, ReferralCenterModel;
 
     $(document).ready(function () {
-        onLoadDiseaseGroupPage();
-        initDiseaseGroupGrid();
+        onLoadReferralCenterPage();
+        initReferralCenterGrid();
         initObservable();
     });
 
-    function onLoadDiseaseGroupPage() {
-        $("#diseaseGroupRow").hide();
+    function onLoadReferralCenterPage() {
+        $("#referralCenterRow").hide();
         // initialize form with kendo validator & bind onSubmit event
-        initializeForm($("#diseaseGroupForm"), onSubmitDiseaseGroup);
+        initializeForm($("#referralCenterForm"), onSubmitReferralCenter);
         var date = new Date();
         date.setDate(date.getDate() + 1);
         $("#activationDate").kendoDatePicker({
@@ -35,20 +32,20 @@
         $("#activationDate").kendoMaskedTextBox({mask: "00/00/0000"});
 
         // update page title
-        defaultPageTile("Create Disease Group",'/diseaseGroup/show');
+        defaultPageTile("Create Referral Center",'/referralCenter/show');
     }
 
     function showForm() {
-        $("#diseaseGroupRow").show();
+        $("#referralCenterRow").show();
     }
     function executePreCondition() {
-        if (!validateForm($("#diseaseGroupForm"))) {
+        if (!validateForm($("#referralCenterForm"))) {
             return false;
         }
         return true;
     }
 
-    function onSubmitDiseaseGroup() {
+    function onSubmitReferralCenter() {
         if (executePreCondition() == false) {
             return false;
         }
@@ -57,14 +54,14 @@
         showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'diseaseGroup', action: 'create')}";
+            actionUrl = "${createLink(controller:'referralCenter', action: 'create')}";
         } else {
-            actionUrl = "${createLink(controller:'diseaseGroup', action: 'update')}";
+            actionUrl = "${createLink(controller:'referralCenter', action: 'update')}";
         }
 
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#diseaseGroupForm").serialize(),
+            data: jQuery("#referralCenterForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);
@@ -86,16 +83,16 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.diseaseGroup;
+                var newEntry = result.referralCenter;
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
-                    var gridData = gridDiseaseGroup.dataSource.data();
+                    var gridData = gridReferralCenter.dataSource.data();
                     gridData.unshift(newEntry);
                 } else if (newEntry != null) { // updated existing
-                    var selectedRow = gridDiseaseGroup.select();
-                    var allItems = gridDiseaseGroup.items();
+                    var selectedRow = gridReferralCenter.select();
+                    var allItems = gridReferralCenter.items();
                     var selectedIndex = allItems.index(selectedRow);
-                    gridDiseaseGroup.removeRow(selectedRow);
-                    gridDiseaseGroup.dataSource.insert(selectedIndex, newEntry);
+                    gridReferralCenter.removeRow(selectedRow);
+                    gridReferralCenter.dataSource.insert(selectedIndex, newEntry);
                 }
                 resetForm();
                 showSuccess(result.message);
@@ -106,18 +103,18 @@
     }
 
     function resetForm() {
-        clearForm($("#diseaseGroupForm"), $('#name'));
+        clearForm($("#referralCenterForm"), $('#name'));
         initObservable();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
-        $("#diseaseGroupRow").hide();
-        initDiseaseGroupGrid();
+        $("#referralCenterRow").hide();
+        initReferralCenterGrid();
     }
 
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'diseaseGroup', action: 'list')}",
+                    url: "${createLink(controller: 'referralCenter', action: 'list')}",
                     dataType: "json",
                     type: "post"
                 }
@@ -130,10 +127,9 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         name: { type: "string" },
-                        description: { type: "string" },
-                        isActive: { type: "boolean" },
-                        chargeAmount:{type:"string"},
-                        activationDate:{type:"string"}
+                        address: { type: "string" },
+                        isActive: { type: "boolean" }
+
                     }
                 },
                 parse: function (data) {
@@ -148,9 +144,9 @@
         });
     }
 
-    function initDiseaseGroupGrid() {
+    function initReferralCenterGrid() {
         initDataSource();
-        $("#gridDiseaseGroup").kendoGrid({
+        $("#gridReferralCenter").kendoGrid({
             dataSource: dataSource,
             height: getGridHeightKendo(),
             selectable: true,
@@ -164,16 +160,7 @@
             },
             columns: [
                 {field: "name", title: "Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "description", title: "Description", width: 200, sortable: false, filterable: false},
-                {
-                    field: "activationDate",
-                    title: "Activation Date",
-                    format: "{0:dd-MM-yyyy}",
-                    width: 70,
-                    sortable: false,
-                    filterable: false
-                },
-                {field: "chargeAmount", title: "Charges", width: 70, sortable: false, filterable: false},
+                {field: "address", title: "Address", width: 200, sortable: false, filterable: false},
                 {field: "isActive", title: "Active", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()}, template:"#=isActive?'YES':'NO'#"}
             ],
@@ -182,47 +169,46 @@
             },
             toolbar: kendo.template($("#gridToolbar").html())
         });
-        gridDiseaseGroup = $("#gridDiseaseGroup").data("kendoGrid");
+        gridReferralCenter = $("#gridReferralCenter").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
 
     function initObservable() {
-        DiseaseGroupModel = kendo.observable(
+        ReferralCenterModel = kendo.observable(
                 {
-                    diseaseGroup: {
+                    referralCenter: {
                         id: "",
                         version: "",
                         name: "",
-                        description: "",
-                        isActive: true,
-                        chargeAmount:"",
-                        activationDate:""
+                        address: "",
+                        isActive: true
+
                     }
                 }
         );
-        kendo.bind($("#application_top_panel"), DiseaseGroupModel);
+        kendo.bind($("#application_top_panel"), ReferralCenterModel);
     }
 
     function deleteRecord() {
-        if (executeCommonPreConditionForSelectKendo(gridDiseaseGroup, 'record') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridReferralCenter, 'record') == false) {
             return;
         }
         var msg = 'Are you sure you want to delete the selected record?',
-                url = "${createLink(controller: 'diseaseGroup', action:  'delete')}";
-        confirmDelete(msg, url, gridDiseaseGroup);
+                url = "${createLink(controller: 'referralCenter', action:  'delete')}";
+        confirmDelete(msg, url, gridReferralCenter);
     }
 
     function editRecord() {
-        if (executeCommonPreConditionForSelectKendo(gridDiseaseGroup, 'record') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridReferralCenter, 'record') == false) {
             return;
         }
-        $("#diseaseGroupRow").show();
-        var diseaseGroup = getSelectedObjectFromGridKendo(gridDiseaseGroup);
-        showRecord(diseaseGroup);
+        $("#referralCenterRow").show();
+        var referralCenter = getSelectedObjectFromGridKendo(gridReferralCenter);
+        showRecord(referralCenter);
     }
 
-    function showRecord(diseaseGroup) {
-        DiseaseGroupModel.set('diseaseGroup', diseaseGroup);
+    function showRecord(referralCenter) {
+        ReferralCenterModel.set('referralCenter', referralCenter);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
