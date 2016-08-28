@@ -1,9 +1,10 @@
-var kendoNotificationModel;
+var kendoNotificationModel, wnd;
 $(document).ready(function () {
 
     showLoadingSpinner(true);
 
     var popupSpan = "<span id='globalPopupNotification' style='display:none;'></span>";
+    var winElement = "<div id='window'></div>";
 
     kendoNotificationModel = $(popupSpan).kendoNotification(
         {
@@ -24,6 +25,35 @@ $(document).ready(function () {
             ]
 
         }).data("kendoNotification");
+
+    wnd = $(winElement).kendoWindow({
+        title     : "Patient Service Details",
+        modal     : true,
+        visible   : false,
+        resizable : false,
+        width     : 800,
+        actions   : [ "Pdf", "Minimize", "Maximize", "Close" ]
+    }).data("kendoWindow");
+
+    wnd.wrapper.find(".k-i-pdf").click(function(e){
+        // Convert the DOM element to a drawing using kendo.drawing.drawDOM
+        kendo.drawing.drawDOM($("#window"))
+            .then(function(group) {
+                // Render the result as a PDF file
+                return kendo.drawing.exportPDF(group, {
+                    paperSize : "auto",
+                    margin    : { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+                });
+            })
+            .done(function(data) {
+                // Save the PDF file
+                kendo.saveAs({
+                    dataURI  : data,
+                    fileName : "patient_service_details.pdf"
+                });
+            });
+        e.preventDefault();
+    });
 });
 
 // assign kendo validator & bind onSubmit event

@@ -81,4 +81,26 @@ class ServiceTokenRelatedInfoService extends BaseService{
 
         return result
     }
+
+    public List<GroovyRowResult> getTokenDetails(String tokenNo){
+        String queryStr = """
+        SELECT ri.patient_name,sti.reg_no, sti.service_token_no,sti.prescription_type,ri.date_of_birth,
+            CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address,
+            sp.name AS service_provider,rc.name AS referral_center
+            ,(SELECT COALESCE(GROUP_CONCAT(di.name),'')   FROM token_and_disease_mapping tdm
+                    LEFT JOIN disease_info di ON tdm.disease_code=di.disease_code
+                WHERE tdm.service_token_no=sti.service_token_no) AS disease
+                FROM service_token_info sti
+              LEFT JOIN registration_info ri ON ri.reg_no = sti.reg_no
+              LEFT JOIN village v ON v.id = ri.village_id
+              LEFT JOIN st_union u ON v.union_id=u.id
+              LEFT JOIN upazila up ON u.upazila_id=up.id
+              LEFT JOIN district d ON up.district_id=d.id
+              LEFT JOIN service_provider sp ON sp.id = sti.service_provider_id
+              LEFT JOIN referral_center rc ON rc.id = sti.referral_center_id
+          WHERE sti.service_token_no='${tokenNo}'
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+        return result
+    }
 }

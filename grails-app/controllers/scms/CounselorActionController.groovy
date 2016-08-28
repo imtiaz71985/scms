@@ -162,4 +162,11 @@ class CounselorActionController extends BaseController {
 
         render result as JSON
     }
+    def serviceDetails() {
+        String tokenNo = params.tokenNo.toString()
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getTokenDetails(tokenNo)
+        Map result = new HashedMap()
+        result.put('details', lst[0])
+        render result as JSON
+    }
 }

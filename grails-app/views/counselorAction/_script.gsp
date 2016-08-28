@@ -9,7 +9,7 @@
 <script language="javascript">
     var gridCounselorAction, dataSource,dataSourceForDisease, registrationInfoModel, dropDownServiceType, dropDownServiceProvider,
             dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo,dropDownReferralCenter,
-            dropDownreferenceServiceNoDDL;
+            dropDownreferenceServiceNoDDL,detailsTemplate;
     var checkedIds = {}; // declare an object to hold selected grid ids
     var checkedDiseaseCodes = {}; // declare an object to hold selected disease codes
     var checkedDiseaseNames = {}; // declare an object to hold selected disease names
@@ -294,13 +294,11 @@
                                 {field: "totalCharge", title: "Total(৳)", width: 70, sortable: false, filterable: false}
                             ]
                         },
-                        {
-                            field: "isExit",
-                            title: "Action <br/> Completed",
-                            width: 50, sortable: false,filterable: false,
-                            attributes: {style: setAlignCenter()},
-                            headerAttributes: {style: setAlignCenter()},
-                            template: "#=isExit?'YES':'NO'#"
+                        { command: {
+                            text: " ",
+                            click: showDetails,
+                            className: "fa fa-search-plus fa-2x"
+                        }, width: 50
                         }
                     ]
                 }
@@ -308,7 +306,28 @@
         ;
         gridCounselorAction = $("#gridCounselorAction").data("kendoGrid");
     }
-
+    function showDetails(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        $.ajax({
+            url: "${createLink(controller: 'counselorAction', action: 'serviceDetails')}?tokenNo=" + dataItem.serviceTokenNo,
+            success: function (data) {
+                console.log(data);
+                detailsTemplate = kendo.template($("#detailsTemplate").html());
+                wnd.content(detailsTemplate(data.details));
+                wnd.center().open();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
     function initObservable() {
         registrationInfoModel = kendo.observable(
                 {

@@ -15,6 +15,7 @@ class ServiceTokenInfo {
     long modifyBy
     String referenceServiceTokenNo
     long referralCenterId
+
     static constraints = {
         modifyDate(nullable: true)
         modifyBy (nullable: true)

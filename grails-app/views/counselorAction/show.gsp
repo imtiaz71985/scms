@@ -7,4 +7,5 @@
 
 
 <g:render template='/counselorAction/script'/>
+<g:render template='/counselorAction/detailsTemplate'/>
 <g:render template='/counselorAction/create'/>
