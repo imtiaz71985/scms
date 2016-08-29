@@ -84,10 +84,10 @@ class ServiceTokenRelatedInfoService extends BaseService{
 
     public List<GroovyRowResult> getTokenDetails(String tokenNo){
         String queryStr = """
-        SELECT ri.patient_name,sti.reg_no, sti.service_token_no,sti.prescription_type,ri.date_of_birth,
+        SELECT ri.patient_name,sti.reg_no, sti.service_token_no,sti.prescription_type,ri.date_of_birth AS date_of_birth,
             CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address,
-            sp.name AS service_provider,rc.name AS referral_center
-            ,(SELECT COALESCE(GROUP_CONCAT(di.name),'')   FROM token_and_disease_mapping tdm
+            sp.name AS service_provider,rc.name AS referral_center,
+            (SELECT COALESCE(GROUP_CONCAT(di.name),'')   FROM token_and_disease_mapping tdm
                     LEFT JOIN disease_info di ON tdm.disease_code=di.disease_code
                 WHERE tdm.service_token_no=sti.service_token_no) AS disease
                 FROM service_token_info sti

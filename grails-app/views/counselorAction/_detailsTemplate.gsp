@@ -9,7 +9,7 @@
                     </tr>
                     <tr>
                         <td width="15%">Age</td><td width="1%">:</td>
-                        <td width="35%">#= date_of_birth#</td>
+                        <td width="35%">#= evaluateDateRange(new Date(date_of_birth), new Date())#</td>
                         <td>Address</td><td>:</td>
                         <td>#= address#</td>
                     </tr>
@@ -17,10 +17,16 @@
                         <th colspan="12">Service Information</th>
                      </tr>
                     <tr>
-                        <td>Token No</td><td>:</td>
+                        <td>Service No</td><td>:</td>
                         <td>#= service_token_no#</td>
-                        <td>Prescription type</td><td>:</td>
-                        <td>#= prescription_type#</td>
+                        <td>Prescription</td><td>:</td>
+                        <td>#= prescription_type?prescription_type:''#</td>
+                    </tr>
+                    <tr>
+                        <td>Findings</td><td>:</td>
+                        <td>#= disease?disease:''#</td>
+                        <td>Referral center</td><td>:</td>
+                        <td>#= referral_center?referral_center:''#</td>
                     </tr>
                     </tbody>
                 </table>
