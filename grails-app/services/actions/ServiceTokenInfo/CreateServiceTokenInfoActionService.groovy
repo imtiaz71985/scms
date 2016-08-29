@@ -35,6 +35,8 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             if (params.chkboxDocReferral) {
                 if(!params.referralCenterId)
                     return super.setError(params, 'Sorry! Please select referral center.')
+                if(!params.serviceTypeId)
+                    return super.setError(params, 'Sorry! Please select service type.')
             }
             long serviceTypeId = 0
             if (params.serviceTypeId) {
@@ -42,35 +44,32 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     serviceTypeId = Long.parseLong(params.serviceTypeId)
                 } catch (Exception ex) {
                 }
-            }
-            if (serviceTypeId != 4 && !params.serviceProviderId) {
-                return super.setError(params, 'Sorry! Please select service provider.')
-            }
-            if (serviceTypeId == 5) {
-                if (!params.referenceServiceNoDDL) {
-                    return super.setError(params, 'Sorry! Please select reference service no.')
+
+                if (serviceTypeId != 4 && !params.serviceProviderId) {
+                    return super.setError(params, 'Sorry! Please select service provider.')
                 }
-            } else if (serviceTypeId == 4) {
+                if (serviceTypeId == 5) {
+                    if (!params.referenceServiceNoDDL) {
+                        return super.setError(params, 'Sorry! Please select reference service no.')
+                    }
+                } else if (serviceTypeId == 4) {
                     String len = params.selectedChargeId
                     if (len.length() < 1) {
                         return super.setError(params, 'Sorry! Please select at least one consultation.')
                     }
-                }
-                else {
-                String diseaseCodes = params.selectedDiseaseCode
-                String chargeId=params.selectedConsultancyId
+                } else {
+                    String diseaseCodes = params.selectedDiseaseCode
+                    String chargeId = params.selectedConsultancyId
                     if (diseaseCodes.length() < 1) {
                         return super.setError(params, 'Sorry! Please select at least one disease.')
-                    }
-                    else if(chargeId.length()<1) {
+                    } else if (chargeId.length() < 1) {
                         return super.setError(params, 'Sorry! Please select taken service.')
-                    }
-                    else{
-                        boolean isSameGroup=false
+                    } else {
+                        boolean isSameGroup = false
 
-                        String groupCode=''
-                        String serviceCode=ServiceCharges.findById(Long.parseLong(chargeId)).serviceCode
-                        long groupId=Long.parseLong(serviceCode.substring(3,serviceCode.length()))
+                        String groupCode = ''
+                        String serviceCode = ServiceCharges.findById(Long.parseLong(chargeId)).serviceCode
+                        long groupId = Long.parseLong(serviceCode.substring(3, serviceCode.length()))
                         if (diseaseCodes.length() > 0) {
                             List<String> lst = Arrays.asList(diseaseCodes.split("\\s*,\\s*"));
                             for (int i = 0; i < lst.size(); i++) {
@@ -79,11 +78,18 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                             }
 
                         }
-                        if(!isSameGroup){
+                        if (!isSameGroup) {
                             return super.setError(params, 'Sorry! Please select one disease from selected taken service.')
                         }
                     }
                 }
+            }
+            else{
+                String len = params.selectedChargeId
+                if (len.length() < 1) {
+                    return super.setError(params, 'Sorry! Please select at least one pathology test.')
+                }
+            }
 
             ServiceTokenInfo serviceTokenInfo = buildObject(params, serviceTypeId)
             params.put(SERVICE_TOKEN_INFO, serviceTokenInfo)
@@ -218,7 +224,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             presciption = (parameterMap.chkboxMedicine ? 'Medicine' : parameterMap.chkboxPathology ? 'Pathology Test' : parameterMap.chkboxDocReferral ? 'Doctors Referral' : '')
 
         if (parameterMap.chkboxDocReferral)
-            serviceTokenInfo.referralCenterId = parameterMap.referralCenterId
+            serviceTokenInfo.referralCenterId = Long.parseLong(parameterMap.referralCenterId)
 
         serviceTokenInfo.prescriptionType = presciption
         serviceTokenInfo.modifyDate = DateUtility.getSqlDate(new Date())
