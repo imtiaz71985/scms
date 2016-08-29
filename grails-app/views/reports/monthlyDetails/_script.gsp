@@ -59,7 +59,9 @@
     function dataBoundGrid(e) {
         var grid = e.sender;
         var data = grid.dataSource.data();
+        var grandTotal = 0;
         $.each(data, function (i, row) {
+            grandTotal+=formatCeilAmount(row.medicine_sales+row.pathology_amount+row.registration_amount+row.re_registration_amount+row.consultation_amount-row.subsidy_amount);
             var str = row.dateField;
             var currentDate = moment().format('YYYY-MM-DD');
             if (str == currentDate) {
@@ -71,6 +73,7 @@
                 $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
             }
         });
+        $("#footerSpan").text(formatAmount(grandTotal));
     }
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
@@ -170,7 +173,7 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignCenter()},
                     template: "#=kendo.toString(kendo.parseDate(date_field, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
-                    footerTemplate: "Total : "
+                    footerTemplate: "Month Total:"
                 },
                 {title: "Patient",headerAttributes:{style:setAlignCenter()},
                     columns: [
@@ -341,8 +344,8 @@
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?holiday_status:formatAmount(medicine_sales)#",
-                    footerTemplate: "#=formatAmount(sum)#"
+                    template: "#=is_holiday?holiday_status:formatAmount(formatCeilAmount(medicine_sales))#",
+                    footerTemplate: "#=formatAmount(formatCeilAmount(sum))#"
                 },
                 {
                     field: "medicine_sales",title: "Day <br/> Collection(৳)",
@@ -350,8 +353,8 @@
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=formatAmount(medicine_sales+pathology_amount+registration_amount+re_registration_amount+consultation_amount-subsidy_amount)#",
-                    footerTemplate: "#=formatAmount(sum)#"
+                    template: "#=formatCeilAmount(medicine_sales+pathology_amount+registration_amount+re_registration_amount+consultation_amount-subsidy_amount)#",
+                    footerTemplate: "<span id='footerSpan'>#=formatAmount(sum)#</span>"
                 }
             ],
             filterable: false
