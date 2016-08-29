@@ -392,10 +392,10 @@
             populateGridKendo(gridServiceHeadInfo, url);
         }
         else if (serviceTypeId == 5) {
-            $('#chkboxPathology').attr('checked', false);
+            /*$('#chkboxPathology').attr('checked', false);
             $('#chkboxMedicine').attr('checked', false);
             $('#chkboxDocReferral').attr('checked', false);
-            $('#divReferralCenter').hide();
+            $('#divReferralCenter').hide();*/
             $("#divPrescriptionType").show();
             $('#divCharges').show();
             $('#divServiceProvider').show();
