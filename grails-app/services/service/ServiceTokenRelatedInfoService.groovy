@@ -104,4 +104,17 @@ class ServiceTokenRelatedInfoService extends BaseService{
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
     }
+    public boolean getDiseaseApplicableFor(String diseaseCodes,long sexId){
+        String queryStr = """
+           SELECT * FROM disease_info WHERE applicable_to!=0 and applicable_to!='${sexId}' AND disease_code IN (${diseaseCodes})
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+        boolean isNotApplicable=false
+        try {
+            if (result.size()>0) {
+                isNotApplicable = true
+            }
+        }catch(Exception ex){}
+        return isNotApplicable
+    }
 }

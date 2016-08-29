@@ -1,5 +1,7 @@
 package actions.ServiceTokenInfo
 
+import com.scms.DiseaseInfo
+import com.scms.RegistrationInfo
 import com.scms.ServiceCharges
 import com.scms.ServiceTokenInfo
 import com.scms.TokenAndChargeMapping
@@ -11,6 +13,7 @@ import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
 import service.ServiceHeadInfoService
+import service.ServiceTokenRelatedInfoService
 
 class CreateServiceTokenInfoActionService extends BaseService implements ActionServiceIntf {
 
@@ -20,6 +23,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     private Logger log = Logger.getLogger(getClass())
 
     ServiceHeadInfoService serviceHeadInfoService
+    ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
 
     @Transactional
     public Map executePreCondition(Map params) {
@@ -81,6 +85,10 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                         if (!isSameGroup) {
                             return super.setError(params, 'Sorry! Please select one disease from selected taken service.')
                         }
+                        RegistrationInfo registrationInfo=RegistrationInfo.findByRegNo(params.regNo)
+                        boolean  isNotApplicable=serviceTokenRelatedInfoService.getDiseaseApplicableFor(diseaseCodes,registrationInfo.sexId)
+                        if(isNotApplicable)
+                            return super.setError(params, 'Sorry! These disease could not applied for this patient.')
                     }
                 }
             }
