@@ -136,9 +136,7 @@
         } else {
             try {
                 bootboxAlert(result.message);
-
                 resetForm();
-
             } catch (e) {
                 // Do Nothing
             }
@@ -194,6 +192,7 @@
         $('#chkboxMedicine').val('');
         $('#chkboxDocReferral').val('');
         initRegAndServiceInfoGrid();
+        $("#gridCounselorAction").data("kendoGrid").dataSource.refresh();
         resetBasicData();
     }
 
