@@ -546,7 +546,7 @@ function formatAmount(amount) {
     return formatNumberTwo(amount);
 }
 function formatCeilAmount(amount) {
-    return kendo.toString(amount, "##,###");
+    return Math.ceil(amount);
 }
 
 function formatNumberTwo(amount) {
