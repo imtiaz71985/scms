@@ -4,7 +4,7 @@ class ListMedicineStockActionServiceModel {
 
     public static final String MODEL_NAME = 'list_medicine_stock_action_service_model'
     public static final String SQL_LIST_MEDICINE_INFO_MODEL = """
-        CREATE OR REPLACE VIEW list_medicine_stock_action_service_model AS
+         CREATE OR REPLACE VIEW list_medicine_stock_action_service_model AS
 
               SELECT mi.id, mi.version,se.id AS type_id,se.name AS TYPE,mi.generic_name,mi.brand_name,
                  (CASE
@@ -16,7 +16,7 @@ class ListMedicineStockActionServiceModel {
                     LEFT JOIN system_entity se ON se.id=mi.type
                     LEFT JOIN vendor v ON v.id=mi.vendor_id
                     LEFT JOIN medicine_stock ms ON ms.medicine_id = mi.id
-                    ORDER BY ms.hospital_code,se.name;
+                    ORDER BY ms.hospital_code,mi.brand_name;
     """
 
     long id

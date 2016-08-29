@@ -35,6 +35,8 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             if (params.chkboxDocReferral) {
                 if(!params.referralCenterId)
                     return super.setError(params, 'Sorry! Please select referral center.')
+                if(!params.serviceTypeId)
+                    return super.setError(params, 'Sorry! Please select service type.')
             }
             long serviceTypeId = 0
             if (params.serviceTypeId) {
