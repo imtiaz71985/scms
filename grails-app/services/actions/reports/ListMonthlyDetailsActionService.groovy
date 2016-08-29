@@ -54,8 +54,8 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
         String queryStr1 = """
             SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
-            COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
-            WHERE msi.sell_date = c.date_field GROUP BY msi.sell_date ),0) AS medicine_sales,
+            CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
+            WHERE msi.sell_date = c.date_field GROUP BY msi.sell_date ),0)) AS medicine_sales,
                 COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
                         COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
                         LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
@@ -162,9 +162,9 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
         """
         String queryStr2 = """
             SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
-            COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
+            CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
             WHERE msi.sell_date = c.date_field AND msi.hospital_code = :hospitalCode
-            GROUP BY msi.sell_date ),0) AS medicine_sales,
+            GROUP BY msi.sell_date ),0)) AS medicine_sales,
                 COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
                         COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
                         LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id

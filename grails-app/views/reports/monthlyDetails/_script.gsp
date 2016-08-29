@@ -150,12 +150,6 @@
     function initInfoGrid() {
         initDataSource();
         $("#gridDetails").kendoGrid({
-            toolbar:["excel"],
-            excel:{
-                fileName:"Monthly status.xlsx",
-                allPages:true,
-                filterable:true
-            },
             dataSource: dataSource,
             autoBind: false,
             height: getGridHeightKendo(),
@@ -344,8 +338,8 @@
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?holiday_status:formatAmount(formatCeilAmount(medicine_sales))#",
-                    footerTemplate: "#=formatAmount(formatCeilAmount(sum))#"
+                    template: "#=is_holiday?holiday_status:formatAmount(medicine_sales)#",
+                    footerTemplate: "#=formatAmount(sum)#"
                 },
                 {
                     field: "medicine_sales",title: "Day <br/> Collection(৳)",
