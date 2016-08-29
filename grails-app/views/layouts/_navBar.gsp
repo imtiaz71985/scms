@@ -66,6 +66,11 @@
                                     <a href="#medicineSellInfo/show"><i class="fa fa-shopping-cart"></i>&nbsp;Sale</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/medicineReturn/sellReturn">
+                                <li>
+                                    <a href="#medicineReturn/sellReturn"><i class="fa fa-shopping-cart"></i>&nbsp;Return</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
