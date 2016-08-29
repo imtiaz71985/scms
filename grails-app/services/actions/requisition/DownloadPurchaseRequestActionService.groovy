@@ -53,6 +53,11 @@ class DownloadPurchaseRequestActionService extends BaseService implements Action
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
+            Requisition requisition= Requisition.findByReqNo( result.get(REQUISITION_NO))
+            if(!requisition.isGeneratePR) {
+                requisition.isGeneratePR = true
+                requisition.save()
+            }
             Map report = getReport(result)
             result.put(REPORT, report)
             return result

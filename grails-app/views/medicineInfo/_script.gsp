@@ -9,9 +9,9 @@
     <sec:access url="/medicinePrice/show">
         <li onclick="navigatePriceForm();"><i class="fa fa-money"></i>Price</li>
     </sec:access>
-    <sec:access url="/medicineInfo/delete">
+   %{-- <sec:access url="/medicineInfo/delete">
         <li onclick="deleteForm();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>
+    </sec:access>--}%
 </ul>
 </script>
 

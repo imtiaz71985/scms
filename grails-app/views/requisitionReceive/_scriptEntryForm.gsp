@@ -124,6 +124,7 @@
                         type: {editable: false, type: "string"},
                         genericName: {editable: false, type: "string"},
                         medicineName: {editable: false, type: "string"},
+                        vendorName: {editable: false, type: "string"},
                         unitPrice: {editable: false, type: "string"},
                         unitType: {editable: false, type: "string"},
                         reqQty: {editable: false, type: "number"},
@@ -223,7 +224,13 @@
                     width: 100,
                     sortable: false,
                     filterable: false
-                }, {
+                },{
+                    field: "vendorName",
+                    title: "Vendor",
+                    width: 70,
+                    sortable: false,
+                    filterable: false
+                },{
                     field: "unitPrice",
                     title: "Price",
                     width: 50,

@@ -181,7 +181,7 @@
                             </div>
 
                             <div id="divSubsidy" style="display:none;">
-                                <label class="col-md-3 control-label label-required"
+                                <label class="col-md-3 control-label label-optional"
                                        style="padding-right: 0px;">Subsidy Amount:</label>
 
                                 <div class="col-md-3">

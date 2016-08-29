@@ -71,6 +71,13 @@
                     filterable: false
                 },
                 {
+                    field: "vendorName",
+                    title: "Vendor",
+                    width: 70,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "unitPrice",
                     title: "Unit Price",
                     attributes: {style: setAlignRight()},

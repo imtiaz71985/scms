@@ -28,7 +28,7 @@
             <button id="create" name="create" type="button" data-role="button"
                     class="k-button k-button-icontext"
                     role="button" tabindex="5" onclick='onSubmitForm();'
-                    aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
+                    aria-disabled="false"><span class="k-icon k-i-plus"></span>Receive
             </button>
 
             <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"

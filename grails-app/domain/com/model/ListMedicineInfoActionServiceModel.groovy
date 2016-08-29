@@ -19,7 +19,7 @@ class ListMedicineInfoActionServiceModel {
                     LEFT JOIN system_entity se ON se.id=mi.type
                     LEFT JOIN vendor v ON v.id=mi.vendor_id
                     LEFT JOIN subsidy_on_medicine sa ON sa.medicine_id=mi.id
-              ORDER BY se.name;
+              ORDER BY mi.brand_name;
     """
 
     long id

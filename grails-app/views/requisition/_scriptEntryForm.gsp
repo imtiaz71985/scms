@@ -181,6 +181,13 @@
                     filterable: false
                 },
                 {
+                    field: "vendorName",
+                    title: "Vendor",
+                    width: 60,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "unitType",
                     title: "Unit",
                     width: 30,

@@ -4,6 +4,7 @@ import com.scms.MedicineInfo
 import com.scms.Requisition
 import com.scms.RequisitionDetails
 import com.scms.SystemEntity
+import com.scms.Vendor
 import grails.converters.JSON
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -94,7 +95,8 @@ class SelectRequisitionActionService extends BaseService implements ActionServic
             double amount = singleRow.amount
             double apvdAmount = singleRow.approveAmount
             String medicineName = EMPTY_SPACE
-
+           Vendor v =Vendor.findById(MedicineInfo.findById(medicineId).vendorId)
+            String vendorName=v.shortName==''? v.name : v.shortName
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
             SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
             String genericName = medicineInfo.genericName
@@ -113,6 +115,7 @@ class SelectRequisitionActionService extends BaseService implements ActionServic
                     type        : type,
                     medicineName: medicineName,
                     genericName : genericName,
+                    vendorName  : vendorName,
                     medicineId  : medicineId,
                     unitPrice   : medicineInfo.unitPrice,
                     quantity    : quantity,

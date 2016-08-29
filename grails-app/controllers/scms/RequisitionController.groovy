@@ -143,6 +143,7 @@ class RequisitionController extends BaseController {
     }
 
     def generatePR(){
+
         Map result = (Map) getReportResponse(downloadPurchaseRequestActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }

@@ -18,6 +18,7 @@ class Requisition {
     Date sendDate
     double totalAmount
     double approvedAmount
+    boolean isGeneratePR
 
     static constraints = {
         approvedDate(nullable: true)
@@ -31,6 +32,7 @@ class Requisition {
         approvedAmount(nullable: true)
         deliveryDate(nullable: true)
         isDelivered(nullable: true)
+        isGeneratePR(nullable: true)
     }
     static mapping = {
         createDate type:'date'

@@ -14,9 +14,11 @@ class RequisitionService extends BaseService {
                     WHEN mi.strength IS NULL THEN mi.brand_name
                     ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
                          END) AS medicineName,
-                        mi.unit_price AS unitPrice,mi.unit_type AS unitType,ms.stock_qty AS stockQty,
-                        COALESCE(rq.req_qty,0) AS reqQty ,0 AS approveQty,0 AS procQty,COALESCE(rq.amount,0) AS amount
+                COALESCE(vendor.short_name,vendor.name) AS vendorName,
+                mi.unit_price AS unitPrice,mi.unit_type AS unitType,ms.stock_qty AS stockQty,
+                COALESCE(rq.req_qty,0) AS reqQty ,0 AS approveQty,0 AS procQty,COALESCE(rq.amount,0) AS amount
                 FROM medicine_info mi
+                LEFT JOIN vendor ON vendor.id=mi.vendor_id
                 LEFT JOIN system_entity se ON mi.type=se.id
                 LEFT JOIN requisition_details rq ON rq.medicine_id = mi.id AND rq.req_no = :requisitionNo
                 LEFT JOIN medicine_stock ms ON ms.medicine_id=mi.id  AND ms.hospital_code = :hospitalCode
@@ -37,12 +39,14 @@ class RequisitionService extends BaseService {
                     WHEN mi.strength IS NULL THEN mi.brand_name
                     ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
                          END) AS medicineName,
+                    COALESCE(vendor.short_name,vendor.name) AS vendorName,
                         mi.unit_price AS unitPrice,mi.unit_type AS unitType,ms.stock_qty AS stockQty,
                         COALESCE(rq.req_qty,0) AS reqQty ,COALESCE(rq.req_qty,0) AS approvedQty,0 AS procQty,
                         COALESCE(rq.amount,0) AS amount,
                         (CASE WHEN rq.approve_amount=0 THEN COALESCE(rq.amount,0) ELSE COALESCE(rq.approve_amount,0) END)
                          AS approveAmount
                 FROM medicine_info mi
+                LEFT JOIN vendor ON vendor.id=mi.vendor_id
                 LEFT JOIN system_entity se ON mi.type=se.id
                 LEFT JOIN medicine_stock ms on ms.medicine_id=mi.id AND ms.hospital_code = SUBSTRING(:requisitionNo,2,2)
                 LEFT JOIN requisition_details rq ON rq.medicine_id = mi.id AND rq.req_no = :requisitionNo
@@ -62,6 +66,7 @@ class RequisitionService extends BaseService {
                     WHEN mi.strength IS NULL THEN mi.brand_name
                     ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
                          END) AS medicineName,
+            COALESCE(vendor.short_name,vendor.name) AS vendorName,
             mi.unit_price AS unitPrice,mi.unit_type AS unitType,COALESCE(rd.req_qty,0) AS reqQty,
              mi.unit_price AS unitPrice,mi.unit_type AS unitType,COALESCE(rd.req_qty,0) AS reqQty,
             COALESCE(rd.approved_qty) AS approvedQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(SUM(receive_details.receive_qty),0) AS prevReceiveQty ,
@@ -70,6 +75,7 @@ class RequisitionService extends BaseService {
             FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no  =:requisitionNo
             AND r.is_approved=TRUE AND r.is_delivered=TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id
+            LEFT JOIN vendor ON vendor.id=mi.vendor_id
             LEFT JOIN system_entity se ON mi.type=se.id
             LEFT JOIN receive ON receive.req_no=r.req_no LEFT JOIN receive_details ON receive.id=receive_details.receive_id
             AND receive_details.medicine_id= rd.medicine_id GROUP BY r.req_no,rd.medicine_id
@@ -83,6 +89,7 @@ class RequisitionService extends BaseService {
                     WHEN mi.strength IS NULL THEN mi.brand_name
                     ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
                          END) AS medicineName,
+            COALESCE(vendor.short_name,vendor.name) AS vendorName,
              mi.unit_price AS unitPrice,mi.unit_type AS unitType, COALESCE(rd.req_qty,0) AS reqQty,
             COALESCE(rd.approved_qty) AS approvedQty,COALESCE(rd.procurement_qty) AS procQty,COALESCE(SUM(receive_details.receive_qty),0) AS prevReceiveQty ,
             (rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0)) AS receiveQty,
@@ -90,6 +97,7 @@ class RequisitionService extends BaseService {
             FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no  =:requisitionNo
             AND r.is_approved=TRUE AND r.is_delivered=TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id AND mi.vendor_id=${vendorId}
+            LEFT JOIN vendor ON vendor.id=mi.vendor_id
             LEFT JOIN system_entity se ON mi.type=se.id
             LEFT JOIN receive ON receive.req_no=r.req_no LEFT JOIN receive_details ON receive.id=receive_details.receive_id
             AND receive_details.medicine_id= rd.medicine_id GROUP BY r.req_no,rd.medicine_id

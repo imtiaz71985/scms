@@ -50,6 +50,7 @@
                         approvedAmount: {type: "number"},
                         requisitionDate: {type: "date"},
                         isApproved: {type: "boolean"},
+                        isGeneratePR: {type: "boolean"},
                         isReceived: {type: "boolean"},
                         receiveInProcess: {type: "boolean"}
                     }
@@ -162,7 +163,7 @@
             return;
         }
         var obj = getSelectedObjectFromGridKendo(gridRequisitionHO);
-        if (obj.isApproved) {
+        if (obj.isGeneratePR || obj.isReceived) {
             showError('Approved requisition could not be updated.');
             return false;
         }
