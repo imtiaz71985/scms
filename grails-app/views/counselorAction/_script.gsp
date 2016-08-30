@@ -191,8 +191,7 @@
         $('#chkboxPathology').val('');
         $('#chkboxMedicine').val('');
         $('#chkboxDocReferral').val('');
-        initRegAndServiceInfoGrid();
-        $("#gridCounselorAction").data("kendoGrid").dataSource.refresh();
+        $("#gridCounselorAction").data('kendoGrid').dataSource.read();
         resetBasicData();
     }
 
