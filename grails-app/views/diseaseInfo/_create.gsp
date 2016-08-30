@@ -70,9 +70,9 @@
                                             data-bind="checked: diseaseInfo.isActive"/>
                             </div>
                             <label class="col-md-2 control-label label-required">Applicable:</label>
-                            <label class="radio-inline"><input type="radio" value="ALL" name="applicableTo" data-bind="checked: diseaseInfo.applicableToName">ALL</label>
-                            <label class="radio-inline"><input type="radio" value="Male" name="applicableTo" data-bind="checked: diseaseInfo.applicableToName">Male</label>
-                            <label class="radio-inline"><input type="radio" value="Female" name="applicableTo" data-bind="checked: diseaseInfo.applicableToName">Female</label>
+                            <label class="radio-inline"><input type="radio" value="0" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">ALL</label>
+                            <label class="radio-inline"><input type="radio" value="1" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">Male</label>
+                            <label class="radio-inline"><input type="radio" value="2" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">Female</label>
                         </div>
                             <div class="form-group">
                                 <label class="col-md-2 control-label">Description:</label>
