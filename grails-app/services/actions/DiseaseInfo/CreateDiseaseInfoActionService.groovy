@@ -76,7 +76,7 @@ class CreateDiseaseInfoActionService extends BaseService implements ActionServic
      * @return -new systemEntity object
      */
     private DiseaseInfo buildObject(Map parameterMap) {
-        long applicableTo = SystemEntity.findByNameLikeAndType(parameterMap.applicableTo, "Disease Group Applicable To").id
+        long applicableTo = SystemEntity.findByNameLikeAndType(parameterMap.applicableTo, "Disease Applicable To").id
         parameterMap.applicableTo = applicableTo
         DiseaseInfo diseaseInfo = new DiseaseInfo(parameterMap)
         diseaseInfo.createDate=DateUtility.getSqlDate(new Date())

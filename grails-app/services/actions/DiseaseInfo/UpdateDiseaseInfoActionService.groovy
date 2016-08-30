@@ -67,7 +67,7 @@ class UpdateDiseaseInfoActionService extends BaseService implements ActionServic
     }
 
     private DiseaseInfo buildObject(Map parameterMap, DiseaseInfo oldDiseaseInfo) {
-        long applicableTo = SystemEntity.findByNameLikeAndType(parameterMap.applicableTo, "Disease Group Applicable To").id
+        long applicableTo = SystemEntity.findByNameLikeAndType(parameterMap.applicableTo, "Disease Applicable To").id
 
         DiseaseInfo diseaseInfo = new DiseaseInfo(parameterMap)
         oldDiseaseInfo.isActive = diseaseInfo.isActive
