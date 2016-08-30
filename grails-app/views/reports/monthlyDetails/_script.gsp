@@ -147,6 +147,9 @@
     function setCAlignCenter() {
         return "text-align:right;font-size:8pt;";
     }
+    function formatAmount(amount) {
+        return kendo.toString(amount, "##,###");
+    }
     function initInfoGrid() {
         initDataSource();
         $("#gridDetails").kendoGrid({
@@ -182,7 +185,7 @@
                         },
                         {
                             field: "patient_followup", title: "Followup",
-                            width: 38,sortable: false,filterable: false,
+                            width: 42,sortable: false,filterable: false,
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
@@ -233,7 +236,7 @@
                                 },
                                 {
                                     field: "registration_amount",title: "Amount(৳)",
-                                    width: 50,sortable: false,filterable: false,
+                                    width: 45,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -255,7 +258,7 @@
                                 },
                                 {
                                     field: "re_registration_amount",title: "Amount(৳)",
-                                    width: 50,sortable: false,filterable: false,
+                                    width: 45,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -277,7 +280,7 @@
                                 },
                                 {
                                     field: "consultation_amount",title: "Amount(৳)",
-                                    width: 50,sortable: false,filterable: false,
+                                    width: 45,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -299,7 +302,7 @@
                                 },
                                 {
                                     field: "subsidy_amount",title: "Amount(৳)",
-                                    width: 50,sortable: false,filterable: false,
+                                    width: 45,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -321,7 +324,7 @@
                                 },
                                 {
                                     field: "pathology_amount",title: "Amount(৳)",
-                                    width: 50,sortable: false,filterable: false,
+                                    width: 45,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
