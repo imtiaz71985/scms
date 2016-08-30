@@ -54,7 +54,7 @@
                             </sec:access>
                             <sec:access url="/counselorAction/showServiceList">
                                 <li>
-                                    <a href="#counselorAction/showServiceList"><i class="fa fa-user-times"></i>&nbsp;Service List</a>
+                                    <a href="#counselorAction/showServiceList"><i class="fa fa-list"></i>&nbsp;Service List</a>
                                 </li>
                             </sec:access>
                         </ul>

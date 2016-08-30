@@ -19,7 +19,6 @@ class ServiceTokenRelatedInfoService extends BaseService{
             WHERE tcm.service_token_no='${tokenNo}' GROUP BY tcm.service_token_no,sh.service_type_id,reg_no ORDER BY sh.service_type_id ASC
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
-        //double totalHealthCharge=(double) result[0].totalHealthCharge
         return result
     }
     public String findLastTokenNoByRegNoAndIsExit(String regNo,boolean isExit){

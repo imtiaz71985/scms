@@ -31,7 +31,6 @@ class CounselorActionController extends BaseController {
     BaseService baseService
 
     def show() {
-
         render(view: "/counselorAction/show")
     }
 
@@ -54,13 +53,12 @@ class CounselorActionController extends BaseController {
         result.put('list', lst)
         result.put('count', lst.size())
         render result as JSON
-        // renderOutput(listServiceTokenInfoActionService, params)
     }
     def showServiceList() {
         render(view: "/counselorAction/serviceList")
     }
     def serviceList() {
-        Date start = DateUtility.getSqlFromDateWithSeconds(2016-01-01)
+        Date start = DateUtility.getSqlFromDateWithSeconds(new Date(2016-01-01))
         Date end = DateUtility.getSqlToDateWithSeconds(new Date())
 
         String hospital_code = ""
@@ -68,7 +66,6 @@ class CounselorActionController extends BaseController {
             hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         }
         List<GroovyRowResult> lst = serviceTokenRelatedInfoService.RegAndServiceDetails(start, end, hospital_code)
-
 
         Map result = new HashedMap()
         result.put('list', lst)
