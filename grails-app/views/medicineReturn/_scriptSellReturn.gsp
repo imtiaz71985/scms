@@ -1,50 +1,36 @@
 
 <script language="javascript">
-    var gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine, currentDate,unitPrice = 0;
+    var gridMedicineSellReturnInfo, dataSource, totalAmount=0, rtnAmount=0;
 
     $(document).ready(function () {
-        onLoadMedicineSellInfoPage();
-        initMedicineSellReturnInfoGrid();
-        initObservable();
-        currentDate = moment().format('DD/MM/YYYY');
-        $('#sellDate').val(currentDate);
+        onLoadMedicineSellReturnPage();
+        initMedicineSellInfoGrid();
     });
-
-    function newRecord() {
-        showLoadingSpinner(true);
-        var loc = "${createLink(controller: 'medicineSellInfo', action: 'showDetails')}";
-        router.navigate(formatLink(loc));
-        return false;
+    function onLoadMedicineSellReturnPage() {
+        defaultPageTile("Medicine return", "medicineReturn/show");
     }
-    function onLoadMedicineSellInfoPage() {
-//        initializeForm($("#medicineSellInfoForm"), onSubmitMedicineSellInfo);
-        defaultPageTile("Sale Medicine", null);
-    }
-
-    function executePreCondition() {
-        if (!validateForm($("#medicineSellInfoForm"))) {
+    function executePreCondition(){
+        var voucherNo = $("#voucherNo").val();
+        if(voucherNo==''){
+            showError('Please select voucher no.');
             return false;
         }
         return true;
     }
-
-    function onSubmitMedicineSellInfo() {
+    function onSubmitForm() {
         if (executePreCondition() == false) {
             return false;
         }
-
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
-        var actionUrl = null;
-        if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'medicineSellInfo', action: 'create')}";
-        } else {
-            actionUrl = "${createLink(controller:'medicineSellInfo', action: 'update')}";
-        }
+        var voucherNo = $("#voucherNo").val();
+        var formData = jQuery('#frmMedicine').serializeArray();
+        formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineSellReturnInfo.dataSource.data())});
+        formData.push({name: 'voucherNo', value: voucherNo});
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#medicineSellInfoForm").serialize(),
-            url: actionUrl,
+            data: formData,
+            url: "${createLink(controller:'medicineReturn', action: 'create')}",
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -65,132 +51,134 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.medicineSellInfo;
-                if ($('#id').val().isEmpty() && newEntry != null) { // newly created
-                    var gridData = gridMedicineSellInfo.dataSource.data();
-                    gridData.unshift(newEntry);
-                } else if (newEntry != null) { // updated existing
-                    var selectedRow = gridMedicineSellInfo.select();
-                    var allItems = gridMedicineSellInfo.items();
-                    var selectedIndex = allItems.index(selectedRow);
-                    gridMedicineSellInfo.removeRow(selectedRow);
-                    gridMedicineSellInfo.dataSource.insert(selectedIndex, newEntry);
-                }
-                resetForm();
                 showSuccess(result.message);
+                window.history.back();
             } catch (e) {
                 // Do Nothing
             }
         }
     }
 
-    function resetForm() {
-        clearForm($("#medicineSellInfoForm"), $('#medicineId'));
-        initObservable();
-        $('#sellDate').val(currentDate);
-        $('#create').html("<span class='k-icon k-i-plus'></span>Sell");
-    }
-
-    function initDataSource() {
-        dataSource = new kendo.data.DataSource({
-            transport: {
-                read: {
-                    url: "${createLink(controller: 'medicineSellInfo', action: 'list')}",
-                    dataType: "json",
-                    type: "post"
-                }
+    function viewSellDetails(){
+        if (executePreCondition() == false) {
+            return false;
+        }
+        var voucherNo = $("#voucherNo").val();
+        setButtonDisabled($('#btnNewService'), true);
+        jQuery.ajax({
+            type: 'post',
+            url: "${createLink(controller:'medicineReturn', action: 'retrieveMedicineDetails')}?voucherNo="+voucherNo,
+            success: function (data, textStatus) {
+                var gridData = data.gridModelMedicine;
+                totalAmount = data.totalAmount;
+                gridMedicineSellReturnInfo.setDataSource(new kendo.data.DataSource({data: gridData}));
+                $("#footerSpan").text(formatCeilAmount(totalAmount));
+                setButtonDisabled($('#btnNewService'), false);
             },
-            schema: {
-                type: 'json',
-                data: "list", total: "count",
-                model: {
-                    fields: {
-                        id: {type: "number"},
-                        version: {type: "number"},
-                        voucherNo: {type: "string"},
-                        seller: {type: "string"},
-                        totalAmount: {type: "number"},
-                        sellDate: {type: "date"}
-                    }
-                },
-                parse: function (data) {
-                    checkIsErrorGridKendo(data);
-                    return data;
-                }
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
             },
-            pageSize: getDefaultPageSize(),
-            serverPaging: true,
-            serverFiltering: true,
-            serverSorting: true
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
         });
+        return false;
     }
 
-    function initMedicineSellReturnInfoGrid() {
-        initDataSource();
-        $("#gridMedicineSellInfo").kendoGrid({
-            dataSource: dataSource,
-            height: getGridHeightKendo(),
+    function initMedicineSellInfoGrid() {
+        $("#gridMedicine").kendoGrid({
+            dataSource: getBlankDataSource,
+            height: 420,
             selectable: true,
             sortable: true,
             resizable: true,
             reorderable: true,
-            dataBound: gridDataBound,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4
+            pageable: false,
+            editable: true,
+            edit: function (e) {
+                var input = e.container.find(".k-input");
+                var value = input.val(),pre = input.val();
+                $("[name='rtnQuantity']", e.container).focus(function () {
+                    var input = $(this);
+                    if(input.val()==0){
+                        input.val('');
+                    }
+                });
+                $("[name='rtnQuantity']", e.container).blur(function () {
+                    var input = $(this);
+                    var row = $(this).closest("tr");
+                    var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
+                    value = input.val();
+                    if(input.val()==''){
+                        input.val(0);
+                        data.set('rtnQuantity', 0);
+                        var dirty = $(this).closest("tr").find(".k-dirty-cell");
+                        dirty.removeClass("k-dirty-cell");
+                    }
+                    rtnAmount -= pre * data.unitPrice;
+                    rtnAmount += value * data.unitPrice;
+                    data.set('rtnAmount', value * data.unitPrice);
+                    $("#footerSpanRtn").text(formatAmount(rtnAmount));
+                });
             },
             columns: [
                 {
-                    field: "voucherNo",
-                    title: "Voucher No",
+                    field: "medicineName",
+                    title: "Medicine Name",
                     width: 100,
                     sortable: false,
-                    filterable: kendoCommonFilterable(97)
+                    editable:false,
+                    filterable: false
                 },
                 {
-                    field: "totalAmount",
-                    title: "Total Amount",
+                    field: "quantity",
+                    title: "Quantity",
                     width: 50,
-                    attributes: {style: setAlignRight()},
-                    headerAttributes: {style: setAlignRight()},
-                    template: "#=formatAmount(formatCeilAmount(totalAmount))#",
                     sortable: false,
                     filterable: false
                 },
                 {
-                    field: "sellDate", title: "Date", width: 100, sortable: false,
-                    filterable: {cell: {template: formatFilterableDate}},
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=kendo.toString(kendo.parseDate(sellDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
+                    field: "rtnQuantity",
+                    title: "Rtn Qty",
+                    width: 50,
+                    sortable: false,
+                    template: "<span style='float: left; width: 100%;" +
+                    "font-size: large; background-color:gainsboro'><b>#=rtnQuantity#</b></div>",
+                    filterable: false
+                },
+                {
+                    field: "unitPriceTxt",
+                    title: "Price/Unit",
+                    width: 50,
+                    sortable: false,
+                    filterable: false
+                },
+                {
+                    field: "amount",
+                    title: "Amount",
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(amount)#",
+                    sortable: false,filterable: false,width: 50,
+                    footerTemplate:"<div style='text-align: right'>Total amount : <span id='footerSpan'>#=formatCeilAmount(0)#</span></div>"
+                },
+                {
+                    field: "rtnAmount",
+                    title: "Rtn Amount",
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "#=formatAmount(rtnAmount)#",
+                    sortable: false,filterable: false,width: 50,
+                    footerTemplate:"<div style='text-align: right'>Return amount : <span id='footerSpanRtn'>#=formatCeilAmount(0)#</span></div>"
                 }
             ],
             filterable: {
                 mode: "row"
-            },
-            toolbar: kendo.template($("#gridToolbar").html())
+            }
         });
-        gridMedicineSellInfo = $("#gridMedicineSellInfo").data("kendoGrid");
-        $("#menuGrid").kendoMenu();
-    }
-
-    function initObservable() {
-        medicineSellInfoModel = kendo.observable(
-                {
-                    medicineSell: {
-                        id:"",
-                        version: "",
-                        voucherNo: "",
-                        quantity: "",
-                        totalAmount: ""
-                    }
-                }
-        );
-        kendo.bind($("#application_top_panel"), medicineSellInfoModel);
-    }
-
-    function editRecord() {
-
+        gridMedicineSellReturnInfo = $("#gridMedicine").data("kendoGrid");
+        $('#gridMedicine  > .k-grid-content').height(390);
     }
 
 </script>

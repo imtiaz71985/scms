@@ -7,24 +7,27 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-md-3 control-label label-optional" for="voucherNo">Voucher No:</label>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-md-2 control-label label-optional" for="voucherNo">Voucher No:</label>
 
-                <div class="col-md-6">
-                    <app:dropDownSellVoucherNo
-                            data_model_name="dropDownVoucherNo"
-                            id="voucherNo" name="voucherNo" tabindex="1"
-                            class="kendo-drop-down">
-                    </app:dropDownSellVoucherNo>
-                </div>
-                <div class="col-md-2">
+                    <div class="col-md-3">
+                        <app:dropDownSellVoucherNo
+                                data_model_name="dropDownVoucherNo"
+                                id="voucherNo" name="voucherNo" tabindex="1"
+                                class="kendo-drop-down">
+                        </app:dropDownSellVoucherNo>
+                    </div>
 
-                    <button id="btnNewService" name="btnNewService" type="button"
-                            class="k-button" tabindex="2"
-                            role="button" onclick="editRecord();"
-                            aria-disabled="false"><span
-                            class="k-icon k-i-plus"></span> Return
-                    </button>
+                    <div class="col-md-2">
+
+                        <button id="btnNewService" name="btnNewService" type="button"
+                                class="k-button" tabindex="2"
+                                role="button" onclick="viewSellDetails();"
+                                aria-disabled="false"><span
+                                class="k-icon k-i-plus"></span> View
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,7 +38,7 @@
             <form id="frmMedicine" name="frmMedicine" class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
 
-                    <div class="form-group" style="height: 340px;">
+                    <div class="form-group" style="height: 420px;">
                         <div id="gridMedicine"></div>
                     </div>
                 </div>
@@ -43,8 +46,8 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="4"
-                            aria-disabled="false"><span class="k-icon k-i-plus"></span>Return Receive
+                            role="button" tabindex="4" onclick='onSubmitForm();'
+                            aria-disabled="false"><span class="k-icon k-i-plus"></span>Return
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
@@ -55,9 +58,5 @@
                 </div>
             </form>
         </div>
-    </div>
-
-    <div class="row" id="medicineReturnListGrid">
-        <div id="gridMedicineSellReturnInfo"></div>
     </div>
 </div>

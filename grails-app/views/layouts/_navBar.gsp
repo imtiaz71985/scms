@@ -57,7 +57,7 @@
                     </li>
                 </sec:ifAnyUrls>
 
-                <sec:ifAnyUrls urls="/medicineSellInfo/show">
+                <sec:ifAnyUrls urls="/medicineSellInfo/show,/medicineReturn/showSellReturn">
                     <li>
                         <a href="#"><i class="fa fa-medkit"></i>&nbsp;Dispensary<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -66,9 +66,9 @@
                                     <a href="#medicineSellInfo/show"><i class="fa fa-shopping-cart"></i>&nbsp;Sale</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/medicineReturn/sellReturn">
+                            <sec:access url="/medicineReturn/show">
                                 <li>
-                                    <a href="#medicineReturn/sellReturn"><i class="fa fa-shopping-cart"></i>&nbsp;Return</a>
+                                    <a href="#medicineReturn/show"><i class="fa fa-reply"></i>&nbsp;Return</a>
                                 </li>
                             </sec:access>
                         </ul>

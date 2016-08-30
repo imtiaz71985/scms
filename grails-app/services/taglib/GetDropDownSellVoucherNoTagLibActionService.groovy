@@ -160,7 +160,8 @@ class GetDropDownSellVoucherNoTagLibActionService  extends BaseService implement
 
     private List<GroovyRowResult> listVoucherNo() {
         String queryForList = """
-           SELECT voucher_no AS id,voucher_no AS name FROM medicine_sell_info
+            SELECT voucher_no AS id,voucher_no AS name
+                FROM medicine_sell_info
             WHERE DATE(sell_date)>=DATE(NOW() - INTERVAL 6 MONTH)
 
         """
