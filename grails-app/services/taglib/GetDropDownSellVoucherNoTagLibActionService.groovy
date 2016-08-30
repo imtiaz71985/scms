@@ -1,5 +1,6 @@
 package taglib
 
+import com.scms.SecUser
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
@@ -23,6 +24,7 @@ class GetDropDownSellVoucherNoTagLibActionService  extends BaseService implement
     private static final String DATA_MODEL_NAME = 'data_model_name'
     private static final String SINGLE_DOT = '.'
     private static final String ESCAPE_DOT = '\\\\.'
+    def springSecurityService
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -159,10 +161,11 @@ class GetDropDownSellVoucherNoTagLibActionService  extends BaseService implement
     }
 
     private List<GroovyRowResult> listVoucherNo() {
+        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         String queryForList = """
             SELECT voucher_no AS id,voucher_no AS name
                 FROM medicine_sell_info
-            WHERE DATE(sell_date)>=DATE(NOW() - INTERVAL 6 MONTH)
+            WHERE DATE(sell_date)>=DATE(NOW() - INTERVAL 6 MONTH) AND hospital_code='${hospitalCode}' AND is_return!=true
 
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)

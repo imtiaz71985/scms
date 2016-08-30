@@ -110,16 +110,26 @@
                     var row = $(this).closest("tr");
                     var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
                     value = input.val();
-                    if(input.val()==''){
-                        input.val(0);
+
+                    if (value > data.quantity) {
+                        showError("Wrong quantity.");
                         data.set('rtnQuantity', 0);
-                        var dirty = $(this).closest("tr").find(".k-dirty-cell");
-                        dirty.removeClass("k-dirty-cell");
+
                     }
-                    rtnAmount -= pre * data.unitPrice;
-                    rtnAmount += value * data.unitPrice;
-                    data.set('rtnAmount', value * data.unitPrice);
-                    $("#footerSpanRtn").text(formatAmount(rtnAmount));
+                    else {
+                        if(input.val()==''){
+                            input.val(0);
+                            data.set('rtnQuantity', 0);
+                            var dirty = $(this).closest("tr").find(".k-dirty-cell");
+                            dirty.removeClass("k-dirty-cell");
+                        }
+                        rtnAmount -= pre * data.unitPrice;
+                        rtnAmount += value * data.unitPrice;
+                        rtnAmount=Math.floor(rtnAmount)
+                        data.set('rtnAmount', value * data.unitPrice);
+                        $("#footerSpanRtn").text(formatAmount(rtnAmount));
+                    }
+
                 });
             },
             columns: [
@@ -179,6 +189,9 @@
         });
         gridMedicineSellReturnInfo = $("#gridMedicine").data("kendoGrid");
         $('#gridMedicine  > .k-grid-content').height(390);
+    }
+    function resetForm(){
+        window.history.back();
     }
 
 </script>

@@ -105,14 +105,14 @@ class SelectMedicineSellReturnActionService extends BaseService implements Actio
                 medicineName = medicineInfo.brandName + ' - ' + medicineType.name
             }
             if(medicineInfo.unitType){
-                unitPriceTxt= medicineInfo.unitPrice+' /'+medicineInfo.unitType
+                unitPriceTxt= ((float)Math.round((amount/quantity)*100)/100).toString()+' /'+medicineInfo.unitType
             }else{
-                unitPriceTxt=  medicineInfo.unitPrice
+                unitPriceTxt=  ((float)Math.round((amount/quantity)*100)/100).toString()
             }
             Map eachDetails = [ id:id,version:version,voucherNo:voucherNo,medicineName:medicineName,
                                 medicineId:medicineId,quantity:quantity,amount:amount,
                                 stock:stock.stockQty+quantity,unitPriceTxt:unitPriceTxt,
-                                rtnQuantity:0,rtnAmount:0,unitPrice:medicineInfo.unitPrice
+                                rtnQuantity:0,rtnAmount:0,unitPrice:(float)Math.round((amount/quantity)*100)/100
             ]
             lstRows << eachDetails
         }

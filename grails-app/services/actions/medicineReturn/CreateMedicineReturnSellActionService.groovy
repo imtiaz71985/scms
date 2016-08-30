@@ -2,6 +2,8 @@ package actions.medicineReturn
 
 import com.scms.MedicineReturn
 import com.scms.MedicineReturnDetails
+import com.scms.MedicineSellInfo
+import com.scms.MedicineSellInfoDetails
 import com.scms.MedicineStock
 import com.scms.SecUser
 import grails.converters.JSON
@@ -30,6 +32,15 @@ class CreateMedicineReturnSellActionService extends BaseService implements Actio
             }
             MedicineReturn medicineReturn = buildReturnObject(params)
             List<MedicineReturnDetails> lstDetails = buildReturnDetailsMap(params)
+            if(lstDetails.size()<=0)
+                return super.setError(params, INVALID_INPUT_MSG)
+            else{
+                for (int i = 0; i < lstDetails.size(); i++) {
+                   MedicineSellInfoDetails medicineSellInfoDetails =MedicineSellInfoDetails.findByMedicineIdAndVoucherNo(lstDetails[i].medicineId,medicineReturn.traceNo)
+                    if(lstDetails[i].quantity>medicineSellInfoDetails.quantity)
+                        return super.setError(params, 'Sorry! Invalid return quantity.')
+                }
+            }
             params.put(MEDICINE_RETURN, medicineReturn)
             params.put(RETURN_DETAILS, lstDetails)
             return params
@@ -43,24 +54,28 @@ class CreateMedicineReturnSellActionService extends BaseService implements Actio
     public Map execute(Map result) {
         try {
             String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+            double totalAmt=0
 
             MedicineReturn medicineReturn = (MedicineReturn) result.get(MEDICINE_RETURN)
             List<MedicineReturnDetails> lstDetails = (List<MedicineReturnDetails>) result.get(RETURN_DETAILS)
             if (lstDetails.size() > 0) {
-                medicineReturn.save()
                 for (int i = 0; i < lstDetails.size(); i++) {
-                    MedicineReturnDetails details = MedicineReturnDetails.findByMedicineIdAndTraceNo(lstDetails[i].medicineId, medicineReturn.traceNo)
 
                     MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(lstDetails[i].medicineId, hospitalCode)
-                    stock.stockQty += lstDetails[i].receiveQty
+                    stock.stockQty += lstDetails[i].quantity
                     stock.save()
 
-                    lstDetails[i].receiveId = details.id
+                    totalAmt+=lstDetails[i].amount
+                    lstDetails[i].traceNo = medicineReturn.traceNo
                     lstDetails[i].save()
 
                 }
-
             }
+            medicineReturn.totalAmount=totalAmt
+            medicineReturn.save()
+            MedicineSellInfo medicineSellInfo=MedicineSellInfo.findByVoucherNo(medicineReturn.traceNo)
+            medicineSellInfo.isReturn=true
+            medicineSellInfo.save()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -85,10 +100,16 @@ class CreateMedicineReturnSellActionService extends BaseService implements Actio
         JSONElement gridModelMedicine = JSON.parse(parameterMap.gridModelMedicine.toString())
         List lstRowsMedicine = (List) gridModelMedicine
         for (int i = 0; i < lstRowsMedicine.size(); i++) {
-            MedicineReturnDetails details = new MedicineReturnDetails(lstRowsMedicine[i])
-            MedicineReturnDetails medicine = details
-            lstMedicine.add(medicine)
+            if((int)lstRowsMedicine[i].rtnQuantity>0) {
+                MedicineReturnDetails details = new MedicineReturnDetails()
+                details.traceNo = ''
+                details.medicineId = (long) lstRowsMedicine[i].medicineId
+                details.quantity = (int) lstRowsMedicine[i].rtnQuantity
+                details.amount = (double) lstRowsMedicine[i].rtnAmount
 
+                MedicineReturnDetails medicine = details
+                lstMedicine.add(medicine)
+            }
         }
         return lstMedicine
     }

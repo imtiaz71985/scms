@@ -10,8 +10,10 @@ class MedicineSellInfo {
     long sellBy
     double totalAmount
     String hospitalCode
+    boolean isReturn
 
     static constraints = {
+        isReturn (nullable:true)
     }
     static mapping = {
         sellDate type:'date'
