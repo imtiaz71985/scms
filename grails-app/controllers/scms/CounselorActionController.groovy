@@ -56,6 +56,25 @@ class CounselorActionController extends BaseController {
         render result as JSON
         // renderOutput(listServiceTokenInfoActionService, params)
     }
+    def showServiceList() {
+        render(view: "/counselorAction/serviceList")
+    }
+    def serviceList() {
+        Date start = DateUtility.getSqlFromDateWithSeconds(2016-01-01)
+        Date end = DateUtility.getSqlToDateWithSeconds(new Date())
+
+        String hospital_code = ""
+        if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+            hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        }
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.RegAndServiceDetails(start, end, hospital_code)
+
+
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
 
     def diseaseListByGroup() {
         long diseaseGroupId = 0

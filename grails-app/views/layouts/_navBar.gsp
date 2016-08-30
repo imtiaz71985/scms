@@ -52,6 +52,11 @@
                                     <a href="#counselorAction/show"><i class="fa fa-user-times"></i>&nbsp;Counselor Action</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/counselorAction/showServiceList">
+                                <li>
+                                    <a href="#counselorAction/showServiceList"><i class="fa fa-user-times"></i>&nbsp;Service List</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
