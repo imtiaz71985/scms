@@ -62,14 +62,14 @@
                         <div class="col-md-6">
 
                         <div class="form-group">
-                            <label class="col-md-2 control-label label-optional"
+                            <label class="col-md-2 control-label label-required"
                                    for="isActive">Is Active:</label>
 
                             <div class="col-md-1">
                                 <g:checkBox class="form-control-static" name="isActive" tabindex="2"
                                             data-bind="checked: diseaseInfo.isActive"/>
                             </div>
-                            <label class="col-md-2 control-label label-optional">Applicable:</label>
+                            <label class="col-md-2 control-label label-required">Applicable:</label>
                             <label class="radio-inline"><input type="radio" value="ALL" name="applicableTo" data-bind="checked: diseaseInfo.applicableToName">ALL</label>
                             <label class="radio-inline"><input type="radio" value="Male" name="applicableTo" data-bind="checked: diseaseInfo.applicableToName">Male</label>
                             <label class="radio-inline"><input type="radio" value="Female" name="applicableTo" data-bind="checked: diseaseInfo.applicableToName">Female</label>
