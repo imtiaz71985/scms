@@ -55,7 +55,6 @@
         } else {
             actionUrl = "${createLink(controller:'diseaseInfo', action: 'update')}";
         }
-//alert(actionUrl);
         jQuery.ajax({
             type: 'post',
             data: jQuery("#diseaseInfoForm").serialize(),
@@ -126,6 +125,8 @@
                         description:{type:"string"},
                         diseaseGroupId: {type: "string"},
                         diseaseGroupName: {type: "string"},
+                        applicableTo: {type: "number"},
+                        applicableToName: {type: "string"},
                         isActive: {type: "boolean"}
                     }
                 },
@@ -174,7 +175,7 @@
                 {
                     field: "description",
                     title: "Description",
-                    width: 150,
+                    width: 120,
                     sortable: false,
                     filterable: false
                 },
@@ -182,6 +183,10 @@
                     field: "isActive", title: "Is Active", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=isActive?'YES':'NO'#"
+                },
+                {
+                    field: "applicableToName", title: "Applicable", width: 40, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 }
             ],
             filterable: {
@@ -202,6 +207,7 @@
                         description:"",
                         diseaseGroupId: "",
                         diseaseGroupName: "",
+                        applicableToName: "ALL",
                         isActive: true
                     }
                 }

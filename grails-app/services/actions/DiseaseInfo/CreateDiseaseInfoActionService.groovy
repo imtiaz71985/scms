@@ -2,6 +2,7 @@ package actions.DiseaseInfo
 
 import com.model.ListDiseaseInfoActionServiceModel
 import com.scms.DiseaseInfo
+import com.scms.SystemEntity
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -75,11 +76,12 @@ class CreateDiseaseInfoActionService extends BaseService implements ActionServic
      * @return -new systemEntity object
      */
     private DiseaseInfo buildObject(Map parameterMap) {
+        long applicableTo = SystemEntity.findByNameLikeAndType(parameterMap.applicableTo, "Disease Group Applicable To").id
+        parameterMap.applicableTo = applicableTo
         DiseaseInfo diseaseInfo = new DiseaseInfo(parameterMap)
         diseaseInfo.createDate=DateUtility.getSqlDate(new Date())
         diseaseInfo.createdBy= springSecurityService.principal.id
         diseaseInfo.isActive=true
-
         return diseaseInfo
     }
 }
