@@ -47,7 +47,7 @@
                     return data;
                 }
             },
-            pageSize: 10,
+            pageSize: getDefaultPageSize(),
             serverPaging: false,
             serverFiltering: false,
             serverSorting: false
