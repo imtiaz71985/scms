@@ -73,6 +73,8 @@ class MedicineSellInfoController extends BaseController {
         }else{
             result.put('unitPriceTxt', medicineInfo.unitPrice)
         }
+        result.put('unitPrice', medicineInfo.unitPrice)
+        result.put('unitType', medicineInfo.unitType)
         result.put('amount', medicineInfo.unitPrice)
         result.put('stockQty', medicineStock.stockQty)
         render result as JSON

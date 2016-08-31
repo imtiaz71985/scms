@@ -3,12 +3,12 @@
     <sec:access url="/medicineSellInfo/update">
         <li onclick="newRecord();"><i class="fa fa-plus-square"></i>New</li>
     </sec:access>
-    <sec:access url="/medicineSellInfo/update">
-        <li onclick="editRecord();"><i class="fa fa-edit"></i>Edit</li>
-    </sec:access>
-%{--    <sec:access url="/medicineSellInfo/delete">
-        <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>--}%
+%{-- <sec:access url="/medicineSellInfo/update">
+    <li onclick="editRecord();"><i class="fa fa-edit"></i>Edit</li>
+</sec:access>
+<sec:access url="/medicineSellInfo/delete">
+    <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
+</sec:access>--}%
 </ul>
 </script>
 

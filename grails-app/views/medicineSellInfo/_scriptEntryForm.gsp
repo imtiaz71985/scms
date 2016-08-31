@@ -95,10 +95,11 @@
         }
         var quantity = $('#quantity').val();
         var amount = $('#amount').val();
-        var unitPriceTxt = $('#unitPriceTxt').val();
+        var unitPrice = $('#hidUnitPrice').val();
+        var unitType = $('#hidUnitType').val();
 
         // add data into grid;
-        addToGrid(gridMedicineSellInfo, medicineId, quantity, amount, unitPriceTxt);
+        addToGrid(gridMedicineSellInfo, medicineId, quantity, amount, unitPrice,unitType);
         showLoadingSpinner(false);
         setButtonDisabled($('#addMedicine'), false);
         return false;
@@ -130,14 +131,15 @@
         });
         return success;
     }
-    function addToGrid(gridModel, medicineId, quantity, amount, unitPriceTxt) {
+    function addToGrid(gridModel, medicineId, quantity, amount, unitPrice,unitType) {
         var data = {
             medicineName: medicineName,
             medicineId: medicineId,
-            quantity: quantity,
-            stock: availableStock,
-            amount: amount,
-            unitPriceTxt: unitPriceTxt
+            quantity  : quantity,
+            stock     : availableStock,
+            amount    : amount,
+            unitPrice : unitPrice,
+            unitType  : unitType
         };
 
         var gridCount = gridModel.dataSource.data().length;
@@ -155,6 +157,8 @@
         availableStock = 0;
         $("#stockQty").text('');
         $("#voucherNo").val(voucherNo);
+        $('#hidUnitPrice').val('');
+        $('#hidUnitType').val('');
         $('#gridMedicine  > .k-grid-content').height(285);
         return false;
     }
@@ -185,8 +189,15 @@
                     filterable: false
                 },
                 {
-                    field: "unitPriceTxt",
-                    title: "Price/Unit",
+                    field: "unitPrice",
+                    title: "Unit Price",
+                    width: 50,
+                    sortable: false,
+                    filterable: false
+                },
+                {
+                    field: "unitType",
+                    title: "Unit Type",
                     width: 50,
                     sortable: false,
                     filterable: false
@@ -226,17 +237,14 @@
             url: actionUrl,
             success: function (data, textStatus) {
                 unitPrice = data.amount;
-                quantity.value(1);
+                quantity.value();
                 medicineName = data.name;
                 availableStock = data.stockQty;
-                $("#stockQty").text(availableStock);
-                var quantitya = $("#quantity").val();
-                if (quantitya != '') {
-                    $('#amount').val((data.amount * quantitya).toFixed(2));
-                } else {
-                    $('#amount').val(data.amount);
-                }
+                $("#stockQty").text('out of '+availableStock);
+                $('#amount').val(0);
                 $('#unitPriceTxt').val(data.unitPriceTxt);
+                $('#hidUnitPrice').val(data.unitPrice);
+                $('#hidUnitType').val(data.unitType);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
             },
@@ -300,9 +308,11 @@
         dropDownMedicine.value(data.medicineId);
         quantity.value(data.quantity);
         $("#amount").val(data.amount);
-        $("#unitPriceTxt").val(data.unitPriceTxt);
+        $("#unitPriceTxt").val(data.unitPrice+'/ '+data.unitType);
+        $("#hidUnitPrice").val(data.unitPrice);
+        $("#hidUnitType").val(data.unitType);
         availableStock = data.stock;
-        $("#stockQty").text(data.stock);
+        $("#stockQty").text('out of '+data.stock);
         gridMedicineSellInfo.dataSource.remove(data);
         getOnlyMedicinePrice();
         var amount = $("#amount").val();

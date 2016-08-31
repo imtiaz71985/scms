@@ -40,8 +40,8 @@
                                onKeyUp="javascript: calculateTotalPrice();"/>
                     </div>
 
-                    <div class="col-md-3">
-                        <b>out of <span id="stockQty"></span></b>
+                    <div class="col-md-3" style="padding-left: 0px;">
+                        <b><span id="stockQty"></span></b>
                     </div>
                 </div>
             </div>
@@ -49,6 +49,8 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="col-md-3 control-label label-optional">Unit Price:</label>
+                    <g:hiddenField id="hidUnitPrice" name="hidUnitPrice"></g:hiddenField>
+                    <g:hiddenField id="hidUnitType" name="hidUnitType"></g:hiddenField>
 
                     <div class="col-md-4">
                         <input type="text" class="form-control" id="unitPriceTxt" name="unitPriceTxt"
