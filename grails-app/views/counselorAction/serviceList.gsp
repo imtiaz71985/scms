@@ -1,34 +1,18 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: User
-  Date: 08/29/16
-  Time: 4:01 PM
---%>
 <div class="container-fluid">
-<div class="row" id="counselorActionGridRow">
+<div class="row">
     <div id="gridCounselorServiceList"></div>
 </div>
 </div>
+
 <script language="JavaScript">
-    var gridCounselorServiceList;
+    var gridCounselorServiceList, dataSource;
     $(document).ready(function () {
         onLoadCounselorActionPage();
         initServiceInfoGrid();
     });
-   /* jQuery(function () {
-        jQuery("form.counselorActionForm").submit(function (event) {
-            event.preventDefault();
-            return false;
-        });
-    });*/
 
     function onLoadCounselorActionPage() {
-
-
-        // initialize form with kendo validator & bind onSubmit event
-        //initializeForm($("#counselorActionForm"), onSubmitCounselorAction);
-        // update page title
-        defaultPageTile("Service List", '/counselorAction/showServiceList');
+        defaultPageTile("Service List", null);
     }
     function initDataSourceRegAndServiceInfo() {
         dataSource = new kendo.data.DataSource({
@@ -69,14 +53,7 @@
             serverSorting: true
         });
     }
-    function gridDataBound(e) {
-        var grid = e.sender;
-        if (grid.dataSource.total() == 0) {
-            $(e.sender.wrapper)
-                    .find('tbody')
-                    .append('<tr><td colspan="' + 9 + '" class="no-data"><center>Sorry, no data found <i class="fa fa-frown-o"></i></center></td></tr>');
-        }
-    }
+
     function initServiceInfoGrid() {
         initDataSourceRegAndServiceInfo();
         $("#gridCounselorServiceList").kendoGrid({
@@ -126,17 +103,10 @@
                                 },
                                 {field: "totalCharge", title: "Total(৳)", width: 70, sortable: false, filterable: false}
                             ]
-                        },
-                        { command: {
-                            text: " ",
-                            click: showDetails,
-                            className: "fa fa-search-plus fa-2x"
-                        }, width: 50
                         }
                     ]
                 }
-        )
-        ;
+        );
         gridCounselorServiceList = $("#gridCounselorServiceList").data("kendoGrid");
     }
 </script>

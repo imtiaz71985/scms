@@ -60,7 +60,7 @@ class CounselorActionController extends BaseController {
         render(view: "/counselorAction/serviceList")
     }
     def serviceList() {
-        Date start = DateUtility.getSqlFromDateWithSeconds(2016-01-01)
+        Date start = DateUtility.getSqlFromDateWithSeconds(new Date(2016-01-01))
         Date end = DateUtility.getSqlToDateWithSeconds(new Date())
 
         String hospital_code = ""
