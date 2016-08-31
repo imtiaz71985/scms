@@ -7,6 +7,7 @@
 
     <form id="frmMedicine" name="frmMedicine" class="form-horizontal form-widgets" role="form">
         <div class="panel-body">
+            <div class="form-group">
             <div class="col-md-6">
 
                 <div class="form-group">
@@ -65,20 +66,20 @@
                                placeholder="Total amount (৳)" readonly="true"/>
                     </div>
                 </div>
-
-            </div>
-
-            <div class="form-group">
+                <div class="form-group">
                 <div class="col-md-3">&nbsp;</div>
 
-                <div class="col-md-6">
-                    <button id="addMedicine" name="addMedicine" data-role="button" class="k-button"
-                            style="width: inherit;"
-                            role="button" onclick='return addMedicineToGrid();' tabindex="3"
-                            aria-disabled="false"><span class="fa fa-shopping-cart"></span>&nbsp; Add
-                    </button>
+                    <div class="col-md-4">
+                        <button id="addMedicine" name="addMedicine" data-role="button" class="k-button"
+                            style="width: 100%;"
+                                role="button" onclick='return addMedicineToGrid();' tabindex="3"
+                                aria-disabled="false"><span class="fa fa-shopping-cart"></span>&nbsp; Add
+                        </button>
+                    </div>
                 </div>
             </div>
+</div>
+
 
             <div class="form-group" style="height: 360px;">
                 <div id="gridMedicine"></div>
