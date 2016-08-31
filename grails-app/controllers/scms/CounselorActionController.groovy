@@ -66,11 +66,10 @@ class CounselorActionController extends BaseController {
             hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         }
         List<GroovyRowResult> lst = serviceTokenRelatedInfoService.RegAndServiceDetails(start, end, hospital_code)
-        int count = ServiceTokenInfo.count()
 
         Map result = new HashedMap()
         result.put('list', lst)
-        result.put('count', count)
+        result.put('count', lst.size())
         render result as JSON
     }
 
