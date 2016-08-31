@@ -100,6 +100,7 @@
                         pathology_amount: {type: "number"},
                         pathology_count: {type: "number"},
                         medicine_sales: {type: "number"},
+                        return_amt: {type: "number"},
                         date_field: {type: "date"},
                         is_holiday: {type: "boolean"},
                         holiday_status: {type: "string"},
@@ -127,6 +128,7 @@
                 {field: "pathology_amount", aggregate: "sum" },
                 {field: "pathology_count", aggregate: "sum" },
                 {field: "medicine_sales", aggregate: "sum" },
+                {field: "return_amt", aggregate: "sum" },
                 {field: "new_patient", aggregate: "sum" },
                 {field: "re_reg_patient", aggregate: "sum" },
                 {field: "patient_followup", aggregate: "sum" },
@@ -336,13 +338,26 @@
                     ]
                 },
                 {
-                    field: "medicine_sales",title: "Medicine <br/> Sales(৳)",
-                    width: 60,sortable: false,filterable: false,
-                    headerAttributes: {style: setAlignRight()},
-                    footerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?holiday_status:formatAmount(medicine_sales)#",
-                    footerTemplate: "#=formatAmount(sum)#"
+                    title: "Medicine", headerAttributes: {style: setAlignCenter()},
+                    columns: [
+                        {
+                            field: "medicine_sales", title: "Sales(৳)",
+                            width: 40,sortable: false,filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=is_holiday?'':formatAmount(medicine_sales)#",
+                            footerTemplate: "#=sum#"
+                        }, {
+                            field: "return_amt", title: "Return",
+                            width: 40, sortable: false, filterable: false,
+                            headerAttributes: {style: setCAlignRight()},
+                            footerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=is_holiday?'':formatAmount(return_amt)#",
+                            footerTemplate: "#=sum#"
+                        }
+                    ]
                 },
                 {
                     field: "medicine_sales",title: "Day <br/> Collection(৳)",
@@ -350,7 +365,7 @@
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=formatCeilAmount(medicine_sales+pathology_amount+registration_amount+re_registration_amount+consultation_amount-subsidy_amount)#",
+                    template: "#=is_holiday?holiday_status:formatCeilAmount(medicine_sales+pathology_amount+registration_amount+re_registration_amount+consultation_amount-subsidy_amount-return_amt)#",
                     footerTemplate: "<span id='footerSpan'>#=formatAmount(sum)#</span>"
                 }
             ],

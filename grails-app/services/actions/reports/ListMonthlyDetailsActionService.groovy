@@ -57,6 +57,8 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
             WHERE msi.sell_date = c.date_field GROUP BY msi.sell_date ),0)) AS medicine_sales,
                 COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
+            COALESCE((SELECT SUM(mr.total_amount) FROM medicine_return mr
+            WHERE mr.return_date = c.date_field GROUP BY mr.return_date ),0) AS return_amt,
                         COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
                         LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
                         WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field
@@ -165,6 +167,11 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
             WHERE msi.sell_date = c.date_field AND msi.hospital_code = :hospitalCode
             GROUP BY msi.sell_date ),0)) AS medicine_sales,
+
+            COALESCE((SELECT SUM(mr.total_amount) FROM medicine_return mr
+            WHERE mr.return_date = c.date_field AND mr.hospital_code = :hospitalCode
+            GROUP BY mr.return_date ),0) AS return_amt,
+
                 COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
                         COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
                         LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id

@@ -548,6 +548,9 @@ function formatAmount(amount) {
 function formatCeilAmount(amount) {
     return Math.ceil(amount);
 }
+function formatFloorAmount(amount) {
+    return Math.floor(amount);
+}
 
 function formatNumberTwo(amount) {
     return kendo.toString(amount, "##,###.00");
