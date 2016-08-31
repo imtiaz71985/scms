@@ -87,7 +87,7 @@
                 },
                 {
                     field: "returnDate", title: "Return Date", width: 100, sortable: false,
-                    filterable: {cell: {template: formatFilterableDate}},
+                    filterable: {cell: {template: formatFilterableDate,showOperators: false}},
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=kendo.toString(kendo.parseDate(returnDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
                 }
