@@ -47,10 +47,10 @@
                     return data;
                 }
             },
-            pageSize: getDefaultPageSize(),
-            serverPaging: true,
-            serverFiltering: true,
-            serverSorting: true
+            pageSize: 10,
+            serverPaging: false,
+            serverFiltering: false,
+            serverSorting: false
         });
     }
 
