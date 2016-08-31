@@ -64,10 +64,7 @@ class GetDropDownSellVoucherNoTagLibActionService  extends BaseService implement
      */
     public Map execute(Map result) {
         try {
-
             List<GroovyRowResult> lst = (List<GroovyRowResult>) listVoucherNo()
-
-
             String html = buildDropDown(lst, result)
             result.html = html
             return result
@@ -165,7 +162,9 @@ class GetDropDownSellVoucherNoTagLibActionService  extends BaseService implement
         String queryForList = """
             SELECT voucher_no AS id,voucher_no AS name
                 FROM medicine_sell_info
-            WHERE DATE(sell_date)>=DATE(NOW() - INTERVAL 6 MONTH) AND hospital_code='${hospitalCode}' AND is_return!=true
+            WHERE DATE(sell_date)>=DATE(NOW() - INTERVAL 6 MONTH)
+            AND hospital_code='${hospitalCode}'
+            AND is_return!=true
 
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)
