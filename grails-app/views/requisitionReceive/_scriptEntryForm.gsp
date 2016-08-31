@@ -11,6 +11,7 @@
     });
 
     function onLoadRequisitionPage() {
+        initializeForm($("#frmRequisitionReceive"), null);
         dropDownRequisitionNo = initKendoDropdown($('#ddlRequisition'), null, null, null);
     }
     function populateDDLRequisitionNo() {
@@ -51,10 +52,14 @@
         setFooter();
         $('#prNo').val('');
         $('#chalanNo').val('');
+        clearErrors($('#frmRequisitionReceive'));
 
     }
 
     function executePreCondition() {
+        if (!validateForm($("#frmRequisitionReceive"))) {
+            return false;
+        }
         var count = gridMedicineReqReceive.dataSource.total();
         if (count == 0) {
             showError('No data found to save');

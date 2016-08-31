@@ -1,7 +1,7 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
-            Requisition receive details
+            List of received requisition
         </div>
     </div>
 
