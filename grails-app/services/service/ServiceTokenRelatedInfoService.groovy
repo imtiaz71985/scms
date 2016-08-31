@@ -6,6 +6,8 @@ import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import scms.BaseService
 
+import java.sql.Timestamp
+
 @Transactional
 class ServiceTokenRelatedInfoService extends BaseService{
 
@@ -48,7 +50,11 @@ class ServiceTokenRelatedInfoService extends BaseService{
                   COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,st.subsidy_amount AS subsidyAmount,
                   SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
                   SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
-                  SUM(sc.charge_amount)-st.subsidy_amount AS totalCharge
+                  COALESCE(SUM(sc.charge_amount)-st.subsidy_amount,0) AS totalCharge,
+                  (SELECT CASE WHEN COALESCE(GROUP_CONCAT(NAME),'')='' THEN 'Follow Up' ELSE COALESCE(GROUP_CONCAT(NAME),'') END
+                   FROM service_type WHERE (CASE WHEN id<10 THEN CONCAT(0,id) ELSE id END)
+                  IN ( SELECT SUBSTRING(sc.service_code,1,2) FROM token_and_charge_mapping tcm
+                   LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no)) AS serviceType
                    FROM registration_info ri
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
                   LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
@@ -65,7 +71,11 @@ class ServiceTokenRelatedInfoService extends BaseService{
                   COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,st.subsidy_amount AS subsidyAmount,
                   SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
                   SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
-                  SUM(sc.charge_amount)-st.subsidy_amount AS totalCharge
+                  COALESCE(SUM(sc.charge_amount)-st.subsidy_amount,0) AS totalCharge,
+                  (SELECT CASE WHEN COALESCE(GROUP_CONCAT(NAME),'')='' THEN 'Follow Up' ELSE COALESCE(GROUP_CONCAT(NAME),'') END
+                   FROM service_type WHERE (CASE WHEN id<10 THEN CONCAT(0,id) ELSE id END)
+                   IN ( SELECT SUBSTRING(sc.service_code,1,2) FROM token_and_charge_mapping tcm
+                   LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no)) AS serviceType
                    FROM registration_info ri
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
                   LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
@@ -115,5 +125,16 @@ class ServiceTokenRelatedInfoService extends BaseService{
             }
         }catch(Exception ex){}
         return isNotApplicable
+    }
+    public List<GroovyRowResult> getReferenceTokenForFollowup(String regNo,Timestamp fromDate, Timestamp toDate){
+        String queryStr = """
+        SELECT DISTINCT sti.service_token_no AS serviceTokenNo FROM service_token_info sti JOIN token_and_charge_mapping tcm ON tcm.service_token_no=sti.service_token_no
+        JOIN service_charges sc ON sc.id=tcm.service_charge_id
+        WHERE sti.reg_no='${regNo}' AND sti.visit_type_id != 3
+        AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}'
+        AND SUBSTRING(sc.service_code,1,2) NOT IN ('01','03','04','05')  ORDER BY sti.service_date DESC
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+        return result
     }
 }

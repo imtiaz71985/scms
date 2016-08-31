@@ -1,5 +1,6 @@
 package taglib
 
+import com.scms.SecUser
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
@@ -156,6 +157,8 @@ class GetDropDownRegistrationNoTagLibActionService extends BaseService implement
     }
 
     private List<GroovyRowResult> listRegistrationNo() {
+        //String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        // AND SUBSTRING(ri.reg_no,1,2)='${hospital_code}'
         String queryForList = """
             SELECT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name
                 FROM registration_info ri

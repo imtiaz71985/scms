@@ -133,7 +133,7 @@
                                             url="${createLink(controller: 'registrationInfo', action: 'reloadDropDown')}"
                                             onchange="javascript:populateAddress();"
                                             data-bind="value: registrationInfo.village"
-                                            placeholder="Write/Select one..." tabindex="7"
+                                            placeholder="Write/ Select one..." tabindex="7"
                                             class="kendo-drop-down" type="Village"
                                             id="village" name="village">
                                     </app:dropDownVillage>

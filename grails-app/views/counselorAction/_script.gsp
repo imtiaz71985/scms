@@ -220,6 +220,7 @@
                         pathologyAmt: {type: "number"},
                         totalCharge: {type: "number"},
                         serviceDate: {type: "string"},
+                        serviceType: {type: "string"},
                         isExit: {type: "boolean"}
                     }
                 },
@@ -258,11 +259,12 @@
                         buttonCount: 4
                     },
                     columns: [
-                        {field: "regNo", title: "Reg No", width: 80, sortable: false, filterable: false},
-                        {field: "serviceTokenNo", title: "Token No", width: 80, sortable: false, filterable: false},
-                        {field: "patientName", title: "Name", width: 150, sortable: false, filterable: false},
+                        {field: "regNo", title: "Reg No", width: 70, sortable: false, filterable: false},
+                        {field: "serviceTokenNo", title: "Token No", width: 70, sortable: false, filterable: false},
+                        {field: "patientName", title: "Name", width: 100, sortable: false, filterable: false},
+                        {field: "serviceType", title: "Service Type", width: 100, sortable: false, filterable: false},
                         {
-                            field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
+                            field: "dateOfBirth", title: "Age", width: 40, sortable: false, filterable: false,
                             template: "#=evaluateDateRange(dateOfBirth, new Date())#"
                         }, {
                             title: "Charges", headerAttributes: {style: setAlignCenter()},
@@ -285,11 +287,11 @@
                                 {
                                     field: "pathologyAmt",
                                     title: "Pathology(৳)",
-                                    width: 70,
+                                    width: 60,
                                     sortable: false,
                                     filterable: false
                                 },
-                                {field: "totalCharge", title: "Total(৳)", width: 70, sortable: false, filterable: false}
+                                {field: "totalCharge", title: "Total(৳)", width: 50, sortable: false, filterable: false}
                             ]
                         },
                         { command: {

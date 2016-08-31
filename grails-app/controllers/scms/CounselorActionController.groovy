@@ -152,7 +152,8 @@ class CounselorActionController extends BaseController {
         calNow.add(Calendar.MONTH, -3);
         Date dateBeforeAMonth = calNow.getTime();
         Timestamp fromDate = DateUtility.getSqlToDateWithSeconds(dateBeforeAMonth)
-        List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndServiceDateBetween(regNo, fromDate, toDate, [sort: "serviceDate", order: "DESC"])
+       // List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndServiceDateBetween(regNo, fromDate, toDate, [sort: "serviceDate", order: "DESC"])
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getReferenceTokenForFollowup(regNo,fromDate, toDate)
         lst = baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
         Map result = [lstTokenNo: lst]
         render result as JSON

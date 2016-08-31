@@ -28,7 +28,7 @@
                                 class="k-button" tabindex="2"
                                 role="button" onclick="LoadDetailsByRegNo()"
                                 aria-disabled="false"><span
-                                class="k-icon k-i-plus"></span> Take Service
+                                class="k-icon k-i-plus"></span> New Service
                         </button>
                     </div>
 
@@ -59,7 +59,7 @@
                 <div class="form-group">
                     <div class="col-md-6" style=" padding-bottom: 0px;">
                         <div class="form-group">
-                            <label class="col-md-3 control-label label-required"
+                            <label class="col-md-3 control-label label-optional"
                                    for="serviceTokenNo">Service No:</label>
 
                             <div class="col-md-6">
@@ -75,7 +75,7 @@
                         </div>
 
                         <div class="form-group" id="divServiceProvider">
-                            <label class="col-md-3 control-label label-required"
+                            <label class="col-md-3 control-label label-optional"
                                    for="serviceProviderId">Service Provider:</label>
 
                             <div class="col-md-6">
@@ -88,7 +88,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label label-required"
+                            <label class="col-md-3 control-label label-optional"
                                    for="serviceTypeId">Service Type:</label>
 
                             <div class="col-md-6">
@@ -102,7 +102,7 @@
                             </div>
                         </div>
                         <div class="form-group" id="divReferralCenter" style="display: none;">
-                            <label class="col-md-3 control-label label-required"
+                            <label class="col-md-3 control-label label-optional"
                                    for="referralCenterId">Refer To:</label>
 
                             <div class="col-md-6">
@@ -117,7 +117,7 @@
                         </div>
 
                         <div class="form-group" id="divPrescriptionType">
-                            <label class="col-md-3 control-label label-required"
+                            <label class="col-md-3 control-label label-optional"
                                    style="padding-top: 0px;">Prescription:</label>
 
                             <div class="col-md-9" style="padding-top: 0px;">
@@ -139,7 +139,7 @@
 
                     <div class="col-md-6" id="divCharges" style=" padding-bottom: 0px;">
                         <div class="form-group" id="divTakenService"  style="display:none;">
-                            <label class="col-md-3 control-label label-required" for="diseaseGroupId">Taken Service:</label>
+                            <label class="col-md-3 control-label label-optional" for="diseaseGroupId">Taken Service:</label>
 
                             <div class="col-md-6">
                                 <app:dropDownDiseaseGroup
@@ -152,7 +152,7 @@
 
                         </div>
                         <div class="form-group" id="divReferenceServiceNo" style="display:none;">
-                            <label class="col-md-3 control-label label-required"
+                            <label class="col-md-3 control-label label-optional"
                                    style="padding-right: 0px;">Reference Token No:</label>
 
                             <div class="col-md-6">
@@ -172,7 +172,7 @@
                             </div>
                         </div>
                         <div class="form-group" id="divServiceCharges" style="display:none;">
-                            <label class="col-md-3 control-label label-required"
+                            <label class="col-md-3 control-label label-optional"
                                    style="padding-right: 0px;">Service Charges:</label>
 
                             <div class="col-md-3">
@@ -193,7 +193,7 @@
 
                         <div class="form-group">
                             <div id="divPathology" style="display:none;">
-                                <label class="col-md-3 control-label label-required"
+                                <label class="col-md-3 control-label label-optional"
                                        style="padding-right: 0px;">Pathology Fees:</label>
 
                                 <div class="col-md-3">
@@ -203,7 +203,7 @@
                             </div>
 
                             <div style="display:none;" id="divPayable">
-                                <label class="col-md-3 control-label label-required"
+                                <label class="col-md-3 control-label label-optional"
                                        style="padding-right: 0px;">Total Payable:</label>
 
                                 <div class="col-md-3">
@@ -240,7 +240,7 @@
                         class="k-button k-button-icontext"
                         role="button" tabindex="10"
                         aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
-                </button>
+                </button>&nbsp;&nbsp;&nbsp;
 
                 <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                         class="k-button k-button-icontext" role="button" tabindex="11"
