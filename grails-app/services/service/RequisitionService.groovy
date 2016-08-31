@@ -41,7 +41,9 @@ class RequisitionService extends BaseService {
                          END) AS medicineName,
                     COALESCE(vendor.short_name,vendor.name) AS vendorName,
                         mi.unit_price AS unitPrice,mi.unit_type AS unitType,ms.stock_qty AS stockQty,
-                        COALESCE(rq.req_qty,0) AS reqQty ,COALESCE(rq.req_qty,0) AS approvedQty,0 AS procQty,
+                        COALESCE(rq.req_qty,0) AS reqQty ,
+                        (CASE WHEN rq.approved_qty=0 THEN COALESCE(rq.req_qty,0)ELSE COALESCE(rq.approved_qty,0) END)
+                        AS approvedQty,0 AS procQty,
                         COALESCE(rq.amount,0) AS amount,
                         (CASE WHEN rq.approve_amount=0 THEN COALESCE(rq.amount,0) ELSE COALESCE(rq.approve_amount,0) END)
                          AS approveAmount

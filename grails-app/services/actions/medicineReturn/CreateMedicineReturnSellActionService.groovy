@@ -71,7 +71,7 @@ class CreateMedicineReturnSellActionService extends BaseService implements Actio
 
                 }
             }
-            medicineReturn.totalAmount=totalAmt
+            medicineReturn.totalAmount=Math.floor(totalAmt)
             medicineReturn.save()
             MedicineSellInfo medicineSellInfo=MedicineSellInfo.findByVoucherNo(medicineReturn.traceNo)
             medicineSellInfo.isReturn=true

@@ -53,7 +53,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     return super.setError(params, 'Sorry! Please select service provider.')
                 }
                 if (serviceTypeId == 5) {
-                    if (!params.referenceServiceNoDDL) {
+                    if (params.referenceServiceNoDDL=='Please Select...') {
                         return super.setError(params, 'Sorry! Please select reference service no.')
                     }
                 } else if (serviceTypeId == 4) {
