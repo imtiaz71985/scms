@@ -28,11 +28,12 @@
 
     $(document).ready(function () {
         dataSource = new kendo.data.DataSource({data: ${gridModelMedicine}});
-        dataSource.group({field: "receiveDate" });
+        dataSource.group([{field: "receiveDate" },{field: "chalanNo" }]);
         initRequisitionGrid();
         requisitionNo = '${requisitionNo}';
         $("#reqNo").text(requisitionNo);
         $("#gridMedicine").data("kendoGrid").hideColumn("receiveDate");
+        $("#gridMedicine").data("kendoGrid").hideColumn("chalanNo");
         defaultPageTile("Receive details", 'requisitionReceive/showList');
     });
 
@@ -52,7 +53,14 @@
                     width: 30,
                     sortable: false,
                     filterable: false
+                },{
+                    field: "chalanNo",
+                    title: "Chalan No",
+                    width: 40,
+                    sortable: false,
+                    filterable: false
                 },
+
                 {
                     field: "type",
                     title: "Type",

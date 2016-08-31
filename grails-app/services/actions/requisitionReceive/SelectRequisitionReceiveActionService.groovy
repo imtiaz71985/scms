@@ -75,7 +75,7 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
 
         String queryStr = """
             SELECT req.req_no,rec.create_date AS receive_date,rd.medicine_id,SUM(rd.receive_qty) AS receive_qty,
-                md.generic_name,se.name AS TYPE,
+                COALESCE(rec.chalan_no,'') AS chalan_no,md.generic_name,se.name AS TYPE,
                 CASE WHEN md.strength IS NULL THEN md.brand_name ELSE CONCAT(md.brand_name,' (',md.strength,')') END AS medicine_name,
                 COALESCE(v.short_name,v.name) AS vendor
                     FROM requisition req
@@ -85,7 +85,7 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
                 LEFT JOIN vendor v ON v.id = md.vendor_id
                 LEFT JOIN system_entity se ON se.id = md.type AND se.type="Medicine Type"
                     WHERE req.req_no = '${requisitionNo}'
-                    GROUP BY rec.create_date,md.id
+                    GROUP BY rec.create_date,md.id,rec.chalan_no
                 ORDER BY rec.create_date,md.brand_name ASC;
         """
 
@@ -103,6 +103,7 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
             String vendor       = singleRow.vendor
             String type         = singleRow.type
             String genericName  = singleRow.generic_name
+            String chalanNo  = singleRow.chalan_no
             int receiveQty      = singleRow.receive_qty
 
             Map eachDetails = [
@@ -111,6 +112,7 @@ class SelectRequisitionReceiveActionService extends BaseService implements Actio
                     genericName   : genericName,
                     medicineName  : medicineName,
                     vendor        : vendor,
+                    chalanNo        : chalanNo,
                     receiveQty    : receiveQty
             ]
             lstRows << eachDetails

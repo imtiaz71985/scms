@@ -1,7 +1,7 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
-            Requisition receive details
+            Details of received requisition
         </div>
     </div>
 
@@ -16,7 +16,7 @@
                 class="k-button k-button-icontext" role="button" tabindex="1"
                 onclick='requisitionAcknowledgement();' aria-disabled="false">
             <span class="k-icon k-i-plus"></span>Generate Acknowledgement
-        </button>
+        </button>&nbsp;&nbsp;&nbsp;
         <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                 class="k-button k-button-icontext" role="button" tabindex="2"
                 aria-disabled="false" onclick='resetForm();'>

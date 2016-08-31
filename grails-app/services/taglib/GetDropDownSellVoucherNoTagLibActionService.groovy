@@ -164,7 +164,7 @@ class GetDropDownSellVoucherNoTagLibActionService  extends BaseService implement
                 FROM medicine_sell_info
             WHERE DATE(sell_date)>=DATE(NOW() - INTERVAL 6 MONTH)
             AND hospital_code='${hospitalCode}'
-            AND is_return!=true
+            AND is_return!=true ORDER BY id DESC
 
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)
