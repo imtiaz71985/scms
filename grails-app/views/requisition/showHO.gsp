@@ -20,11 +20,11 @@
     var gridRequisitionHO, dataSource;
 
     $(document).ready(function () {
-        onLoadgRequisitionHOPage();
+        onLoadRequisitionHOPage();
         initRequisitionPRGrid();
     });
 
-    function onLoadgRequisitionHOPage() {
+    function onLoadRequisitionHOPage() {
         defaultPageTile("Requisition Request", null);
     }
 
@@ -92,7 +92,7 @@
                 {
                     field: "requisitionBy",
                     title: "Requisition Details",
-                    width: 100, sortable: false,
+                    width: 100, sortable: false,filterable: kendoCommonFilterable(97),
                     template: "#=hospitalName # --(By #= requisitionBy# )"
                 },
                 {
