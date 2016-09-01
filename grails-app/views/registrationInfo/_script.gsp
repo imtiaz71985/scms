@@ -7,7 +7,7 @@
         <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
     </sec:access>--}%
     <sec:access url="/registrationInfo/reIssue">
-        <li onclick="reIssueRegNo();"><i class="fa fa-anchor"></i>Re Issue</li>
+        <li onclick="reIssueRegNo();"><i class="fa fa-check-circle-o"></i>Reissue</li>
     </sec:access>
 </ul>
 </script>
@@ -39,18 +39,7 @@
         defaultPageTile("Create Registration",null);
     }
 
-    function executePreCondition() {
-        if (!validateForm($("#registrationInfoForm"))) {
-            return false;
-        }
-        return true;
-    }
-
     function onSubmitRegistrationInfo() {
-        if (executePreCondition() == false) {
-            return false;
-        }
-
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
 
@@ -112,8 +101,6 @@
         $('#regFees').val('10 tk');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
 
-        $('#addressSelection').hide();
-        $('#divAddress').show();
         $("#registrationInfoRow").hide();
     }
     function initDataSource() {
@@ -255,8 +242,6 @@
             return;
         }
         $("#registrationInfoRow").show();
-        $('#addressSelection').show();
-        $('#divAddress').hide();
         var registrationInfo = getSelectedObjectFromGridKendo(gridRegistrationInfo);
 
         populateUpazilaListForUpdate(registrationInfo.districtId,registrationInfo.upazilaId);
@@ -273,31 +258,32 @@
     }
     function populateUpazilaList() {
         var districtId = dropDownDistrict.value();
-        if (districtId == '') {
-            dropDownUpazila.setDataSource(getKendoEmptyDataSource(dropDownUpazila, null));
-            dropDownUpazila.value('');
-            return false;
+        dropDownUpazila.setDataSource(getKendoEmptyDataSource(dropDownUpazila, null));
+        dropDownUnion.setDataSource(getKendoEmptyDataSource(dropDownUnion, null));
+        dropDownUpazila.value('');
+        dropDownUnion.value('');
+        if (districtId != '') {
+            showLoadingSpinner(true);
+            $.ajax({
+                url: "${createLink(controller: 'registrationInfo', action: 'upazilaListByDistrictId')}?districtId=" + districtId,
+                success: function (data) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+                    dropDownUpazila.setDataSource(data.lstUpazila);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    afterAjaxError(XMLHttpRequest, textStatus);
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);
+                },
+                dataType: 'json',
+                type: 'post'
+            });
+            return true;
         }
-        showLoadingSpinner(true);
-        $.ajax({
-            url: "${createLink(controller: 'registrationInfo', action: 'upazilaListByDistrictId')}?districtId=" + districtId,
-            success: function (data) {
-                if (data.isError) {
-                    showError(data.message);
-                    return false;
-                }
-                dropDownUpazila.setDataSource(data.lstUpazila);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus);
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
-        });
-        return true;
     }
     function populateUpazilaListForUpdate(districtId,upzilaId) {
 
@@ -393,15 +379,8 @@
     function populateAddress() {
 
         var villageId = $('#village').val();
-        if (isNaN(villageId) ){
-            $('#addressSelection').show();
-            $('#divAddress').hide();
-            return false;
-        }
-        else {
+        if (!isNaN(villageId) ){
             showLoadingSpinner(true);
-            $('#addressSelection').hide();
-            $('#divAddress').show();
             var actionUrl = "${createLink(controller:'registrationInfo', action: 'addressByVillage')}?villageId=" + villageId;
             jQuery.ajax({
                 type: 'post',

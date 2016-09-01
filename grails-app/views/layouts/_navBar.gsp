@@ -44,7 +44,7 @@
                             </sec:access>
                             <sec:access url="/registrationInfo/show">
                                 <li>
-                                    <a href="#registrationInfo/show"><i class="fa fa-users"></i>&nbsp;Registration List</a>
+                                    <a href="#registrationInfo/show"><i class="fa fa-users"></i>&nbsp;Registered Patient</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/counselorAction/show">

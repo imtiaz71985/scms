@@ -18,17 +18,7 @@
         defaultPageTile("Create Registration",null);
     }
 
-    function executePreCondition() {
-        if (!validateForm($("#registrationInfoForm"))) {
-            return false;
-        }
-        return true;
-    }
-
     function onSubmitRegistrationInfo() {
-        if (executePreCondition() == false) {
-            return false;
-        }
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         jQuery.ajax({
@@ -75,9 +65,7 @@
                 this.value = "";
             }
         });
-        var frmValidator = $('#registrationInfoForm').kendoValidator({
-            validateOnBlur: false
-        }).data("kendoValidator");
+        var frmValidator = $('#registrationInfoForm').kendoValidator({ validateOnBlur: false }).data("kendoValidator");
         frmValidator.hideMessages();
 
         dropDownMaritalStatus.value('');
@@ -89,8 +77,6 @@
         $("#regNo").val(regNo);
 
         $('#regFees').val('10 tk');
-        $('#addressSelection').hide();
-        $('#divAddress').show();
     }
     function initDataSource() {
         dataSourceGrid = new kendo.data.DataSource({
@@ -152,10 +138,10 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "regNo", title: "Reg No", width: 50, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "patientName", title: "Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "fatherOrMotherName", title: "Father/Mother", width: 80, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "address", title: "Address", width: 150, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "regNo", title: "Reg No", width: 50, sortable: false, filterable: false},
+                {field: "patientName", title: "Name", width: 100, sortable: false, filterable: false},
+                {field: "fatherOrMotherName", title: "Father/Mother", width: 80, sortable: false, filterable: false},
+                {field: "address", title: "Address", width: 150, sortable: false, filterable: false},
                 {field: "dateOfBirth", title: "Age", width: 35, sortable: false, filterable: false,
                     template: "#=evaluateDateRange(dateOfBirth, new Date())#"}
             ],
@@ -167,31 +153,32 @@
     }
     function populateUpazilaList() {
         var districtId = dropDownDistrict.value();
-        if (districtId == '') {
-            dropDownUpazila.setDataSource(getKendoEmptyDataSource(dropDownUpazila, null));
-            dropDownUpazila.value('');
-            return false;
+        dropDownUpazila.setDataSource(getKendoEmptyDataSource(dropDownUpazila, null));
+        dropDownUnion.setDataSource(getKendoEmptyDataSource(dropDownUnion, null));
+        dropDownUpazila.value('');
+        dropDownUnion.value('');
+        if (districtId != '') {
+            showLoadingSpinner(true);
+            $.ajax({
+                url: "${createLink(controller: 'registrationInfo', action: 'upazilaListByDistrictId')}?districtId=" + districtId,
+                success: function (data) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+                    dropDownUpazila.setDataSource(data.lstUpazila);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    afterAjaxError(XMLHttpRequest, textStatus);
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);
+                },
+                dataType: 'json',
+                type: 'post'
+            });
+            return true;
         }
-        showLoadingSpinner(true);
-        $.ajax({
-            url: "${createLink(controller: 'registrationInfo', action: 'upazilaListByDistrictId')}?districtId=" + districtId,
-            success: function (data) {
-                if (data.isError) {
-                    showError(data.message);
-                    return false;
-                }
-                dropDownUpazila.setDataSource(data.lstUpazila);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus);
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
-        });
-        return true;
     }
 
     function populateUpazilaListForUpdate(districtId,upzilaId) {
@@ -279,30 +266,20 @@
         });
         return true;
     }
-    $("#village").keypress(function(event) {
-        if (event.which == 13) {
-            event.preventDefault();
-            populateAddress();
-        }
-    });
+
     function populateAddress() {
 
         var villageId = $('#village').val();
-        if (isNaN(villageId) ){
-            $('#addressSelection').show();
-            $('#divAddress').hide();
-            return false;
-        }
-        else {
+        if (!isNaN(villageId) ){
             showLoadingSpinner(true);
-            $('#addressSelection').hide();
-            $('#divAddress').show();
             var actionUrl = "${createLink(controller:'registrationInfo', action: 'addressByVillage')}?villageId=" + villageId;
             jQuery.ajax({
                 type: 'post',
                 url: actionUrl,
                 success: function (data, textStatus) {
-                    $('#addressDetails').val(data.address);
+                    dropDownDistrict.value(data.districtId);
+                    populateUpazilaListForUpdate(data.districtId,data.upazilaId);
+                    populateUnionListForUpdate(data.upazilaId,data.unionId);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
 

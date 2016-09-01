@@ -91,7 +91,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="hideCreateRegReIssueModal();"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="createRegReIssueModalLabel">Registration Card Re Issue</h4>
+                <h4 class="modal-title" id="createRegReIssueModalLabel">Registration Card Reissue</h4>
             </div>
 
             <div class="modal-body">
@@ -100,19 +100,20 @@
 
                     <div class="form-group">
                         <div class="col-md-12">
-                            <label class="control-label label-optional col-md-2" >Reg No  :</label>
+                            <label class="control-label label-optional col-md-3" >Registration No  :</label>
                             <label class="control-label label-optional" id="reissueRegNo"></label><br>
-                            <label class="control-label label-optional col-md-2" >Name    :</label>
+                            <label class="control-label label-optional col-md-3" >Patient Name     :</label>
                             <label class="control-label label-optional" id="reissueName"></label><br>
-                            <label class="control-label label-optional col-md-2" >Address :</label>
+                            <label class="control-label label-optional col-md-3" >Address          :</label>
                             <label class="control-label label-optional" id="reissueAddress"></label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <label class="control-label label-required" for="descriptionReissueModal">Comments on re-issue</label><br>
+                            <label class="control-label label-required" for="descriptionReissueModal">Remarks</label><br>
+                            <br/>
                             <textarea id="descriptionReissueModal" name="descriptionReissueModal" tabindex="1"
-                                      placeholder="Comments on re-issue"
+                                      placeholder="Insert short description on reissue"
                                       required="required" validationMessage="Required" class="form-control"></textarea>
                         </div>
                     </div>
@@ -120,7 +121,7 @@
             </div>
 
             <div class="modal-footer">
-                <input class="btn btn-primary" type="button" value="Re Issue" onclick="onClickCreateRegReIssueModal();"
+                <input class="btn btn-primary" type="button" value="Reissue" onclick="onClickCreateRegReIssueModal();"
                        tabindex="2">
                 <input class="btn btn-default" type="button" value="Close" onclick="hideCreateRegReIssueModal();"
                        data-dismiss="modal" tabindex="3">

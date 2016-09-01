@@ -21,7 +21,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="patientName">Name:</label>
+                                <label class="col-md-3 control-label label-required" for="patientName">Patient Name:</label>
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="patientName" name="patientName"
@@ -36,7 +36,7 @@
 
                             <div class="form-group">
                                 <label class="col-md-3 control-label label-required"
-                                       for="fatherOrMotherName">Father/ Mother Name:</label>
+                                       for="fatherOrMotherName">Father/ Mother:</label>
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="fatherOrMotherName"
@@ -129,7 +129,7 @@
                                 <div class="col-md-6">
                                     <app:dropDownVillage
                                             data_model_name="dropDownVillage"
-                                            required="required" validationmessage="Required"
+                                            required="true" validationmessage="Required"
                                             url="${createLink(controller: 'registrationInfo', action: 'reloadDropDown')}"
                                             onchange="javascript:populateAddress();"
                                             data-bind="value: registrationInfo.village"
@@ -144,7 +144,6 @@
                                 </div>
                             </div>
 
-                            <div id="addressSelection" style="display: none;">
                                 <div class="form-group">
                                     <label class="col-md-2 control-label label-required"
                                            for="districtId">District :</label>
@@ -153,6 +152,7 @@
                                         <app:dropDownDistrict
                                                 data_model_name="dropDownDistrict"
                                                 id="districtId" name="districtId" tabindex="8"
+                                                required="true" validationmessage="Required"
                                                 class="kendo-drop-down" type="District"
                                                 onchange="javascript:populateUpazilaList();"
                                                 data-bind="value: registrationInfo.districtId">
@@ -160,7 +160,7 @@
                                     </div>
 
                                     <div class="col-md-3 pull-left">
-                                        %{--<span class="k-invalid-msg" data-for="districtId"></span>--}%
+                                        <span class="k-invalid-msg" data-for="districtId"></span>
                                     </div>
                                 </div>
 
@@ -169,9 +169,8 @@
                                            for="upazilaId">Upazila :</label>
 
                                     <div class="col-md-6">
-                                        <select id="upazilaId"
-                                                name="upazilaId"
-                                                tabindex="9"
+                                        <select id="upazilaId" name="upazilaId"
+                                                tabindex="9" required="required" validationmessage="Required"
                                                 onchange="javascript:populateUnionList();"
                                                 data-bind="value: registrationInfo.upazilaId"
                                                 class="kendo-drop-down">
@@ -179,7 +178,7 @@
                                     </div>
 
                                     <div class="col-md-3 pull-left">
-                                        %{-- <span class="k-invalid-msg" data-for="upazilaId"></span>--}%
+                                         <span class="k-invalid-msg" data-for="upazilaId"></span>
                                     </div>
                                 </div>
 
@@ -187,27 +186,17 @@
                                     <label class="col-md-2 control-label label-required" for="unionId">Union :</label>
 
                                     <div class="col-md-6">
-                                        <select id="unionId"
-                                                name="unionId"
-                                                tabindex="10"
+                                        <select id="unionId" name="unionId"
+                                                tabindex="10" required="required" validationmessage="Required"
                                                 data-bind="value: registrationInfo.unionId"
                                                 class="kendo-drop-down">
                                         </select>
                                     </div>
 
                                     <div class="col-md-3 pull-left">
-                                        %{--<span class="k-invalid-msg" data-for="unionDetails"></span>--}%
+                                        <span class="k-invalid-msg" data-for="unionId"></span>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group" id="divAddress">
-                                <label class="col-md-2 control-label label-required">Address :</label>
-
-                                <div class="col-md-6">
-                                    <textarea readonly="true" id="addressDetails" style="width:100%" tabindex="11"></textarea>
-                                </div>
-                            </div>
 
                         </div>
 
@@ -219,11 +208,10 @@
                             class="k-button k-button-icontext"
                             role="button" tabindex="12"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
-                    </button>
+                    </button>&nbsp;&nbsp;&nbsp;
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                             class="k-button k-button-icontext" role="button" tabindex="13"
-                            aria-disabled="false" onclick='resetForm();'><span
-                            class="k-icon k-i-close"></span>Cancel
+                            aria-disabled="false" onclick='resetForm();'><span class="k-icon k-i-redo"></span>Clear
                     </button>
                 </div>
             </g:form>

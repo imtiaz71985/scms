@@ -37,7 +37,7 @@ class RegistrationInfoService {
     public Map getAddressDetails(long villageId) {
 
         String queryStr = """
-            SELECT CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address
+            SELECT u.id AS unionId,up.id AS upazilaId,d.id AS districtId
               FROM village v
               LEFT JOIN st_union u ON v.union_id=u.id
                       LEFT JOIN upazila up ON u.upazila_id=up.id
@@ -46,6 +46,6 @@ class RegistrationInfoService {
         """
 
         List<GroovyRowResult> rowResults = baseService.executeSelectSql(queryStr)
-        return [address: rowResults[0].address]
+        return [unionId: rowResults[0].unionId,upazilaId: rowResults[0].upazilaId,districtId: rowResults[0].districtId]
     }
 }

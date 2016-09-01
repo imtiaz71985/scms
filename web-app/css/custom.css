@@ -9,7 +9,7 @@ ul.kendoGridMenu li i {
     margin-bottom: 10px;
 }
 .panel-primary > .panel-heading {
-    background-color: #a4ccee;
+    background-color:  #c7ddef;
     background-image: none;
     border-color: #006dba;
     color: #515967;
@@ -24,8 +24,11 @@ ul.kendoGridMenu li i {
 .panel-heading {
     padding: 4px 13px;
 }
+.panel-body {
+    padding: 10px 10px 0px 10px;
+}
 .panel-footer {
-    background-color: #a4ccee;
+    background-color: #c7ddef;
     border-top: 1px solid #006dba;
     padding: 3px 12px;
 }
@@ -35,7 +38,7 @@ label {
 }
 /* Style for label required */
 .label-required {
-    color:red;
+    color:#DB3C4B;
 }
 /*for button container*/
 .buttons {
@@ -62,7 +65,7 @@ label {
     margin-bottom: 30px;
 }
 .form-control {
-    font-size: 14px;
+    font-size: 12px;
     height: 28px;
     padding: 0 0 0 5px;
 }

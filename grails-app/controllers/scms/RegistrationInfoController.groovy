@@ -83,7 +83,7 @@ class RegistrationInfoController extends BaseController {
         long villageId = Long.parseLong(params.villageId.toString())
         LinkedHashMap resultMap = registrationInfoService.getAddressDetails(villageId)
 
-        Map result = [address: resultMap.address]
+        Map result = [unionId: resultMap.unionId,upazilaId: resultMap.upazilaId,districtId: resultMap.districtId]
         render result as JSON
     }
 
