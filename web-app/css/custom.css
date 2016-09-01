@@ -66,11 +66,11 @@ label {
 }
 .form-control {
     font-size: 12px;
-    height: 28px;
+    height: 26px;
     padding: 0 0 0 5px;
 }
 .form-group {
-    padding: 5px;
+    padding: 0px 5px 0px 5px;
 }
 body {
     font-size: 12px;
