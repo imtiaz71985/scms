@@ -3,11 +3,12 @@
     <sec:access url="/medicineSellInfo/update">
         <li onclick="newRecord();"><i class="fa fa-plus-square"></i>New</li>
     </sec:access>
-%{-- <sec:access url="/medicineSellInfo/update">
-    <li onclick="editRecord();"><i class="fa fa-edit"></i>Edit</li>
+ <sec:access url="/medicineSellInfo/update">
+    <li onclick="editRecord();"><i class="fa fa-file"></i>View Details</li>
 </sec:access>
+%{--
 <sec:access url="/medicineSellInfo/delete">
-    <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
+<li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
 </sec:access>--}%
 </ul>
 </script>
@@ -173,7 +174,7 @@
                 },
                 {
                     field: "sellDate", title: "Date", width: 100, sortable: false,
-                    filterable: {cell: {template: formatFilterableDate}},
+                    filterable: {cell: {template: formatFilterableDate, showOperators:false}},
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=kendo.toString(kendo.parseDate(sellDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"
                 }

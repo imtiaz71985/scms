@@ -35,6 +35,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
             if (!sellInfo) {
                 return super.setError(params, NOT_FOUND_MASSAGE)
             }
+            params.put("sellDate", sellInfo.sellDate)
             params.put(TOTAL_AMOUNT, sellInfo.totalAmount)
             params.put(VOUCHER_NO, sellInfo.voucherNo)
             params.put(MEDICINE_DETAILS, sellInfo)
