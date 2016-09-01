@@ -38,7 +38,8 @@
                         consultancyAmt: {type: "number"},
                         pathologyAmt: {type: "number"},
                         totalCharge: {type: "number"},
-                        serviceDate: {type: "string"},
+                        serviceDate: {type: "date"},
+                        serviceType: {type: "string"},
                         isExit: {type: "boolean"}
                     }
                 },
@@ -46,6 +47,10 @@
                     checkIsErrorGridKendo(data);
                     return data;
                 }
+            },
+            group: {
+                field: "regNo",
+                dir: "asc"
             },
             pageSize: getDefaultPageSize(),
             serverPaging: false,
@@ -63,6 +68,7 @@
                     sortable: true,
                     resizable: true,
                     reorderable: true,
+                    filterable: true,
                     dataBound: gridDataBound,
                     pageable: {
                         refresh: true,
@@ -70,43 +76,94 @@
                         buttonCount: 4
                     },
                     columns: [
-                        {field: "regNo", title: "Reg No", width: 80, sortable: false, filterable: false},
-                        {field: "serviceTokenNo", title: "Token No", width: 80, sortable: false, filterable: false},
-                        {field: "patientName", title: "Name", width: 150, sortable: false, filterable: false},
+                        {field: "regNo", title: "Registration No", width: 70, sortable: false,
+                            filterable: {
+                                extra: false,
+                                operators: {
+                                    string: {
+                                        contains: "Contains"
+                                    }
+                                }
+                            }
+                        },
+                        {field: "patientName", title: "Name", width: 120, sortable: false,
+                            filterable: {
+                                extra: false,
+                                operators: {
+                                    string: {
+                                        contains: "Contains"
+                                    }
+                                }
+                            }
+                        },
+                        {field: "serviceTokenNo", title: "Token No", width: 70, sortable: false,
+                            filterable: {
+                                extra: false,
+                                operators: {
+                                    string: {
+                                        contains: "Contains"
+                                    }
+                                }
+                            }
+                        },
+                        {field: "serviceDate", title: "Service Date", width: 60, sortable: false,filterable:false,
+                            template: "#=kendo.toString(kendo.parseDate(serviceDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"
+                        },
                         {
-                            field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
+                            field: "dateOfBirth", title: "Age", width: 40, sortable: false, filterable: false,
                             template: "#=evaluateDateRange(dateOfBirth, new Date())#"
-                        }, {
+                        },
+                        {
+                            field: "serviceType", title: "Service Type", width: 120, sortable: false,
+                            filterable: false,attributes: {style: setFontSize()}
+                        },
+                        {
                             title: "Charges", headerAttributes: {style: setAlignCenter()},
                             columns: [
 
                                 {
                                     field: "consultancyAmt",
                                     title: "Consultancy(৳)",
-                                    width: 60,
+                                    headerAttributes: {style: setCAlignRight()},
+                                    attributes: {style: setAlignRight()},
+                                    width: 40,
                                     sortable: false,
                                     filterable: false
                                 },
                                 {
                                     field: "subsidyAmount",
                                     title: "Subsidy(৳)",
-                                    width: 50,
+                                    headerAttributes: {style: setCAlignRight()},
+                                    attributes: {style: setAlignRight()},
+                                    width: 40,
                                     sortable: false,
                                     filterable: false
                                 },
                                 {
                                     field: "pathologyAmt",
                                     title: "Pathology(৳)",
-                                    width: 70,
+                                    headerAttributes: {style: setCAlignRight()},
+                                    attributes: {style: setAlignRight()},
+                                    width: 40,
                                     sortable: false,
                                     filterable: false
                                 },
-                                {field: "totalCharge", title: "Total(৳)", width: 70, sortable: false, filterable: false}
+                                {field: "totalCharge", title: "Total(৳)",
+                                    width: 50, sortable: false, filterable: false,
+                                    headerAttributes: {style: setAlignRight()},
+                                    attributes: {style: setAlignRight()}
+                                }
                             ]
                         }
                     ]
                 }
         );
         gridCounselorServiceList = $("#gridCounselorServiceList").data("kendoGrid");
+    }
+    function setCAlignRight() {
+        return "text-align:right;font-size:7pt;";
+    }
+    function setFontSize() {
+        return "font-size:7pt;";
     }
 </script>
