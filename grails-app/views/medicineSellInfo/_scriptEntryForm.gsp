@@ -155,7 +155,7 @@
         availableStock = 0;
         $("#stockQty").text('');
         $("#voucherNo").val(voucherNo);
-        $('#gridMedicine  > .k-grid-content').height(240);
+        $('#gridMedicine  > .k-grid-content').height(285);
         return false;
     }
 
@@ -209,7 +209,7 @@
         });
         gridMedicineSellInfo = $("#gridMedicine").data("kendoGrid");
         $("#menuGridKendoDr").kendoMenu();
-        $('#gridMedicine  > .k-grid-content').height(240);
+        $('#gridMedicine  > .k-grid-content').height(285);
     }
 
     function getMedicinePrice() {
@@ -309,7 +309,7 @@
         totalAmount=parseFloat(totalAmount,10)-parseFloat(amount,10);
         $("#footerSpan").text('');
         $("#footerSpan").text(formatCeilAmount(totalAmount));
-        $('#gridMedicine  > .k-grid-content').height(240);
+        $('#gridMedicine  > .k-grid-content').height(285);
     }
     function deleteMedicine(com, grid) {
         if (executeCommonPreConditionForSelectKendo(gridMedicineSellInfo, 'medicine') == false) {
@@ -320,6 +320,6 @@
         gridMedicineSellInfo.dataSource.remove(data);
         $("#footerSpan").text('');
         $("#footerSpan").text(formatCeilAmount(totalAmount));
-        $('#gridMedicine  > .k-grid-content').height(240);
+        $('#gridMedicine  > .k-grid-content').height(285);
     }
 </script>

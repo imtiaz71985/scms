@@ -223,7 +223,7 @@
                             </div>
 
                         </div>
-                        <div class="form-group col-md-10 pull-right" style="height: 260px; padding-left: 0px; padding-bottom: 0px;">
+                        <div class="form-group col-md-10 pull-right" style="height: 250px; padding-left: 0px; padding-bottom: 0px;">
                             <div id="gridDiseaseDetails"></div>
                         </div>
                     </div>

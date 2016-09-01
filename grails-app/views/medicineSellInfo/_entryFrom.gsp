@@ -78,7 +78,7 @@
                 </div>
             </div>
 
-            <div class="form-group" style="height: 320px;">
+            <div class="form-group" style="height: 360px;">
                 <div id="gridMedicine"></div>
             </div>
         </div>

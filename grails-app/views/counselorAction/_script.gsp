@@ -650,7 +650,7 @@
         initDiseaseInfoDataSource();
         $("#gridDiseaseDetails").kendoGrid({
             dataSource: dataSourceForDisease,
-            height: 300,
+            height: 280,
             autoBind: false,
             selectable: true,
             sortable: true,
