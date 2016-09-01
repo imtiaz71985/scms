@@ -78,7 +78,7 @@
                 </div>
             </div>
 
-            <div class="form-group" style="height: 340px;">
+            <div class="form-group" style="height: 320px;">
                 <div id="gridMedicine"></div>
             </div>
         </div>
@@ -88,7 +88,7 @@
                     class="k-button k-button-icontext"
                     role="button" tabindex="4"
                     aria-disabled="false"><span class="k-icon k-i-plus"></span>Update Sale
-            </button>
+            </button>&nbsp;&nbsp;&nbsp;
 
             <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                     class="k-button k-button-icontext" role="button" tabindex="5"

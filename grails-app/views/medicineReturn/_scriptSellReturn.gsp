@@ -188,7 +188,7 @@
             }
         });
         gridMedicineSellReturnInfo = $("#gridMedicine").data("kendoGrid");
-        $('#gridMedicine  > .k-grid-content').height(390);
+        $('#gridMedicine  > .k-grid-content').height(370);
     }
     function resetForm(){
         window.history.back();
