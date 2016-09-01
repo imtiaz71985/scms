@@ -13,7 +13,7 @@
                     <div class="form-group">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="regNo">Reg No:</label>
+                                <label class="col-md-3 control-label label-optional" for="regNo">Registration No:</label>
 
                                 <div class="col-md-6">
                                     <input type="text" readonly="true" class="form-control" id="regNo" name="regNo"/>
@@ -53,7 +53,7 @@
                                        for="dateOfBirth">Date of Birth:</label>
 
                                 <div class="col-md-6">
-                                    <app:dateControl name="dateOfBirth"
+                                    <app:dateControl name="dateOfBirth" value="" placeholder="dd/mm/yyyy"
                                                      required="true" validationMessage="Required"
                                                      tabindex="3" class="form-control">
                                     </app:dateControl>

@@ -61,7 +61,7 @@
         var data = grid.dataSource.data();
         var grandTotal = 0;
         $.each(data, function (i, row) {
-            grandTotal+=formatCeilAmount(row.medicine_sales+row.pathology_amount+row.registration_amount+row.re_registration_amount+row.consultation_amount-row.subsidy_amount);
+            grandTotal+=formatCeilAmount(row.medicine_sales+row.pathology_amount+row.registration_amount+row.re_registration_amount+row.consultation_amount-row.subsidy_amount-row.return_amt);
             var str = row.dateField;
             var currentDate = moment().format('YYYY-MM-DD');
             if (str == currentDate) {

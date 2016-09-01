@@ -22,6 +22,9 @@
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
             WHERE msi.sell_date = c.date_field AND msi.hospital_code = $P{hospitalCode}
             GROUP BY msi.sell_date ),0)) AS medicine_sales,
+COALESCE((SELECT SUM(mr.total_amount) FROM medicine_return mr
+            WHERE mr.return_date = c.date_field AND mr.hospital_code = $P{hospitalCode}
+            GROUP BY mr.return_date ),0) AS return_amt,
                 COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
                         COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
                         LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
@@ -158,6 +161,7 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="medicine_sales" class="java.lang.Double"/>
+	<field name="return_amt" class="java.lang.Double"/>
 	<field name="registration_amount" class="java.lang.Double"/>
 	<field name="re_registration_amount" class="java.lang.Double"/>
 	<field name="consultation_amount" class="java.lang.Double"/>
@@ -195,7 +199,7 @@
 	<variable name="grandTotal" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{medicine_sales}+$F{re_registration_amount}+
 $F{registration_amount}+$F{consultation_amount}+
-$F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
+$F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 	</variable>
 	<variable name="new_patient" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{new_patient}]]></variableExpression>
@@ -223,6 +227,9 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 	</variable>
 	<variable name="total_service" class="java.lang.Number" calculation="Sum">
 		<variableExpression><![CDATA[$F{total_service}]]></variableExpression>
+	</variable>
+	<variable name="rtnAmt" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{return_amt}]]></variableExpression>
 	</variable>
 	<pageHeader>
 		<band height="51">
@@ -291,7 +298,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[SL#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="260" y="0" width="446" height="15" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="d64a1724-e5a5-460f-a320-605990ff42e5"/>
+				<reportElement mode="Opaque" x="260" y="0" width="422" height="15" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="d64a1724-e5a5-460f-a320-605990ff42e5"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -302,19 +309,6 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Charges]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="706" y="0" width="58" height="51" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="02f81669-fa68-4996-9f20-d2be28dc7191"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
-					<topPen lineWidth="0.1" lineColor="#939597"/>
-					<leftPen lineWidth="0.1" lineColor="#939597"/>
-					<bottomPen lineWidth="0.1" lineColor="#939597"/>
-					<rightPen lineWidth="0.1" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
-				</textElement>
-				<text><![CDATA[Medicine Sales]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="764" y="0" width="58" height="51" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="89c75263-1691-4cc3-827e-15d7551a0489"/>
@@ -330,7 +324,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Day Collection]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="350" y="15" width="73" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="bd7054da-a012-4b1c-87b8-bea7f1832608"/>
+				<reportElement mode="Opaque" x="347" y="15" width="68" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="bd7054da-a012-4b1c-87b8-bea7f1832608"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -343,7 +337,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Card re-issue ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="651" y="31" width="55" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="e94e7a3f-9402-4d93-a66b-03961eb643d5"/>
+				<reportElement mode="Opaque" x="627" y="31" width="55" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="e94e7a3f-9402-4d93-a66b-03961eb643d5"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -356,7 +350,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="562" y="31" width="49" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="3297cb99-c6f2-4e77-b82c-762effbbf7b7"/>
+				<reportElement mode="Opaque" x="550" y="31" width="38" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="3297cb99-c6f2-4e77-b82c-762effbbf7b7"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -369,7 +363,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="466" y="31" width="53" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="a2d1076c-05b5-43c6-aee3-0a528bb22506"/>
+				<reportElement mode="Opaque" x="458" y="31" width="50" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="a2d1076c-05b5-43c6-aee3-0a528bb22506"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -382,7 +376,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="260" y="15" width="90" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="a4ca60e9-652a-451b-bce4-19079b7791f3"/>
+				<reportElement mode="Opaque" x="260" y="15" width="88" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="a4ca60e9-652a-451b-bce4-19079b7791f3"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -460,7 +454,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Revisit]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="423" y="31" width="43" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="1ae60366-5d1e-49c9-a170-98ef9b6bbc6c"/>
+				<reportElement mode="Opaque" x="415" y="31" width="43" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="1ae60366-5d1e-49c9-a170-98ef9b6bbc6c"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -473,7 +467,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Count]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="519" y="31" width="43" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="ae557fe1-54f4-4bb6-b1a9-e4bfc8a79e75"/>
+				<reportElement mode="Opaque" x="507" y="31" width="43" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="ae557fe1-54f4-4bb6-b1a9-e4bfc8a79e75"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -486,7 +480,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Count]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="611" y="31" width="40" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="e86e74c3-e1ae-41d1-920b-5481abcb70dd"/>
+				<reportElement mode="Opaque" x="587" y="31" width="40" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="e86e74c3-e1ae-41d1-920b-5481abcb70dd"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -499,7 +493,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Count]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="423" y="15" width="96" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="1b3b310c-57db-4959-92c9-afd9221d1a1f"/>
+				<reportElement mode="Opaque" x="415" y="15" width="93" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="1b3b310c-57db-4959-92c9-afd9221d1a1f"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -512,7 +506,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Consultation ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="519" y="15" width="92" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="91aadc35-e144-4d61-8ee8-8954e453318f"/>
+				<reportElement mode="Opaque" x="507" y="15" width="81" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="91aadc35-e144-4d61-8ee8-8954e453318f"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -525,7 +519,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Subsidy ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="611" y="15" width="95" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="e5a171f2-c50f-4228-b17f-1e203065af94"/>
+				<reportElement mode="Opaque" x="587" y="15" width="95" height="20" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="e5a171f2-c50f-4228-b17f-1e203065af94"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -551,7 +545,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Total Services]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="300" y="35" width="50" height="16" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="55e086bb-bea3-4de7-90b2-4d895bf7197a"/>
+				<reportElement mode="Opaque" x="300" y="35" width="48" height="16" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="55e086bb-bea3-4de7-90b2-4d895bf7197a"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -577,7 +571,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Count]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="350" y="35" width="30" height="16" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="9b9260fd-9027-4cb7-897e-3836cc454ab6"/>
+				<reportElement mode="Opaque" x="347" y="35" width="30" height="16" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="9b9260fd-9027-4cb7-897e-3836cc454ab6"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -590,7 +584,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<text><![CDATA[Count]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="380" y="35" width="43" height="16" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="4a08d8d4-f464-4305-8dc6-957b95695ec2"/>
+				<reportElement mode="Opaque" x="377" y="35" width="38" height="16" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="4a08d8d4-f464-4305-8dc6-957b95695ec2"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="0">
 					<topPen lineWidth="0.1" lineColor="#939597"/>
 					<leftPen lineWidth="0.1" lineColor="#939597"/>
@@ -601,6 +595,45 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="732" y="15" width="34" height="36" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="5ec21370-2329-494c-97f5-05c7a6b1526b"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Return]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="682" y="0" width="84" height="15" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="24d41aae-416b-4134-b826-64f374ab608a"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Medicine]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="682" y="15" width="50" height="36" forecolor="#2C2A2B" backcolor="#D1D2D4" uuid="1f26c287-9a89-4c7b-959f-462e1ab3a399"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#939597"/>
+					<leftPen lineWidth="0.1" lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+					<rightPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Sales]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -633,7 +666,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<textFieldExpression><![CDATA[$F{date_field}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="651" y="0" width="55" height="20" forecolor="#000000" uuid="b38600e9-9362-47cf-90b8-80fe27b97ef0">
+				<reportElement stretchType="RelativeToTallestObject" x="627" y="0" width="55" height="20" forecolor="#000000" uuid="b38600e9-9362-47cf-90b8-80fe27b97ef0">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -648,7 +681,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<textFieldExpression><![CDATA[$F{pathology_amount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="300" y="0" width="50" height="20" forecolor="#000000" uuid="dbb7e76c-948f-48dc-a87e-697f823f6595">
+				<reportElement stretchType="RelativeToTallestObject" x="300" y="0" width="48" height="20" forecolor="#000000" uuid="dbb7e76c-948f-48dc-a87e-697f823f6595">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -663,7 +696,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<textFieldExpression><![CDATA[$F{registration_amount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="466" y="0" width="53" height="20" forecolor="#000000" uuid="02fd2ca0-40bb-4774-befc-a2d3ae7d581a">
+				<reportElement stretchType="RelativeToTallestObject" x="458" y="0" width="50" height="20" forecolor="#000000" uuid="02fd2ca0-40bb-4774-befc-a2d3ae7d581a">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -678,7 +711,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<textFieldExpression><![CDATA[$F{consultation_amount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="706" y="0" width="58" height="20" forecolor="#000000" uuid="ee449818-a344-435d-929f-09760884fb77">
+				<reportElement stretchType="RelativeToTallestObject" x="682" y="0" width="50" height="20" forecolor="#000000" uuid="ee449818-a344-435d-929f-09760884fb77">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -693,7 +726,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<textFieldExpression><![CDATA[$F{medicine_sales}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="380" y="0" width="43" height="20" forecolor="#000000" uuid="ff2e321b-5ac4-4bbe-bd3c-1ed59e714f3f">
+				<reportElement stretchType="RelativeToTallestObject" x="377" y="0" width="38" height="20" forecolor="#000000" uuid="ff2e321b-5ac4-4bbe-bd3c-1ed59e714f3f">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -708,7 +741,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				<textFieldExpression><![CDATA[$F{re_registration_amount}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="562" y="0" width="49" height="20" forecolor="#000000" uuid="87ca5a2f-a469-463d-8bb7-0742f24e870f">
+				<reportElement stretchType="RelativeToTallestObject" x="550" y="0" width="38" height="20" forecolor="#000000" uuid="87ca5a2f-a469-463d-8bb7-0742f24e870f">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -752,7 +785,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></variableExpression>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{medicine_sales}+$F{re_registration_amount}+
 $F{registration_amount}+$F{consultation_amount}+
-$F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
+$F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="81" y="0" width="28" height="20" forecolor="#000000" uuid="e00b31f6-ce8f-41fb-b00d-fc31c10cf2c9">
@@ -815,7 +848,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{patient_revisit}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="423" y="0" width="43" height="20" forecolor="#000000" uuid="1aa55f69-d24e-46ae-b757-039608c3f930">
+				<reportElement stretchType="RelativeToTallestObject" x="415" y="0" width="43" height="20" forecolor="#000000" uuid="1aa55f69-d24e-46ae-b757-039608c3f930">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -830,7 +863,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{consultation_count}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="519" y="0" width="43" height="20" forecolor="#000000" uuid="716a1b14-fa19-4982-87c3-935a0ec31970">
+				<reportElement stretchType="RelativeToTallestObject" x="507" y="0" width="43" height="20" forecolor="#000000" uuid="716a1b14-fa19-4982-87c3-935a0ec31970">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -845,7 +878,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{subsidy_count}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="611" y="0" width="40" height="20" forecolor="#000000" uuid="cd574b91-adcb-4515-9a68-315c1126e99b">
+				<reportElement stretchType="RelativeToTallestObject" x="587" y="0" width="40" height="20" forecolor="#000000" uuid="cd574b91-adcb-4515-9a68-315c1126e99b">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -875,7 +908,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$F{total_service}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="350" y="0" width="30" height="20" forecolor="#000000" uuid="58fde24e-372f-42ed-a79f-147ce02dc54a">
+				<reportElement stretchType="RelativeToTallestObject" x="347" y="0" width="30" height="20" forecolor="#000000" uuid="58fde24e-372f-42ed-a79f-147ce02dc54a">
 					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
@@ -904,6 +937,21 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{new_patient}]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="732" y="0" width="32" height="20" forecolor="#000000" uuid="c024d7ba-04c7-417a-b771-805f8371eb6e">
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineWidth="0.1" lineColor="#333333"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{return_amt}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>
@@ -918,7 +966,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 	<summary>
 		<band height="23">
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="706" y="3" width="58" height="20" uuid="b218e22a-ed88-486a-9fee-7e6be4b16be9"/>
+				<reportElement x="682" y="3" width="50" height="20" uuid="b218e22a-ed88-486a-9fee-7e6be4b16be9"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -944,7 +992,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA["Monthly Total : "]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="651" y="3" width="55" height="20" uuid="d605d457-45ca-424a-bcf7-50ca6821784b"/>
+				<reportElement x="627" y="3" width="55" height="20" uuid="d605d457-45ca-424a-bcf7-50ca6821784b"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -957,7 +1005,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$V{diagnostic}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="466" y="3" width="53" height="20" uuid="615b4750-b8ca-4f5b-a4b8-0c228a236605"/>
+				<reportElement x="458" y="3" width="50" height="20" uuid="615b4750-b8ca-4f5b-a4b8-0c228a236605"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -970,7 +1018,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$V{consultancy}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="300" y="3" width="50" height="20" uuid="e542e041-6dde-42b6-b220-7ed44116ad78"/>
+				<reportElement x="300" y="3" width="48" height="20" uuid="e542e041-6dde-42b6-b220-7ed44116ad78"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -983,7 +1031,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$V{membership}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="380" y="3" width="43" height="20" uuid="93b9f868-9158-43e7-a8f9-9705ff19097f"/>
+				<reportElement x="377" y="3" width="38" height="20" uuid="93b9f868-9158-43e7-a8f9-9705ff19097f"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -996,7 +1044,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$V{reissue}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="562" y="3" width="49" height="20" uuid="1668330a-e21d-424b-9a7b-2adfd4832622"/>
+				<reportElement x="550" y="3" width="38" height="20" uuid="1668330a-e21d-424b-9a7b-2adfd4832622"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -1074,7 +1122,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$V{revisit}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="423" y="3" width="43" height="20" uuid="7f8d9748-2836-4a67-9677-7a9b83eb0133"/>
+				<reportElement x="415" y="3" width="43" height="20" uuid="7f8d9748-2836-4a67-9677-7a9b83eb0133"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -1087,7 +1135,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$V{conCount}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="519" y="3" width="43" height="20" uuid="765b9d3e-21b6-4605-9616-4284094154f5"/>
+				<reportElement x="507" y="3" width="43" height="20" uuid="765b9d3e-21b6-4605-9616-4284094154f5"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -1100,7 +1148,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$V{subCount}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="611" y="3" width="40" height="20" uuid="1783248b-842b-4cba-a5c6-2ff7bd181dbc"/>
+				<reportElement x="587" y="3" width="40" height="20" uuid="1783248b-842b-4cba-a5c6-2ff7bd181dbc"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -1139,7 +1187,7 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 				<textFieldExpression><![CDATA[$V{new_patient}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="350" y="3" width="30" height="20" uuid="012d7a79-61a4-4c9f-8d22-7d7f025c3ae7"/>
+				<reportElement x="347" y="3" width="30" height="20" uuid="012d7a79-61a4-4c9f-8d22-7d7f025c3ae7"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
 					<leftPen lineColor="#939597"/>
@@ -1150,6 +1198,19 @@ $F{subsidy_amount}+$F{pathology_amount}]]></textFieldExpression>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{re_visit_pat}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="732" y="3" width="32" height="20" uuid="2ee8af2a-bca2-4eae-91e3-80132702f6ca"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="5">
+					<topPen lineWidth="0.1" lineColor="#333333"/>
+					<leftPen lineColor="#939597"/>
+					<bottomPen lineWidth="0.1" lineColor="#333333"/>
+					<rightPen lineWidth="0.1" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{rtnAmt}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
