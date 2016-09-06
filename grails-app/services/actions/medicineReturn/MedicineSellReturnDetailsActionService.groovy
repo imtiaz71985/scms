@@ -1,10 +1,8 @@
-package actions.medicineSellInfo
+package actions.medicineReturn
 
 import com.scms.MedicineInfo
-import com.scms.MedicineSellInfo
-import com.scms.MedicineSellInfoDetails
-import com.scms.MedicineStock
-import com.scms.SecUser
+import com.scms.MedicineReturn
+import com.scms.MedicineReturnDetails
 import com.scms.SystemEntity
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
@@ -14,16 +12,16 @@ import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class SelectMedicineSellInfoActionService extends BaseService implements ActionServiceIntf {
+class MedicineSellReturnDetailsActionService extends BaseService implements ActionServiceIntf {
 
     SpringSecurityService springSecurityService
 
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
     private static final String TOTAL_AMOUNT = "totalAmount"
-    private static final String VOUCHER_NO = "voucherNo"
+    private static final String TRACE_NO = "traceNo"
+    private static final String RETURN_DATE = "returnDate"
     private static final String MEDICINE_DETAILS = "requisitionDetails"
     private static final String GRID_MODEL_MEDICINE = "gridModelMedicine"
-    private static final String SELL_DATE = "sellDate"
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -32,14 +30,13 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
     public Map executePreCondition(Map params) {
         try {
             long id = Long.parseLong(params.id.toString())
-            MedicineSellInfo sellInfo = MedicineSellInfo.read(id)
-            if (!sellInfo) {
+            MedicineReturn medicineReturn = MedicineReturn.read(id)
+            if (!medicineReturn) {
                 return super.setError(params, NOT_FOUND_MASSAGE)
             }
-            params.put(SELL_DATE, sellInfo.sellDate)
-            params.put(TOTAL_AMOUNT, sellInfo.totalAmount)
-            params.put(VOUCHER_NO, sellInfo.voucherNo)
-            params.put(MEDICINE_DETAILS, sellInfo)
+            params.put(TOTAL_AMOUNT, medicineReturn.totalAmount)
+            params.put(TRACE_NO, medicineReturn.traceNo)
+            params.put(RETURN_DATE, medicineReturn.returnDate)
             return params
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -50,8 +47,8 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            MedicineSellInfo sellInfo = (MedicineSellInfo) result.get(MEDICINE_DETAILS)
-            List<MedicineSellInfoDetails> lstMedicine = (List<MedicineSellInfoDetails>) MedicineSellInfoDetails.findAllByVoucherNo(sellInfo.voucherNo)
+            String traceNo = result.get(TRACE_NO)
+            List<MedicineReturnDetails> lstMedicine = (List<MedicineReturnDetails>) MedicineReturnDetails.findAllByTraceNo(traceNo)
             result.put(MEDICINE_DETAILS, lstMedicine)
             return result
         } catch (Exception e) {
@@ -66,8 +63,8 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
 
     public Map buildSuccessResultForUI(Map result) {
         try {
-            List<MedicineSellInfoDetails> lstMedicine = (List<MedicineSellInfoDetails>) result.get(MEDICINE_DETAILS)
-            Map gridObjects = wrapEducationGrid(lstMedicine)
+            List<MedicineReturnDetails> lstMedicine = (List<MedicineReturnDetails>) result.get(MEDICINE_DETAILS)
+            Map gridObjects = wrapMedicineGrid(lstMedicine)
             result.put(GRID_MODEL_MEDICINE, gridObjects.lstMedicine as JSON)
             return result
         } catch (Exception e) {
@@ -84,41 +81,27 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
         return result
     }
 
-    private Map wrapEducationGrid(List<MedicineSellInfoDetails> lstMedicine) {
-        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+    private Map wrapMedicineGrid(List<MedicineReturnDetails> lstMedicine) {
         List lstRows = []
-        MedicineSellInfoDetails singleRow
+        MedicineReturnDetails singleRow
         for (int i = 0; i < lstMedicine.size(); i++) {
             singleRow = lstMedicine[i]
-            long id = singleRow.id
-            long version = singleRow.version
-            String voucherNo = singleRow.voucherNo
             long medicineId = singleRow.medicineId
             int quantity = singleRow.quantity
             double amount = singleRow.amount
             String medicineName = EMPTY_SPACE
-            String unitPriceTxt = EMPTY_SPACE
 
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
-            MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(medicineId,hospitalCode)
             SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
             if(medicineInfo.strength){
                 medicineName = medicineInfo.brandName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name
             }else{
                 medicineName = medicineInfo.brandName + ' - ' + medicineType.name
             }
-            if(medicineInfo.unitType){
-                unitPriceTxt= medicineInfo.unitPrice+' /'+medicineInfo.unitType
-            }else{
-                unitPriceTxt=  medicineInfo.unitPrice
-            }
-            Map eachDetails = [ id:id,version:version,voucherNo:voucherNo,medicineName:medicineName,
-                               medicineId:medicineId,quantity:quantity,amount:amount,
-                               stock:stock.stockQty+quantity,unitPriceTxt:unitPriceTxt
-            ]
+
+            Map eachDetails = [medicineName:medicineName,quantity:quantity,amount:amount]
             lstRows << eachDetails
         }
         return [lstMedicine: lstRows]
     }
-
 }

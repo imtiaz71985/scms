@@ -3,6 +3,9 @@
     <sec:access url="/medicineReturn/showSellReturn">
         <li onclick="newRecord();"><i class="fa fa-plus-square"></i>New</li>
     </sec:access>
+    <sec:access url="/medicineSellInfo/update">
+        <li onclick="editRecord();"><i class="fa fa-file"></i>View Details</li>
+    </sec:access>
 </ul>
 </script>
 <script language="javascript">
@@ -103,6 +106,16 @@
     function newRecord() {
         showLoadingSpinner(true);
         var loc = "${createLink(controller: 'medicineReturn', action: 'showSellReturn')}";
+        router.navigate(formatLink(loc));
+        return false;
+    }
+    function editRecord() {
+        if (executeCommonPreConditionForSelectKendo(gridMedicineSellReturnInfo, 'voucher') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGridKendo(gridMedicineSellReturnInfo);
+        var loc = "${createLink(controller: 'medicineReturn', action: 'details')}?id=" + id;
         router.navigate(formatLink(loc));
         return false;
     }
