@@ -25,7 +25,7 @@
         <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                 class="k-button k-button-icontext" role="button" tabindex="1"
                 aria-disabled="false" onclick='resetForm();'><span
-                class="k-icon k-i-close"></span>Cancel
+                class="k-icon k-i-close"></span>Close
         </button>
     </div>
 </div>
