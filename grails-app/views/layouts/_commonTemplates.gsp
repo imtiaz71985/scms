@@ -138,7 +138,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="hideCreateReceiveRemarksModal();"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="createReceiveRemarksModalLabel">Give Reason For Lower Quantity</h4>
+                <h4 class="modal-title" id="createReceiveRemarksModalLabel">Give reason for lower quantity</h4>
             </div>
 
             <div class="modal-body">

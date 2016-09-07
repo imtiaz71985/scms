@@ -166,4 +166,13 @@
     function setFontSize() {
         return "font-size:7pt;";
     }
+    function gridDataBound(e) {
+        var grid = e.sender;
+        if (grid.dataSource.total() == 0) {
+            var colCount = 11;
+            $(e.sender.wrapper)
+                    .find('tbody')
+                    .append('<tr><td colspan="' + colCount + '" class="no-data"><center>Sorry, no data found <i class="fa fa-frown-o"></i></center></td></tr>');
+        }
+    }
 </script>
