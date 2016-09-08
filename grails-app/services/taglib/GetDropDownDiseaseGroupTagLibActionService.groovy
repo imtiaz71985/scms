@@ -3,6 +3,7 @@ package taglib
 import com.scms.DiseaseGroup
 import grails.converters.JSON
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
@@ -65,7 +66,8 @@ class GetDropDownDiseaseGroupTagLibActionService extends BaseService implements 
         try {
             String type = result.type
             //List<SystemEntity> lstSystemEntity = SystemEntity.findAllByType(type)
-            List<DiseaseGroup> lstDiseaseGroup=DiseaseGroup.findAllByIsActive(TRUE)
+           // List<DiseaseGroup> lstDiseaseGroup=DiseaseGroup.findAllByIsActive(TRUE)
+            List<GroovyRowResult> lstDiseaseGroup=listDiseaseGroup()
             String html = buildDropDown(lstDiseaseGroup, result)
             result.html = html
             return result
@@ -109,7 +111,7 @@ class GetDropDownDiseaseGroupTagLibActionService extends BaseService implements 
      * @param dropDownAttributes - a map containing the attributes of drop down
      * @return - html string for select
      */
-    private String buildDropDown(List<DiseaseGroup> lstValues, Map dropDownAttributes) {
+    private String buildDropDown(List<GroovyRowResult> lstValues, Map dropDownAttributes) {
         // read map values
         String name = dropDownAttributes.get(NAME)
         String dataModelName = dropDownAttributes.get(DATA_MODEL_NAME)
@@ -153,5 +155,15 @@ class GetDropDownDiseaseGroupTagLibActionService extends BaseService implements 
 
     private String escapeChar(String str) {
         return str.replace(SINGLE_DOT, ESCAPE_DOT)
+    }
+    private List<GroovyRowResult> listDiseaseGroup() {
+        String queryForList = """
+            SELECT id,
+                CONCAT(NAME,'(', (CASE WHEN id<10 THEN CONCAT('0',id) ELSE id END ) ,')') AS name
+                FROM disease_group WHERE is_active = TRUE
+        """
+
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        return lst
     }
 }
