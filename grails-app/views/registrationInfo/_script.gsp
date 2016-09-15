@@ -377,7 +377,6 @@
         }
     });
     function populateAddress() {
-
         var villageId = $('#village').val();
         if (!isNaN(villageId) ){
             showLoadingSpinner(true);
@@ -386,7 +385,9 @@
                 type: 'post',
                 url: actionUrl,
                 success: function (data, textStatus) {
-                    $('#addressDetails').val(data.address);
+                    dropDownDistrict.value(data.districtId);
+                    dropDownUpazila.value(data.upazilaId);
+                    dropDownUnion.value(data.unionId);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
 
