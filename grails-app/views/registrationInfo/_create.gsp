@@ -213,7 +213,7 @@
                                 </div>
 
                                 <div class="col-md-3 pull-left">
-                                    <span class="k-invalid-msg" data-for="unionDetails"></span>
+                                    <span class="k-invalid-msg" data-for="unionId"></span>
                                 </div>
                             </div>
                         </div>

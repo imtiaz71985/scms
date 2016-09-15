@@ -243,7 +243,11 @@
         }
         $("#registrationInfoRow").show();
         var registrationInfo = getSelectedObjectFromGridKendo(gridRegistrationInfo);
-
+        dropDownDistrict.value('');
+        dropDownUpazila.value('');
+        dropDownUnion.value('');
+        dropDownDistrict.readonly(true);
+        dropDownUpazila.readonly(true);
         populateUpazilaListForUpdate(registrationInfo.districtId,registrationInfo.upazilaId);
         populateUnionListForUpdate(registrationInfo.upazilaId,registrationInfo.unionId);
         showRecord(registrationInfo);
@@ -388,6 +392,9 @@
                     dropDownDistrict.value(data.districtId);
                     dropDownUpazila.value(data.upazilaId);
                     dropDownUnion.value(data.unionId);
+                    dropDownDistrict.readonly(true);
+                    dropDownUpazila.readonly(true);
+                    dropDownUnion.readonly(true);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
 
@@ -398,6 +405,13 @@
                 dataType: 'json'
             });
             return true;
+        }else{
+            dropDownDistrict.readonly(false);
+            dropDownUpazila.readonly(false);
+            dropDownUnion.readonly(false);
+            dropDownDistrict.value('');
+            dropDownUpazila.value('');
+            dropDownUnion.value('');
         }
     }
     function reIssueRegNo(){

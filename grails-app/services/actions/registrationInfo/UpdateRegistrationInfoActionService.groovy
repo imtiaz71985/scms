@@ -29,6 +29,13 @@ class UpdateRegistrationInfoActionService extends BaseService implements ActionS
             boolean b = isInteger(params.village)
             if (b) {
                 villageId = Long.parseLong(params.village.toString())
+                Village vill = Village.read(villageId)
+                if (vill) {
+                    if (vill.unionId != params.unionId) {
+                        vill.unionId = Long.parseLong(params.unionId.toString())
+                        vill.save()
+                    }
+                }
             } else {
                 if (!params.unionId || !params.upazilaId || !params.districtId) {
                     return super.setError(params, INVALID_INPUT_MSG)
@@ -40,7 +47,7 @@ class UpdateRegistrationInfoActionService extends BaseService implements ActionS
                 villageId = village.id
             }
             params.village = villageId
-            RegistrationInfo registrationInfo = buildObject(villageId,params, oldRegistrationInfo)
+            RegistrationInfo registrationInfo = buildObject(villageId, params, oldRegistrationInfo)
             params.put(REGISTRATION_INFO, registrationInfo)
             return params
         } catch (Exception ex) {
@@ -76,7 +83,7 @@ class UpdateRegistrationInfoActionService extends BaseService implements ActionS
         return params
     }
 
-    private  RegistrationInfo buildObject(long villageId,Map parameterMap, RegistrationInfo oldRegistrationInfo) {
+    private RegistrationInfo buildObject(long villageId, Map parameterMap, RegistrationInfo oldRegistrationInfo) {
 
         RegistrationInfo registrationInfo = new RegistrationInfo(parameterMap)
         oldRegistrationInfo.patientName = registrationInfo.patientName
