@@ -59,7 +59,7 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
                 stock.stockQty = stock.stockQty - lstMedicineInfoDetails[i].quantity
                 stock.save()
             }
-            sellInfo.totalAmount = totalAmount
+            sellInfo.totalAmount = Math.ceil(totalAmount)
             sellInfo.save()
 
             return result
