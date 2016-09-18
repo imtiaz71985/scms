@@ -30,9 +30,12 @@ class MedicineSellInfoController extends BaseController {
     def show() {
         render(view: "/medicineSellInfo/show")
     }
-    def showDetails(){
+    def showDetails() {
         String voucherNo = generateVoucherNo()
         render(view: "/medicineSellInfo/showDetails",model: [voucherNo: voucherNo])
+    }
+    def showLink(){
+        render(view: "/medicineSellInfo/showLink",model: [dateField: params.dateField])
     }
     def select(){
         String view = '/medicineSellInfo/update'

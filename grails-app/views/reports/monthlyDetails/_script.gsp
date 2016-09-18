@@ -152,6 +152,11 @@
     function formatAmount(amount) {
         return kendo.toString(amount, "##,###");
     }
+
+    function navigateLinkPatientType(dateField,value,visitType){
+        return '<a href="/scms#registrationInfo/showMonthlyPatient?dateField='+dateField+'&visitType='+visitType+'">'+value+'</a>';
+    }
+
     function initInfoGrid() {
         initDataSource();
         $("#gridDetails").kendoGrid({
@@ -182,7 +187,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':new_patient#",
+                            template: "#=is_holiday?'':navigateLinkPatientType(date_field,new_patient,'new')#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -191,7 +196,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':patient_followup#",
+                            template: "#=is_holiday?'':navigateLinkPatientType(date_field,patient_followup,'followup')#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -200,7 +205,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':patient_revisit#",
+                            template: "#=is_holiday?'':navigateLinkPatientType(date_field,patient_revisit,'revisit')#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -233,7 +238,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':new_patient#",
+                                    template: "#=is_holiday?'':navigateLinkPatientType(date_field,new_patient)#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -255,7 +260,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':re_reg_patient#",
+                                    template: "#=is_holiday?'':navigateLinkPatientType(date_field,re_reg_patient,'reissue')#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -346,7 +351,7 @@
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':formatAmount(medicine_sales)#",
+                            template: "#=is_holiday?'':navigateToMedicineSales(date_field,formatAmount(medicine_sales))#",
                             footerTemplate: "#=sum#"
                         }, {
                             field: "return_amt", title: "Return",
@@ -354,7 +359,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':formatAmount(return_amt)#",
+                            template: "#=is_holiday?'':navigateToMedicineReturns(date_field,formatAmount(return_amt))#",
                             footerTemplate: "#=sum#"
                         }
                     ]
@@ -374,6 +379,12 @@
         gridDetails = $("#gridDetails").data("kendoGrid");
     }
 
+    function navigateToMedicineSales(dateField,value){
+        return '<a href="/scms#medicineSellInfo/showLink?dateField='+dateField+'">'+value+'</a>';
+    }
+    function navigateToMedicineReturns(dateField,value){
+        return '<a href="/scms#MedicineReturn/showLink?dateField='+dateField+'">'+value+'</a>';
+    }
     function downloadMonthlyDetails() {
         if (isApplicable) {
             showLoadingSpinner(true);
