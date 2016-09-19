@@ -137,4 +137,91 @@ class ServiceTokenRelatedInfoService extends BaseService{
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
     }
+    public List<GroovyRowResult> dateWiseConsultancyDetails(Date start,Date end, String hospital_code){
+        String hospital_str = EMPTY_SPACE
+        if(hospital_code!=ALL) {
+            hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+        }
+        String queryStr = """
+             SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
+                    COALESCE(GROUP_CONCAT(di.name),'Followup') AS consultancy_info,ri.mobile_no,tcm.create_date AS service_date,
+                    CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address,
+                    sc.charge_amount AS consultancy_amt
+                        FROM token_and_charge_mapping tcm
+                            LEFT JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
+                            LEFT JOIN registration_info ri ON ri.reg_no = sti.reg_no
+                            LEFT JOIN village v ON v.id = ri.village_id
+                            LEFT JOIN st_union u ON v.union_id=u.id
+                            LEFT JOIN upazila up ON u.upazila_id=up.id
+                            LEFT JOIN district d ON up.district_id=d.id
+                            LEFT JOIN system_entity se ON ri.sex_id=se.id
+                            RIGHT JOIN service_charges sc ON sc.id = tcm.service_charge_id
+                                AND (LEFT(sc.service_code,2)='02' OR LEFT(sc.service_code,2)='04')
+                            LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = tcm.service_token_no
+                            LEFT JOIN disease_info di ON di.disease_code=tdm.disease_code
+                        WHERE tcm.create_date BETWEEN '${start}' AND '${end}'
+                             ${hospital_str}
+                        GROUP BY tcm.service_token_no
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+
+        return result
+    }
+    public List<GroovyRowResult> dateWiseSubsidyDetails(Date start,Date end, String hospital_code){
+        String hospital_str = EMPTY_SPACE
+        if(hospital_code!=ALL) {
+            hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+        }
+        String queryStr = """
+               SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
+                    ri.mobile_no,tcm.create_date AS service_date,
+                    CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address,
+                    sti.subsidy_amount AS subsidy_amt
+                        FROM token_and_charge_mapping tcm
+                            LEFT JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
+                            LEFT JOIN registration_info ri ON ri.reg_no = sti.reg_no
+                            LEFT JOIN village v ON v.id = ri.village_id
+                            LEFT JOIN st_union u ON v.union_id=u.id
+                            LEFT JOIN upazila up ON u.upazila_id=up.id
+                            LEFT JOIN district d ON up.district_id=d.id
+                            LEFT JOIN system_entity se ON ri.sex_id=se.id
+                        WHERE sti.subsidy_amount!= 0 AND tcm.create_date BETWEEN '${start}' AND '${end}'
+                             ${hospital_str}
+                        GROUP BY tcm.service_token_no
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+        return result
+    }
+    public List<GroovyRowResult> dateWiseDiagnosisDetails(Date start,Date end, String hospital_code){
+        String hospital_str = EMPTY_SPACE
+        if(hospital_code!=ALL) {
+            hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+        }
+        String queryStr = """
+             SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
+                    COALESCE(GROUP_CONCAT(di.name),'Followup') AS consultancy_info,ri.mobile_no,tcm.create_date AS service_date,
+                    COALESCE(GROUP_CONCAT(shi.name),'') AS diagnosis_info,sc.charge_amount AS diagnosis_amt,
+                    CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address
+                        FROM token_and_charge_mapping tcm
+                            LEFT JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
+                            LEFT JOIN registration_info ri ON ri.reg_no = sti.reg_no
+                            LEFT JOIN village v ON v.id = ri.village_id
+                            LEFT JOIN st_union u ON v.union_id=u.id
+                            LEFT JOIN upazila up ON u.upazila_id=up.id
+                            LEFT JOIN district d ON up.district_id=d.id
+                            LEFT JOIN system_entity se ON ri.sex_id=se.id
+                            RIGHT JOIN service_charges sc ON sc.id = tcm.service_charge_id
+                                AND LEFT(sc.service_code,2)='03'
+                            LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = tcm.service_token_no
+                            LEFT JOIN disease_info di ON di.disease_code=tdm.disease_code
+                            LEFT JOIN service_head_info shi ON shi.service_code=sc.service_code
+                        WHERE tcm.create_date BETWEEN '${start}' AND '${end}'
+                            ${hospital_str}
+                        GROUP BY tcm.service_token_no
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+
+        return result
+    }
+
 }

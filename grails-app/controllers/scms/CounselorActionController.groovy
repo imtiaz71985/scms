@@ -33,6 +33,53 @@ class CounselorActionController extends BaseController {
     def show() {
         render(view: "/counselorAction/show")
     }
+    def showConsultancy() {
+        render(view: "/counselorAction/showConsultancy", model: [hospitalCode:params.hospitalCode,dateField:params.dateField])
+    }
+    def showSubsidy() {
+        render(view: "/counselorAction/showSubsidy", model: [hospitalCode:params.hospitalCode,dateField:params.dateField])
+    }
+    def showDiagnosis() {
+        render(view: "/counselorAction/showDiagnosis", model: [hospitalCode:params.hospitalCode,dateField:params.dateField])
+    }
+
+    def consultancyList() {
+        Date dateField = DateUtility.parseDateForDB(params.dateField)
+        Date start = DateUtility.getSqlFromDateWithSeconds(dateField)
+        Date end = DateUtility.getSqlToDateWithSeconds(dateField)
+        String hospital_code = params.hospitalCode
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.dateWiseConsultancyDetails(start, end, hospital_code)
+
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
+
+    def subsidyList() {
+        Date dateField = DateUtility.parseDateForDB(params.dateField)
+        Date start = DateUtility.getSqlFromDateWithSeconds(dateField)
+        Date end = DateUtility.getSqlToDateWithSeconds(dateField)
+        String hospital_code = params.hospitalCode
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.dateWiseSubsidyDetails(start, end, hospital_code)
+
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
+    def diagnosisList() {
+        Date dateField = DateUtility.parseDateForDB(params.dateField)
+        Date start = DateUtility.getSqlFromDateWithSeconds(dateField)
+        Date end = DateUtility.getSqlToDateWithSeconds(dateField)
+        String hospital_code = params.hospitalCode
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.dateWiseDiagnosisDetails(start, end, hospital_code)
+
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
 
     def create() {
         renderOutput(createServiceTokenInfoActionService, params)
@@ -48,17 +95,18 @@ class CounselorActionController extends BaseController {
         }
         List<GroovyRowResult> lst = serviceTokenRelatedInfoService.RegAndServiceDetails(start, end, hospital_code)
 
-
         Map result = new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())
         render result as JSON
     }
+
     def showServiceList() {
         render(view: "/counselorAction/serviceList")
     }
+
     def serviceList() {
-        Date start = DateUtility.getSqlFromDateWithSeconds(new Date(2016-01-01))
+        Date start = DateUtility.getSqlFromDateWithSeconds(new Date(2016 - 01 - 01))
         Date end = DateUtility.getSqlToDateWithSeconds(new Date())
 
         String hospital_code = ""
@@ -152,8 +200,8 @@ class CounselorActionController extends BaseController {
         calNow.add(Calendar.MONTH, -3);
         Date dateBeforeAMonth = calNow.getTime();
         Timestamp fromDate = DateUtility.getSqlToDateWithSeconds(dateBeforeAMonth)
-       // List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndServiceDateBetween(regNo, fromDate, toDate, [sort: "serviceDate", order: "DESC"])
-        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getReferenceTokenForFollowup(regNo,fromDate, toDate)
+        // List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndServiceDateBetween(regNo, fromDate, toDate, [sort: "serviceDate", order: "DESC"])
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getReferenceTokenForFollowup(regNo, fromDate, toDate)
         lst = baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
         Map result = [lstTokenNo: lst]
         render result as JSON
@@ -170,6 +218,7 @@ class CounselorActionController extends BaseController {
 
         render result as JSON
     }
+
     def retrieveDiseaseOfReferenceTokenNo() {
         String tokenNo = params.tokenNo.toString()
         String diseaseInfo = serviceTokenRelatedInfoService.getDiseaseOfReferenceTokenNo(tokenNo)
@@ -179,6 +228,7 @@ class CounselorActionController extends BaseController {
 
         render result as JSON
     }
+
     def serviceDetails() {
         String tokenNo = params.tokenNo.toString()
         List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getTokenDetails(tokenNo)

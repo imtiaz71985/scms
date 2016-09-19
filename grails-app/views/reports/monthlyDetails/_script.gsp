@@ -282,7 +282,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':consultation_count#",
+                                    template: "#=is_holiday?'':navigateToConsultation(date_field,consultation_count)#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -304,7 +304,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':subsidy_count#",
+                                    template: "#=is_holiday?'':navigateToSubsidy(date_field,subsidy_count)#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -326,7 +326,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':pathology_count#",
+                                    template: "#=is_holiday?'':navigateToDiagnosis(date_field,pathology_count)#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -379,6 +379,18 @@
         gridDetails = $("#gridDetails").data("kendoGrid");
     }
 
+    function navigateToConsultation(dateField,value){
+        var hospitalCode = dropDownHospitalCode.value();
+        return '<a href="/scms#counselorAction/showConsultancy?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
+    }
+    function navigateToSubsidy(dateField,value){
+        var hospitalCode = dropDownHospitalCode.value();
+        return '<a href="/scms#counselorAction/showSubsidy?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
+    }
+    function navigateToDiagnosis(dateField,value){
+        var hospitalCode = dropDownHospitalCode.value();
+        return '<a href="/scms#counselorAction/showDiagnosis?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
+    }
     function navigateToMedicineSales(dateField,value){
         return '<a href="/scms#medicineSellInfo/showLink?dateField='+dateField+'">'+value+'</a>';
     }
