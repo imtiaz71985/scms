@@ -3,7 +3,6 @@
         <div id="gridCounselorServiceList"></div>
     </div>
 </div>
-
 <script language="JavaScript">
     var gridCounselorServiceList, dataSource,hospitalCode,dateField;
     $(document).ready(function () {
@@ -99,10 +98,12 @@
                             footerAttributes: {style: setAlignRight()},
                             footerTemplate: "#=formatAmount(sum)#"
                         }
-                    ]
+                    ],
+                    toolbar: kendo.template($("#gridToolbarBase").html())
                 }
         );
         gridCounselorServiceList = $("#gridCounselorServiceList").data("kendoGrid");
+        $("#menuGrid").kendoMenu();
     }
     function setCAlignRight() {
         return "text-align:right;font-size:7pt;";
