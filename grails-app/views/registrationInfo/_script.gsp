@@ -125,7 +125,9 @@
                         dateOfBirth: { type: "date" },
                         createDate: { type: "date" },
                         sexId: { type: "number" },
+                        sex: { type: "string" },
                         maritalStatusId: { type: "number" },
+                        maritalStatus: { type: "string" },
                         mobileNo: { type: "string" },
                         village:{type:"number"},
                         unionId:{type:"number"},
@@ -169,7 +171,8 @@
                 {field: "fatherOrMotherName", title: "Father/Mother", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "address", title: "Address", width: 170, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
-                    template: "#=evaluateDateRange(dateOfBirth, new Date())#"}
+                    template: "#=evaluateDateRange(dateOfBirth, new Date())#"},
+                {field: "sex", title: "Gender", width: 50, sortable: false, filterable: false}
                  ],
             filterable: {
                 mode: "row"
