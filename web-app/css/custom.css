@@ -151,3 +151,6 @@ textarea:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
 .conf-download {
     width: 420px !important;
 }
+.k-state-selected a {
+    color: #fff;
+}

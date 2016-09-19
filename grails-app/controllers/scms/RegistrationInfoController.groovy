@@ -1,10 +1,13 @@
 package scms
 
 import actions.registrationInfo.CreateRegistrationInfoActionService
+import actions.registrationInfo.CustomListRegistrationInfoActionService
 import actions.registrationInfo.DeleteRegistrationInfoActionService
 import actions.registrationInfo.ListRegistrationInfoActionService
+import actions.registrationInfo.ReIssueListRegistrationInfoActionService
 import actions.registrationInfo.ReIssueRegistrationNoActionService
 import actions.registrationInfo.UpdateRegistrationInfoActionService
+import com.model.ListReIssueRegistrationInfoActionServiceModel
 import com.scms.RegistrationInfo
 import com.scms.SecUser
 import com.scms.StUnion
@@ -33,6 +36,8 @@ class RegistrationInfoController extends BaseController {
     UpdateRegistrationInfoActionService updateRegistrationInfoActionService
     DeleteRegistrationInfoActionService deleteRegistrationInfoActionService
     ListRegistrationInfoActionService listRegistrationInfoActionService
+    CustomListRegistrationInfoActionService customListRegistrationInfoActionService
+    ReIssueListRegistrationInfoActionService reIssueListRegistrationInfoActionService
     ReIssueRegistrationNoActionService reIssueRegistrationNoActionService
 
     def showNew() {
@@ -41,6 +46,16 @@ class RegistrationInfoController extends BaseController {
     }
     def show() {
         render(view: "/registrationInfo/show")
+    }
+    def showMonthlyPatient(){
+        String viewStr = "/registrationInfo/showDailyPatient"
+        if(params.visitType=='followup'||params.visitType=='revisit'){
+            viewStr = "/registrationInfo/showOthers"
+        }
+        if(params.visitType=='reissue'){
+            viewStr = "/registrationInfo/showReIssue"
+        }
+        render(view: viewStr, model: [dateField: params.dateField,visitType:params.visitType])
     }
     def reloadDropDown() {
         render app.dropDownVillage(params)
@@ -63,6 +78,12 @@ class RegistrationInfoController extends BaseController {
     }
     def list() {
         renderOutput(listRegistrationInfoActionService, params)
+    }
+    def customList() {
+        renderOutput(customListRegistrationInfoActionService, params)
+    }
+    def reissueList() {
+        renderOutput(reIssueListRegistrationInfoActionService, params)
     }
 
     def upazilaListByDistrictId() {

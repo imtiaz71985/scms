@@ -1,10 +1,12 @@
 package actions.medicineReturn
 
 import com.model.ListMedicineReturnSellActionServiceModel
+import com.model.ListMedicineSellInfoActionServiceModel
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 
 @Transactional
 class ListMedicineReturnSellActionService extends BaseService implements ActionServiceIntf {
@@ -19,7 +21,18 @@ class ListMedicineReturnSellActionService extends BaseService implements ActionS
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Map resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class)
+            Map resultMap
+            if(result.dateField){
+                Date dateField = DateUtility.parseDateForDB(result.dateField)
+                Date fromDate = DateUtility.getSqlFromDateWithSeconds(dateField)
+                Date toDate = DateUtility.getSqlToDateWithSeconds(dateField)
+                Closure param = {
+                    'between'('returnDate', fromDate,toDate)
+                }
+                resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class,param)
+            }else{
+                resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class)
+            }
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result

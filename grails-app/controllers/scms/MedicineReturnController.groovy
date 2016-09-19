@@ -25,6 +25,9 @@ class MedicineReturnController extends BaseController {
     def showSellReturn() {
         render(view: "/medicineReturn/showSellReturn")
     }
+    def showLink(){
+        render(view: "/medicineReturn/showLink",model: [dateField: params.dateField])
+    }
     def retrieveMedicineDetails() {
         MedicineSellInfo medicineSellInfo = MedicineSellInfo.findByVoucherNo(params.voucherNo)
         params.id = medicineSellInfo.id
