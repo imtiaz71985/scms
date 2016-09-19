@@ -106,8 +106,20 @@
                                 }
                             }
                         },
-                        {field: "serviceDate", title: "Service Date", width: 60, sortable: false,filterable:false,
-                            template: "#=kendo.toString(kendo.parseDate(serviceDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"
+                        {field: "serviceDate", title: "Service Date", width: 60, sortable: false,filterable: {
+                            extra: false,
+                            operators: {
+                                date: {
+                                    eq: "Contains"
+                                }
+                            },
+                            ui: function (element) {
+                                element.kendoDatePicker({
+                                    format: "dd/MM/yyyy"
+                                });
+                            }
+                        },
+                            format: "{0:dd/MM/yyyy}"
                         },
                         {
                             field: "dateOfBirth", title: "Age", width: 40, sortable: false, filterable: false,

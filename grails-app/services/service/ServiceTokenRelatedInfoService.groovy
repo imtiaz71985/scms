@@ -47,7 +47,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
             queryStr = """
             SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
                   COALESCE(st.is_exit,FALSE) AS isExit,
-                  COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,st.subsidy_amount AS subsidyAmount,
+                  COALESCE(st.service_token_no,'') AS serviceTokenNo,CONVERT(st.service_date,DATE) AS serviceDate,st.subsidy_amount AS subsidyAmount,
                   SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
                   SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
                   COALESCE(SUM(sc.charge_amount)-st.subsidy_amount,0) AS totalCharge,
@@ -68,7 +68,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
             queryStr = """
            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
                   COALESCE(st.is_exit,FALSE) AS isExit,
-                  COALESCE(st.service_token_no,'') AS serviceTokenNo,st.service_date AS serviceDate,st.subsidy_amount AS subsidyAmount,
+                  COALESCE(st.service_token_no,'') AS serviceTokenNo,CONVERT(st.service_date,DATE) AS serviceDate,st.subsidy_amount AS subsidyAmount,
                   SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
                   SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
                   COALESCE(SUM(sc.charge_amount)-st.subsidy_amount,0) AS totalCharge,
