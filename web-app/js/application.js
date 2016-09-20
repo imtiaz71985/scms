@@ -785,6 +785,10 @@ function getDefaultPageSizes(){
     return [20, 30, 40, 50];
 }
 
+function historyBack(){
+    return window.history.back();
+}
+
 
 
 

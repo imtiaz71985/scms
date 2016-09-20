@@ -1,3 +1,8 @@
+<script type="text/x-kendo-template" id="gridToolbarBase">
+<ul id="menuGrid" class="kendoGridMenu">
+    <li onclick="historyBack();"><i class="fa fa-backward"></i>Back to previous page</li>
+</ul>
+</script>
 <script type="text/javascript">
     var router = false;
     $(document).ready(function() {

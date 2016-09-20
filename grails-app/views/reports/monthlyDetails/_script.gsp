@@ -153,10 +153,6 @@
         return kendo.toString(amount, "##,###");
     }
 
-    function navigateLinkPatientType(dateField,value,visitType){
-        return '<a href="/scms#registrationInfo/showMonthlyPatient?dateField='+dateField+'&visitType='+visitType+'">'+value+'</a>';
-    }
-
     function initInfoGrid() {
         initDataSource();
         $("#gridDetails").kendoGrid({
@@ -282,7 +278,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':navigateToConsultation(date_field,consultation_count)#",
+                                    template: "#=is_holiday?'':navigateLink(date_field,consultation_count,'counselorAction','showConsultancy')#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -304,7 +300,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':navigateToSubsidy(date_field,subsidy_count)#",
+                                    template: "#=is_holiday?'':navigateLink(date_field,subsidy_count,'counselorAction','showSubsidy')#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -326,7 +322,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':navigateToDiagnosis(date_field,pathology_count)#",
+                                    template: "#=is_holiday?'':navigateLink(date_field,pathology_count,'counselorAction','showDiagnosis')#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -351,7 +347,7 @@
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateToMedicineSales(date_field,formatAmount(medicine_sales))#",
+                            template: "#=is_holiday?'':navigateLink(date_field,formatAmount(medicine_sales),'medicineSellInfo','showLink')#",
                             footerTemplate: "#=sum#"
                         }, {
                             field: "return_amt", title: "Return",
@@ -359,7 +355,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateToMedicineReturns(date_field,formatAmount(return_amt))#",
+                            template: "#=is_holiday?'':navigateLink(date_field,formatAmount(return_amt),'MedicineReturn','showLink')#",
                             footerTemplate: "#=sum#"
                         }
                     ]
@@ -378,25 +374,20 @@
         });
         gridDetails = $("#gridDetails").data("kendoGrid");
     }
+    function navigateLinkPatientType(dateField,value,visitType){
+        if(value>0){
+            return '<a href="/scms#registrationInfo/showMonthlyPatient?dateField='+dateField+'&visitType='+visitType+'">'+value+'</a>';
+        }
+        return value;
+    }
+    function navigateLink(dateField,value,controller,action){
+        var hospitalCode = dropDownHospitalCode.value();
+        if(value>0){
+            return '<a href="/scms#'+controller+'/'+action+'?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
+        }
+        return value;
+    }
 
-    function navigateToConsultation(dateField,value){
-        var hospitalCode = dropDownHospitalCode.value();
-        return '<a href="/scms#counselorAction/showConsultancy?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
-    }
-    function navigateToSubsidy(dateField,value){
-        var hospitalCode = dropDownHospitalCode.value();
-        return '<a href="/scms#counselorAction/showSubsidy?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
-    }
-    function navigateToDiagnosis(dateField,value){
-        var hospitalCode = dropDownHospitalCode.value();
-        return '<a href="/scms#counselorAction/showDiagnosis?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
-    }
-    function navigateToMedicineSales(dateField,value){
-        return '<a href="/scms#medicineSellInfo/showLink?dateField='+dateField+'">'+value+'</a>';
-    }
-    function navigateToMedicineReturns(dateField,value){
-        return '<a href="/scms#MedicineReturn/showLink?dateField='+dateField+'">'+value+'</a>';
-    }
     function downloadMonthlyDetails() {
         if (isApplicable) {
             showLoadingSpinner(true);

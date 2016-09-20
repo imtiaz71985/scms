@@ -1,5 +1,6 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
+    <li onclick="historyBack();"><i class="fa fa-backward"></i>Back to previous page</li>
     <sec:access url="/medicineSellInfo/update">
         <li onclick="viewDetails();"><i class="fa fa-file"></i>View Details</li>
     </sec:access>

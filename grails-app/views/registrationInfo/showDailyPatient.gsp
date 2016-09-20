@@ -104,9 +104,11 @@
             ],
             filterable: {
                 mode: "row"
-            }
+            },
+            toolbar: kendo.template($("#gridToolbarBase").html())
         });
         gridRegistrationInfo = $("#gridRegistrationInfo").data("kendoGrid");
+        $("#menuGrid").kendoMenu();
     }
 
 </script>
