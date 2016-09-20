@@ -98,6 +98,10 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     return super.setError(params, 'Sorry! Please select at least one pathology test.')
                 }
             }
+            List<ServiceTokenInfo> lstServiceTokenInfo=ServiceTokenInfo.findAllByServiceTokenNo(params.serviceTokenNo)
+            if(lstServiceTokenInfo.size()>0){
+                return super.setError(params, 'Sorry! Already inserted under this token.')
+            }
 
             ServiceTokenInfo serviceTokenInfo = buildObject(params, serviceTypeId)
             params.put(SERVICE_TOKEN_INFO, serviceTokenInfo)
