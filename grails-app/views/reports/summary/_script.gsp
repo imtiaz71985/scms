@@ -1,6 +1,6 @@
 
 <script language="javascript">
-    var gridDetails, dataSource, isApplicable,dropDownHospitalCode;
+    var gridDetails, dataSource, isApplicable,dropDownHospitalCode, start, end;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -9,21 +9,27 @@
     });
 
     function onLoadInfoPage() {
-        $('#from').kendoDatePicker({
-            format: "MMMM yyyy",
-            parseFormats: ["yyyy-MM-dd"],
-            start: "year",
-            depth: "year"
-        });
         var currentDate = moment().format('MMMM YYYY');
-        $('#from').val(currentDate);
-        $('#to').kendoDatePicker({
+
+        start = $('#from').kendoDatePicker({
+            format: "MMMM yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            change: startChange,
+            start: "year",
+            depth: "year"
+        }).data("kendoDatePicker");
+
+        start.value(currentDate);
+
+        end = $('#to').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
             depth: "year"
-        });
-        $('#to').val(currentDate);
+        }).data("kendoDatePicker");
+
+        end.value(currentDate);
+        end.min(start.value());
 
         if(!${isAdmin}){
          dropDownHospitalCode.value('${hospitalCode}');
@@ -33,6 +39,14 @@
         initializeForm($("#detailsForm"), onSubmitForm);
         // update page title
         defaultPageTile("Monthly Report", null);
+    }
+    function startChange() {
+        var startDate = start.value();
+        if (startDate) {
+            startDate = new Date(startDate);
+            startDate.setDate(startDate.getDate() + 1);
+            end.min(startDate);
+        }
     }
 
     function executePreCondition() {
