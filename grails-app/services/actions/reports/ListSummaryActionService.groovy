@@ -23,14 +23,17 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            String dateStr = result.month.toString()
+            String fromStr = result.from.toString()
             Calendar c = Calendar.getInstance();
             DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-            Date date = originalFormat.parse(dateStr);
-            c.setTime(date);
+            Date from = originalFormat.parse(fromStr);
+            c.setTime(from);
+
+            String toStr = result.to.toString()
             Calendar ce = Calendar.getInstance();
-            ce.setTime(date);
-            ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+            Date to = originalFormat.parse(toStr);
+            ce.setTime(to);
+            ce.set(Calendar.DAY_OF_MONTH, ce.getActualMaximum(Calendar.DAY_OF_MONTH));
 
             String fromDate = DateUtility.getDBDateFormatAsString(c.getTime())
             String toDate = DateUtility.getDBDateFormatAsString(ce.getTime())
@@ -53,7 +56,15 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
     private LinkedHashMap getMonthlyStatus(String fromDate, String toDate, String hospitalCode) {
 
         String queryStr1 = """
-            SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
+            SELECT
+                    month_name,SUM(new_patient) new_patient,SUM(re_reg_patient) re_reg_patient,SUM(patient_revisit) patient_revisit,
+                    SUM(patient_followup) patient_followup,SUM(total_patient) total_patient,SUM(total_service) total_service,
+                    SUM(registration_amount) registration_amount,SUM(re_registration_amount) re_registration_amount,
+                    SUM(consultation_amount) consultation_amount,SUM(consultation_count) consultation_count,SUM(subsidy_amount) subsidy_amount,
+                    SUM(subsidy_count) subsidy_count,SUM(pathology_amount) pathology_amount,SUM(pathology_count) pathology_count,
+                    SUM(medicine_sales) AS medicine_sales,SUM(return_amt) return_amt,date_field
+                    FROM
+            (SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,DATE_FORMAT(`date_field`,'%M %Y') AS month_name,
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
             WHERE msi.sell_date = c.date_field GROUP BY msi.sell_date ),0)) AS medicine_sales,
                 COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
@@ -160,10 +171,18 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                 LEFT JOIN registration_info ri ON DATE(ri.create_date) = c.date_field
                 LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
             WHERE c.date_field BETWEEN :fromDate AND :toDate
-            GROUP BY c.date_field;
+            GROUP BY c.date_field) tmp
+            GROUP BY month_name ORDER BY date_field;
         """
         String queryStr2 = """
-            SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
+            SELECT month_name,SUM(new_patient) new_patient,SUM(re_reg_patient) re_reg_patient,SUM(patient_revisit) patient_revisit,
+                    SUM(patient_followup) patient_followup,SUM(total_patient) total_patient,SUM(total_service) total_service,
+                    SUM(registration_amount) registration_amount,SUM(re_registration_amount) re_registration_amount,
+                    SUM(consultation_amount) consultation_amount,SUM(consultation_count) consultation_count,SUM(subsidy_amount) subsidy_amount,
+                    SUM(subsidy_count) subsidy_count,SUM(pathology_amount) pathology_amount,SUM(pathology_count) pathology_count,
+                    SUM(medicine_sales) AS medicine_sales,SUM(return_amt) return_amt,date_field
+            FROM
+            (SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,DATE_FORMAT(`date_field`,'%M %Y') AS month_name,
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
             WHERE msi.sell_date = c.date_field AND msi.hospital_code = :hospitalCode
             GROUP BY msi.sell_date ),0)) AS medicine_sales,
@@ -290,13 +309,8 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                 LEFT JOIN registration_info ri ON DATE(ri.create_date) = c.date_field AND ri.hospital_code = :hospitalCode
                 LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
             WHERE c.date_field BETWEEN :fromDate AND :toDate
-            GROUP BY c.date_field;
-        """
-
-        String queryCount = """
-            SELECT COUNT(c.id) AS count
-                FROM calendar c
-            WHERE c.date_field BETWEEN :fromDate AND :toDate
+            GROUP BY c.date_field) tmp
+            GROUP BY month_name ORDER BY date_field;
         """
 
         Map queryParams = [
@@ -313,8 +327,7 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
         }
 
         List<GroovyRowResult> rowResults = executeSelectSql(queryString, queryParams)
-        List countResults = executeSelectSql(queryCount, queryParams)
-        int count = countResults[0].count
+        int count = rowResults.size()
         return [rowResults: rowResults, count: count]
     }
     /**

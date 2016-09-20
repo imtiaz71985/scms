@@ -95,7 +95,7 @@
                             <sec:access url="/reports/showSummary">
                                 <li>
                                     <a href="#reports/showSummary"><i
-                                            class="fa fa-file-pdf-o"></i>&nbsp;Monthly showSummary</a>
+                                            class="fa fa-file-pdf-o"></i>&nbsp;Summary</a>
                                 </li>
                             </sec:access>
                         </ul>

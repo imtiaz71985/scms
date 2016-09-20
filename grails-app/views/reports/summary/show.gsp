@@ -1,3 +1,3 @@
 
-<g:render template='monthlyDetails/create'/>
-<g:render template='monthlyDetails/script'/>
+<g:render template='summary/create'/>
+<g:render template='summary/script'/>

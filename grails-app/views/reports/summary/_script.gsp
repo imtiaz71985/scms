@@ -9,14 +9,21 @@
     });
 
     function onLoadInfoPage() {
-        $('#month').kendoDatePicker({
+        $('#from').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
             depth: "year"
         });
         var currentDate = moment().format('MMMM YYYY');
-        $('#month').val(currentDate);
+        $('#from').val(currentDate);
+        $('#to').kendoDatePicker({
+            format: "MMMM yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            start: "year",
+            depth: "year"
+        });
+        $('#to').val(currentDate);
 
         if(!${isAdmin}){
          dropDownHospitalCode.value('${hospitalCode}');
@@ -44,34 +51,26 @@
     }
 
     function loadGridValue() {
-        var month = $('#month').val();
+        var from = $('#from').val();
+        var to = $('#to').val();
         var hospitalCode = dropDownHospitalCode.value();
         showLoadingSpinner(true);
-        var params = "?month=" + month + "&hospitalCode=" + hospitalCode;
-        var url = "${createLink(controller:'reports', action: 'listMonthlyStatus')}" + params;
+        var params = "?from=" + from + "&to=" + to + "&hospitalCode=" + hospitalCode;
+        var url = "${createLink(controller:'reports', action: 'listSummary')}" + params;
         populateGridKendo(gridDetails, url);
         showLoadingSpinner(false);
     }
 
     function resetForm() {
-        clearForm($("#detailsForm"), $('#month'));
+        clearForm($("#detailsForm"), $('#from'));
     }
     function dataBoundGrid(e) {
         var grid = e.sender;
         var data = grid.dataSource.data();
         var grandTotal = 0;
         $.each(data, function (i, row) {
-            grandTotal+=formatCeilAmount(row.medicine_sales+row.pathology_amount+row.registration_amount+row.re_registration_amount+row.consultation_amount-row.subsidy_amount-row.return_amt);
-            var str = row.dateField;
-            var currentDate = moment().format('YYYY-MM-DD');
-            if (str == currentDate) {
-                var sel = $('tr[data-uid="' + row.uid + '"] ');
-                grid.select(sel);
-            }
-            if (row.is_holiday) {
-                $('tr[data-uid="' + row.uid + '"] ').css("background-color", "#fee7df");  //light red
-                $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
-            }
+            grandTotal+=formatCeilAmount(row.medicine_sales+row.pathology_amount+row.registration_amount+
+            row.re_registration_amount+row.consultation_amount-row.subsidy_amount-row.return_amt);
         });
         $("#footerSpan").text(formatAmount(grandTotal));
     }
@@ -89,8 +88,6 @@
                 data: "list", total: "count",
                 model: {
                     fields: {
-                        id: {type: "number"},
-                        version: {type: "number"},
                         registration_amount: {type: "number"},
                         re_registration_amount: {type: "number"},
                         consultation_amount: {type: "number"},
@@ -101,9 +98,7 @@
                         pathology_count: {type: "number"},
                         medicine_sales: {type: "number"},
                         return_amt: {type: "number"},
-                        date_field: {type: "date"},
-                        is_holiday: {type: "boolean"},
-                        holiday_status: {type: "string"},
+                        month_name: {type: "string"},
                         new_patient: {type: "number"},
                         re_reg_patient: {type: "number"},
                         patient_followup: {type: "number"},
@@ -136,7 +131,6 @@
                 {field: "total_patient", aggregate: "sum" },
                 {field: "total_service", aggregate: "sum" }
             ],
-            sort: [{field: 'date_field', dir: 'asc'}],
             pageSize: false,
             serverPaging: true,
             serverFiltering: true,
@@ -167,13 +161,12 @@
             pageable: false,
             columns: [
                 {
-                    field: "date_field",title: "Date",
+                    field: "month_name",title: "Month",
                     width: 60,sortable: false,filterable: false,
                     headerAttributes: {style: setAlignCenter()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignCenter()},
-                    template: "#=kendo.toString(kendo.parseDate(date_field, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
-                    footerTemplate: "Month Total:"
+                    footerTemplate: "Grand Total:"
                 },
                 {title: "Patient",headerAttributes:{style:setAlignCenter()},
                     columns: [
@@ -183,7 +176,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateLinkPatientType(date_field,new_patient,'new')#",
+                            template: "#=new_patient#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -192,7 +185,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateLinkPatientType(date_field,patient_followup,'followup')#",
+                            template: "#=patient_followup#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -201,7 +194,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateLinkPatientType(date_field,patient_revisit,'revisit')#",
+                            template: "#=patient_revisit#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -210,7 +203,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':total_patient#",
+                            template: "#=total_patient#",
                             footerTemplate: "#=sum#"
                         }
                     ]
@@ -221,7 +214,7 @@
                     headerAttributes: {style: setCAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?'':total_service#",
+                    template: "#=total_service#",
                     footerTemplate: "#=sum#"
                 },
                 {title: "Charges",headerAttributes:{style:setAlignCenter()},
@@ -234,7 +227,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':navigateLinkPatientType(date_field,new_patient)#",
+                                    template: "#=new_patient#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -243,7 +236,7 @@
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
-                                    template: "#=is_holiday?'':formatAmount(registration_amount)#",
+                                    template: "#=formatAmount(registration_amount)#",
                                     footerTemplate: "#=formatAmount(sum)#"
                                 }
                             ]
@@ -256,7 +249,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':navigateLinkPatientType(date_field,re_reg_patient,'reissue')#",
+                                    template: "#=re_reg_patient#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -265,7 +258,7 @@
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
-                                    template: "#=is_holiday?'':formatAmount(re_registration_amount)#",
+                                    template: "#=formatAmount(re_registration_amount)#",
                                     footerTemplate: "#=formatAmount(sum)#"
                                 }
                             ]
@@ -278,7 +271,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':navigateLink(date_field,consultation_count,'counselorAction','showConsultancy')#",
+                                    template: "#=consultation_count#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -287,7 +280,7 @@
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
-                                    template: "#=is_holiday?'':formatAmount(consultation_amount)#",
+                                    template: "#=formatAmount(consultation_amount)#",
                                     footerTemplate: "#=formatAmount(sum)#"
                                 }
                             ]
@@ -300,7 +293,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':navigateLink(date_field,subsidy_count,'counselorAction','showSubsidy')#",
+                                    template: "#=subsidy_count#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -309,7 +302,7 @@
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
-                                    template: "#=is_holiday?'':formatAmount(subsidy_amount)#",
+                                    template: "#=formatAmount(subsidy_amount)#",
                                     footerTemplate: "#=formatAmount(sum)#"
                                 }
                             ]
@@ -322,7 +315,7 @@
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
-                                    template: "#=is_holiday?'':navigateLink(date_field,pathology_count,'counselorAction','showDiagnosis')#",
+                                    template: "#=pathology_count#",
                                     footerTemplate: "#=sum#"
                                 },
                                 {
@@ -331,7 +324,7 @@
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
-                                    template: "#=is_holiday?'':formatAmount(pathology_amount)#",
+                                    template: "#=formatAmount(pathology_amount)#",
                                     footerTemplate: "#=formatAmount(sum)#"
                                 }
                             ]
@@ -347,7 +340,7 @@
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateLink(date_field,formatAmount(medicine_sales),'medicineSellInfo','showLink')#",
+                            template: "#=formatAmount(medicine_sales)#",
                             footerTemplate: "#=sum#"
                         }, {
                             field: "return_amt", title: "Return",
@@ -355,37 +348,24 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateLink(date_field,formatAmount(return_amt),'MedicineReturn','showLink')#",
+                            template: "#=formatAmount(return_amt)#",
                             footerTemplate: "#=sum#"
                         }
                     ]
                 },
                 {
-                    field: "medicine_sales",title: "Day <br/> Collection(৳)",
+                    field: "medicine_sales",title: "Month <br/> Collection(৳)",
                     width: 60,sortable: false,filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?holiday_status:formatCeilAmount(medicine_sales+pathology_amount+registration_amount+re_registration_amount+consultation_amount-subsidy_amount-return_amt)#",
+                    template: "#=formatCeilAmount(medicine_sales+pathology_amount+registration_amount+re_registration_amount+consultation_amount-subsidy_amount-return_amt)#",
                     footerTemplate: "<span id='footerSpan'>#=formatAmount(sum)#</span>"
                 }
             ],
             filterable: false
         });
         gridDetails = $("#gridDetails").data("kendoGrid");
-    }
-    function navigateLinkPatientType(dateField,value,visitType){
-        if(value>0){
-            return '<a href="/scms#registrationInfo/showMonthlyPatient?dateField='+dateField+'&visitType='+visitType+'">'+value+'</a>';
-        }
-        return value;
-    }
-    function navigateLink(dateField,value,controller,action){
-        var hospitalCode = dropDownHospitalCode.value();
-        if(value>0){
-            return '<a href="/scms#'+controller+'/'+action+'?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
-        }
-        return value;
     }
 
     function downloadMonthlyDetails() {
