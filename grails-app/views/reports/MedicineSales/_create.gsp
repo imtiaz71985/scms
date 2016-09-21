@@ -12,20 +12,23 @@
                     <div class="form-group">
                         <label class="col-md-1 control-label label-required" for="fromDateTxt">From Date:</label>
 
-                        <div class="col-md-3">
-                            <app:dateControl name="fromDateTxt" value="" placeholder="dd/mm/yyyy"
-                                             required="true" validationMessage="Required"
-                                             tabindex="1" class="form-control">
-                            </app:dateControl>
+                        <div class="col-md-2">
+                            <input type='text' tabindex="1" required="required" onkeydown="return false;"
+                                   class="kendo-date-picker" id="fromDateTxt" name="fromDateTxt"
+                                   placeholder="dd/mm/yyyy" validationMessage="Req"/>
                         </div>
-
+                        <div class="col-md-1">
+                            <span class="k-invalid-msg" data-for="month"></span>
+                        </div>
                         <label class="col-md-1 control-label label-required" for="toDateTxt">To Date:</label>
 
-                        <div class="col-md-3">
-                            <app:dateControl name="toDateTxt" value="" placeholder="dd/mm/yyyy"
-                                             required="true" validationMessage="Required"
-                                             tabindex="2" class="form-control">
-                            </app:dateControl>
+                        <div class="col-md-2">
+                            <input type='text' tabindex="2" required="required" onkeydown="return false;"
+                                   class="kendo-date-picker" id="toDateTxt" name="toDateTxt"
+                                   placeholder="dd/mm/yyyy" validationMessage="Req"/>
+                        </div>
+                        <div class="col-md-1">
+                            <span class="k-invalid-msg" data-for="month"></span>
                         </div>
                         <label class="col-md-1 control-label label-optional" for="hospitalCode">Hospital:</label>
 

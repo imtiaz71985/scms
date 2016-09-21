@@ -1,6 +1,6 @@
 
 <script language="javascript">
-    var gridMedicineDetails, dataSource, dropDownHospitalCode;
+    var gridMedicineDetails, dataSource, dropDownHospitalCode, start, end;
 
     $(document).ready(function () {
         onLoadMedicineInfoPage();
@@ -9,6 +9,19 @@
     });
 
     function onLoadMedicineInfoPage() {
+        start = $('#fromDateTxt').kendoDatePicker({
+            format: "dd/MM/yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            change: startChange
+        }).data("kendoDatePicker");
+        $('#fromDateTxt').kendoMaskedTextBox({mask: "00/00/0000"});
+        end = $('#toDateTxt').kendoDatePicker({
+            format: "dd/MM/yyyy",
+            parseFormats: ["yyyy-MM-dd"]
+        }).data("kendoDatePicker");
+        $('#toDateTxt').kendoMaskedTextBox({mask: "00/00/0000"});
+        end.min(start.value());
+
         if(!${isAdmin}){
             dropDownHospitalCode.value('${hospitalCode}');
             dropDownHospitalCode.readonly(true);
@@ -16,6 +29,14 @@
         initializeForm($("#detailsForm"), onSubmitForm);
         // update page title
         defaultPageTile("Medicine Wise Sales", null);
+    }
+    function startChange() {
+        var startDate = start.value();
+        if (startDate) {
+            startDate = new Date(startDate);
+            startDate.setDate(startDate.getDate());
+            end.min(startDate);
+        }
     }
     function executePreCondition() {
         if (!validateForm($("#detailsForm"))) {
@@ -128,7 +149,7 @@
                 {
                     field: "unitPrice", title: "Unit Price", width: 35, sortable: false, filterable: false,
                     attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
-                    template: "#=formatAmount(unitPrice)#"
+                    template: "#=unitPrice#"
                 },
                 {field: "unitType", title: "Unit Type", width: 35, sortable: false, filterable: false
                 },
