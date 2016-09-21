@@ -31,12 +31,16 @@ SELECT mi.id, mi.version,se.name AS type,mi.generic_name AS genericName,
     public List<GroovyRowResult> listOfMedicineWiseSalesWithStock(String hospitalCode, Date fromDate, Date toDate) {
         String isHospital = EMPTY_SPACE
         String hospitalRet=EMPTY_SPACE
+        String hospitalStock=EMPTY_SPACE
         if (hospitalCode.length() > 1) {
             isHospital = """
                 msi.hospital_code='${hospitalCode}' AND
             """
             hospitalRet = """
                 mr.hospital_code='${hospitalCode}' AND
+            """
+            hospitalStock = """
+                ms.hospital_code='${hospitalCode}' AND
             """
         }
         String queryStr = """
@@ -52,12 +56,12 @@ SELECT mi.id, mi.version,se.name AS type,mi.generic_name AS genericName,
                     JOIN medicine_info mi ON msid.medicine_id=mi.id
                     LEFT JOIN system_entity se ON se.id=mi.type
                     LEFT JOIN vendor v ON v.id=mi.vendor_id
-                    LEFT JOIN medicine_stock ms ON ms.medicine_id = mi.id
+                    LEFT JOIN medicine_stock ms ON ms.medicine_id = mi.id """+hospitalStock+"""
                     LEFT JOIN (SELECT mrd.medicine_id,mrd.quantity,mrd.amount FROM medicine_return mr JOIN medicine_return_details mrd
                         ON mr.trace_no=mrd.trace_no WHERE """+hospitalRet+""" mr.return_date BETWEEN '${fromDate}' AND '${toDate}')ret
                     ON mi.id=ret.medicine_id
                     WHERE """+isHospital+""" msi.sell_date BETWEEN '${fromDate}' AND '${toDate}' GROUP BY msid.medicine_id
-                    ORDER BY SUM(msid.quantity) ASC;
+                    ORDER BY SUM(msid.amount) DESC;
         """
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
