@@ -40,7 +40,7 @@ SELECT mi.id, mi.version,se.name AS type,mi.generic_name AS genericName,
                 mr.hospital_code='${hospitalCode}' AND
             """
             hospitalStock = """
-                ms.hospital_code='${hospitalCode}' AND
+                ms.hospital_code='${hospitalCode}'
             """
         }
         String queryStr = """
