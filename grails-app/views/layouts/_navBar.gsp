@@ -89,13 +89,19 @@
                             <sec:access url="/reports/showMonthlyStatus">
                                 <li>
                                     <a href="#reports/showMonthlyStatus"><i
-                                            class="fa fa-file-pdf-o"></i>&nbsp;Monthly Status</a>
+                                            class="fa fa-file-pdf-o"></i>&nbsp;Compiled Activity</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showSummary">
                                 <li>
                                     <a href="#reports/showSummary"><i
-                                            class="fa fa-file-pdf-o"></i>&nbsp;Summary</a>
+                                            class="fa fa-file-pdf-o"></i>&nbsp;Activity Summary</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/reports/showMedicineSales">
+                                <li>
+                                    <a href="#reports/showMedicineSales"><i
+                                            class="fa fa-file-pdf-o"></i>&nbsp;Medicine Wise Sales</a>
                                 </li>
                             </sec:access>
                         </ul>
