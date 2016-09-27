@@ -142,9 +142,9 @@
             columns: [
                 {field: "regNo", title: "Reg No", width: 50, sortable: false, filterable: false},
                 {field: "patientName", title: "Name", width: 100, sortable: false, filterable: false},
-                {field: "fatherOrMotherName", title: "Father/Mother", width: 80, sortable: false, filterable: false},
+                {field: "fatherOrMotherName", title: "Father/Mother/Spouse", width: 90, sortable: false, filterable: false},
                 {field: "address", title: "Address", width: 150, sortable: false, filterable: false},
-                {field: "dateOfBirth", title: "Age", width: 35, sortable: false, filterable: false,
+                {field: "dateOfBirth", title: "Age", width: 40, sortable: false, filterable: false,
                     template: "#=evaluateDateRange(dateOfBirth, new Date())#"},
                 {field: "sex", title: "Gender", width: 50, sortable: false, filterable: false}
             ],
@@ -295,5 +295,30 @@
             return true;
         }
     }
+    function getAndSetAge() {
+
+       var date1= toMmDdYy($('#dateOfBirth').val());
+        var a=evaluateDateRange(new Date(date1),new Date());
+        $('#ageTxt').val(a );
+    }
+    function getAndSetDoB() {
+       var cuDate=  moment().format('DD/MM/YYYY');
+        var curYear=cuDate.substring(6,10);
+        var year = $('#ageTxt').val();
+        year=curYear-year;
+        cuDate=cuDate.substring(0,6)+year;
+        $('#dateOfBirth').val(cuDate)
+    }
+    function toMmDdYy(inStr) {
+        if((typeof inStr == 'undefined') || (inStr == null) ||
+                (inStr.length <= 0)) {
+            return '';
+        }
+        var year = inStr.substring(6, 10);
+        var month = inStr.substring(3, 5);
+        var day = inStr.substring(0, 2);
+        return month + '/' + day + '/' + year;
+    };
+
 
 </script>

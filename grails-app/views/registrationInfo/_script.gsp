@@ -166,11 +166,11 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "regNo", title: "Reg No", width: 40, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "regNo", title: "Reg No", width: 50, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "patientName", title: "Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "fatherOrMotherName", title: "Father/Mother", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "address", title: "Address", width: 170, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
+                {field: "fatherOrMotherName", title: "Father/Mother/Spouse", width: 90, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "address", title: "Address", width: 150, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "dateOfBirth", title: "Age", width: 40, sortable: false, filterable: false,
                     template: "#=evaluateDateRange(dateOfBirth, new Date())#"},
                 {field: "sex", title: "Gender", width: 50, sortable: false, filterable: false}
                  ],
