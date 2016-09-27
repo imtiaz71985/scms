@@ -96,10 +96,10 @@
                 }
             },
             sort:{field:"brandName",dir:"asc"},
-            pageSize: getDefaultPageSize(),
-            serverPaging: true,
-            serverFiltering: true,
-            serverSorting: true
+            pageSize: false,
+            serverPaging: false,
+            serverFiltering: false,
+            serverSorting: false
         });
     }
 
@@ -114,11 +114,7 @@
             resizable: true,
             reorderable: true,
             dataBound: gridDataBound,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4
-            },
+            pageable: false,
             columns: [
                 {field: "type", title: "Type", width: 40, sortable: false, filterable: kendoCommonFilterable(97)},
                 {
@@ -149,7 +145,7 @@
                 {
                     field: "unitPrice", title: "Unit Price", width: 35, sortable: false, filterable: false,
                     attributes: {style: setAlignRight()}, headerAttributes: {style: setAlignRight()},
-                    template: "#=unitPrice#"
+                    template: "#=formatAmount(unitPrice)#"
                 },
                 {field: "unitType", title: "Unit Type", width: 35, sortable: false, filterable: false
                 },
@@ -159,6 +155,7 @@
                 },
                 {
                     field: "saleAmt", title: "Sale Amt", width: 40, sortable: false, filterable: false,
+                    template: "#=formatAmount(saleAmt)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {
@@ -167,6 +164,7 @@
                 },
                 {
                     field: "returnAmt", title: "Return Amt", width: 40, sortable: false, filterable: false,
+                    template: "#=formatAmount(returnAmt)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 }
             ],
