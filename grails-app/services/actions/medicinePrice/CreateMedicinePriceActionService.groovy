@@ -50,7 +50,7 @@ class CreateMedicinePriceActionService  extends BaseService implements ActionSer
     public Map execute(Map result) {
         try {
             MedicinePrice medicinePrice = (MedicinePrice) result.get(MEDICINE_PRICE)
-            SubsidyOnMedicine som = SubsidyOnMedicine.findByMedicineId(medicinePrice.id)
+            SubsidyOnMedicine som = SubsidyOnMedicine.findByMedicineId(medicinePrice.medicineId)
             double priceAfterSubsidy=medicinePrice.mrpPrice-((medicinePrice.mrpPrice*som.subsidyPert)/100)
             medicinePrice.price = priceAfterSubsidy
             medicinePrice.save()

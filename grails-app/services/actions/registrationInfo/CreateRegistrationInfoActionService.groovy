@@ -108,6 +108,10 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
         registrationInfo.createdBy = springSecurityService.principal.id
         registrationInfo.hospitalCode = registrationInfo.regNo.substring(0, 2)
         registrationInfo.isActive = true
+        if(parameterMap.newOrRevisit=="new")
+            registrationInfo.isOldPatient=false
+        else
+            registrationInfo.isOldPatient=true
         return registrationInfo
     }
 

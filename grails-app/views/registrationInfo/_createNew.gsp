@@ -13,15 +13,18 @@
                     <div class="form-group">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-optional" for="regNo">Registration No:</label>
+                                <label class="col-md-3 control-label label-optional"
+                                       for="regNo">Registration No:</label>
 
                                 <div class="col-md-6">
                                     <input type="text" readonly="true" class="form-control" id="regNo" name="regNo"/>
                                 </div>
+
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="patientName">Patient Name:</label>
+                                <label class="col-md-3 control-label label-required"
+                                       for="patientName">Patient Name:</label>
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="patientName" name="patientName"
@@ -36,13 +39,14 @@
 
                             <div class="form-group">
                                 <label class="col-md-3 control-label label-required"
-                                       for="fatherOrMotherName">Father/ Mother:</label>
+                                       for="fatherOrMotherName">Father/ Mother/Spouse:</label>
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="fatherOrMotherName"
                                            name="fatherOrMotherName" required="true" validationMessage="Required"
                                            placeholder="Father or Mother Name" tabindex="2"/>
                                 </div>
+
                                 <div class="col-md-3 pull-left">
                                     <span class="k-invalid-msg" data-for="fatherOrMotherName"></span>
                                 </div>
@@ -52,17 +56,25 @@
                                 <label class="col-md-3 control-label label-required"
                                        for="dateOfBirth">Date of Birth:</label>
 
-                                <div class="col-md-6">
-                                    <app:dateControl name="dateOfBirth" value="" placeholder="dd/mm/yyyy"
+                                <div class="col-md-4">
+                                    <app:dateControl id="dateOfBirth" name="dateOfBirth" value=""
+                                                     placeholder="dd/mm/yyyy"
                                                      required="true" validationMessage="Required"
-                                                     tabindex="3" class="form-control">
+                                                     tabindex="3" class="form-control" onchange="getAndSetAge();">
                                     </app:dateControl>
                                 </div>
+
+                                <div class="col-md-2" style="padding-left: 0px;">
+                                    <input type="text" class="form-control" id="ageTxt" placeholder="Age in year"
+                                           onchange="getAndSetDoB();" onKeyPress="return allowOnlyNumeric(event)"/>
+                                </div>
+
 
                                 <div class="col-md-3 pull-left">
                                     <span class="k-invalid-msg" data-for="dateOfBirth"></span>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <label class="col-md-3 control-label label-required" for="sexId">Sex :</label>
 
@@ -104,9 +116,23 @@
                             <div class="form-group">
                                 <label class="col-md-2 control-label label-optional">Fees:</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <input id="regFees" type="text" readonly="true" class="form-control" id="fee"
                                            value="10 tk"/>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <table><tr><td>
+                                        <input type="radio" value="new" id="newOrRevisit" checked="true" class="form-control" name="newOrRevisit"/>
+                                    </td>
+                                        <td>New</td>
+                                        <td>&nbsp;&nbsp;</td>
+                                        <td><input type="radio" value="revisit" class="form-control"
+                                                   id="newOrRevisit1" name="newOrRevisit"/>
+                                        </td><td>Revisit
+                                        </td>
+                                    </tr></table>
+
                                 </div>
 
                             </div>
@@ -116,8 +142,10 @@
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" data-role='maskedtextbox' pattern="\d{11}"
-                                           id="mobileNo" name="mobileNo" validationmessage="Invalid Number" onKeyPress="return allowOnlyNumeric(event)"/>
+                                           id="mobileNo" name="mobileNo" validationmessage="Invalid Number"
+                                           onKeyPress="return allowOnlyNumeric(event)"/>
                                 </div>
+
                                 <div class="col-md-4 pull-left">
                                     <span class="k-invalid-msg" data-for="mobileNo"></span>
                                 </div>
@@ -144,59 +172,59 @@
                                 </div>
                             </div>
 
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label label-required"
-                                           for="districtId">District :</label>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label label-required"
+                                       for="districtId">District :</label>
 
-                                    <div class="col-md-6">
-                                        <app:dropDownDistrict
-                                                data_model_name="dropDownDistrict"
-                                                id="districtId" name="districtId" tabindex="8"
-                                                required="true" validationmessage="Required"
-                                                class="kendo-drop-down" type="District"
-                                                onchange="javascript:populateUpazilaList();"
-                                                data-bind="value: registrationInfo.districtId">
-                                        </app:dropDownDistrict>
-                                    </div>
-
-                                    <div class="col-md-3 pull-left">
-                                        <span class="k-invalid-msg" data-for="districtId"></span>
-                                    </div>
+                                <div class="col-md-6">
+                                    <app:dropDownDistrict
+                                            data_model_name="dropDownDistrict"
+                                            id="districtId" name="districtId" tabindex="8"
+                                            required="true" validationmessage="Required"
+                                            class="kendo-drop-down" type="District"
+                                            onchange="javascript:populateUpazilaList();"
+                                            data-bind="value: registrationInfo.districtId">
+                                    </app:dropDownDistrict>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label label-required"
-                                           for="upazilaId">Upazila :</label>
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="districtId"></span>
+                                </div>
+                            </div>
 
-                                    <div class="col-md-6">
-                                        <select id="upazilaId" name="upazilaId"
-                                                tabindex="9" required="required" validationmessage="Required"
-                                                onchange="javascript:populateUnionList();"
-                                                data-bind="value: registrationInfo.upazilaId"
-                                                class="kendo-drop-down">
-                                        </select>
-                                    </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label label-required"
+                                       for="upazilaId">Upazila :</label>
 
-                                    <div class="col-md-3 pull-left">
-                                         <span class="k-invalid-msg" data-for="upazilaId"></span>
-                                    </div>
+                                <div class="col-md-6">
+                                    <select id="upazilaId" name="upazilaId"
+                                            tabindex="9" required="required" validationmessage="Required"
+                                            onchange="javascript:populateUnionList();"
+                                            data-bind="value: registrationInfo.upazilaId"
+                                            class="kendo-drop-down">
+                                    </select>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="col-md-2 control-label label-required" for="unionId">Union :</label>
-
-                                    <div class="col-md-6">
-                                        <select id="unionId" name="unionId"
-                                                tabindex="10" required="required" validationmessage="Required"
-                                                data-bind="value: registrationInfo.unionId"
-                                                class="kendo-drop-down">
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-3 pull-left">
-                                        <span class="k-invalid-msg" data-for="unionId"></span>
-                                    </div>
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="upazilaId"></span>
                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label label-required" for="unionId">Union :</label>
+
+                                <div class="col-md-6">
+                                    <select id="unionId" name="unionId"
+                                            tabindex="10" required="required" validationmessage="Required"
+                                            data-bind="value: registrationInfo.unionId"
+                                            class="kendo-drop-down">
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="unionId"></span>
+                                </div>
+                            </div>
 
                         </div>
 

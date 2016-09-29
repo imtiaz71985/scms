@@ -18,6 +18,7 @@ class RegistrationInfo {
     boolean isActive
     long service_charge_id
     boolean isReissue
+    boolean isOldPatient
 
     static constraints = {
         fatherOrMotherName(nullable: true)
@@ -25,6 +26,7 @@ class RegistrationInfo {
         modifyDate(nullable: true)
         modifyBy (nullable: true)
         isReissue (nullable: true)
+        isOldPatient (nullable: true)
     }
 
     static mapping = {

@@ -29,7 +29,6 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     public Map executePreCondition(Map params) {
         try {
             //Check parameters
-
             if (!params.serviceTokenNo || !params.regNo) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
@@ -37,9 +36,9 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             if (params.chkboxDocReferral) {
-                if(!params.referralCenterId)
+                if (!params.referralCenterId)
                     return super.setError(params, 'Sorry! Please select referral center.')
-                if(!params.serviceTypeId)
+                if (!params.serviceTypeId)
                     return super.setError(params, 'Sorry! Please select service type.')
             }
             long serviceTypeId = 0
@@ -53,7 +52,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     return super.setError(params, 'Sorry! Please select service provider.')
                 }
                 if (serviceTypeId == 5) {
-                    if (params.referenceServiceNoDDL=='Please Select...') {
+                    if (params.referenceServiceNoDDL == 'Please Select...') {
                         return super.setError(params, 'Sorry! Please select reference service no.')
                     }
                 } else if (serviceTypeId == 4) {
@@ -85,21 +84,20 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                         if (!isSameGroup) {
                             return super.setError(params, 'Sorry! Please select one disease from selected taken service.')
                         }
-                        RegistrationInfo registrationInfo=RegistrationInfo.findByRegNo(params.regNo)
-                        boolean  isNotApplicable=serviceTokenRelatedInfoService.getDiseaseApplicableFor(diseaseCodes,registrationInfo.sexId)
-                        if(isNotApplicable)
+                        RegistrationInfo registrationInfo = RegistrationInfo.findByRegNo(params.regNo)
+                        boolean isNotApplicable = serviceTokenRelatedInfoService.getDiseaseApplicableFor(diseaseCodes, registrationInfo.sexId)
+                        if (isNotApplicable)
                             return super.setError(params, 'Sorry! These disease could not applied for this patient.')
                     }
                 }
-            }
-            else{
+            } else {
                 String len = params.selectedChargeId
                 if (len.length() < 1) {
                     return super.setError(params, 'Sorry! Please select at least one pathology test.')
                 }
             }
-            List<ServiceTokenInfo> lstServiceTokenInfo=ServiceTokenInfo.findAllByServiceTokenNo(params.serviceTokenNo)
-            if(lstServiceTokenInfo.size()>0){
+            List<ServiceTokenInfo> lstServiceTokenInfo = ServiceTokenInfo.findAllByServiceTokenNo(params.serviceTokenNo)
+            if (lstServiceTokenInfo.size() > 0) {
                 return super.setError(params, 'Sorry! Already inserted under this token.')
             }
 
@@ -146,9 +144,9 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 }
 
                 str = result.selectedChargeId
-                String chargeIds=result.selectedConsultancyId
-                if(chargeIds.length()>1)
-                    str=str+','+chargeIds
+                String chargeIds = result.selectedConsultancyId
+                if (chargeIds.length() > 1)
+                    str = str + ',' + chargeIds
                 if (str.length() > 1) {
                     List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
                     for (int i = 0; i < lst.size(); i++) {
@@ -191,7 +189,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
      * Build systemEntity object
      * @param parameterMap -serialized parameters from UI
      * @return -new systemEntity object
-     /*      */
+     /*       */
     private ServiceTokenInfo buildObject(Map parameterMap, long serviceTypeId) {
 
         ServiceTokenInfo serviceTokenInfo = new ServiceTokenInfo()
@@ -212,7 +210,11 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             if (count > 0) {
                 serviceTokenInfo.visitTypeId = 2L // re-visit
             } else {
-                serviceTokenInfo.visitTypeId = 1L
+                int oldCount = RegistrationInfo.countByRegNoAndIsOldPatient(parameterMap.regNo, true)
+                if (oldCount > 0)
+                    serviceTokenInfo.visitTypeId = 2L // re-visit
+                else
+                    serviceTokenInfo.visitTypeId = 1L
             }
         }
 

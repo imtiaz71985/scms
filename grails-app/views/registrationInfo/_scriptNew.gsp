@@ -74,9 +74,11 @@
         dropDownUnion.value('');
         dropDownUpazila.value('');
         dropDownVillage.value('');
+
         $("#regNo").val(regNo);
 
         $('#regFees').val('10 tk');
+        $('#newOrRevisit').prop('checked', true);
     }
     function initDataSource() {
         dataSourceGrid = new kendo.data.DataSource({
