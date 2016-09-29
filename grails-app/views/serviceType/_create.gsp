@@ -52,6 +52,15 @@
                                                 data-bind="checked: serviceType.isActive"/>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-md-6 control-label label-optional"
+                                       for="isActive">Is For Counselor:</label>
+
+                                <div class="col-md-3">
+                                    <g:checkBox class="form-control-static" name="isForCounselor" tabindex="2"
+                                                data-bind="checked: serviceType.isForCounselor"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

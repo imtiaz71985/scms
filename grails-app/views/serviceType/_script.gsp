@@ -118,7 +118,8 @@
                         version: { type: "number" },
                         name: { type: "string" },
                         description: { type: "string" },
-                        isActive: { type: "boolean" }
+                        isActive: { type: "boolean" },
+                        isForCounselor: { type: "boolean" }
                     }
                 },
                 parse: function (data) {
@@ -151,7 +152,9 @@
                 {field: "name", title: "Name", width: 200, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "description", title: "Description", width: 250, sortable: false, filterable: false},
                 {field: "isActive", title: "Active", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()}, template:"#=isActive?'YES':'NO'#"}
+                    headerAttributes: {style: setAlignCenter()}, template:"#=isActive?'YES':'NO'#"},
+                {field: "isForCounselor", title: "For Counselor", width: 50, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
+                    headerAttributes: {style: setAlignCenter()}, template:"#=isForCounselor?'YES':'NO'#"}
             ],
             filterable: {
                 mode: "row"
@@ -170,7 +173,8 @@
                         version: "",
                         name: "",
                         description: "",
-                        isActive: true
+                        isActive: true,
+                        isForCounselor: true
                     }
                 }
         );

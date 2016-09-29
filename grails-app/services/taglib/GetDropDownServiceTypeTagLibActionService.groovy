@@ -67,7 +67,7 @@ class GetDropDownServiceTypeTagLibActionService extends BaseService implements A
             String type = result.type
             List<ServiceType> lstServiceType
             if(type.equals('counselor')) {
-                lstServiceType = ServiceType.findAllByIsActiveAndIdNotEqual(Boolean.TRUE, 1L)
+                lstServiceType = ServiceType.findAllByIsActiveAndIdNotEqualAndIsForCounselor(Boolean.TRUE, 1L,Boolean.TRUE)
             }
             else {
 

@@ -72,6 +72,7 @@ class UpdateServiceTypeActionService extends BaseService implements ActionServic
         oldServiceType.name = serviceType.name
         oldServiceType.description = serviceType.description
         oldServiceType.isActive = serviceType.isActive
+        oldServiceType.isForCounselor=serviceType.isForCounselor
         return oldServiceType
     }
 }
