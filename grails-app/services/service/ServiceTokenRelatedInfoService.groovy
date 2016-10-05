@@ -141,7 +141,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
                                 AND (LEFT(sc.service_code,2)='02' OR LEFT(sc.service_code,2)='04')
                             LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = tcm.service_token_no
                             LEFT JOIN disease_info di ON di.disease_code=tdm.disease_code
-                        WHERE  st.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
+                        WHERE  sti.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
                              ${hospital_str}
                         GROUP BY tcm.service_token_no
         """
@@ -197,7 +197,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
                             LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = tcm.service_token_no
                             LEFT JOIN disease_info di ON di.disease_code=tdm.disease_code
                             LEFT JOIN service_head_info shi ON shi.service_code=sc.service_code
-                        WHERE  st.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
+                        WHERE  sti.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
                             ${hospital_str}
                         GROUP BY tcm.service_token_no
         """
