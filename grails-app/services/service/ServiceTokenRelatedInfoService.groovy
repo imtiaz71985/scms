@@ -121,8 +121,10 @@ class ServiceTokenRelatedInfoService extends BaseService{
     }
     public List<GroovyRowResult> dateWiseConsultancyDetails(Date start,Date end, String hospital_code){
         String hospital_str = EMPTY_SPACE
-        if(hospital_code!=ALL) {
-            hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+        if(hospital_code!='') {
+            if(hospital_code!=ALL) {
+                hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+            }
         }
         String queryStr = """
              SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
@@ -151,8 +153,10 @@ class ServiceTokenRelatedInfoService extends BaseService{
     }
     public List<GroovyRowResult> dateWiseSubsidyDetails(Date start,Date end, String hospital_code){
         String hospital_str = EMPTY_SPACE
-        if(hospital_code!=ALL) {
-            hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+        if(hospital_code!='') {
+            if(hospital_code!=ALL) {
+                hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+            }
         }
         String queryStr = """
                SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
@@ -176,8 +180,10 @@ class ServiceTokenRelatedInfoService extends BaseService{
     }
     public List<GroovyRowResult> dateWiseDiagnosisDetails(Date start,Date end, String hospital_code){
         String hospital_str = EMPTY_SPACE
-        if(hospital_code!=ALL) {
-            hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+        if(hospital_code!='') {
+            if(hospital_code!=ALL) {
+                hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+            }
         }
         String queryStr = """
              SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
