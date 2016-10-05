@@ -1,6 +1,7 @@
 package scms
 
 import actions.ServiceTokenInfo.CreateServiceTokenInfoActionService
+import actions.ServiceTokenInfo.DeleteServiceTokenInfoActionService
 import com.scms.DiseaseInfo
 import com.scms.SecUser
 import com.scms.ServiceTokenInfo
@@ -26,6 +27,7 @@ class CounselorActionController extends BaseController {
     ]
 
     CreateServiceTokenInfoActionService createServiceTokenInfoActionService
+    DeleteServiceTokenInfoActionService deleteServiceTokenInfoActionService
     ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
     ServiceHeadInfoService serviceHeadInfoService
     BaseService baseService
@@ -83,6 +85,9 @@ class CounselorActionController extends BaseController {
 
     def create() {
         renderOutput(createServiceTokenInfoActionService, params)
+    }
+    def delete() {
+        renderOutput(deleteServiceTokenInfoActionService, params)
     }
 
     def list() {

@@ -321,6 +321,15 @@
         var day = inStr.substring(0, 2);
         return month + '/' + day + '/' + year;
     };
+    function changeFees() {
+        if($('#newOrRevisit').is(':checked')) {
+            $('#regFees').val('10 tk');
+        }
+       else{
+            $('#regFees').val('0 tk');
+        }
+    }
+
 
 
 </script>

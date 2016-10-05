@@ -15,6 +15,7 @@ class ServiceTokenInfo {
     long modifyBy
     String referenceServiceTokenNo
     long referralCenterId
+    boolean isDeleted
 
     static constraints = {
         modifyDate(nullable: true)
@@ -22,6 +23,7 @@ class ServiceTokenInfo {
         referenceServiceTokenNo (nullable: true)
         prescriptionType (nullable: true)
         referralCenterId (nullable: true)
+        isDeleted (nullable: true)
     }
     static mapping = {
         id name: 'serviceTokenNo'

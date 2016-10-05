@@ -123,13 +123,13 @@
 
                                 <div class="col-md-4">
                                     <table><tr><td>
-                                        <input type="radio" value="new" id="newOrRevisit" checked="true" class="form-control" name="newOrRevisit"/>
+                                        <input type="radio" value="new" id="newOrRevisit" checked="true" onclick="changeFees();" class="form-control" name="newOrRevisit"/>
                                     </td>
-                                        <td>New</td>
-                                        <td>&nbsp;&nbsp;</td>
-                                        <td><input type="radio" value="revisit" class="form-control"
+                                        <td>&nbsp;New</td>
+                                        <td>&nbsp;&nbsp;&nbsp;</td>
+                                        <td><input type="radio" value="revisit" class="form-control" onclick="changeFees();"
                                                    id="newOrRevisit1" name="newOrRevisit"/>
-                                        </td><td>Revisit
+                                        </td><td>&nbsp;Revisit
                                         </td>
                                     </tr></table>
 

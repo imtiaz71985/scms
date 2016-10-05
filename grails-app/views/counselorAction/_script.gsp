@@ -7,9 +7,9 @@
 </script>--}%
 
 <script language="javascript">
-    var gridCounselorAction, dataSource,dataSourceForDisease, registrationInfoModel, dropDownServiceType, dropDownServiceProvider,
-            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo,dropDownReferralCenter,
-            dropDownreferenceServiceNoDDL,detailsTemplate;
+    var gridCounselorAction, dataSource, dataSourceForDisease, registrationInfoModel, dropDownServiceType, dropDownServiceProvider,
+            dropDownDiseaseGroup, gridServiceHeadInfo, gridDiseaseDetails, dropDownRegistrationNo, dropDownReferralCenter,
+            dropDownreferenceServiceNoDDL, detailsTemplate;
     var checkedIds = {}; // declare an object to hold selected grid ids
     var checkedDiseaseCodes = {}; // declare an object to hold selected disease codes
     var checkedDiseaseNames = {}; // declare an object to hold selected disease names
@@ -96,11 +96,11 @@
             }
         }
         $('#selectedChargeId').val(checked);
-        if( $('#chkboxPathology').is(":checked"))
+        if ($('#chkboxPathology').is(":checked"))
             $('#chkboxPathology').val('true');
-        if( $('#chkboxMedicine').is(":checked"))
+        if ($('#chkboxMedicine').is(":checked"))
             $('#chkboxMedicine').val('true');
-        if( $('#chkboxDocReferral').is(":checked"))
+        if ($('#chkboxDocReferral').is(":checked"))
             $('#chkboxDocReferral').val('true');
         actionUrl = "${createLink(controller:'counselorAction', action: 'create')}";
 
@@ -293,13 +293,15 @@
                                 },
                                 {field: "totalCharge", title: "Total(৳)", width: 50, sortable: false, filterable: false}
                             ]
-                        },
-                        { command: {
-                            text: " ",
-                            click: showDetails,
-                            className: "fa fa-search-plus fa-2x"
-                        }, width: 50
+                        },{
+                            command: [
+                                //define the commands here
+                                { name: "custom1", text: "",click: showDetails, className: "fa fa-search-plus "},
+                                { name: "custom2", text: "",click: deleteRecord,className: "fa fa-trash "  }
+                            ],
+                            title: "",width:70
                         }
+
                     ]
                 }
         )
@@ -312,13 +314,37 @@
         $.ajax({
             url: "${createLink(controller: 'counselorAction', action: 'serviceDetails')}?tokenNo=" + dataItem.serviceTokenNo,
             success: function (data) {
-                console.log(data);
                 detailsTemplate = kendo.template($("#detailsTemplate").html());
                 wnd.content(detailsTemplate(data.details));
                 wnd.center().open();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
+    function deleteRecord(e) {
+
+        if (!confirm('Are you sure you want to delete this service?')) {
+            return false;
+        }
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'counselorAction', action:  'delete')}?tokenNo=" + dataItem.serviceTokenNo,
+            success: function (data) {
+                executePostConditionDelete(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus)
             },
             complete: function (XMLHttpRequest, textStatus) {
                 showLoadingSpinner(false);
@@ -393,9 +419,9 @@
         }
         else if (serviceTypeId == 5) {
             /*$('#chkboxPathology').attr('checked', false);
-            $('#chkboxMedicine').attr('checked', false);
-            $('#chkboxDocReferral').attr('checked', false);
-            $('#divReferralCenter').hide();*/
+             $('#chkboxMedicine').attr('checked', false);
+             $('#chkboxDocReferral').attr('checked', false);
+             $('#divReferralCenter').hide();*/
             $("#divPrescriptionType").show();
             $('#divCharges').show();
             $('#divServiceProvider').show();
@@ -410,7 +436,7 @@
             var regNo = $('#regNo').val();
             populateServiceNoDDL(regNo)
         }
-        else{
+        else {
             $("#counselorActionRow").show();
             $('#divServiceProvider').show();
             $("#divPrescriptionType").show();
@@ -428,7 +454,7 @@
             loadDisease();
         }
 
-        if($('#chkboxPathology').is(":checked")) {
+        if ($('#chkboxPathology').is(":checked")) {
             $('#divServiceDetails').show();
             $('#divCharges').show();
             $('#divPathology').show();
@@ -570,7 +596,7 @@
             subsidy = $('#subsidyAmount').val();
         }
         if (parseFloat(subsidy) > parseFloat(charge)) {
-            subsidy=0;
+            subsidy = 0;
             $('#subsidyAmount').val('');
         }
 
@@ -669,7 +695,7 @@
                 {
                     template: "<input type='checkbox' class='checkboxDisease' />"
                 }
-            ],filterable: {
+            ], filterable: {
                 mode: "row"
             }
 
@@ -694,23 +720,23 @@
         }
         ShowSelectedDisease();
     }
-    function ShowSelectedDisease(){
-            var checkedDisease = [];
-            for (var i in checkedDiseaseCodes) {
-                if (checkedDiseaseCodes[i]) {
-                    checkedDisease.push(i);
-                }
+    function ShowSelectedDisease() {
+        var checkedDisease = [];
+        for (var i in checkedDiseaseCodes) {
+            if (checkedDiseaseCodes[i]) {
+                checkedDisease.push(i);
             }
-            $('#selectedDiseaseCode').val(checkedDisease);
-            var diseaseNames = [];
-            for (var j in checkedDiseaseNames) {
-                if (checkedDiseaseNames[j]) {
-                    diseaseNames.push(j);
-                }
-            }
-
-           $('#selectedDiseaseTxt').val(diseaseNames);
         }
+        $('#selectedDiseaseCode').val(checkedDisease);
+        var diseaseNames = [];
+        for (var j in checkedDiseaseNames) {
+            if (checkedDiseaseNames[j]) {
+                diseaseNames.push(j);
+            }
+        }
+
+        $('#selectedDiseaseTxt').val(diseaseNames);
+    }
 
     function LoadDetailsByRegNo() {
         var regNo = $('#regNoDDL').val();
@@ -744,38 +770,38 @@
 
     }
     function getReferenceNoWiseDisease() {
-        var tokenNo=$("#referenceServiceNoDDL").val();
-     if (tokenNo == '') {
+        var tokenNo = $("#referenceServiceNoDDL").val();
+        if (tokenNo == '') {
             $('#divReferenceNoWiseDisease').hide();
-         $('#referenceNoDiseaseTxt').val('');
+            $('#referenceNoDiseaseTxt').val('');
         }
         else {
-         $('#divReferenceNoWiseDisease').show();
-         var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDiseaseOfReferenceTokenNo')}?tokenNo="+tokenNo;
+            $('#divReferenceNoWiseDisease').show();
+            var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDiseaseOfReferenceTokenNo')}?tokenNo=" + tokenNo;
 
-         jQuery.ajax({
-             type: 'post',
-             //data: jQuery("#counselorActionForm").serialize(),
-             url: actionUrl,
-             success: function (data, textStatus) {
-                 $('#referenceNoDiseaseTxt').val(data.diseaseInfo);
-             },
-             error: function (XMLHttpRequest, textStatus, errorThrown) {
+            jQuery.ajax({
+                type: 'post',
+                //data: jQuery("#counselorActionForm").serialize(),
+                url: actionUrl,
+                success: function (data, textStatus) {
+                    $('#referenceNoDiseaseTxt').val(data.diseaseInfo);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
 
-             },
-             complete: function (XMLHttpRequest, textStatus) {
-                 showLoadingSpinner(false);
-             },
-             dataType: 'json'
-         });
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);
+                },
+                dataType: 'json'
+            });
 
 
-     }
+        }
 
     }
-    function getConsultationFees(){
-        var diseaseId=$("#diseaseGroupId").val();
-        if(diseaseId!='') {
+    function getConsultationFees() {
+        var diseaseId = $("#diseaseGroupId").val();
+        if (diseaseId != '') {
             $.ajax({
                 url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + diseaseId,
                 success: function (data) {
@@ -795,7 +821,7 @@
                 }
 
             });
-        }else{
+        } else {
             $('#serviceCharges').val('0');
             $('#subsidyAmount').val('');
             $('#selectedConsultancyId').val('');
@@ -808,6 +834,20 @@
         else {
             $('#divReferralCenter').hide();
             dropDownReferralCenter.value('');
+        }
+    }
+
+    function executePostConditionDelete(result) {
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+                $("#gridCounselorAction").data("kendoGrid").dataSource.read();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
         }
     }
 

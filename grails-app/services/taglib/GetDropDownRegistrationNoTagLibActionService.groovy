@@ -162,8 +162,8 @@ class GetDropDownRegistrationNoTagLibActionService extends BaseService implement
         String queryForList = """
             SELECT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name
                 FROM registration_info ri
-                where ri.is_active = true
-                ORDER BY ri.reg_no ASC;
+                WHERE ri.is_active = TRUE
+                ORDER BY ri.create_date desc;
         """
         List<GroovyRowResult> lstMedicine = executeSelectSql(queryForList)
         return lstMedicine

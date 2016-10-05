@@ -43,28 +43,11 @@ class ServiceTokenRelatedInfoService extends BaseService{
     }
     public List<GroovyRowResult> RegAndServiceDetails(Date start,Date end, String hospital_code){
         String queryStr =""
-        if(hospital_code.isEmpty()) {
-            queryStr = """
-            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
-                  COALESCE(st.is_exit,FALSE) AS isExit,
-                  COALESCE(st.service_token_no,'') AS serviceTokenNo,CONVERT(st.service_date,DATE) AS serviceDate,st.subsidy_amount AS subsidyAmount,
-                  SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
-                  SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
-                  COALESCE(SUM(sc.charge_amount)-st.subsidy_amount,0) AS totalCharge,
-                  (SELECT CASE WHEN COALESCE(GROUP_CONCAT(NAME),'')='' THEN 'Follow Up' ELSE COALESCE(GROUP_CONCAT(NAME),'') END
-                   FROM service_type WHERE (CASE WHEN id<10 THEN CONCAT(0,id) ELSE id END)
-                  IN ( SELECT SUBSTRING(sc.service_code,1,2) FROM token_and_charge_mapping tcm
-                   LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no)) AS serviceType
-                   FROM registration_info ri
-                  INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
-                  LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
-                  LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id
-                  WHERE st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
-                   GROUP BY st.service_token_no
-                   ORDER BY isExit,serviceDate ASC
-        """
+        String hospital_str = EMPTY_SPACE
+        if(!hospital_code.isEmpty()) {
+            hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+            hospital_str=" SUBSTRING(st.service_token_no,2,2)='${hospital_code}' AND "
         }
-        else {
             queryStr = """
            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
                   COALESCE(st.is_exit,FALSE) AS isExit,
@@ -80,12 +63,11 @@ class ServiceTokenRelatedInfoService extends BaseService{
                   INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
                   LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
                   LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id
-                  WHERE SUBSTRING(st.service_token_no,2,2)='${hospital_code}'
-                    AND st.service_date BETWEEN '${start}' AND '${end}' OR st.modify_date BETWEEN '${start}' AND '${end}'
+                  WHERE  ${hospital_str}  st.service_date BETWEEN '${start}' AND '${end}' AND st.is_deleted <> TRUE
                    GROUP BY st.service_token_no
                    ORDER BY isExit,serviceDate ASC
         """
-        }
+
         List<GroovyRowResult> result = executeSelectSql(queryStr)
 
         return result
@@ -131,7 +113,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
         SELECT DISTINCT sti.service_token_no AS serviceTokenNo FROM service_token_info sti JOIN token_and_charge_mapping tcm ON tcm.service_token_no=sti.service_token_no
         JOIN service_charges sc ON sc.id=tcm.service_charge_id
         WHERE sti.reg_no='${regNo}' AND sti.visit_type_id != 3
-        AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}'
+        AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}' AND st.is_deleted <> TRUE
         AND SUBSTRING(sc.service_code,1,2) NOT IN ('01','03','04','05')  ORDER BY sti.service_date DESC
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
@@ -159,7 +141,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
                                 AND (LEFT(sc.service_code,2)='02' OR LEFT(sc.service_code,2)='04')
                             LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = tcm.service_token_no
                             LEFT JOIN disease_info di ON di.disease_code=tdm.disease_code
-                        WHERE tcm.create_date BETWEEN '${start}' AND '${end}'
+                        WHERE  st.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
                              ${hospital_str}
                         GROUP BY tcm.service_token_no
         """
@@ -185,7 +167,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
                             LEFT JOIN upazila up ON u.upazila_id=up.id
                             LEFT JOIN district d ON up.district_id=d.id
                             LEFT JOIN system_entity se ON ri.sex_id=se.id
-                        WHERE sti.subsidy_amount!= 0 AND tcm.create_date BETWEEN '${start}' AND '${end}'
+                        WHERE sti.subsidy_amount!= 0  AND sti.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
                              ${hospital_str}
                         GROUP BY tcm.service_token_no
         """
@@ -215,7 +197,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
                             LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = tcm.service_token_no
                             LEFT JOIN disease_info di ON di.disease_code=tdm.disease_code
                             LEFT JOIN service_head_info shi ON shi.service_code=sc.service_code
-                        WHERE tcm.create_date BETWEEN '${start}' AND '${end}'
+                        WHERE  st.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
                             ${hospital_str}
                         GROUP BY tcm.service_token_no
         """
