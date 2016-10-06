@@ -113,7 +113,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
         SELECT DISTINCT sti.service_token_no AS serviceTokenNo FROM service_token_info sti JOIN token_and_charge_mapping tcm ON tcm.service_token_no=sti.service_token_no
         JOIN service_charges sc ON sc.id=tcm.service_charge_id
         WHERE sti.reg_no='${regNo}' AND sti.visit_type_id != 3
-        AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}' AND st.is_deleted <> TRUE
+        AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}' AND sti.is_deleted <> TRUE
         AND SUBSTRING(sc.service_code,1,2) NOT IN ('01','03','04','05')  ORDER BY sti.service_date DESC
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
