@@ -35,6 +35,7 @@
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
         $('#counselorActionGridRow').show();
+        $('#lblPatientServed').val('${patientServed}')
 
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#counselorActionForm"), onSubmitCounselorAction);

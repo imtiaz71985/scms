@@ -11,6 +11,7 @@ import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
 import service.MedicineInfoService
+import service.RegistrationInfoService
 import service.SecUserService
 
 class ReportsController extends BaseController {
@@ -21,6 +22,7 @@ class ReportsController extends BaseController {
     SecUserService secUserService
     ListSummaryActionService listSummaryActionService
     MedicineInfoService medicineInfoService
+    RegistrationInfoService registrationInfoService
 
 
     def showMonthlyStatus() {
@@ -72,4 +74,31 @@ class ReportsController extends BaseController {
         result.put('count', lst.size())
         render result as JSON
     }
+    def showPatientServiceComparison() {
+        SecUser user = SecUser.read(springSecurityService.principal.id)
+        boolean isAdmin = secUserService.isLoggedUserAdmin(user.id)
+
+        String hospitalCode = HospitalLocation.findByCode(user.hospitalCode).code
+        render(view: "/reports/PatientServiceComparison/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
+    }
+    def listOfPatientAndService() {
+
+        String hospitalCode = ''
+        Date fromDate,toDate
+        try {
+            fromDate=DateUtility.getSqlFromDateWithSeconds(DateUtility.parseMaskedDate(params.fromDate))
+            toDate=DateUtility.getSqlToDateWithSeconds(DateUtility.parseMaskedDate(params.toDate))
+            hospitalCode = params.hospitalCode
+        } catch (Exception ex) {
+        }
+
+       // List<GroovyRowResult> lst = medicineInfoService.listOfMedicineWiseSalesWithStock(hospitalCode,fromDate,toDate)
+        List<GroovyRowResult> lst = registrationInfoService.listOfPatientAndService(hospitalCode,fromDate,toDate)
+
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
+
 }

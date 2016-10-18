@@ -7,6 +7,7 @@ import actions.registrationInfo.ListRegistrationInfoActionService
 import actions.registrationInfo.ReIssueListRegistrationInfoActionService
 import actions.registrationInfo.ReIssueRegistrationNoActionService
 import actions.registrationInfo.UpdateRegistrationInfoActionService
+import actions.revisitPatient.CreateRevisitPatientActionService
 import com.model.ListReIssueRegistrationInfoActionServiceModel
 import com.scms.RegistrationInfo
 import com.scms.SecUser
@@ -39,13 +40,20 @@ class RegistrationInfoController extends BaseController {
     CustomListRegistrationInfoActionService customListRegistrationInfoActionService
     ReIssueListRegistrationInfoActionService reIssueListRegistrationInfoActionService
     ReIssueRegistrationNoActionService reIssueRegistrationNoActionService
+    CreateRevisitPatientActionService createRevisitPatientActionService
 
     def showNew() {
         String regNo = registrationInfoService.retrieveRegNo()
         render(view: "/registrationInfo/showNew", model: [regNo: regNo])
     }
     def show() {
-        render(view: "/registrationInfo/show")
+        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        Date fromDate,toDate
+        fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
+        toDate=DateUtility.getSqlToDateWithSeconds(new Date())
+        List<GroovyRowResult> lst = registrationInfoService.listOfPatientAndService(hospital_code,fromDate,toDate)
+        String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
+        render(view: "/registrationInfo/show", model: [patientServed:msg])
     }
     def showMonthlyPatient(){
         String viewStr = "/registrationInfo/showDailyPatient"
@@ -74,6 +82,10 @@ class RegistrationInfoController extends BaseController {
     }
     def reIssue() {
         renderOutput(reIssueRegistrationNoActionService, params)
+
+    }
+    def revisitPatientInfoEntry() {
+        renderOutput(createRevisitPatientActionService, params)
 
     }
     def list() {

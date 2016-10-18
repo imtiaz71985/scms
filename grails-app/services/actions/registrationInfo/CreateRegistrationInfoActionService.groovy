@@ -2,6 +2,7 @@ package actions.registrationInfo
 
 import com.model.ListRegistrationInfoActionServiceModel
 import com.scms.RegistrationInfo
+import com.scms.RevisitPatient
 import com.scms.ServiceCharges
 import com.scms.ServiceHeadInfo
 import com.scms.ServiceType
@@ -65,6 +66,15 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
     public Map execute(Map result) {
         try {
             RegistrationInfo registrationInfo = (RegistrationInfo) result.get(REGISTRATION_INFO)
+            if(registrationInfo.isOldPatient==true){
+                RevisitPatient revisitPatient =new RevisitPatient()
+                revisitPatient.regNo=registrationInfo.regNo
+                revisitPatient.visitTypeId=2
+                revisitPatient.createDate=registrationInfo.createDate
+                revisitPatient.createdBy=registrationInfo.createdBy
+                revisitPatient.hospitalCode=registrationInfo.hospitalCode
+                revisitPatient.save()
+            }
             registrationInfo.save()
             return result
         } catch (Exception ex) {

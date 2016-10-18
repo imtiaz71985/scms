@@ -10,6 +10,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
+import service.RegistrationInfoService
 import service.SecUserService
 import service.ServiceChargesService
 import service.ServiceHeadInfoService
@@ -31,9 +32,16 @@ class CounselorActionController extends BaseController {
     ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
     ServiceHeadInfoService serviceHeadInfoService
     BaseService baseService
+    RegistrationInfoService registrationInfoService
 
     def show() {
-        render(view: "/counselorAction/show")
+        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        Date fromDate,toDate
+            fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
+            toDate=DateUtility.getSqlToDateWithSeconds(new Date())
+        List<GroovyRowResult> lst = registrationInfoService.listOfPatientAndService(hospital_code,fromDate,toDate)
+        String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
+        render(view: "/counselorAction/show", model: [patientServed:msg])
     }
     def showConsultancy() {
         render(view: "/counselorAction/showConsultancy", model: [hospitalCode:params.hospitalCode,dateField:params.dateField])

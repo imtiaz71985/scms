@@ -18,7 +18,7 @@
                         <app:dropDownRegistrationNo
                                 data_model_name="dropDownRegistrationNo"
                                 id="regNoDDL" name="regNoDDL" tabindex="1"
-                                class="kendo-drop-down">
+                                class="kendo-drop-down" type="Counselor">
                         </app:dropDownRegistrationNo>
                     </div>
 
@@ -31,6 +31,9 @@
                                 class="k-icon k-i-plus"></span> New Service
                         </button>
                     </div>
+            <div class="col-md-3 pull-right">
+                <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold; text-align: center;" >
+            </div>
 
                 </div>
 

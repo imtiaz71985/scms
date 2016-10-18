@@ -4,16 +4,16 @@ import com.scms.RegistrationInfo
 import com.scms.SecUser
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
+import scms.BaseService
 import scms.utility.DateUtility
 
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
 @Transactional
-class RegistrationInfoService {
+class RegistrationInfoService extends BaseService {
 
     def springSecurityService
-    def baseService
 
     public RegistrationInfo read(String regNo){
         return RegistrationInfo.read(regNo)
@@ -45,7 +45,41 @@ class RegistrationInfoService {
                       WHERE v.id=${villageId};
         """
 
-        List<GroovyRowResult> rowResults = baseService.executeSelectSql(queryStr)
+        List<GroovyRowResult> rowResults = executeSelectSql(queryStr)
         return [unionId: rowResults[0].unionId,upazilaId: rowResults[0].upazilaId,districtId: rowResults[0].districtId]
+    }
+    public List<GroovyRowResult> listOfPatientAndService(String hospitalCode, Date fromDate, Date toDate) {
+        String hospital_rp = EMPTY_SPACE
+        String hospital_ri = EMPTY_SPACE
+        String hospital_sti = EMPTY_SPACE
+
+        if (hospitalCode.length() > 1) {
+            hospital_rp = """
+                AND rp.hospital_code='${hospitalCode}'
+            """
+            hospital_ri = """
+               AND ri.hospital_code='${hospitalCode}'
+            """
+            hospital_sti = """
+               AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}'
+            """
+
+        }
+        String queryStr = """
+               SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday,COUNT(DISTINCT ri.reg_no) AS new_patient,COUNT(DISTINCT rp.id) AS patient_revisit,
+                (COUNT( DISTINCT ri.reg_no)+COUNT(DISTINCT rp.id)) AS total_patient
+                 ,COUNT(DISTINCT sti.reg_no) AS total_served
+                FROM calendar c
+                 LEFT JOIN revisit_patient rp ON c.date_field=DATE(rp.create_date) """+hospital_rp+"""
+                 LEFT JOIN registration_info ri ON c.date_field=DATE(ri.create_date) AND ri.is_old_patient=FALSE """+hospital_ri+"""
+                 LEFT JOIN service_token_info sti ON c.date_field=DATE(sti.service_date) """+hospital_sti+"""
+
+                WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' GROUP BY c.date_field
+                ORDER BY c.date_field ASC
+        """
+
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+
+        return result
     }
 }

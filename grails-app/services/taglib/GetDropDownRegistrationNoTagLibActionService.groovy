@@ -7,6 +7,7 @@ import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
 
 @Transactional
 class GetDropDownRegistrationNoTagLibActionService extends BaseService implements ActionServiceIntf  {
@@ -63,7 +64,13 @@ class GetDropDownRegistrationNoTagLibActionService extends BaseService implement
      */
     public Map execute(Map result) {
         try {
-            List<GroovyRowResult> lstRegistrationNo = (List<GroovyRowResult>) listRegistrationNo()
+            String type = result.type
+            List<GroovyRowResult> lstRegistrationNo
+            if (type.equals('Counselor')) {
+                lstRegistrationNo = (List<GroovyRowResult>) listRegistrationNoForCounselor()
+            }else {
+                lstRegistrationNo = (List<GroovyRowResult>) listRegistrationNo()
+            }
             String html = buildDropDown(lstRegistrationNo, result)
             result.html = html
             return result
@@ -164,6 +171,19 @@ class GetDropDownRegistrationNoTagLibActionService extends BaseService implement
                 FROM registration_info ri
                 WHERE ri.is_active = TRUE
                 ORDER BY ri.create_date desc;
+        """
+        List<GroovyRowResult> lstMedicine = executeSelectSql(queryForList)
+        return lstMedicine
+    }
+    private List<GroovyRowResult> listRegistrationNoForCounselor() {
+        Date fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
+        Date toDate=DateUtility.getSqlToDateWithSeconds(new Date())
+        String queryForList = """
+            SELECT DISTINCT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name
+            FROM registration_info ri LEFT JOIN revisit_patient rp ON ri.reg_no=rp.reg_no
+            WHERE ri.is_active = TRUE AND
+            (ri.create_date BETWEEN '${fromDate}' AND '${toDate}' OR rp.create_date BETWEEN '${fromDate}' AND '${toDate}')
+            ORDER BY ri.create_date DESC;
         """
         List<GroovyRowResult> lstMedicine = executeSelectSql(queryForList)
         return lstMedicine

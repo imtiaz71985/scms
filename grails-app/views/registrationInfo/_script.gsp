@@ -9,6 +9,12 @@
     <sec:access url="/registrationInfo/reIssue">
         <li onclick="reIssueRegNo();"><i class="fa fa-check-circle-o"></i>Reissue</li>
     </sec:access>
+    <sec:access url="/registrationInfo/revisitPatientInfoEntry">
+        <li onclick="revisitPatient();"><i class="fa fa-check-circle-o"></i>Revisit</li>
+    </sec:access>
+    <li class="pull-right">
+        <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold;" >
+    </li>
 </ul>
 </script>
 
@@ -20,6 +26,7 @@
         onLoadRegistrationInfoPage();
         initRegistrationInfoGrid();
         initObservable();
+        $('#lblPatientServed').val('${patientServed}');
     });
     jQuery(function() {
         jQuery("form.counselorActionForm").submit(function(event) {
@@ -32,6 +39,7 @@
         dropDownUpazila = initKendoDropdown($('#upazilaId'), null, null, null);
         dropDownUnion = initKendoDropdown($('#unionId'), null, null, null);
         $("#registrationInfoRow").hide();
+
 
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#registrationInfoForm"), onSubmitRegistrationInfo);
@@ -227,7 +235,35 @@
             type: 'post'
         });
     }
-   function executePostConditionForDelete(data){
+    function revisitPatient() {
+        if (executeCommonPreConditionForSelectKendo(gridRegistrationInfo, 'record') == false) {
+            return;
+        }
+
+        showLoadingSpinner(true);
+        var regNo = getSelectedValueFromGridKendo(gridRegistrationInfo, 'regNo');
+        $.ajax({
+            url: "${createLink(controller: 'registrationInfo', action:  'revisitPatientInfoEntry')}?regNo=" + regNo,
+            success: executePostConditionForRevisit,
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus)
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+   function executePostConditionForRevisit(data){
+       if (data.isError){
+           showError(data.message);
+           return false;
+       }
+       resetForm();
+       showSuccess(data.message);
+    }
+    function executePostConditionForDelete(data){
        if (data.isError){
            showError(data.message);
            return false;

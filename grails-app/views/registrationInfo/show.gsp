@@ -5,6 +5,6 @@
   Time: 5:14 PM
 --%>
 
-
-<g:render template='/registrationInfo/script'/>
 <g:render template='/registrationInfo/create'/>
+<g:render template='/registrationInfo/script'/>
+
