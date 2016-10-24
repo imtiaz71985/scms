@@ -110,11 +110,16 @@ class ServiceTokenRelatedInfoService extends BaseService{
     }
     public List<GroovyRowResult> getReferenceTokenForFollowup(String regNo,Timestamp fromDate, Timestamp toDate){
         String queryStr = """
-        SELECT DISTINCT sti.service_token_no AS serviceTokenNo FROM service_token_info sti JOIN token_and_charge_mapping tcm ON tcm.service_token_no=sti.service_token_no
+        SELECT sti.service_token_no AS serviceTokenNo FROM service_token_info sti
+        JOIN token_and_charge_mapping tcm ON tcm.service_token_no=sti.service_token_no
         JOIN service_charges sc ON sc.id=tcm.service_charge_id
         WHERE sti.reg_no='${regNo}' AND sti.visit_type_id != 3
         AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}' AND sti.is_deleted <> TRUE
-        AND SUBSTRING(sc.service_code,1,2) NOT IN ('01','03','04','05')  ORDER BY sti.service_date DESC
+        AND SUBSTRING(sc.service_code,1,2) NOT IN ('01','03','04','05') AND sti.service_token_no
+        NOT IN (SELECT DISTINCT reference_service_token_no FROM service_token_info
+        WHERE reg_no='${regNo}' AND reference_service_token_no IS NOT NULL
+        AND service_date BETWEEN '${fromDate}' AND '${toDate}' AND is_deleted <> TRUE)
+        ORDER BY sti.service_date DESC
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
@@ -209,6 +214,14 @@ class ServiceTokenRelatedInfoService extends BaseService{
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
 
+        return result
+    }
+    public List<GroovyRowResult> getDiseaseByGroupIdForDDL(long groupId){
+        String queryStr = """
+                SELECT CONCAT(name,'(',disease_code,')') AS name , disease_code AS id FROM disease_info
+                WHERE disease_group_id=${groupId} AND is_active=TRUE ORDER BY NAME ASC
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
     }
 

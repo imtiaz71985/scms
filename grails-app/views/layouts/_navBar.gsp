@@ -181,6 +181,11 @@
                                     <a href="#serviceHeadInfo/show"><i class="fa fa-cube"></i>&nbsp;Service Head Info</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/serviceChargeFreeDays/show">
+                                <li>
+                                    <a href="#serviceChargeFreeDays/show"><i class="fa fa-cube"></i>&nbsp;Charge Free Days Setup</a>
+                                </li>
+                            </sec:access>
                             <sec:access url="/diseaseGroup/show">
                                 <li>
                                     <a href="#diseaseGroup/show"><i class="fa fa-cubes"></i>&nbsp;Disease Group</a>

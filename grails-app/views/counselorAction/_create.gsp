@@ -56,8 +56,8 @@
             <div class="panel-body">
                 <input type="hidden" id="regNo" name="regNo"/>
                 <input type="hidden" id="selectedChargeId" name="selectedChargeId"/>
-                <input type="hidden" id="selectedDiseaseCode" name="selectedDiseaseCode"/>
                 <input type="hidden" id="selectedConsultancyId" name="selectedConsultancyId"/>
+                <input type="hidden" id="isChargeApplyInThisToken" name="isChargeApplyInThisToken"/>
 
                 <div class="form-group">
                     <div class="col-md-6" style=" padding-bottom: 0px;">
@@ -104,6 +104,94 @@
                                 </app:dropDownServiceType>
                             </div>
                         </div>
+                        <div id="divCharges">
+                            <div class="form-group" id="divReferenceServiceNo" style="display:none;">
+                                <label class="col-md-3 control-label label-optional"
+                                       style="padding-right: 0px;">Reference Token No:</label>
+
+                                <div class="col-md-9">
+                                    <select id="referenceServiceNoDDL"
+                                            name="referenceServiceNoDDL"
+                                            class="kendo-drop-down"
+                                            onchange="javascript: getReferenceNoWiseDisease();">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="divReferenceNoWiseDisease" style="display:none;">
+                                <label class="col-md-3 control-label" style="padding-right: 0px;">Reference Disease:</label>
+
+                                <div class="col-md-9">
+                                    <input class="form-control" readonly="true" id="referenceNoDiseaseTxt" style="width:100%">
+                                </div>
+                            </div>
+                            <div class="form-group" id="divTakenService"  style="display:none;">
+                                <label class="col-md-3 control-label label-optional" style="padding-right: 0px;" for="diseaseGroupId">Taken Service:</label>
+
+                                <div class="col-md-9">
+                                    <app:dropDownDiseaseGroup
+                                            data_model_name="dropDownDiseaseGroup"
+                                            id="diseaseGroupId" name="diseaseGroupId" tabindex="12"
+                                            class="kendo-drop-down"
+                                            onchange="javascript: getConsultationFees();">
+                                    </app:dropDownDiseaseGroup>
+                                </div>
+
+                            </div>
+                            <div id="divSelectedDisease" style="display:none;">
+                                <div class="form-group ">
+                                    <label class="col-md-3 control-label">Disease:</label>
+                                    <div class="col-md-9">
+                                        <select id="diseaseCode" name="diseaseCode" tabindex="13" class="kendo-drop-down">
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group" id="divServiceCharges" style="display:none;">
+                                <label class="col-md-3 control-label label-optional"
+                                       style="padding-right: 0px;">Service Charges:</label>
+
+                                <div class="col-md-3">
+                                    <input id="serviceCharges" name="serviceCharges" type="text" readonly="true"
+                                           class="form-control"/>
+                                </div>
+
+                                <div id="divSubsidy" style="display:none;">
+                                    <label class="col-md-3 control-label label-optional"
+                                           style="padding-right: 0px;">Subsidy Amount:</label>
+
+                                    <div class="col-md-3">
+                                        <input id="subsidyAmount" name="subsidyAmount" type="number" tabindex="8"
+                                               class="form-control" onchange="javascript: getPayableAmount();"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group"  style="padding-bottom: 0px;">
+                                <div id="divPathology" style="display:none;">
+                                    <label class="col-md-3 control-label label-optional"
+                                           style="padding-right: 0px;">Pathology Fees:</label>
+
+                                    <div class="col-md-3">
+                                        <input id="pathologyCharges" name="pathologyCharges" type="text" readonly="true"
+                                               class="form-control" value="0"/>
+                                    </div>
+                                </div>
+
+                                <div style="display:none;" id="divPayable">
+                                    <label class="col-md-3 control-label label-optional"
+                                           style="padding-right: 0px;">Total Payable:</label>
+
+                                    <div class="col-md-3">
+                                        <input id="payableAmount" name="payableAmount" type="text" readonly="true"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6" style=" padding-bottom: 0px;">
                         <div class="form-group" id="divReferralCenter" style="display: none;">
                             <label class="col-md-3 control-label label-optional"
                                    for="referralCenterId">Refer To:</label>
@@ -134,107 +222,16 @@
                         </div>
                         <div  class="form-group" style=" padding-bottom: 0px;">
                             <div class="col-md-1 "></div>
-                        <div class="col-md-10 " id="divServiceDetails" style="display:none;height: 250px; padding-left: 0px; padding-bottom: 0px;">
-                            <div id="gridServiceHeadInfo"></div>
-                        </div>
-                            </div>
-                    </div>
-
-                    <div class="col-md-6" id="divCharges" style=" padding-bottom: 0px;">
-                        <div class="form-group" id="divTakenService"  style="display:none;">
-                            <label class="col-md-3 control-label label-optional" for="diseaseGroupId">Taken Service:</label>
-
-                            <div class="col-md-6">
-                                <app:dropDownDiseaseGroup
-                                        data_model_name="dropDownDiseaseGroup"
-                                        id="diseaseGroupId" name="diseaseGroupId" tabindex="12"
-                                        class="kendo-drop-down"
-                                        onchange="javascript: getConsultationFees();">
-                                </app:dropDownDiseaseGroup>
-                            </div>
-
-                        </div>
-                        <div class="form-group" id="divReferenceServiceNo" style="display:none;">
-                            <label class="col-md-3 control-label label-optional"
-                                   style="padding-right: 0px;">Reference Token No:</label>
-
-                            <div class="col-md-6">
-                                <select id="referenceServiceNoDDL"
-                                        name="referenceServiceNoDDL"
-                                        class="kendo-drop-down"
-                                        onchange="javascript: getReferenceNoWiseDisease();">
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="divReferenceNoWiseDisease" style="display:none;">
-                            <label class="col-md-3 control-label" style="padding-right: 0px;">Reference Disease:</label>
-
-                            <div class="col-md-9">
-                                <textarea readonly="true" id="referenceNoDiseaseTxt" style="width:100%"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group" id="divServiceCharges" style="display:none;">
-                            <label class="col-md-3 control-label label-optional"
-                                   style="padding-right: 0px;">Service Charges:</label>
-
-                            <div class="col-md-3">
-                                <input id="serviceCharges" name="serviceCharges" type="text" readonly="true"
-                                       class="form-control"/>
-                            </div>
-
-                            <div id="divSubsidy" style="display:none;">
-                                <label class="col-md-3 control-label label-optional"
-                                       style="padding-right: 0px;">Subsidy Amount:</label>
-
-                                <div class="col-md-3">
-                                    <input id="subsidyAmount" name="subsidyAmount" type="number" tabindex="8"
-                                           class="form-control" onchange="javascript: getPayableAmount();"/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div id="divPathology" style="display:none;">
-                                <label class="col-md-3 control-label label-optional"
-                                       style="padding-right: 0px;">Pathology Fees:</label>
-
-                                <div class="col-md-3">
-                                    <input id="pathologyCharges" name="pathologyCharges" type="text" readonly="true"
-                                           class="form-control" value="0"/>
-                                </div>
-                            </div>
-
-                            <div style="display:none;" id="divPayable">
-                                <label class="col-md-3 control-label label-optional"
-                                       style="padding-right: 0px;">Total Payable:</label>
-
-                                <div class="col-md-3">
-                                    <input id="payableAmount" name="payableAmount" type="text" readonly="true"
-                                           class="form-control"/>
-                                </div>
+                            <div class="col-md-10 " id="divServiceDetails" style="display:none;height: 350px; padding-left: 0px; padding-bottom: 0px;">
+                                <div id="gridServiceHeadInfo"></div>
                             </div>
                         </div>
 
 
-                        <div id="divSelectedDisease" style="display:none; padding-bottom: 0px;">
-                        <div class="form-group ">
-                            <label class="col-md-3 control-label" style="padding-right: 0px;">Disease:</label>
 
-                            <div class="col-md-9">
-                                <textarea readonly="true" id="selectedDiseaseTxt" style="width:100%"></textarea>
-                            </div>
-
-                        </div>
-                        <div class="form-group col-md-10 pull-right" style="height: 250px; padding-left: 0px; padding-bottom: 0px;">
-                            <div id="gridDiseaseDetails"></div>
-                        </div>
-                    </div>
                     </div>
 
                 </div>
-
-
             </div>
 
 

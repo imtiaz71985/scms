@@ -4,6 +4,7 @@ import actions.ServiceTokenInfo.CreateServiceTokenInfoActionService
 import actions.ServiceTokenInfo.DeleteServiceTokenInfoActionService
 import com.scms.DiseaseInfo
 import com.scms.SecUser
+import com.scms.ServiceChargeFreeDays
 import com.scms.ServiceTokenInfo
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
@@ -33,6 +34,7 @@ class CounselorActionController extends BaseController {
     ServiceHeadInfoService serviceHeadInfoService
     BaseService baseService
     RegistrationInfoService registrationInfoService
+
 
     def show() {
         String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
@@ -135,11 +137,15 @@ class CounselorActionController extends BaseController {
     }
 
     def diseaseListByGroup() {
-        long diseaseGroupId = 0
+        long diseaseGroupId =0
+        try {
+            diseaseGroupId = Long.parseLong(params.diseaseGroupId)
+        }catch (ex){}
         List<GroovyRowResult> lst
 
-        lst = DiseaseInfo.findAllByIsActive(true)
-
+       // lst = DiseaseInfo.findAllByIsActiveAndDiseaseGroupId(true,diseaseGroupId)
+        lst=serviceTokenRelatedInfoService.getDiseaseByGroupIdForDDL(diseaseGroupId)
+      lst= baseService.listForKendoDropdown(lst, null, null)
         Map result = new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())
@@ -235,9 +241,17 @@ class CounselorActionController extends BaseController {
     def retrieveDiseaseOfReferenceTokenNo() {
         String tokenNo = params.tokenNo.toString()
         String diseaseInfo = serviceTokenRelatedInfoService.getDiseaseOfReferenceTokenNo(tokenNo)
+        Date serveDate=ServiceTokenInfo.findByServiceTokenNo(tokenNo).serviceDate
+        Date fromDate=DateUtility.getSqlDate(serveDate)
+        boolean isChargeApply=true;
+        long d=DateUtility.getDaysDifference(fromDate,new Date())
+        long days=ServiceChargeFreeDays.findByServiceTypeId(5).daysForFree
+        if(d<=days)
+            isChargeApply=false
         Map result = new HashedMap()
 
         result.put('diseaseInfo', diseaseInfo)
+        result.put('isChargeApply',isChargeApply)
 
         render result as JSON
     }

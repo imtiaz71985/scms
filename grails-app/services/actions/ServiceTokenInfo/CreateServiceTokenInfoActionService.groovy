@@ -53,7 +53,12 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 }
                 if (serviceTypeId == 5) {
                     if (params.referenceServiceNoDDL == 'Please Select...') {
-                        return super.setError(params, 'Sorry! Please select reference service no.')
+                        return super.setError(params, 'Sorry! Please select reference token no.')
+                    }
+                    String diseaseCodes = params.diseaseCode
+                    String chargeId = params.selectedConsultancyId
+                    if (diseaseCodes == 'Please Select...') {
+                        return super.setError(params, 'Sorry! Please select at least one disease.')
                     }
                 } else if (serviceTypeId == 4) {
                     String len = params.selectedChargeId
@@ -61,33 +66,17 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                         return super.setError(params, 'Sorry! Please select at least one consultation.')
                     }
                 } else {
-                    String diseaseCodes = params.selectedDiseaseCode
+                    String diseaseCodes = params.diseaseCode
                     String chargeId = params.selectedConsultancyId
-                    if (diseaseCodes.length() < 1) {
+                    if (diseaseCodes == 'Please Select...') {
                         return super.setError(params, 'Sorry! Please select at least one disease.')
                     } else if (chargeId.length() < 1) {
                         return super.setError(params, 'Sorry! Please select taken service.')
                     } else {
-                        boolean isSameGroup = false
-
-                        String groupCode = ''
-                        String serviceCode = ServiceCharges.findById(Long.parseLong(chargeId)).serviceCode
-                        long groupId = Long.parseLong(serviceCode.substring(3, serviceCode.length()))
-                        if (diseaseCodes.length() > 0) {
-                            List<String> lst = Arrays.asList(diseaseCodes.split("\\s*,\\s*"));
-                            for (int i = 0; i < lst.size(); i++) {
-                                if (Long.parseLong(lst.get(i).substring(0, 2)) == groupId)
-                                    isSameGroup = true
-                            }
-
-                        }
-                        if (!isSameGroup) {
-                            return super.setError(params, 'Sorry! Please select one disease from selected taken service.')
-                        }
                         RegistrationInfo registrationInfo = RegistrationInfo.findByRegNo(params.regNo)
                         boolean isNotApplicable = serviceTokenRelatedInfoService.getDiseaseApplicableFor(diseaseCodes, registrationInfo.sexId)
                         if (isNotApplicable)
-                            return super.setError(params, 'Sorry! These disease could not applied for this patient.')
+                            return super.setError(params, 'Sorry! This disease could not applied for this patient.')
                     }
                 }
             } else {
@@ -117,33 +106,16 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         try {
             ServiceTokenInfo serviceTokenInfo = (ServiceTokenInfo) result.get(SERVICE_TOKEN_INFO)
             serviceTokenInfo.save()
-            long serviceTypeId = 0
-            try {
-                serviceTypeId = Long.parseLong(result.serviceTypeId)
-            } catch (Exception ex) {
-            }
-            if (serviceTypeId != 5) {
-                String str = result.selectedDiseaseCode
-
-                if (str.length() > 1) {
-                    List<String> lstDisease = Arrays.asList(str.split("\\s*,\\s*"));
-
-                    for (int i = 0; i < lstDisease.size(); i++) {
-                        TokenAndDiseaseMapping tokenAndDiseaseMapping = new TokenAndDiseaseMapping()
-                        tokenAndDiseaseMapping.createDate = DateUtility.getSqlDate(new Date())
-                        tokenAndDiseaseMapping.createBy = springSecurityService.principal.id
-                        tokenAndDiseaseMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
-                        try {
-                            if (lstDisease.get(i) != '') {
-                                tokenAndDiseaseMapping.diseaseCode = lstDisease.get(i)
-                                tokenAndDiseaseMapping.save()
-                            }
-                        } catch (Exception ex) {
-                        }
-                    }
+                if(!result.diseaseCode) {
+                    TokenAndDiseaseMapping tokenAndDiseaseMapping = new TokenAndDiseaseMapping()
+                    tokenAndDiseaseMapping.createDate = DateUtility.getSqlDate(new Date())
+                    tokenAndDiseaseMapping.createBy = springSecurityService.principal.id
+                    tokenAndDiseaseMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
+                    tokenAndDiseaseMapping.diseaseCode = result.diseaseCode
+                    tokenAndDiseaseMapping.save()
                 }
 
-                str = result.selectedChargeId
+                String str = result.selectedChargeId
                 String chargeIds = result.selectedConsultancyId
                 if (chargeIds.length() > 1)
                     str = str + ',' + chargeIds
@@ -165,7 +137,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     }
                 }
 
-            }
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -224,23 +196,23 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         } else {
             serviceTokenInfo.subsidyAmount = Double.parseDouble(parameterMap.subsidyAmount)
         }
-        String presciption = ''
+        String prescription = ''
 
         if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
-            presciption = 'Medicine & Pathology Test & Doctors Referral'
+            prescription = 'Medicine & Pathology Test & Doctors Referral'
         else if (parameterMap.chkboxMedicine && parameterMap.chkboxPathology)
-            presciption = 'Medicine & Pathology Test'
+            prescription = 'Medicine & Pathology Test'
         else if (parameterMap.chkboxMedicine && parameterMap.chkboxDocReferral)
-            presciption = 'Medicine & Doctors Referral'
+            prescription = 'Medicine & Doctors Referral'
         else if (parameterMap.chkboxPathology && parameterMap.chkboxDocReferral)
-            presciption = 'Pathology Test & Doctors Referral'
+            prescription = 'Pathology Test & Doctors Referral'
         else
-            presciption = (parameterMap.chkboxMedicine ? 'Medicine' : parameterMap.chkboxPathology ? 'Pathology Test' : parameterMap.chkboxDocReferral ? 'Doctors Referral' : '')
+            prescription = (parameterMap.chkboxMedicine ? 'Medicine' : parameterMap.chkboxPathology ? 'Pathology Test' : parameterMap.chkboxDocReferral ? 'Doctors Referral' : '')
 
         if (parameterMap.chkboxDocReferral)
             serviceTokenInfo.referralCenterId = Long.parseLong(parameterMap.referralCenterId)
 
-        serviceTokenInfo.prescriptionType = presciption
+        serviceTokenInfo.prescriptionType = prescription
         serviceTokenInfo.modifyDate = DateUtility.getSqlDate(new Date())
         serviceTokenInfo.modifyBy = springSecurityService.principal.id
 
