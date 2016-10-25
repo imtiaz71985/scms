@@ -22,7 +22,7 @@
                         </app:dropDownRegistrationNo>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-4">
 
                         <button id="btnNewService" name="btnNewService" type="button"
                                 class="k-button" tabindex="2"
@@ -30,9 +30,16 @@
                                 aria-disabled="false"><span
                                 class="k-icon k-i-plus"></span> New Service
                         </button>
+                        <button id="btnFollowupService" name="btnFollowupService" type="button"
+                                class="k-button" tabindex="2"
+                                role="button" onclick="loadFormForFollowup()"
+                                aria-disabled="false"><span
+                                class="k-icon k-i-plus"></span> Follow-up Service
+                        </button>
                     </div>
-            <div class="col-md-3 pull-right">
-                <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold; text-align: center;" >
+            <div class="col-md-3 pull-right" id="divPatientServed">
+                <app:patientServed></app:patientServed>
+                %{--<input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold; text-align: center;" >--}%
             </div>
 
                 </div>
@@ -90,7 +97,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="divServiceType">
                             <label class="col-md-3 control-label label-optional"
                                    for="serviceTypeId">Service Type:</label>
 
@@ -118,15 +125,8 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" id="divReferenceNoWiseDisease" style="display:none;">
-                                <label class="col-md-3 control-label" style="padding-right: 0px;">Reference Disease:</label>
-
-                                <div class="col-md-9">
-                                    <input class="form-control" readonly="true" id="referenceNoDiseaseTxt" style="width:100%">
-                                </div>
-                            </div>
                             <div class="form-group" id="divTakenService"  style="display:none;">
-                                <label class="col-md-3 control-label label-optional" style="padding-right: 0px;" for="diseaseGroupId">Taken Service:</label>
+                                <label class="col-md-3 control-label label-optional" for="diseaseGroupId">Taken Service:</label>
 
                                 <div class="col-md-9">
                                     <app:dropDownDiseaseGroup
@@ -193,10 +193,10 @@
 
                     <div class="col-md-6" style=" padding-bottom: 0px;">
                         <div class="form-group" id="divReferralCenter" style="display: none;">
-                            <label class="col-md-3 control-label label-optional"
+                            <label class="col-md-2 control-label label-optional"
                                    for="referralCenterId">Refer To:</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6" style=" padding-left: 0px;padding-right: 0px;">
                                 <app:dropDownReferralCenter
                                         data_model_name="dropDownReferralCenter"
                                         type="counselor"
@@ -208,15 +208,16 @@
                         </div>
 
                         <div class="form-group" id="divPrescriptionType">
-                            <label class="col-md-3 control-label label-optional"
-                                   style="padding-top: 0px;">Prescription:</label>
+                            <label class="col-md-2 control-label label-optional">Prescription:</label>
 
-                            <div class="col-md-9" style="padding-top: 0px;">
+                            <div class="col-md-10" style="padding-top: 0px; padding-left: 0px;padding-right: 0px;">
                                 <input type="checkbox" value="" id="chkboxMedicine" name="chkboxMedicine">&nbsp;Medicine
                                 <input type="checkbox" value="" id="chkboxPathology" name="chkboxPathology"
                                        onclick="loadPathologyServicesToComplete();">&nbsp;Pathology Test
                                 <input type="checkbox" value="" id="chkboxDocReferral" name="chkboxDocReferral"
                                        onclick="loadReferralCenter();">&nbsp;Doctors Referral
+                                <input type="checkbox" value="" id="chkboxFollowupNeeded" name="chkboxFollowupNeeded"
+                                       onclick="unLoadReferralCenter();">&nbsp;Follow-up Needed
 
                             </div>
                         </div>

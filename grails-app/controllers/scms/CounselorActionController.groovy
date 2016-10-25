@@ -187,7 +187,7 @@ class CounselorActionController extends BaseController {
 
     def retrieveServiceTokenNo() {
         String regNo = params.regNo.toString()
-        String tokenNo = serviceTokenRelatedInfoService.findLastTokenNoByRegNoAndIsExit(regNo, false)
+        String tokenNo = serviceTokenRelatedInfoService.findLastTokenNoByRegNo(regNo)
         List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getTotalHealthServiceCharge(tokenNo)
         Map result = new HashedMap()
         result.put('serviceTokenNo', tokenNo)
@@ -201,11 +201,8 @@ class CounselorActionController extends BaseController {
         String tokenNo = params.tokenNo.toString()
         List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getTotalHealthServiceCharge(tokenNo)
         Map result = new HashedMap()
-        if (!lst[0].isExit) {
             result.put('regNo', lst[0].reg_no)
-        } else {
-            result.put('regNo', '')
-        }
+
         result.put('totalHealthCharge', lst[0].totalHealthCharge)
         result.put('serviceTypeId', lst[0].service_type_id)
 
@@ -214,13 +211,13 @@ class CounselorActionController extends BaseController {
 
     def retrieveTokenNoByRegNo() {
         String regNo = params.regNo.toString()
-        Timestamp toDate = DateUtility.getSqlToDateWithSeconds(new Date())
+        /*Timestamp toDate = DateUtility.getSqlToDateWithSeconds(new Date())
         Calendar calNow = Calendar.getInstance()
         calNow.add(Calendar.MONTH, -3);
         Date dateBeforeAMonth = calNow.getTime();
-        Timestamp fromDate = DateUtility.getSqlToDateWithSeconds(dateBeforeAMonth)
-        // List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndServiceDateBetween(regNo, fromDate, toDate, [sort: "serviceDate", order: "DESC"])
-        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getReferenceTokenForFollowup(regNo, fromDate, toDate)
+        Timestamp fromDate = DateUtility.getSqlToDateWithSeconds(dateBeforeAMonth)*/
+         List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndIsDeletedAndIsFollowupNeeded(regNo, false,true, [sort: "serviceDate", order: "DESC"])
+//        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getReferenceTokenForFollowup(regNo, fromDate, toDate)
         lst = baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
         Map result = [lstTokenNo: lst]
         render result as JSON
@@ -240,7 +237,7 @@ class CounselorActionController extends BaseController {
 
     def retrieveDiseaseOfReferenceTokenNo() {
         String tokenNo = params.tokenNo.toString()
-        String diseaseInfo = serviceTokenRelatedInfoService.getDiseaseOfReferenceTokenNo(tokenNo)
+        List<GroovyRowResult> lstDiseaseInfo = serviceTokenRelatedInfoService.getDiseaseOfReferenceTokenNo(tokenNo)
         Date serveDate=ServiceTokenInfo.findByServiceTokenNo(tokenNo).serviceDate
         Date fromDate=DateUtility.getSqlDate(serveDate)
         boolean isChargeApply=true;
@@ -250,7 +247,7 @@ class CounselorActionController extends BaseController {
             isChargeApply=false
         Map result = new HashedMap()
 
-        result.put('diseaseInfo', diseaseInfo)
+        result.put('lstDiseaseInfo', lstDiseaseInfo)
         result.put('isChargeApply',isChargeApply)
 
         render result as JSON

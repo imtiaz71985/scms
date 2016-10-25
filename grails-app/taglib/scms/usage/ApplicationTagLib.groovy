@@ -1,6 +1,11 @@
 package scms.usage
 
+import com.scms.SecUser
+import grails.plugin.springsecurity.SpringSecurityService
+import groovy.sql.GroovyRowResult
 import scms.BaseTagLibExecutor
+import scms.utility.DateUtility
+import service.RegistrationInfoService
 import taglib.GetDropDownAddressTaglibActionService
 import taglib.GetDropDownDiseaseGroupTagLibActionService
 import taglib.GetDropDownHospitalTagLibActionService
@@ -18,6 +23,8 @@ import taglib.GetDropDownVendorTagLibActionService
 class ApplicationTagLib extends BaseTagLibExecutor {
 
     static namespace = "app"
+    SpringSecurityService springSecurityService
+    RegistrationInfoService registrationInfoService
 
     GetDropDownSystemEntityTypeTaglibActionService getDropDownSystemEntityTypeTaglibActionService
     GetDropDownSystemEntityTaglibActionService getDropDownSystemEntityTaglibActionService
@@ -126,6 +133,15 @@ class ApplicationTagLib extends BaseTagLibExecutor {
         attrs.body = body
         super.executeTag(getDropDownSellVoucherNoTagLibActionService, attrs)
         out << (String) attrs.html
+    }
+    def patientServed = { attrs ->
+        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        Date fromDate,toDate
+        fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
+        toDate=DateUtility.getSqlToDateWithSeconds(new Date())
+        List<GroovyRowResult> lst = registrationInfoService.listOfPatientAndService(hospital_code,fromDate,toDate)
+        String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
+        return out << msg
     }
 
 }

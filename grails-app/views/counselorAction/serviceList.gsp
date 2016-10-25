@@ -39,8 +39,7 @@
                         pathologyAmt: {type: "number"},
                         totalCharge: {type: "number"},
                         serviceDate: {type: "date"},
-                        serviceType: {type: "string"},
-                        isExit: {type: "boolean"}
+                        serviceType: {type: "string"}
                     }
                 },
                 parse: function (data) {

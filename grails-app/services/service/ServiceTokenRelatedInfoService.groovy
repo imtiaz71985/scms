@@ -13,8 +13,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
 
     public List<GroovyRowResult> getTotalHealthServiceCharge(String tokenNo){
         String queryStr = """
-
-            SELECT st.reg_no,COALESCE(st.is_exit,FALSE) AS isExit,sh.service_type_id,SUM(sc.charge_amount) AS totalHealthCharge FROM service_token_info st
+            SELECT st.reg_no,sh.service_type_id,SUM(sc.charge_amount) AS totalHealthCharge FROM service_token_info st
             LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
             LEFT JOIN service_charges sc
             ON tcm.service_charge_id=sc.id LEFT JOIN service_head_info sh ON sc.service_code=sh.service_code
@@ -23,23 +22,22 @@ class ServiceTokenRelatedInfoService extends BaseService{
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
     }
-    public String findLastTokenNoByRegNoAndIsExit(String regNo,boolean isExit){
+    public String findLastTokenNoByRegNo(String regNo){
         String queryStr = """
-            SELECT service_token_no FROM service_token_info  WHERE reg_no='${regNo}' AND is_exit=${isExit} ORDER BY service_date DESC LIMIT 1
+            SELECT service_token_no FROM service_token_info  WHERE reg_no='${regNo}' ORDER BY service_date DESC LIMIT 1
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         String service_token_no=(String)result[0].service_token_no
         return service_token_no
     }
-    public String getDiseaseOfReferenceTokenNo(String tokenNo){
+    public List<GroovyRowResult> getDiseaseOfReferenceTokenNo(String tokenNo){
         String queryStr = """
-            SELECT COALESCE(GROUP_CONCAT(di.name),'')  AS disease FROM token_and_disease_mapping  tdm
+            SELECT di.name AS diseaseName,di.disease_code,CAST(SUBSTRING(di.disease_code,1,2) AS UNSIGNED ) AS groupId FROM token_and_disease_mapping  tdm
             JOIN disease_info di ON tdm.disease_code=di.disease_code
-                WHERE tdm.service_token_no='${tokenNo}'
+                WHERE tdm.service_token_no='${tokenNo}'  LIMIT 1;
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
-        String diseaseInfo=(String)result[0].disease
-        return diseaseInfo
+        return result
     }
     public List<GroovyRowResult> RegAndServiceDetails(Date start,Date end, String hospital_code){
         String queryStr =""
@@ -50,7 +48,6 @@ class ServiceTokenRelatedInfoService extends BaseService{
         }
             queryStr = """
            SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
-                  COALESCE(st.is_exit,FALSE) AS isExit,
                   COALESCE(st.service_token_no,'') AS serviceTokenNo,CONVERT(st.service_date,DATE) AS serviceDate,st.subsidy_amount AS subsidyAmount,
                   SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
                   SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
@@ -65,7 +62,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
                   LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id
                   WHERE  ${hospital_str}  st.service_date BETWEEN '${start}' AND '${end}' AND st.is_deleted <> TRUE
                    GROUP BY st.service_token_no
-                   ORDER BY isExit,serviceDate ASC
+                   ORDER BY serviceDate ASC
         """
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
@@ -108,7 +105,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
         }catch(Exception ex){}
         return isNotApplicable
     }
-    public List<GroovyRowResult> getReferenceTokenForFollowup(String regNo,Timestamp fromDate, Timestamp toDate){
+    /*public List<GroovyRowResult> getReferenceTokenForFollowup(String regNo,Timestamp fromDate, Timestamp toDate){
         String queryStr = """
         SELECT sti.service_token_no AS serviceTokenNo FROM service_token_info sti
         JOIN token_and_charge_mapping tcm ON tcm.service_token_no=sti.service_token_no
@@ -123,7 +120,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
-    }
+    }*/
     public List<GroovyRowResult> dateWiseConsultancyDetails(Date start,Date end, String hospital_code){
         String hospital_str = EMPTY_SPACE
         if(hospital_code!='') {

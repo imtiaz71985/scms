@@ -10,7 +10,7 @@ class ServiceTokenInfo {
     long visitTypeId
     long serviceProviderId
     String prescriptionType
-    boolean isExit
+    boolean isFollowupNeeded
     Date modifyDate
     long modifyBy
     String referenceServiceTokenNo
@@ -24,6 +24,7 @@ class ServiceTokenInfo {
         prescriptionType (nullable: true)
         referralCenterId (nullable: true)
         isDeleted (nullable: true)
+        isFollowupNeeded (nullable: true)
     }
     static mapping = {
         id name: 'serviceTokenNo'

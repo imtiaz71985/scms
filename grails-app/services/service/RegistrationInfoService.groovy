@@ -72,7 +72,7 @@ class RegistrationInfoService extends BaseService {
                 FROM calendar c
                  LEFT JOIN revisit_patient rp ON c.date_field=DATE(rp.create_date) """+hospital_rp+"""
                  LEFT JOIN registration_info ri ON c.date_field=DATE(ri.create_date) AND ri.is_old_patient=FALSE """+hospital_ri+"""
-                 LEFT JOIN service_token_info sti ON c.date_field=DATE(sti.service_date) """+hospital_sti+"""
+                 LEFT JOIN service_token_info sti ON c.date_field=DATE(sti.service_date) """+hospital_sti+""" AND sti.is_deleted=FALSE
 
                 WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' GROUP BY c.date_field
                 ORDER BY c.date_field ASC

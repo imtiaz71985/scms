@@ -107,6 +107,7 @@
                         new_patient: {type: "number"},
                         re_reg_patient: {type: "number"},
                         patient_followup: {type: "number"},
+                        patient_followup_amt: {type: "number"},
                         patient_revisit: {type: "number"},
                         total_patient: {type: "number"},
                         total_service: {type: "number"}
@@ -132,6 +133,7 @@
                 {field: "new_patient", aggregate: "sum" },
                 {field: "re_reg_patient", aggregate: "sum" },
                 {field: "patient_followup", aggregate: "sum" },
+                {field: "patient_followup_amt", aggregate: "sum" },
                 {field: "patient_revisit", aggregate: "sum" },
                 {field: "total_patient", aggregate: "sum" },
                 {field: "total_service", aggregate: "sum" }
@@ -184,15 +186,6 @@
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
                             template: "#=is_holiday?'':navigateLinkPatientType(date_field,new_patient,'new')#",
-                            footerTemplate: "#=sum#"
-                        },
-                        {
-                            field: "patient_followup", title: "Followup",
-                            width: 42,sortable: false,filterable: false,
-                            headerAttributes: {style: setCAlignRight()},
-                            footerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateLinkPatientType(date_field,patient_followup,'followup')#",
                             footerTemplate: "#=sum#"
                         },
                         {
@@ -288,6 +281,22 @@
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
                                     template: "#=is_holiday?'':formatAmount(consultation_amount)#",
+                                    footerTemplate: "#=formatAmount(sum)#"
+                                },{
+                                    field: "patient_followup", title: "Followup",
+                                    width: 42,sortable: false,filterable: false,
+                                    headerAttributes: {style: setCAlignRight()},
+                                    footerAttributes: {style: setAlignRight()},
+                                    attributes: {style: setAlignRight()},
+                                    template: "#=is_holiday?'':navigateLinkPatientType(date_field,patient_followup,'followup')#",
+                                    footerTemplate: "#=sum#"
+                                },{
+                                    field: "patient_followup_amt",title: "Amount(৳)",
+                                    width: 45,sortable: false,filterable: false,
+                                    headerAttributes: {style: setCAlignRight()},
+                                    footerAttributes: {style: setAlignRight()},
+                                    attributes: {style: setAlignRight()},
+                                    template: "#=is_holiday?'':formatAmount(patient_followup_amt)#",
                                     footerTemplate: "#=formatAmount(sum)#"
                                 }
                             ]
