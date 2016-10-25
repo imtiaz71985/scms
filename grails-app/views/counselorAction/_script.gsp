@@ -135,7 +135,6 @@
         } else {
             try {
                 bootboxAlert(result.message);
-                $('#divPatientServed').refresh();
                 resetForm();
             } catch (e) {
                 // Do Nothing
