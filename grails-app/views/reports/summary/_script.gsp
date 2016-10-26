@@ -115,6 +115,7 @@
                         new_patient: {type: "number"},
                         re_reg_patient: {type: "number"},
                         patient_followup: {type: "number"},
+                        patient_followup_amt: {type: "number"},
                         patient_revisit: {type: "number"},
                         total_patient: {type: "number"},
                         total_service: {type: "number"}
@@ -140,6 +141,7 @@
                 {field: "new_patient", aggregate: "sum"},
                 {field: "re_reg_patient", aggregate: "sum"},
                 {field: "patient_followup", aggregate: "sum"},
+                {field: "patient_followup_amt", aggregate: "sum"},
                 {field: "patient_revisit", aggregate: "sum"},
                 {field: "total_patient", aggregate: "sum"},
                 {field: "total_service", aggregate: "sum"}
@@ -302,12 +304,12 @@
                                     footerTemplate: "#=sum#"
                                 },
                                 {
-                                    field: "followup_amount", title: "Amount(৳)",
+                                    field: "patient_followup_amt", title: "Amount(৳)",
                                     width: 45, sortable: false, filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
-                                    template: "#=formatAmount(followup_amount)#",
+                                    template: "#=formatAmount(patient_followup_amt)#",
                                     footerTemplate: "#=formatAmount(sum)#"
                                 }
                             ]

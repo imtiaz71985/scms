@@ -174,6 +174,12 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                     WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
                     AND sti.is_deleted <> TRUE AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}
                      GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)+
+                -- Followup Patient Pathology count
+                COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
+                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) != '01'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND sti.is_deleted <> TRUE AND sti.visit_type_id=3
+                AND SUBSTRING(tcm2.service_token_no, 2, 2) = ${hospitalCode} GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
                 WHERE sell_date = c.date_field AND hospital_code= ${hospitalCode} GROUP BY sell_date ),0)
@@ -302,6 +308,12 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                     WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
                      AND sti.is_deleted <> TRUE GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)+
+                -- Followup Patient Pathology count
+                COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
+                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) != '01'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND sti.is_deleted <> TRUE AND sti.visit_type_id=3
+                GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
                 WHERE sell_date = c.date_field GROUP BY sell_date ),0)

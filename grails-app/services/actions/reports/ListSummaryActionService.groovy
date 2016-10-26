@@ -58,7 +58,7 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
         String queryStr1 = """
             SELECT
                     month_name,SUM(new_patient) new_patient,SUM(re_reg_patient) re_reg_patient,SUM(patient_revisit) patient_revisit,
-                    SUM(patient_followup) patient_followup,SUM(total_patient) total_patient,SUM(total_service) total_service,
+                    SUM(patient_followup) patient_followup,SUM(patient_followup_amt) patient_followup_amt,SUM(total_patient) total_patient,SUM(total_service) total_service,
                     SUM(registration_amount) registration_amount,SUM(re_registration_amount) re_registration_amount,
                     SUM(consultation_amount) consultation_amount,SUM(consultation_count) consultation_count,SUM(subsidy_amount) subsidy_amount,
                     SUM(subsidy_count) subsidy_count,SUM(pathology_amount) pathology_amount,SUM(pathology_count) pathology_count,
@@ -66,117 +66,137 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                     FROM
             (SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,DATE_FORMAT(`date_field`,'%M %Y') AS month_name,
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
-            WHERE msi.sell_date = c.date_field GROUP BY msi.sell_date ),0)) AS medicine_sales,
-                COALESCE(SUM(sc.charge_amount),0) AS registration_amount,
+            WHERE msi.sell_date = c.date_field
+            GROUP BY msi.sell_date ),0)) AS medicine_sales,
+
             COALESCE((SELECT SUM(mr.total_amount) FROM medicine_return mr
-            WHERE mr.return_date = c.date_field GROUP BY mr.return_date ),0) AS return_amt,
-                        COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
-                        LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
-                        WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field
-                        GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
+            WHERE mr.return_date = c.date_field
+            GROUP BY mr.return_date ),0) AS return_amt,
+
+                COALESCE((SELECT SUM(sc.charge_amount) FROM
+                  registration_info ri LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
+                WHERE DATE(ri.create_date) = c.date_field  AND ri.is_old_patient<> TRUE
+                GROUP BY DATE(ri.create_date))
+                ,0) AS registration_amount,
+
+                COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
+                  LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
+                  WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field
+                  GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
 
                 COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
-                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                WHERE  DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                AND sti.is_deleted <> TRUE AND sti.visit_type_id=2
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_amount,
 
                 (COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
+                JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0)+
 
                 COALESCE((SELECT COUNT(sc3.id)
                  FROM token_and_charge_mapping tcm3
+                 JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no
                 RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '04'
-                WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0)) AS consultation_count,
+                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+
+                GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) )AS consultation_count,
 
                 COALESCE((SELECT SUM(sti.subsidy_amount)
                 FROM service_token_info sti
-                        WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
+                        WHERE sti.is_deleted <> TRUE AND DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
+
                         GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_amount,
 
                 COALESCE((SELECT COUNT(sti.service_token_no)
                 FROM service_token_info sti
-                        WHERE DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field AND sti.subsidy_amount > 0
+                        WHERE sti.is_deleted <> TRUE AND DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field AND sti.subsidy_amount > 0
+
                         GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_count,
 
                 COALESCE((SELECT SUM(sc3.charge_amount)
                          FROM token_and_charge_mapping tcm3
+                         JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no AND sti.is_deleted <> TRUE
                         LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                         WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+
                         GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_amount,
 
                 COALESCE((SELECT COUNT(sc3.id)
                          FROM token_and_charge_mapping tcm3
+                         JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no AND sti.is_deleted <> TRUE
                         RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                         WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+
                         GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_count,
 
                     COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
-                    WHERE DATE(ri.create_date) = c.date_field GROUP BY DATE(ri.create_date) ),0) AS new_patient,
+                    WHERE DATE(ri.create_date) = c.date_field AND ri.is_old_patient <> TRUE GROUP BY DATE(ri.create_date) ),0) AS new_patient,
 
                 COALESCE((SELECT COUNT(rri.id) FROM registration_reissue rri
-                    WHERE DATE_FORMAT(rri.create_date,'%Y-%m-%d') = c.date_field GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) AS re_reg_patient,
+                    WHERE DATE_FORMAT(rri.create_date,'%Y-%m-%d') = c.date_field
+                    GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) AS re_reg_patient,
 
-                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
-                    WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                    GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_revisit,
+                COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
+                    WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
+                    GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0) AS patient_revisit,
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                     WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
+                     AND sti.is_deleted <> TRUE
                     GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_followup,
 
-                (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
-                WHERE DATE(ri.create_date) = c.date_field GROUP BY DATE(ri.create_date) ),0) +
-
-                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
-                WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) +
-
-                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
-                WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)) AS total_patient,
+                COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
+                JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                WHERE  DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                AND sti.is_deleted <> TRUE AND sti.visit_type_id=2
+                GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS patient_followup_amt,
 
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
-                    WHERE DATE(ri.create_date) = c.date_field GROUP BY DATE(ri.create_date) ),0) +
+                WHERE DATE(ri.create_date) = c.date_field AND ri.is_old_patient <> TRUE GROUP BY DATE(ri.create_date) ),0) +
 
+                COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
+                    WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
+                    GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0)) AS total_patient,
+                -- New Patient count
+                (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
+                    WHERE DATE(ri.create_date) = c.date_field  AND ri.is_old_patient <> TRUE GROUP BY DATE(ri.create_date) ),0) +
+                -- Card reissue Patient count
                 COALESCE((SELECT COUNT(rri.id) FROM registration_reissue rri
-                    WHERE DATE_FORMAT(rri.create_date,'%Y-%m-%d') = c.date_field GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) +
-
+                    WHERE DATE_FORMAT(rri.create_date,'%Y-%m-%d') = c.date_field
+                    GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) +
+                -- Count without new registration and followup
                 COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
-                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) != '01'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND sti.is_deleted <> TRUE AND sti.visit_type_id!=3
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
-
-                COALESCE((SELECT COUNT(sc3.id)
-                        FROM token_and_charge_mapping tcm3
-                RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
-                WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0)+
-
-                COALESCE((SELECT COUNT(sc3.id)
-                        FROM token_and_charge_mapping tcm3
-                RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '04'
-                WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0)+
-
-                COALESCE((SELECT COUNT(sc3.id)
-                        FROM token_and_charge_mapping tcm3
-                RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '05'
-                WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0)) AS total_service
+                -- Followup Patient count
+                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
+                    WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
+                     AND sti.is_deleted <> TRUE GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)+
+                -- Followup Patient Pathology count
+                COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
+                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) != '01'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND sti.is_deleted <> TRUE AND sti.visit_type_id=3
+                GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
+                -- Medicine Sales count
+                COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
+                WHERE sell_date = c.date_field GROUP BY sell_date ),0)
+                     ) AS total_service
 
                 FROM calendar c
-                LEFT JOIN registration_info ri ON DATE(ri.create_date) = c.date_field
-                LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
-            WHERE c.date_field BETWEEN :fromDate AND :toDate
-            GROUP BY c.date_field) tmp
+                WHERE c.date_field BETWEEN :fromDate AND :toDate) tmp
             GROUP BY month_name ORDER BY date_field;
         """
         String queryStr2 = """
             SELECT month_name,SUM(new_patient) new_patient,SUM(re_reg_patient) re_reg_patient,SUM(patient_revisit) patient_revisit,
-                    SUM(patient_followup) patient_followup,SUM(total_patient) total_patient,SUM(total_service) total_service,
+                    SUM(patient_followup) patient_followup,SUM(patient_followup_amt) patient_followup_amt,SUM(total_patient) total_patient,SUM(total_service) total_service,
                     SUM(registration_amount) registration_amount,SUM(re_registration_amount) re_registration_amount,
                     SUM(consultation_amount) consultation_amount,SUM(consultation_count) consultation_count,SUM(subsidy_amount) subsidy_amount,
                     SUM(subsidy_count) subsidy_count,SUM(pathology_amount) pathology_amount,SUM(pathology_count) pathology_count,
@@ -193,26 +213,26 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
 
                 COALESCE((SELECT SUM(sc.charge_amount) FROM
                   registration_info ri LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
-                WHERE DATE(ri.create_date) = c.date_field AND ri.hospital_code =  ${hospitalCode}  AND ri.is_old_patient<> TRUE
+                WHERE DATE(ri.create_date) = c.date_field  AND ri.is_old_patient<> TRUE AND ri.hospital_code =  ${hospitalCode}
                 GROUP BY DATE(ri.create_date))
                 ,0) AS registration_amount,
 
-                 COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
-                    LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
-                    WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field AND LEFT(rr.reg_no,2) =  ${hospitalCode}
-                    GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
+                COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
+                  LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
+                  WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field AND LEFT(rr.reg_no,2) =  ${hospitalCode}
+                  GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
 
                 COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
-                JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no AND sti.is_deleted <> TRUE
-                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE  DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                AND SUBSTRING(tcm2.service_token_no, 2, 2) =  ${hospitalCode}
+                AND sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND SUBSTRING(tcm2.service_token_no, 2, 2) =  ${hospitalCode}
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_amount,
 
                 (COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE sti.is_deleted <> TRUE AND DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
                  AND SUBSTRING(tcm2.service_token_no, 2, 2) =  ${hospitalCode}
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0)+
 
@@ -220,14 +240,14 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                  FROM token_and_charge_mapping tcm3
                  JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no
                 RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '04'
-                WHERE sti.is_deleted <> TRUE AND DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
                 AND SUBSTRING(tcm3.service_token_no, 2, 2) =  ${hospitalCode}
                 GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) )AS consultation_count,
 
                 COALESCE((SELECT SUM(sti.subsidy_amount)
                 FROM service_token_info sti
                         WHERE sti.is_deleted <> TRUE AND DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
-                        AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}
+                         AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}
                         GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_amount,
 
                 COALESCE((SELECT COUNT(sti.service_token_no)
@@ -253,76 +273,69 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                         GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) AS pathology_count,
 
                     COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
-                    WHERE DATE(ri.create_date) = c.date_field AND ri.hospital_code =  ${hospitalCode}  AND ri.is_old_patient <> TRUE GROUP BY DATE(ri.create_date) ),0) AS new_patient,
+                    WHERE DATE(ri.create_date) = c.date_field AND ri.is_old_patient <> TRUE  AND ri.hospital_code =  ${hospitalCode}
+                    GROUP BY DATE(ri.create_date) ),0) AS new_patient,
 
                 COALESCE((SELECT COUNT(rri.id) FROM registration_reissue rri
                     WHERE DATE_FORMAT(rri.create_date,'%Y-%m-%d') = c.date_field AND LEFT(rri.reg_no,2) =  ${hospitalCode}
                     GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) AS re_reg_patient,
 
-                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
-                    WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                    AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}  AND sti.is_deleted <> TRUE
-                    GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_revisit,
+                COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
+                    WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
+                    AND hospital_code =  ${hospitalCode}
+                    GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0) AS patient_revisit,
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                     WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                    AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}  AND sti.is_deleted <> TRUE
+                     AND sti.is_deleted <> TRUE AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}
                     GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_followup,
 
-                (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
-                WHERE DATE(ri.create_date) = c.date_field AND ri.hospital_code =  ${hospitalCode}  AND ri.is_old_patient <> TRUE GROUP BY DATE(ri.create_date) ),0) +
-
-                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
-                WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}  AND sti.is_deleted <> TRUE
-                GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) +
-
-                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
-                WHERE sti.visit_type_id = 2 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
-                AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}  AND sti.is_deleted <> TRUE
-                GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)) AS total_patient,
+                COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
+                JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
+                WHERE  DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                AND sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}
+                GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS patient_followup_amt,
 
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
-                    WHERE DATE(ri.create_date) = c.date_field AND ri.hospital_code =  ${hospitalCode}  AND ri.is_old_patient <> TRUE GROUP BY DATE(ri.create_date) ),0) +
+                WHERE DATE(ri.create_date) = c.date_field AND ri.is_old_patient <> TRUE
+                AND ri.hospital_code =  ${hospitalCode} GROUP BY DATE(ri.create_date) ),0) +
 
+                COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
+                    WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field AND hospital_code= ${hospitalCode}
+                    GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0)) AS total_patient,
+                -- New Patient count
+                (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
+                    WHERE DATE(ri.create_date) = c.date_field  AND ri.is_old_patient <> TRUE
+                    AND ri.hospital_code =  ${hospitalCode} GROUP BY DATE(ri.create_date) ),0) +
+                -- Card reissue Patient count
                 COALESCE((SELECT COUNT(rri.id) FROM registration_reissue rri
-                    WHERE DATE_FORMAT(rri.create_date,'%Y-%m-%d') = c.date_field
-                    AND LEFT(rri.reg_no,2) = ${hospitalCode}
+                    WHERE DATE_FORMAT(rri.create_date,'%Y-%m-%d') = c.date_field AND LEFT(rri.reg_no,2) = ${hospitalCode}
                     GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) +
-
+                -- Count without new registration and followup
                 COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
-                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no AND sti.is_deleted <> TRUE
-                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                AND SUBSTRING(tcm2.service_token_no, 2, 2) = ${hospitalCode}
-                GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
-
-                COALESCE((SELECT COUNT(sc3.id)
-                FROM token_and_charge_mapping tcm3
-                JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no AND sti.is_deleted <> TRUE
-                RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
-                WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                AND SUBSTRING(tcm3.service_token_no, 2, 2) = ${hospitalCode}
-                GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0)+
-
-                COALESCE((SELECT COUNT(sc3.id)
-                    FROM token_and_charge_mapping tcm3
-                JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no AND sti.is_deleted <> TRUE
-                RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '04'
-                WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                AND SUBSTRING(tcm3.service_token_no, 2, 2) = ${hospitalCode}
-                GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0)+
-
-                COALESCE((SELECT COUNT(sc3.id)
-                        FROM token_and_charge_mapping tcm3
-                JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no AND sti.is_deleted <> TRUE
-                RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '05'
-                WHERE DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
-                AND SUBSTRING(tcm3.service_token_no, 2, 2) = ${hospitalCode}
-                GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0)) AS total_service
+                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) != '01'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND sti.is_deleted <> TRUE AND sti.visit_type_id!=3
+                AND SUBSTRING(tcm2.service_token_no, 2, 2) = ${hospitalCode} GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
+                -- Followup Patient count
+                COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
+                    WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
+                    AND sti.is_deleted <> TRUE AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}
+                     GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)+
+                -- Followup Patient Pathology count
+                COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
+                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) != '01'
+                WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND sti.is_deleted <> TRUE AND sti.visit_type_id=3
+                AND SUBSTRING(tcm2.service_token_no, 2, 2) = ${hospitalCode} GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
+                -- Medicine Sales count
+                COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
+                WHERE sell_date = c.date_field AND hospital_code= ${hospitalCode} GROUP BY sell_date ),0)
+                     ) AS total_service
 
                 FROM calendar c
-            WHERE c.date_field BETWEEN :fromDate AND :toDate) tmp
+               WHERE c.date_field BETWEEN :fromDate AND :toDate) tmp
             GROUP BY month_name ORDER BY date_field;
         """
 

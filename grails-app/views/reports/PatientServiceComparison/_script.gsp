@@ -119,7 +119,7 @@
             sortable: true,
             resizable: true,
             reorderable: true,
-            dataBound: gridDataBound,
+            dataBound: dataBoundGrid,
             pageable: false,
             columns: [
                 {
@@ -164,7 +164,7 @@
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?'':total_served#",
+                    template: "#=is_holiday?holiday_status:total_served#",
                     footerTemplate: "#=sum#"
                 }
             ],
@@ -174,5 +174,19 @@
         });
         gridDetails = $("#gridDetails").data("kendoGrid");
     }
+    function dataBoundGrid(e) {
+        var grid = e.sender;
+        var data = grid.dataSource.data();
+        $.each(data, function (i, row) {
+            if(row.total_patient>row.total_served){
+                $('tr[data-uid="' + row.uid + '"] ').css("color", "#e60000"); // light red
+                $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");
+            }
+            if (row.is_holiday) {
+                $('tr[data-uid="' + row.uid + '"] ').css("background-color", "#fee7df");  //light red
+                $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
+            }
+        });
 
+    }
 </script>
