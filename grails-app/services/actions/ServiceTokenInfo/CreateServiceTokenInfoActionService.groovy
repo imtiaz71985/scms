@@ -12,6 +12,7 @@ import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
+import service.RegistrationInfoService
 import service.ServiceHeadInfoService
 import service.ServiceTokenRelatedInfoService
 
@@ -23,6 +24,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     private Logger log = Logger.getLogger(getClass())
 
     ServiceHeadInfoService serviceHeadInfoService
+    RegistrationInfoService registrationInfoService
     ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
 
     @Transactional
@@ -153,6 +155,8 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     }
 
     public Map buildSuccessResultForUI(Map result) {
+        String msg = registrationInfoService.patientServed()
+        result.put('patientServed', msg)
         return super.setSuccess(result, '<div style="font-size: 16px">Data Saved successfully. Token No: <b>' + result.serviceTokenNo + '</b></div>')
     }
 

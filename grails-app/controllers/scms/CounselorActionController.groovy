@@ -37,12 +37,7 @@ class CounselorActionController extends BaseController {
 
 
     def show() {
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        Date fromDate,toDate
-            fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
-            toDate=DateUtility.getSqlToDateWithSeconds(new Date())
-        List<GroovyRowResult> lst = registrationInfoService.listOfPatientAndService(hospital_code,fromDate,toDate)
-        String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
+        String msg = registrationInfoService.patientServed()
         render(view: "/counselorAction/show", model: [patientServed:msg])
     }
     def showConsultancy() {

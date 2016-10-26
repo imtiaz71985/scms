@@ -38,8 +38,7 @@
                         </button>
                     </div>
             <div class="col-md-3 pull-right" id="divPatientServed">
-                <app:patientServed></app:patientServed>
-                %{--<input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold; text-align: center;" >--}%
+                <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold; text-align: center;" >
             </div>
 
                 </div>

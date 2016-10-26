@@ -33,7 +33,7 @@
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
         $('#counselorActionGridRow').show();
-        %{--$('#lblPatientServed').val('${patientServed}')--}%
+        $('#lblPatientServed').val('${patientServed}');
         dropDownDiseaseCode = initKendoDropdown($('#diseaseCode'), null, null, null);
 
         // initialize form with kendo validator & bind onSubmit event
@@ -125,7 +125,6 @@
     }
     function resetBasicData() {
         for (var i in checkedIds) delete checkedIds[i];
-
         chargeAmt = 0;
     }
     function executePostCondition(result) {
@@ -135,6 +134,7 @@
         } else {
             try {
                 bootboxAlert(result.message);
+                $('#lblPatientServed').val(result.patientServed);
                 resetForm();
             } catch (e) {
                 // Do Nothing
