@@ -356,7 +356,7 @@
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateLink(date_field,formatAmount(medicine_sales),'medicineSellInfo','showLink')#",
+                            template: "#=is_holiday?'':navigateLinkAmt(date_field,medicine_sales,'medicineSellInfo','showLink')#",
                             footerTemplate: "#=sum#"
                         }, {
                             field: "return_amt", title: "Return",
@@ -364,7 +364,7 @@
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=is_holiday?'':navigateLink(date_field,formatAmount(return_amt),'MedicineReturn','showLink')#",
+                            template: "#=is_holiday?'':navigateLinkAmt(date_field,return_amt,'MedicineReturn','showLink')#",
                             footerTemplate: "#=sum#"
                         }
                     ]
@@ -393,6 +393,13 @@
         var hospitalCode = dropDownHospitalCode.value();
         if(value>0){
             return '<a href="/scms#'+controller+'/'+action+'?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
+        }
+        return value;
+    }
+    function navigateLinkAmt(dateField,value,controller,action){
+        var hospitalCode = dropDownHospitalCode.value();
+        if(value>0){
+            return '<a href="/scms#'+controller+'/'+action+'?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+formatAmount(value)+'</a>';
         }
         return value;
     }
