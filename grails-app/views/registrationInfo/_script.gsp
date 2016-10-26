@@ -132,6 +132,7 @@
                         fatherOrMotherName: { type: "string" },
                         dateOfBirth: { type: "date" },
                         createDate: { type: "date" },
+                        toDay: { type: "date" },
                         sexId: { type: "number" },
                         sex: { type: "string" },
                         maritalStatusId: { type: "number" },

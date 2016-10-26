@@ -43,26 +43,27 @@ class ServiceTokenRelatedInfoService extends BaseService{
         String queryStr =""
         String hospital_str = EMPTY_SPACE
         if(!hospital_code.isEmpty()) {
-            hospital_str = "AND ri.hospital_code = '${hospital_code}' "
             hospital_str=" SUBSTRING(st.service_token_no,2,2)='${hospital_code}' AND "
         }
             queryStr = """
-           SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
-                  COALESCE(st.service_token_no,'') AS serviceTokenNo,CONVERT(st.service_date,DATE) AS serviceDate,st.subsidy_amount AS subsidyAmount,
+
+                    SELECT  ri.date_of_birth AS dateOfBirth,ri.reg_no AS regNo,ri.patient_name AS patientName,ri.mobile_no AS mobileNo,
+                  COALESCE(sti.service_token_no,'') AS serviceTokenNo,CONVERT(sti.service_date,DATE) AS serviceDate,sti.subsidy_amount AS subsidyAmount,
                   SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
                   SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
-                  COALESCE(SUM(sc.charge_amount)-st.subsidy_amount,0) AS totalCharge,
-                  (SELECT CASE WHEN COALESCE(GROUP_CONCAT(NAME),'')='' THEN 'Follow Up' ELSE COALESCE(GROUP_CONCAT(NAME),'') END
-                   FROM service_type WHERE (CASE WHEN id<10 THEN CONCAT(0,id) ELSE id END)
-                   IN ( SELECT SUBSTRING(sc.service_code,1,2) FROM token_and_charge_mapping tcm
-                   LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id WHERE tcm.service_token_no=st.service_token_no)) AS serviceType
+                  COALESCE(SUM(sc.charge_amount)-sti.subsidy_amount,0) AS totalCharge,
+                  (CASE WHEN sti.visit_type_id=3 AND tcm.service_charge_id>0 THEN 'Follow-up, Pathology Service'
+                        WHEN sti.visit_type_id=3 AND tcm.service_charge_id IS NULL THEN 'Follow-up'
+                        ELSE COALESCE(GROUP_CONCAT(st.name),'') END) AS serviceType
+
                    FROM registration_info ri
-                  INNER JOIN service_token_info st ON ri.reg_no=st.reg_no
-                  LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=st.service_token_no
+                  INNER JOIN service_token_info sti ON ri.reg_no=sti.reg_no
+                  LEFT JOIN token_and_charge_mapping tcm ON tcm.service_token_no=sti.service_token_no
                   LEFT JOIN service_charges sc ON tcm.service_charge_id=sc.id
-                  WHERE  ${hospital_str}  st.service_date BETWEEN '${start}' AND '${end}' AND st.is_deleted <> TRUE
-                   GROUP BY st.service_token_no
-                   ORDER BY serviceDate ASC
+                  LEFT JOIN service_type st ON CAST(SUBSTRING(sc.service_code,1,2)AS UNSIGNED)=st.id
+                  WHERE ${hospital_str} sti.service_date BETWEEN '${start}' AND '${end}'  AND sti.is_deleted <> TRUE
+                   GROUP BY sti.service_token_no
+                   ORDER BY sti.service_date ASC
         """
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
