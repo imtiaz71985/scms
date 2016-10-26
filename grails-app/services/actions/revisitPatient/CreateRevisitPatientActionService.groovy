@@ -9,6 +9,7 @@ import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
+import service.RegistrationInfoService
 
 @Transactional
 class CreateRevisitPatientActionService extends BaseService implements ActionServiceIntf{
@@ -18,6 +19,7 @@ class CreateRevisitPatientActionService extends BaseService implements ActionSer
     private static final String REVISIT_PATIENT = "revisitPatient"
 
     SpringSecurityService springSecurityService
+    RegistrationInfoService registrationInfoService
     private Logger log = Logger.getLogger(getClass())
 
     @Transactional(readOnly = true)
@@ -58,6 +60,8 @@ class CreateRevisitPatientActionService extends BaseService implements ActionSer
     }
 
     public Map buildSuccessResultForUI(Map result) {
+        String msg = registrationInfoService.patientServed()
+        result.put('patientServed',msg)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
 

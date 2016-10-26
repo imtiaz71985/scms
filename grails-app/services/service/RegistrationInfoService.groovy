@@ -82,4 +82,14 @@ class RegistrationInfoService extends BaseService {
 
         return result
     }
+
+    public String patientServed(){
+        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        Date fromDate,toDate
+        fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
+        toDate=DateUtility.getSqlToDateWithSeconds(new Date())
+        List<GroovyRowResult> lst = listOfPatientAndService(hospital_code,fromDate,toDate)
+        String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
+        return msg
+    }
 }

@@ -47,12 +47,7 @@ class RegistrationInfoController extends BaseController {
         render(view: "/registrationInfo/showNew", model: [regNo: regNo])
     }
     def show() {
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        Date fromDate,toDate
-        fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
-        toDate=DateUtility.getSqlToDateWithSeconds(new Date())
-        List<GroovyRowResult> lst = registrationInfoService.listOfPatientAndService(hospital_code,fromDate,toDate)
-        String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
+        String msg = registrationInfoService.patientServed()
         render(view: "/registrationInfo/show", model: [patientServed:msg])
     }
     def showMonthlyPatient(){
@@ -86,7 +81,6 @@ class RegistrationInfoController extends BaseController {
     }
     def revisitPatientInfoEntry() {
         renderOutput(createRevisitPatientActionService, params)
-
     }
     def list() {
         renderOutput(listRegistrationInfoActionService, params)
@@ -119,5 +113,4 @@ class RegistrationInfoController extends BaseController {
         Map result = [unionId: resultMap.unionId,upazilaId: resultMap.upazilaId,districtId: resultMap.districtId]
         render result as JSON
     }
-
 }

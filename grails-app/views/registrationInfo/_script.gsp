@@ -7,7 +7,7 @@
         <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
     </sec:access>--}%
     <sec:access url="/registrationInfo/reIssue">
-        <li onclick="reIssueRegNo();"><i class="fa fa-check-circle-o"></i>Reissue</li>
+        <li onclick="reIssueRegNo();"><i class="fa fa-cog"></i>Reissue</li>
     </sec:access>
     <sec:access url="/registrationInfo/revisitPatientInfoEntry">
         <li onclick="revisitPatient();"><i class="fa fa-check-circle-o"></i>Revisit</li>
@@ -261,6 +261,7 @@
            return false;
        }
        resetForm();
+       $('#lblPatientServed').val(data.patientServed);
        showSuccess(data.message);
     }
     function executePostConditionForDelete(data){

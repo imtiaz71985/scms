@@ -1,15 +1,12 @@
 package actions.ServiceChargeFreeDays
 
 import com.scms.ServiceChargeFreeDays
-import com.scms.ServiceCharges
-import com.scms.ServiceChargeFreeDays
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
-import service.ServiceHeadInfoService
 
 @Transactional
 class CreateServiceChargeFreeDaysActionService extends BaseService implements ActionServiceIntf {
