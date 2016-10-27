@@ -4,10 +4,12 @@ import com.model.ListRegistrationInfoActionServiceModel
 import com.scms.SecUser
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
+import service.RegistrationInfoService
 import service.SecUserService
 
 @Transactional
@@ -15,6 +17,7 @@ class ListRegistrationInfoActionService extends BaseService implements ActionSer
 
     SecUserService secUserService
     SpringSecurityService springSecurityService
+    RegistrationInfoService registrationInfoService
     private Logger log = Logger.getLogger(getClass())
 
     /**
@@ -43,21 +46,43 @@ class ListRegistrationInfoActionService extends BaseService implements ActionSer
             Map resultMap
             if (result.dateField) {
                 Date dateField = DateUtility.parseDateForDB(result.dateField)
+                String visitType = result.visitType
+
                 if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
-                    Closure param = {
-                        'between'('createDate', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
+
+                    if (visitType.equals("revisit")) {
+                        List<GroovyRowResult> lst=registrationInfoService.listOfRevisitPatient('', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))/
+
+                        result.put(LIST, lst)
+                        result.put(COUNT, lst.size())
+                        return result
+                    }else {
+                        Closure param = {
+                            'between'('createDate', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
+                        }
+                        resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
                     }
-                    resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
+
+
                 } else {
                     String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
 
-                    Closure param = {
-                        'and' {
-                            'eq'('hospitalCode', hospitalCode)
-                            'between'('createDate', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
-                        }
+                    if (visitType.equals("revisit")) {
+                        List<GroovyRowResult> lst=registrationInfoService.listOfRevisitPatient(hospitalCode, DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
+                        result.put(LIST, lst)
+                        result.put(COUNT, lst.size())
+                        return result
                     }
-                    resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
+                    else{
+                        Closure param = {
+                            'and' {
+                                'eq'('hospitalCode', hospitalCode)
+                                'between'('createDate', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
+                            }
+                        }
+                        resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
+                    }
+
                 }
             } else {
                 if (result.isNew == 'Yes') {

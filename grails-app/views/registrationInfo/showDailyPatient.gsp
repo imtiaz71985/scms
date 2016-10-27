@@ -6,11 +6,12 @@
 </div>
 
 <script language="javascript">
-    var gridRegistrationInfo, dataSourceGrid,dateField;
+    var gridRegistrationInfo, dataSourceGrid,dateField,visitType,rowNumber=1;
 
     $(document).ready(function () {
-        defaultPageTile("Registration Info", "registrationInfo/show");
+        defaultPageTile("Registration Info", "reports/showMonthlyStatus");
         dateField = '${dateField}';
+        visitType = '${visitType}';
         initRegistrationInfoGrid();
     });
 
@@ -18,7 +19,7 @@
         dataSourceGrid = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'registrationInfo', action: 'list')}?dateField="+dateField,
+                    url: "${createLink(controller: 'registrationInfo', action: 'list')}?dateField="+dateField+"&visitType="+visitType,
                     dataType: "json",
                     type: "post"
                 }
@@ -52,7 +53,7 @@
             },
             sort: {field: 'createDate', dir: 'desc'},
 
-            pageSize: getDefaultPageSize(),
+            pageSize: false,
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -69,13 +70,10 @@
             resizable: true,
             reorderable: true,
             dataBound: gridDataBound,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4
-            },
+            pageable: false,
             columns: [
-                {field: "regNo", title: "Reg No", width: 40, sortable: false, filterable: kendoCommonFilterable(97)},
+                {title: "SL#", width: 15, sortable: false, filterable: false,template:"#= rowNumber++ #"},
+                {field: "regNo", title: "Reg No", width: 50, sortable: false, filterable: kendoCommonFilterable(97)},
                 {
                     field: "patientName",
                     title: "Name",
@@ -91,15 +89,15 @@
                     filterable: kendoCommonFilterable(97)
                 },
                 {
+                    field: "dateOfBirth", title: "Age", width: 40, sortable: false, filterable: false,
+                    template: "#=evaluateDateRange(dateOfBirth, new Date())#"
+                },
+                {
                     field: "address",
                     title: "Address",
                     width: 170,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
-                },
-                {
-                    field: "dateOfBirth", title: "Age", width: 50, sortable: false, filterable: false,
-                    template: "#=evaluateDateRange(dateOfBirth, new Date())#"
                 }
             ],
             filterable: {

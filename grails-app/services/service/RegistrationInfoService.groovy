@@ -82,7 +82,6 @@ class RegistrationInfoService extends BaseService {
 
         return result
     }
-
     public String patientServed(){
         String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         Date fromDate,toDate
@@ -91,5 +90,35 @@ class RegistrationInfoService extends BaseService {
         List<GroovyRowResult> lst = listOfPatientAndService(hospital_code,fromDate,toDate)
         String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
         return msg
+    }
+    public List<GroovyRowResult> listOfRevisitPatient(String hospitalCode, Date fromDate, Date toDate) {
+        String hospital_rp = EMPTY_SPACE
+
+
+        if (hospitalCode.length() > 1) {
+
+            hospital_rp = """
+               AND rp.hospital_code='${hospitalCode}'
+            """
+        }
+        String queryStr = """
+               SELECT ri.reg_no AS id,0 AS VERSION, ri.date_of_birth dateOfBirth,ri.father_or_mother_name fatherOrMotherName,ri.patient_name patientName,ri.reg_no regNo,SUBSTRING(ri.reg_no,1,2) AS hospitalCode,ri.mobile_no mobileNo,
+                      CONCAT('Vill:',v.name,', Union:',u.name,', Upazila:',up.name,', Dist:',d.name) AS address,ri.create_date createDate,DATE(rp.create_date) AS revisitDate,
+                      se.name AS maritalStatus,ri.marital_status_id maritalStatusId,se1.name AS sex,ri.sex_id sexId,ri.village_id AS village,u.id AS unionId,up.id AS upazilaId,d.id AS districtId
+                      FROM registration_info ri
+                      JOIN revisit_patient rp ON rp.reg_no = ri.reg_no
+                      LEFT JOIN village v ON ri.village_id=v.id
+                      LEFT JOIN st_union u ON v.union_id=u.id
+                      LEFT JOIN upazila up ON u.upazila_id=up.id
+                      LEFT JOIN district d ON up.district_id=d.id
+                      LEFT JOIN system_entity se ON ri.marital_status_id=se.id
+                      LEFT JOIN system_entity se1 ON ri.sex_id=se1.id
+                      WHERE ri.is_active!=FALSE AND rp.create_date BETWEEN '${fromDate}' AND '${toDate}'
+                       """+hospital_rp+""" ORDER BY rp.create_date DESC;
+        """
+
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+
+        return result
     }
 }

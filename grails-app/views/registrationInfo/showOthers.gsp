@@ -6,10 +6,10 @@
 </div>
 
 <script language="javascript">
-    var gridRegistrationInfo, dataSourceGrid,dateField, visitType;
+    var gridRegistrationInfo, dataSourceGrid,dateField, visitType,rowNumber=1;
 
     $(document).ready(function () {
-        defaultPageTile("Patient Info", "registrationInfo/show");
+        defaultPageTile("Patient Info", "reports/showMonthlyStatus");
         dateField = '${dateField}';
         visitType = '${visitType}';
         initRegistrationInfoGrid();
@@ -56,7 +56,7 @@
             },
             sort: {field: 'serviceDate', dir: 'asc'},
 
-            pageSize: getDefaultPageSize(),
+            pageSize: false,
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -73,12 +73,9 @@
             resizable: true,
             reorderable: true,
             dataBound: gridDataBound,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4
-            },
+            pageable:false,
             columns: [
+                {title: "SL#", width: 15, sortable: false, filterable: false,template:"#= rowNumber++ #"},
                 {field: "serviceTokenNo", title: "Service Token No", width: 60, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "serviceDate", title: "Service Date", width: 70, sortable: false, filterable: false,
                 template:"#=kendo.toString(kendo.parseDate(serviceDate, 'yyyy/MM/dd HH:mm:ss'), 'dd/MM/yy hh:mm tt')#"},

@@ -52,7 +52,7 @@ class RegistrationInfoController extends BaseController {
     }
     def showMonthlyPatient(){
         String viewStr = "/registrationInfo/showDailyPatient"
-        if(params.visitType=='followup'||params.visitType=='revisit'){
+        if(params.visitType=='followup'){
             viewStr = "/registrationInfo/showOthers"
         }
         if(params.visitType=='reissue'){

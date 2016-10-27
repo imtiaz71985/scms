@@ -6,10 +6,10 @@
 </div>
 
 <script language="javascript">
-    var gridRegistrationInfo, dataSourceGrid,dateField;
+    var gridRegistrationInfo, dataSourceGrid,dateField,rowNumber=1;
 
     $(document).ready(function () {
-        defaultPageTile("Patient Info", "registrationInfo/show");
+        defaultPageTile("Patient Info", "reports/showMonthlyStatus");
         dateField = '${dateField}';
         initRegistrationInfoGrid();
     });
@@ -53,7 +53,7 @@
             },
             sort: {field: 'reissueDate', dir: 'asc'},
 
-            pageSize: getDefaultPageSize(),
+            pageSize: false,
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -70,12 +70,9 @@
             resizable: true,
             reorderable: true,
             dataBound: gridDataBound,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4
-            },
+            pageable:false,
             columns: [
+                {title: "SL#", width: 15, sortable: false, filterable: false,template:"#= rowNumber++ #"},
                 {field: "regNo", title: "Registration No", width: 60, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "reissueDate", title: "Reissue Date", width: 70, sortable: false, filterable: false,
                 template:"#=kendo.toString(kendo.parseDate(reissueDate, 'yyyy/MM/dd HH:mm:ss'), 'dd/MM/yy hh:mm tt')#"},

@@ -4,7 +4,7 @@
     </div>
 </div>
 <script language="JavaScript">
-    var gridCounselorServiceList, dataSource,hospitalCode,dateField;
+    var gridCounselorServiceList, dataSource,hospitalCode,dateField,rowNumber=1;
     $(document).ready(function () {
         onLoadCounselorActionPage();
         initServiceInfoGrid();
@@ -13,7 +13,7 @@
     function onLoadCounselorActionPage() {
         hospitalCode = '${hospitalCode}';
         dateField = '${dateField}';
-        defaultPageTile("Service List", "counselorAction/showServiceList");
+        defaultPageTile("Service List", "reports/showMonthlyStatus");
     }
     function initDataSourceRegAndServiceInfo() {
         dataSource = new kendo.data.DataSource({
@@ -69,11 +69,16 @@
                     dataBound: gridDataBound,
                     pageable: false,
                     columns: [
+                        {title: "SL#", width: 15, sortable: false, filterable: false,template:"#= rowNumber++ #"},
                         {
                             field: "reg_no", title: "Registration No", width: 60, sortable: false, filterable: false
                         },
                         {
                             field: "patient_name", title: "Name", width: 80, sortable: false,filterable: false
+                        },
+                        {
+                            field: "date_of_birth", title: "Age", width: 30, sortable: false, filterable: false,
+                            template: "#=evaluateDateRange(date_of_birth, new Date())#"
                         },
                         {
                             field: "service_token_no", title: "Token No", width: 70, sortable: false,filterable: false
@@ -83,11 +88,7 @@
                             template: "#=kendo.toString(kendo.parseDate(service_date, 'yyyy-MM-dd hh:mm:ss'), 'dd/MM/yyyy hh:mm:ss tt')#"
                         },
                         {
-                            field: "date_of_birth", title: "Age", width: 30, sortable: false, filterable: false,
-                            template: "#=evaluateDateRange(date_of_birth, new Date())#"
-                        },
-                        {
-                            field: "diagnosis_info", title: "diagnosis_info Info", width: 120, sortable: false,
+                            field: "diagnosis_info", title: "Diagnosis", width: 120, sortable: false,
                             filterable: false, attributes: {style: setFontSize()}
                         },
                         {

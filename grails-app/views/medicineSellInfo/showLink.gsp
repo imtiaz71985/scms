@@ -12,10 +12,10 @@
     </div>
 </div>
 <script language="javascript">
-    var gridMedicineSellInfo, dataSource,dateField;
+    var gridMedicineSellInfo, dataSource,dateField,rowNumber=1;
 
     $(document).ready(function () {
-        defaultPageTile("Sale Medicine", "medicineSellInfo/show");
+        defaultPageTile("Sale Medicine", "reports/showMonthlyStatus");
         dateField = '${dateField}';
         initMedicineSellInfoGrid();
     });
@@ -69,6 +69,7 @@
             dataBound: gridDataBound,
             pageable: false,
             columns: [
+                {title: "SL#", width: 15, sortable: false, filterable: false,template:"#= rowNumber++ #"},
                 {
                     field: "sellDate", title: "Date", width: 100, sortable: false,
                     filterable: {cell: {template: formatFilterableDate, showOperators:false}},

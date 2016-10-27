@@ -130,24 +130,24 @@ class ServiceTokenRelatedInfoService extends BaseService{
             }
         }
         String queryStr = """
-             SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
-                    COALESCE(GROUP_CONCAT(di.name),'Followup') AS consultancy_info,ri.mobile_no,tcm.create_date AS service_date,
+            SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
+                     COALESCE(GROUP_CONCAT(di.name),'Counselor Service') AS consultancy_info,
+                    ri.mobile_no,tcm.create_date AS service_date,
                     CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address,
                     sc.charge_amount AS consultancy_amt
                         FROM token_and_charge_mapping tcm
-                            LEFT JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
-                            LEFT JOIN registration_info ri ON ri.reg_no = sti.reg_no
+                            JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
+                            JOIN registration_info ri ON ri.reg_no = sti.reg_no
                             LEFT JOIN village v ON v.id = ri.village_id
                             LEFT JOIN st_union u ON v.union_id=u.id
                             LEFT JOIN upazila up ON u.upazila_id=up.id
                             LEFT JOIN district d ON up.district_id=d.id
                             LEFT JOIN system_entity se ON ri.sex_id=se.id
-                            RIGHT JOIN service_charges sc ON sc.id = tcm.service_charge_id
-                                AND (LEFT(sc.service_code,2)='02' OR LEFT(sc.service_code,2)='04')
-                            LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = tcm.service_token_no
+                            RIGHT JOIN service_charges sc ON sc.id = tcm.service_charge_id AND (LEFT(sc.service_code,2)='02' OR LEFT(sc.service_code,2)='04')
+                            LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = sti.service_token_no
                             LEFT JOIN disease_info di ON di.disease_code=tdm.disease_code
-                        WHERE  sti.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
-                             ${hospital_str}
+                        WHERE  sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND tcm.create_date BETWEEN '${start}' AND '${end}'
+                              ${hospital_str}
                         GROUP BY tcm.service_token_no
         """
         List<GroovyRowResult> result = executeSelectSql(queryStr)
@@ -167,8 +167,8 @@ class ServiceTokenRelatedInfoService extends BaseService{
                     CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address,
                     sti.subsidy_amount AS subsidy_amt
                         FROM token_and_charge_mapping tcm
-                            LEFT JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
-                            LEFT JOIN registration_info ri ON ri.reg_no = sti.reg_no
+                            JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
+                            JOIN registration_info ri ON ri.reg_no = sti.reg_no
                             LEFT JOIN village v ON v.id = ri.village_id
                             LEFT JOIN st_union u ON v.union_id=u.id
                             LEFT JOIN upazila up ON u.upazila_id=up.id

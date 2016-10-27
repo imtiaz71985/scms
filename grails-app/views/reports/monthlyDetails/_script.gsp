@@ -25,7 +25,7 @@
 
         initializeForm($("#detailsForm"), onSubmitForm);
         // update page title
-        defaultPageTile("Monthly Report", null);
+        defaultPageTile("Monthly Report", 'reports/showMonthlyStatus');
     }
 
     function executePreCondition() {

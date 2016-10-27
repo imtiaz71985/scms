@@ -154,7 +154,7 @@
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {
-                    field: "saleAmt", title: "Sale Amt", width: 40, sortable: false, filterable: false,
+                    field: "saleAmt", title: "Sale(৳)", width: 40, sortable: false, filterable: false,
                     template: "#=formatAmount(saleAmt)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
@@ -163,7 +163,7 @@
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {
-                    field: "returnAmt", title: "Return Amt", width: 40, sortable: false, filterable: false,
+                    field: "returnAmt", title: "Return(৳)", width: 40, sortable: false, filterable: false,
                     template: "#=formatAmount(returnAmt)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 }
