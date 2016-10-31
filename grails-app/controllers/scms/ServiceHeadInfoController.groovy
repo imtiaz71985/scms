@@ -12,6 +12,7 @@ import service.ServiceHeadInfoService
 
 class ServiceHeadInfoController extends BaseController{
     SpringSecurityService springSecurityService
+
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
     ]
@@ -37,7 +38,7 @@ class ServiceHeadInfoController extends BaseController{
 
     }
     def list() {
-        List<GroovyRowResult> lst=serviceHeadInfoService.serviceHeadInfoList()
+        List<GroovyRowResult> lst=serviceHeadInfoService.serviceHeadInfoList(params)
 
         Map result=new HashedMap()
         result.put('list', lst)

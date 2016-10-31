@@ -3,8 +3,16 @@
         <div id="gridCounselorServiceList"></div>
     </div>
 </div>
+<script type="text/x-kendo-template" id="gridToolbar">
+<ul id="menuGrid" class="kendoGridMenu" >
+    <li onclick="historyBack();"><i class="fa fa-backward"></i>Back to previous page</li>
+    <li class="pull-right">
+        <span  id="lblDiagnosisSummary" class="form-control" style=" font-weight: bold; padding-top: 5px;" ></span>
+    </li>
+</ul>
+</script>
 <script language="JavaScript">
-    var gridCounselorServiceList, dataSource,hospitalCode,dateField,rowNumber=1;
+    var gridCounselorServiceList, dataSource,hospitalCode,dateField,rowNumber= 1,pathologyCount;
     $(document).ready(function () {
         onLoadCounselorActionPage();
         initServiceInfoGrid();
@@ -13,6 +21,7 @@
     function onLoadCounselorActionPage() {
         hospitalCode = '${hospitalCode}';
         dateField = '${dateField}';
+        pathologyCount='${pathologyCount}';
         defaultPageTile("Service List", "reports/showMonthlyStatus");
     }
     function initDataSourceRegAndServiceInfo() {
@@ -43,6 +52,8 @@
                 },
                 parse: function (data) {
                     checkIsErrorGridKendo(data);
+                    var msg=pathologyCount +' diagnosis provided to '+data.count+' patients.';
+                   $('#lblDiagnosisSummary').text(msg);
                     return data;
                 }
             },
@@ -100,7 +111,7 @@
                             footerTemplate: "#=formatAmount(sum)#"
                         }
                     ],
-                    toolbar: kendo.template($("#gridToolbarBase").html())
+                    toolbar: kendo.template($("#gridToolbar").html())
                 }
         );
         gridCounselorServiceList = $("#gridCounselorServiceList").data("kendoGrid");

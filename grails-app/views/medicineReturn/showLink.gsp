@@ -12,7 +12,7 @@
 </ul>
 </script>
 <script language="javascript">
-    var gridMedicineSellReturnInfo, dataSource,dateField;
+    var gridMedicineSellReturnInfo, dataSource,dateField,rowNumber=1;
 
     $(document).ready(function () {
         defaultPageTile("Medicine return", "medicineReturn/show");
@@ -70,6 +70,7 @@
             dataBound: gridDataBound,
             pageable: false,
             columns: [
+                {title: "SL#", width: 15, sortable: false, filterable: false,template:"#= rowNumber++ #"},
                 {
                     field: "returnDate", title: "Return Date", width: 100, sortable: false,
                     filterable: {cell: {template: formatFilterableDate,showOperators: false}},

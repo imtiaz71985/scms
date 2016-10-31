@@ -47,7 +47,7 @@ class CounselorActionController extends BaseController {
         render(view: "/counselorAction/showSubsidy", model: [hospitalCode:params.hospitalCode,dateField:params.dateField])
     }
     def showDiagnosis() {
-        render(view: "/counselorAction/showDiagnosis", model: [hospitalCode:params.hospitalCode,dateField:params.dateField])
+        render(view: "/counselorAction/showDiagnosis", model: [hospitalCode:params.hospitalCode,dateField:params.dateField,pathologyCount:params.serviceCount])
     }
 
     def consultancyList() {
@@ -85,6 +85,7 @@ class CounselorActionController extends BaseController {
         Map result = new HashedMap()
         result.put('list', lst)
         result.put('count', lst.size())
+
         render result as JSON
     }
 

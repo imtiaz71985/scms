@@ -392,7 +392,7 @@
     function navigateLink(dateField,value,controller,action){
         var hospitalCode = dropDownHospitalCode.value();
         if(value>0){
-            return '<a href="/scms#'+controller+'/'+action+'?dateField='+dateField+'&hospitalCode='+hospitalCode+'">'+value+'</a>';
+            return '<a href="/scms#'+controller+'/'+action+'?dateField='+dateField+'&hospitalCode='+hospitalCode+'&serviceCount='+value+'">'+value+'</a>';
         }
         return value;
     }
