@@ -59,8 +59,7 @@ class ServiceHeadInfoService extends  BaseService {
 
         return result
     }
-    public  List<GroovyRowResult> serviceHeadInfoList(GrailsParameterMap parameterMap){
-        initListing(parameterMap)
+    public  List<GroovyRowResult> serviceHeadInfoList(){
 
         String queryStr = """
                     SELECT sh.service_code AS serviceCode,sc.id, 0 AS VERSION,sh.name,sc.charge_amount AS chargeAmount,
@@ -75,14 +74,10 @@ class ServiceHeadInfoService extends  BaseService {
                                 ON sh.service_code=sc.service_code
                     LEFT JOIN service_type st ON sh.service_type_id=st.id
                     ORDER BY  st.name, sh.name ASC
-                    LIMIT :resultPerPage OFFSET :start;
-        """
-        Map queryParams = [
-                start         : start,
-                resultPerPage : resultPerPage
 
-        ]
-        List<GroovyRowResult> result = executeSelectSql(queryStr,queryParams)
+        """
+
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
 
         return result
     }

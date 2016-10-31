@@ -38,7 +38,7 @@ class ServiceHeadInfoController extends BaseController{
 
     }
     def list() {
-        List<GroovyRowResult> lst=serviceHeadInfoService.serviceHeadInfoList(params)
+        List<GroovyRowResult> lst=serviceHeadInfoService.serviceHeadInfoList()
 
         Map result=new HashedMap()
         result.put('list', lst)

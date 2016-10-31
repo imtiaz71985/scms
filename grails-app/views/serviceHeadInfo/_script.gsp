@@ -145,9 +145,9 @@
                     return data;
                 }
             },
-            pageSize: 50,
+            pageSize: false,
             serverPaging: true,
-            serverFiltering: true,
+            serverFiltering: false,
             serverSorting: true
         });
     }
@@ -161,11 +161,7 @@
             sortable: true,
             resizable: true,
             reorderable: true,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4
-            },
+            pageable:false,
             columns: [
                 {
                     field: "serviceCode",
