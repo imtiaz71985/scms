@@ -118,10 +118,10 @@
         $("#menuGrid").kendoMenu();
     }
     function setCAlignRight() {
-        return "text-align:right;font-size:7pt;";
+        return "text-align:right;font-size:11pt;";
     }
     function setFontSize() {
-        return "font-size:7pt;";
+        return "font-size:11pt;";
     }
     function gridDataBound(e) {
         var grid = e.sender;
