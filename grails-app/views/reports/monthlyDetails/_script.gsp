@@ -73,8 +73,9 @@
                 $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
             }
             if(row.total_patient>row.total_served){
-                $('tr[data-uid="' + row.uid + '"] ').css("color", "#e60000"); // light red
-                $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");
+                $('tr[data-uid="' + row.uid + '"] ').css("color", "#e60000"); // red
+                $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");// font bold
+
             }
         });
         $("#footerSpan").text(formatAmount(grandTotal));
