@@ -72,6 +72,10 @@
                 $('tr[data-uid="' + row.uid + '"] ').css("background-color", "#fee7df");  //light red
                 $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
             }
+            if(row.total_patient>row.total_served){
+                $('tr[data-uid="' + row.uid + '"] ').css("color", "#e60000"); // light red
+                $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");
+            }
         });
         $("#footerSpan").text(formatAmount(grandTotal));
     }
@@ -110,7 +114,8 @@
                         patient_followup_amt: {type: "number"},
                         patient_revisit: {type: "number"},
                         total_patient: {type: "number"},
-                        total_service: {type: "number"}
+                        total_service: {type: "number"},
+                        total_served: {type: "number"}
                     }
                 },
                 parse: function (data) {

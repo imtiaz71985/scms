@@ -183,7 +183,11 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
                 WHERE sell_date = c.date_field AND hospital_code= ${hospitalCode} GROUP BY sell_date ),0)
-                     ) AS total_service
+                     ) AS total_service,
+        -- Total served patient
+                COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
+                WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE  AND SUBSTRING(sti.service_token_no, 2, 2) = ${hospitalCode}
+                GROUP BY DATE(sti.service_date)),0) AS total_served
 
                 FROM calendar c
                WHERE c.date_field BETWEEN :fromDate AND :toDate
@@ -317,7 +321,11 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
                 WHERE sell_date = c.date_field GROUP BY sell_date ),0)
-                     ) AS total_service
+                     ) AS total_service,
+        -- Total served patient
+                COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
+                WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE  AND SUBSTRING(sti.service_token_no, 2, 2) = ${hospitalCode}
+                GROUP BY DATE(sti.service_date)),0) AS total_served
 
                 FROM calendar c
                 WHERE c.date_field BETWEEN :fromDate AND :toDate
