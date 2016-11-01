@@ -189,6 +189,7 @@
         $('#chkboxMedicine').val('');
         $('#chkboxDocReferral').val('');
         $("#gridCounselorAction").data('kendoGrid').dataSource.read();
+        $('#diseaseCodeForChargeFree').val('');
         resetBasicData();
     }
     function initDataSourceRegAndServiceInfo() {
@@ -665,15 +666,14 @@
     }
     function getReferenceNoWiseDisease() {
         var tokenNo = $("#referenceServiceNoDDL").val();
-            $('#divReferenceNoWiseDisease').show();
-            var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDiseaseOfReferenceTokenNo')}?tokenNo=" + tokenNo;
+
+        var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDiseaseOfReferenceTokenNo')}?tokenNo=" + tokenNo;
 
             jQuery.ajax({
                 type: 'post',
                 //data: jQuery("#counselorActionForm").serialize(),
                 url: actionUrl,
                 success: function (data, textStatus) {
-                    $('#isChargeApplyInThisToken').val(data.isChargeApply);
 
                      $('#serviceCharges').val('0');
                      $('#subsidyAmount').val('');
@@ -681,12 +681,11 @@
                      $("#selectedConsultancyId").val('');
                     dropDownDiseaseGroup.value(data.lstDiseaseInfo[0].groupId);
 
-                    //$('#diseaseGroupId').data("kendoDropDownList").readonly(true);
-                   // $('#diseaseCode').data("kendoDropDownList").readOnly(true);
                     if(data.isChargeApply){
-                      getConsultationFees();
+                        getConsultationFees();
                     }
                     else{
+                        $('#diseaseCodeForChargeFree').val(data.lstDiseaseInfo[0].disease_code);
                         loadDisease();
                     }
                     dropDownDiseaseCode.value(data.lstDiseaseInfo[0].disease_code);
@@ -703,11 +702,10 @@
 
     }
     function getConsultationFees() {
-        var diseaseId = $("#diseaseGroupId").val();
+        var groupId = $("#diseaseGroupId").val();
         loadDisease();
-        if (diseaseId != '') {
             $.ajax({
-                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + diseaseId,
+                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + groupId,
                 success: function (data) {
                     if (data.isError) {
                         showError(data.message);
@@ -716,12 +714,6 @@
                     $('#serviceCharges').val(data.totalCharge);
                     $('#selectedConsultancyId').val(data.chargeIds);
 
-                    if($('#isChargeApplyInThisToken').val()=='false'){
-                        $('#serviceCharges').val('0');
-                        $('#subsidyAmount').val('');
-                        $('#payableAmount').val('0');
-                        $("#selectedConsultancyId").val('');
-                    }
                     getPayableAmount();
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -733,11 +725,6 @@
 
             });
 
-        } else {
-            $('#serviceCharges').val('0');
-            $('#subsidyAmount').val('');
-            $('#selectedConsultancyId').val('');
-        }
     }
     function loadReferralCenter() {
         if ($('#chkboxDocReferral').is(":checked")) {
@@ -792,6 +779,41 @@
                 showSuccess(result.message);
             } catch (e) {
                 // Do Nothing
+            }
+        }
+    }
+    function checkIsChargeApply() {
+        if ( $('#divReferenceServiceNo').is(":visible")) {
+            var diseaseId = $("#diseaseCode").val();
+            if( $('#diseaseCodeForChargeFree').val()!=diseaseId){
+                var groupId = $("#diseaseGroupId").val();
+                    $.ajax({
+                        url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + groupId,
+                        success: function (data) {
+                            if (data.isError) {
+                                showError(data.message);
+                                return false;
+                            }
+                            $('#serviceCharges').val(data.totalCharge);
+                            $('#selectedConsultancyId').val(data.chargeIds);
+
+                            getPayableAmount();
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            afterAjaxError(XMLHttpRequest, textStatus);
+                        },
+                        complete: function (XMLHttpRequest, textStatus) {
+                            showLoadingSpinner(false);
+                        }
+
+                    });
+
+            }
+            else{
+                $('#serviceCharges').val('0');
+                $('#subsidyAmount').val('');
+                $("#selectedConsultancyId").val('');
+                getPayableAmount();
             }
         }
     }

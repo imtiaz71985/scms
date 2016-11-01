@@ -207,13 +207,8 @@ class CounselorActionController extends BaseController {
 
     def retrieveTokenNoByRegNo() {
         String regNo = params.regNo.toString()
-        /*Timestamp toDate = DateUtility.getSqlToDateWithSeconds(new Date())
-        Calendar calNow = Calendar.getInstance()
-        calNow.add(Calendar.MONTH, -3);
-        Date dateBeforeAMonth = calNow.getTime();
-        Timestamp fromDate = DateUtility.getSqlToDateWithSeconds(dateBeforeAMonth)*/
          List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndIsDeletedAndIsFollowupNeeded(regNo, false,true, [sort: "serviceDate", order: "DESC"])
-//        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getReferenceTokenForFollowup(regNo, fromDate, toDate)
+
         lst = baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
         Map result = [lstTokenNo: lst]
         render result as JSON

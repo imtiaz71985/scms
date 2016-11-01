@@ -63,7 +63,7 @@
                 <input type="hidden" id="regNo" name="regNo"/>
                 <input type="hidden" id="selectedChargeId" name="selectedChargeId"/>
                 <input type="hidden" id="selectedConsultancyId" name="selectedConsultancyId"/>
-                <input type="hidden" id="isChargeApplyInThisToken" name="isChargeApplyInThisToken"/>
+                <input type="hidden" id="diseaseCodeForChargeFree" name="diseaseCodeForChargeFree"/>
 
                 <div class="form-group">
                     <div class="col-md-6" style=" padding-bottom: 0px;">
@@ -141,7 +141,9 @@
                                 <div class="form-group ">
                                     <label class="col-md-3 control-label">Disease:</label>
                                     <div class="col-md-9">
-                                        <select id="diseaseCode" name="diseaseCode" tabindex="13" class="kendo-drop-down">
+                                        <select id="diseaseCode" name="diseaseCode" tabindex="13"
+                                                onchange="javascript:checkIsChargeApply();"
+                                                class="kendo-drop-down">
                                         </select>
                                     </div>
                                 </div>
