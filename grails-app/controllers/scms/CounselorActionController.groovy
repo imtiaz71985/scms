@@ -231,15 +231,23 @@ class CounselorActionController extends BaseController {
         List<GroovyRowResult> lstDiseaseInfo = serviceTokenRelatedInfoService.getDiseaseOfReferenceTokenNo(tokenNo)
         Date serveDate=ServiceTokenInfo.findByServiceTokenNo(tokenNo).serviceDate
         Date fromDate=DateUtility.getSqlDate(serveDate)
-        boolean isChargeApply=true;
-        long d=DateUtility.getDaysDifference(fromDate,new Date())
-        long days=ServiceChargeFreeDays.findByServiceTypeId(5).daysForFree
-        if(d<=days)
-            isChargeApply=false
+        boolean isChargeApply=true
+        boolean isUndiagnosed=false
+
+            long d = DateUtility.getDaysDifference(fromDate, new Date())
+            long days = ServiceChargeFreeDays.findByServiceTypeId(5).daysForFree
+            if (d <= days) {
+                isChargeApply = false
+                if(lstDiseaseInfo[0].groupId==13) {
+                    isUndiagnosed = true
+                }
+            }
+
         Map result = new HashedMap()
 
         result.put('lstDiseaseInfo', lstDiseaseInfo)
         result.put('isChargeApply',isChargeApply)
+        result.put('isUndiagnosed',isUndiagnosed)
 
         render result as JSON
     }

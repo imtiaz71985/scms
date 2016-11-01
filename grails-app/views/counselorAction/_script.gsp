@@ -190,6 +190,7 @@
         $('#chkboxDocReferral').val('');
         $("#gridCounselorAction").data('kendoGrid').dataSource.read();
         $('#diseaseCodeForChargeFree').val('');
+        $("#isUndiagnosed").val('');
         resetBasicData();
     }
     function initDataSourceRegAndServiceInfo() {
@@ -679,6 +680,7 @@
                      $('#subsidyAmount').val('');
                      $('#payableAmount').val('0');
                      $("#selectedConsultancyId").val('');
+                     $("#isUndiagnosed").val(data.isUndiagnosed);
                     dropDownDiseaseGroup.value(data.lstDiseaseInfo[0].groupId);
 
                     if(data.isChargeApply){
@@ -704,6 +706,8 @@
     function getConsultationFees() {
         var groupId = $("#diseaseGroupId").val();
         loadDisease();
+
+        if($("#isUndiagnosed").val()!='true') {
             $.ajax({
                 url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + groupId,
                 success: function (data) {
@@ -724,6 +728,13 @@
                 }
 
             });
+        }
+        else{
+            $('#serviceCharges').val('0');
+            $('#subsidyAmount').val('');
+            $("#selectedConsultancyId").val('');
+            getPayableAmount();
+        }
 
     }
     function loadReferralCenter() {
@@ -785,7 +796,7 @@
     function checkIsChargeApply() {
         if ( $('#divReferenceServiceNo').is(":visible")) {
             var diseaseId = $("#diseaseCode").val();
-            if( $('#diseaseCodeForChargeFree').val()!=diseaseId){
+            if( ($('#diseaseCodeForChargeFree').val()!=diseaseId) && ($("#isUndiagnosed").val()!='true')){
                 var groupId = $("#diseaseGroupId").val();
                     $.ajax({
                         url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + groupId,

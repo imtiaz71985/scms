@@ -64,6 +64,7 @@
                 <input type="hidden" id="selectedChargeId" name="selectedChargeId"/>
                 <input type="hidden" id="selectedConsultancyId" name="selectedConsultancyId"/>
                 <input type="hidden" id="diseaseCodeForChargeFree" name="diseaseCodeForChargeFree"/>
+                <input type="hidden" id="isUndiagnosed" name="isUndiagnosed"/>
 
                 <div class="form-group">
                     <div class="col-md-6" style=" padding-bottom: 0px;">
