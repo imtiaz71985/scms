@@ -181,7 +181,6 @@
         dropDownRegistrationNo.value('');
         dropDownReferralCenter.value('');
         $('#referenceServiceNoDDL').val('');
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#counselorActionRow").hide();
         $('#searchCriteriaRow').show();
         $('#counselorActionGridRow').show();
