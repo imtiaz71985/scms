@@ -74,14 +74,14 @@ class ReportsController extends BaseController {
         result.put('count', lst.size())
         render result as JSON
     }
-    def showPatientServiceComparison() {
+    def showPatientServedSummary() {
         SecUser user = SecUser.read(springSecurityService.principal.id)
         boolean isAdmin = secUserService.isLoggedUserAdmin(user.id)
 
         String hospitalCode = HospitalLocation.findByCode(user.hospitalCode).code
-        render(view: "/reports/PatientServiceComparison/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
+        render(view: "/reports/PatientServed/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
     }
-    def listOfPatientAndService() {
+    def listOfPatientServedSummary() {
 
         String hospitalCode = ''
         Date fromDate,toDate
@@ -93,7 +93,30 @@ class ReportsController extends BaseController {
         }
 
        // List<GroovyRowResult> lst = medicineInfoService.listOfMedicineWiseSalesWithStock(hospitalCode,fromDate,toDate)
-        List<GroovyRowResult> lst = registrationInfoService.listOfPatientAndService(hospitalCode,fromDate,toDate)
+        List<GroovyRowResult> lst = registrationInfoService.listOfPatientServedSummary(hospitalCode,fromDate,toDate)
+
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
+    def showPatientServedDetails() {
+        render(view: "/reports/PatientServed/showDetails",model: [hospitalCode:params.hospitalCode,dateField:params.dateField,patientCount:params.serviceCount])
+    }
+    def listOfPatientServedDetails() {
+
+        String hospitalCode = ''
+        Date date
+        try {
+            date=DateUtility.parseDateForDB(params.dateField)
+            date=DateUtility.getSqlDate(date)
+
+
+            hospitalCode = params.hospitalCode
+        } catch (Exception ex) {
+        }
+
+        List<GroovyRowResult> lst = registrationInfoService.listOfPatientServedDetails(hospitalCode,date)
 
         Map result = new HashedMap()
         result.put('list', lst)

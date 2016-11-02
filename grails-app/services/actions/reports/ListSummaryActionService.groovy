@@ -88,20 +88,20 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE  DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                AND sti.is_deleted <> TRUE AND sti.visit_type_id=2
+                AND sti.is_deleted <> TRUE AND sti.visit_type_id<>3
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_amount,
 
                 (COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id<>3 AND DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0)+
 
                 COALESCE((SELECT COUNT(sc3.id)
                  FROM token_and_charge_mapping tcm3
                  JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no
                 RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '04'
-                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id<>3 AND DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
 
                 GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) )AS consultation_count,
 
@@ -153,7 +153,7 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE  DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                AND sti.is_deleted <> TRUE AND sti.visit_type_id=2
+                AND sti.is_deleted <> TRUE AND sti.visit_type_id=3
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS patient_followup_amt,
 
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
@@ -182,7 +182,7 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                 -- Followup Patient Pathology count
                 COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                  JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
-                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) != '01'
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '03'
                 WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND sti.is_deleted <> TRUE AND sti.visit_type_id=3
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
                 -- Medicine Sales count
@@ -226,13 +226,13 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE  DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                AND sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND SUBSTRING(tcm2.service_token_no, 2, 2) =  ${hospitalCode}
+                AND sti.is_deleted <> TRUE AND sti.visit_type_id<>3 AND SUBSTRING(tcm2.service_token_no, 2, 2) =  ${hospitalCode}
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS consultation_amount,
 
                 (COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
-                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
+                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id<>3 AND DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
                  AND SUBSTRING(tcm2.service_token_no, 2, 2) =  ${hospitalCode}
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0)+
 
@@ -240,7 +240,7 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                  FROM token_and_charge_mapping tcm3
                  JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no
                 RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '04'
-                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
+                WHERE sti.is_deleted <> TRUE AND sti.visit_type_id<>3 AND DATE_FORMAT(tcm3.create_date,'%Y-%m-%d') = c.date_field
                 AND SUBSTRING(tcm3.service_token_no, 2, 2) =  ${hospitalCode}
                 GROUP BY DATE_FORMAT(tcm3.create_date,'%Y-%m-%d')),0) )AS consultation_count,
 
@@ -294,7 +294,7 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE  DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field
-                AND sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}
+                AND sti.is_deleted <> TRUE AND sti.visit_type_id=3 AND SUBSTRING(sti.service_token_no, 2, 2) =  ${hospitalCode}
                 GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) AS patient_followup_amt,
 
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
@@ -326,7 +326,7 @@ class ListSummaryActionService extends BaseService implements ActionServiceIntf 
                 -- Followup Patient Pathology count
                 COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                  JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
-                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) != '01'
+                INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '03'
                 WHERE DATE_FORMAT(tcm2.create_date,'%Y-%m-%d') = c.date_field AND sti.is_deleted <> TRUE AND sti.visit_type_id=3
                 AND SUBSTRING(tcm2.service_token_no, 2, 2) = ${hospitalCode} GROUP BY DATE_FORMAT(tcm2.create_date,'%Y-%m-%d')),0) +
                 -- Medicine Sales count

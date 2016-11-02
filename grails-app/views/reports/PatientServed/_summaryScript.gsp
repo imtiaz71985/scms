@@ -21,9 +21,9 @@
         }).data("kendoDatePicker");
         $('#toDateTxt').kendoMaskedTextBox({mask: "00/00/0000"});
         end.min(start.value());
-        var todayDate = new Date();
+        /*var todayDate = new Date();
         $('#fromDateTxt').data("kendoDatePicker").value(todayDate);
-        $('#toDateTxt').data("kendoDatePicker").value(todayDate);
+        $('#toDateTxt').data("kendoDatePicker").value(todayDate);*/
 
         if(!${isAdmin}){
             dropDownHospitalCode.value('${hospitalCode}');
@@ -61,7 +61,7 @@
         var toDateTxt = $("#toDateTxt").val();
         showLoadingSpinner(true);
         var params = "?hospitalCode=" + hospitalCode+"&fromDate="+fromDateTxt+"&toDate="+toDateTxt;
-        var url = "${createLink(controller:'reports', action: 'listOfPatientAndService')}" + params;
+        var url = "${createLink(controller:'reports', action: 'listOfPatientServedSummary')}" + params;
         populateGridKendo(gridDetails, url);
         showLoadingSpinner(false);
     }
@@ -164,7 +164,8 @@
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=is_holiday?holiday_status:total_served#",
+                    template: "#=is_holiday?holiday_status:navigateLink(date_field,total_served,'reports','showPatientServedDetails')#",
+
                     footerTemplate: "#=sum#"
                 }
             ],
@@ -188,5 +189,12 @@
             }
         });
 
+    }
+    function navigateLink(dateField,value,controller,action){
+        var hospitalCode = dropDownHospitalCode.value();
+        if(value>0){
+            return '<a href="/scms#'+controller+'/'+action+'?dateField='+dateField+'&hospitalCode='+hospitalCode+'&serviceCount='+value+'">'+value+'</a>';
+        }
+        return value;
     }
 </script>

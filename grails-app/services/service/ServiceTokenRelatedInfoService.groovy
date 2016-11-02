@@ -48,8 +48,8 @@ class ServiceTokenRelatedInfoService extends BaseService{
                   SUM( CASE WHEN SUBSTRING(sc.service_code,1,2)='02' THEN sc.charge_amount ELSE 0 END) AS consultancyAmt,
                   SUM(CASE WHEN SUBSTRING(sc.service_code,1,2)='03' THEN sc.charge_amount ELSE 0 END )AS pathologyAmt,
                   COALESCE(SUM(sc.charge_amount)-sti.subsidy_amount,0) AS totalCharge,
-                  (CASE WHEN sti.visit_type_id=3 AND tcm.service_charge_id>0 THEN 'Follow-up, Pathology Service'
-                        WHEN sti.visit_type_id=3 AND tcm.service_charge_id IS NULL THEN 'Follow-up'
+                  (CASE WHEN sti.visit_type_id=3 AND tcm.service_charge_id>0 AND SUBSTRING(sc.service_code,1,2)='03' THEN 'Follow-up, Pathology Service'
+                        WHEN sti.visit_type_id=3 AND (tcm.service_charge_id IS NULL OR SUBSTRING(sc.service_code,1,2)='02') THEN 'Follow-up'
                         ELSE COALESCE(GROUP_CONCAT(st.name),'') END) AS serviceType
 
                    FROM registration_info ri
@@ -126,7 +126,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
                             RIGHT JOIN service_charges sc ON sc.id = tcm.service_charge_id AND (LEFT(sc.service_code,2)='02' OR LEFT(sc.service_code,2)='04')
                             LEFT JOIN token_and_disease_mapping tdm ON tdm.service_token_no = sti.service_token_no
                             LEFT JOIN disease_info di ON di.disease_code=tdm.disease_code
-                        WHERE  sti.is_deleted <> TRUE AND sti.visit_type_id=2 AND tcm.create_date BETWEEN '${start}' AND '${end}'
+                        WHERE  sti.is_deleted <> TRUE AND sti.visit_type_id<>3 AND tcm.create_date BETWEEN '${start}' AND '${end}'
                               ${hospital_str}
                         GROUP BY tcm.service_token_no
         """
@@ -171,7 +171,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
         String queryStr = """
              SELECT tcm.id,tcm.version,tcm.service_token_no,sti.reg_no,ri.patient_name,ri.date_of_birth,se.name AS gender,
                     COALESCE(GROUP_CONCAT(di.name),'Followup') AS consultancy_info,ri.mobile_no,tcm.create_date AS service_date,
-                    COALESCE(GROUP_CONCAT(shi.name),'') AS diagnosis_info,sc.charge_amount AS diagnosis_amt,
+                    COALESCE(GROUP_CONCAT(shi.name),'') AS diagnosis_info,SUM(sc.charge_amount) AS diagnosis_amt,
                     CONCAT('Vill:',COALESCE(v.name,''),', Union:',COALESCE(u.name,''),', Upazila:',COALESCE(up.name,''),', Dist:',COALESCE(d.name,'')) AS address
                         FROM token_and_charge_mapping tcm
                             LEFT JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no

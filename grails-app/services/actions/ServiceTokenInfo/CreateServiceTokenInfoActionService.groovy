@@ -182,7 +182,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         serviceTokenInfo.serviceDate = DateUtility.getSqlDate(new Date())
         serviceTokenInfo.createBy = springSecurityService.principal.id
         if (serviceTypeId == 5) {
-            serviceTokenInfo.visitTypeId = 3L // Follow-Up
+            serviceTokenInfo.visitTypeId = 3L // Follow-Up patient
             serviceTokenInfo.referenceServiceTokenNo = parameterMap.referenceServiceNoDDL
         } else {
             int count = ServiceTokenInfo.countByRegNo(parameterMap.regNo)
@@ -191,9 +191,9 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             } else {
                 int oldCount = RegistrationInfo.countByRegNoAndIsOldPatient(parameterMap.regNo, true)
                 if (oldCount > 0)
-                    serviceTokenInfo.visitTypeId = 2L // re-visit
+                    serviceTokenInfo.visitTypeId = 2L // re-visit patient
                 else
-                    serviceTokenInfo.visitTypeId = 1L
+                    serviceTokenInfo.visitTypeId = 1L  // new patient
             }
         }
 

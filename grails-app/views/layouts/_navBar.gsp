@@ -98,9 +98,9 @@
                                             class="fa fa-file-o"></i>&nbsp;Activity Summary</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/reports/showPatientServiceComparison">
+                            <sec:access url="/reports/showPatientServedSummary">
                                 <li>
-                                    <a href="#reports/showPatientServiceComparison"><i
+                                    <a href="#reports/showPatientServedSummary"><i
                                             class="fa fa-file-o"></i>&nbsp;Registered Patient Served </a>
                                 </li>
                             </sec:access>

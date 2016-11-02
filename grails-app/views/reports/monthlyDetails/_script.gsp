@@ -148,6 +148,7 @@
                 {field: "patient_followup_amt", aggregate: "sum" },
                 {field: "patient_revisit", aggregate: "sum" },
                 {field: "total_patient", aggregate: "sum" },
+                {field: "total_served", aggregate: "sum" },
                 {field: "total_service", aggregate: "sum" }
             ],
             sort: [{field: 'date_field', dir: 'asc'}],
@@ -219,6 +220,15 @@
                             footerTemplate: "#=sum#"
                         }
                     ]
+                },
+                {
+                    field: "total_served", title: "Served",
+                    width: 40,sortable: false,filterable: false,
+                    headerAttributes: {style: setCAlignRight()},
+                    footerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=is_holiday?'':navigateLink(date_field,total_served,'reports','showPatientServedDetails')#",
+                    footerTemplate: "#=sum#"
                 },
                 {
                     field: "total_service", title: "Total <br/> Service",
