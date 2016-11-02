@@ -18,8 +18,10 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
+import org.hibernate.ejb.criteria.expression.function.AggregationFunction
 import scms.utility.DateUtility
 import service.RegistrationInfoService
+import service.SecUserService
 
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -28,6 +30,7 @@ class RegistrationInfoController extends BaseController {
     BaseService baseService
     SpringSecurityService springSecurityService
     RegistrationInfoService registrationInfoService
+    SecUserService secUserService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
@@ -83,7 +86,23 @@ class RegistrationInfoController extends BaseController {
         renderOutput(createRevisitPatientActionService, params)
     }
     def list() {
-        renderOutput(listRegistrationInfoActionService, params)
+        String visitType = params.visitType
+        if (visitType.equals("revisit")) {
+            String hospitalCode =''
+            Date dateField = DateUtility.parseDateForDB(params.dateField)
+            if (!secUserService.isLoggedUserAdmin(springSecurityService.principal.id)){
+                hospitalCode= SecUser.read(springSecurityService.principal.id)?.hospitalCode
+            }
+            List<GroovyRowResult> lst=registrationInfoService.listOfRevisitPatient(hospitalCode, DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
+
+            Map result = new HashedMap()
+            result.put("list", lst)
+            result.put("count", lst.size())
+            render result as JSON
+        }
+        else {
+            renderOutput(listRegistrationInfoActionService, params)
+        }
     }
     def customList() {
         renderOutput(customListRegistrationInfoActionService, params)

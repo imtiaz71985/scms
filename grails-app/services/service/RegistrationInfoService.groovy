@@ -135,7 +135,7 @@ class RegistrationInfoService extends BaseService {
             """
         }
         String queryStr = """
-               SELECT ri.reg_no AS id,0 AS VERSION, ri.date_of_birth dateOfBirth,ri.father_or_mother_name fatherOrMotherName,ri.patient_name patientName,ri.reg_no regNo,SUBSTRING(ri.reg_no,1,2) AS hospitalCode,ri.mobile_no mobileNo,
+               SELECT ri.reg_no AS id,0 AS version, ri.date_of_birth dateOfBirth,ri.father_or_mother_name fatherOrMotherName,ri.patient_name patientName,ri.reg_no regNo,SUBSTRING(ri.reg_no,1,2) AS hospitalCode,ri.mobile_no mobileNo,
                       CONCAT('Vill:',v.name,', Union:',u.name,', Upazila:',up.name,', Dist:',d.name) AS address,ri.create_date createDate,DATE(rp.create_date) AS revisitDate,
                       se.name AS maritalStatus,ri.marital_status_id maritalStatusId,se1.name AS sex,ri.sex_id sexId,ri.village_id AS village,u.id AS unionId,up.id AS upazilaId,d.id AS districtId
                       FROM registration_info ri

@@ -50,39 +50,24 @@ class ListRegistrationInfoActionService extends BaseService implements ActionSer
 
                 if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
 
-                    if (visitType.equals("revisit")) {
-                        List<GroovyRowResult> lst=registrationInfoService.listOfRevisitPatient('', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))/
-
-                        result.put(LIST, lst)
-                        result.put(COUNT, lst.size())
-                        return result
-                    }else {
-                        Closure param = {
+                    Closure param = {
+                        'and'{
+                            'isNull'('toDay')
                             'between'('createDate', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
                         }
-                        resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
                     }
-
+                    resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
 
                 } else {
                     String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-
-                    if (visitType.equals("revisit")) {
-                        List<GroovyRowResult> lst=registrationInfoService.listOfRevisitPatient(hospitalCode, DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
-                        result.put(LIST, lst)
-                        result.put(COUNT, lst.size())
-                        return result
-                    }
-                    else{
-                        Closure param = {
-                            'and' {
-                                'eq'('hospitalCode', hospitalCode)
-                                'between'('createDate', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
-                            }
+                    Closure param = {
+                        'and' {
+                            'eq'('hospitalCode', hospitalCode)
+                            'isNull'('toDay')
+                            'between'('createDate', DateUtility.getSqlFromDateWithSeconds(dateField), DateUtility.getSqlToDateWithSeconds(dateField))
                         }
-                        resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
                     }
-
+                    resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
                 }
             } else {
                 if (result.isNew == 'Yes') {

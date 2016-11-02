@@ -70,7 +70,7 @@
                     <div class="col-md-6" style=" padding-bottom: 0px;">
                         <div class="form-group">
                             <label class="col-md-3 control-label label-optional"
-                                   for="serviceTokenNo">Service No:</label>
+                                   for="serviceTokenNo">Service Token No:</label>
 
                             <div class="col-md-6">
                                 <input type="text" readonly="true" class="form-control" id="serviceTokenNo"

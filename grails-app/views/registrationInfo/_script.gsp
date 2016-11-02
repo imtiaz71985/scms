@@ -165,7 +165,8 @@
             var str = row.dateField;
             var currentDate = moment().format('YYYY-MM-DD');
             var createDate = moment(row.createDate).format('YYYY-MM-DD');
-            if(row.toDay==currentDate||createDate==currentDate){
+            var revisitDate=moment(row.toDay).format('YYYY-MM-DD');
+            if(revisitDate==currentDate ||createDate==currentDate){
                 $('tr[data-uid="' + row.uid + '"] ').css("color", "green");
             }
         });

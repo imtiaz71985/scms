@@ -324,7 +324,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                      ) AS total_service,
         -- Total served patient
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
-                WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE  AND SUBSTRING(sti.service_token_no, 2, 2) = ${hospitalCode}
+                WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE
                 GROUP BY DATE(sti.service_date)),0) AS total_served
 
                 FROM calendar c
