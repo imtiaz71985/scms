@@ -64,7 +64,7 @@ class RegistrationInfoService extends BaseService {
 
                   (CASE WHEN sti.visit_type_id=3 AND tcm.service_charge_id>0 AND SUBSTRING(sc.service_code,1,2)='03' THEN 'Follow-up, Pathology Service'
                         WHEN sti.visit_type_id=3 AND (tcm.service_charge_id IS NULL OR SUBSTRING(sc.service_code,1,2)='02') THEN 'Follow-up'
-                        ELSE COALESCE(GROUP_CONCAT(st.name),'') END) AS serviceType
+                        ELSE COALESCE(GROUP_CONCAT(DISTINCT st.name),'') END) AS serviceType
 
                    FROM registration_info ri
                   INNER JOIN service_token_info sti ON ri.reg_no=sti.reg_no
