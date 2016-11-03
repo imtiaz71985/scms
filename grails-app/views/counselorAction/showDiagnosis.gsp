@@ -100,7 +100,7 @@
                         },
                         {
                             field: "diagnosis_info", title: "Diagnosis", width: 120, sortable: false,
-                            filterable: false, attributes: {style: setFontSize()}
+                            filterable: false,footerTemplate: "Total"
                         },
                         {
                             field: "diagnosis_amt", title: "Total(৳)",
@@ -118,10 +118,10 @@
         $("#menuGrid").kendoMenu();
     }
     function setCAlignRight() {
-        return "text-align:right;font-size:11pt;";
+        return "text-align:right;font-size:9pt;";
     }
     function setFontSize() {
-        return "font-size:11pt;";
+        return "font-size:9pt;";
     }
     function gridDataBound(e) {
         var grid = e.sender;

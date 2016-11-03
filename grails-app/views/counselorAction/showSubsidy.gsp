@@ -86,6 +86,7 @@
                         {
                             field: "service_date", title: "Service Date & Time", width: 70, sortable: false, filterable: false,
                             template: "#=kendo.toString(kendo.parseDate(service_date, 'yyyy-MM-dd hh:mm:ss'), 'dd/MM/yyyy hh:mm:ss tt')#"
+                            ,footerTemplate: "Total"
                         },
                         {
                             field: "subsidy_amt", title: "Total(৳)",
@@ -103,10 +104,10 @@
         $("#menuGrid").kendoMenu();
     }
     function setCAlignRight() {
-        return "text-align:right;font-size:7pt;";
+        return "text-align:right;font-size:9pt;";
     }
     function setFontSize() {
-        return "font-size:7pt;";
+        return "font-size:9pt;";
     }
     function gridDataBound(e) {
         var grid = e.sender;

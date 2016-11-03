@@ -90,7 +90,7 @@
                 },
                 {
                     field: "consultancy_info", title: "Consultation", width: 120, sortable: false,
-                    filterable: false, attributes: {style: setFontSize()}
+                    filterable: false,footerTemplate: "Total"
                 },
                 {
                     field: "consultancy_amt", title: "Total(৳)",
