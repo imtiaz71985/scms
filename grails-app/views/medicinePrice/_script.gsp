@@ -28,12 +28,13 @@
         });
         mrpPrice = $("#mrpPrice").data("kendoNumericTextBox");
 
-        $("#start").kendoDateTimePicker({
+       /* $("#start").kendoDateTimePicker({
             timeFormat: "HH:mm:ss",
             format: "dd/MM/yyyy HH:mm:ss",
             parseFormats: ["yyyy-MM-dd hh:mm:ss"]
         });
-        $("#start").kendoMaskedTextBox({mask: "00/00/0000 00:00:00"});
+
+        $("#start").kendoMaskedTextBox({mask: "00/00/0000 00:00:00"});*/
 
         initMedicinePriceGrid();
         // initialize form with kendo validator & bind onSubmit event

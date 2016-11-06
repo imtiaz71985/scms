@@ -108,9 +108,9 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
                 medicineName = medicineInfo.brandName + ' - ' + medicineType.name
             }
             if(medicineInfo.unitType){
-                unitPriceTxt= medicineInfo.unitPrice+' /'+medicineInfo.unitType
+                unitPriceTxt= ((float)Math.round((amount/quantity)*100)/100).toString()+' /'+medicineInfo.unitType
             }else{
-                unitPriceTxt=  medicineInfo.unitPrice
+                unitPriceTxt=  ((float)Math.round((amount/quantity)*100)/100).toString()
             }
             Map eachDetails = [ id:id,version:version,voucherNo:voucherNo,medicineName:medicineName,
                                medicineId:medicineId,quantity:quantity,amount:amount,

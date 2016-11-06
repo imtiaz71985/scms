@@ -28,7 +28,9 @@ class CreateMedicinePriceActionService  extends BaseService implements ActionSer
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long medicineId = Long.parseLong(params.medicineId)
-            String newStartStr = parseDateFormat(params.start)
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
+            Date now = new Date();
+            String newStartStr = sdfDate.format(now);
             SimpleDateFormat simpleDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             Date retDate = simpleDF.parse(newStartStr);
 

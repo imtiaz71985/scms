@@ -31,7 +31,7 @@
                                 <span class="k-invalid-msg" data-for="mrpPrice"></span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        %{--<div class="form-group">
                             <label class="col-md-3 control-label label-required" for="start">Active Date:</label>
 
                             <div class="col-md-6">
@@ -45,7 +45,7 @@
                             <div class="col-md-3 pull-left">
                                 <span class="k-invalid-msg" data-for="start"></span>
                             </div>
-                        </div>
+                        </div>--}%
                     </div>
                 </div>
 
