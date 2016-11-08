@@ -107,7 +107,6 @@
                 model: {
                     fields: {
                         date_field: {type: "date"},
-                        month_name: {type: "string"},
                         pathology_name: {type: "string"},
                         pathology_count: {type: "number"},
                         charge_amount: {type: "number"},
