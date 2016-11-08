@@ -1,3 +1,12 @@
+<style>
+.GridNoHeader .k-grid-header
+{
+    height: 0;
+    border-bottom-width: 0;
+    display: none;
+    overflow: hidden;
+}
+</style>
 <script language="javascript">
     var gridDetails, dataSource, isApplicable, dropDownHospitalCode, start, end;
 
@@ -76,8 +85,7 @@
         var url = "${createLink(controller:'reports', action: 'listOfPathologySummary')}" + params;
         populateGridKendo(gridDetails, url);
         showLoadingSpinner(false);
-        $("#gridDetails").data("kendoGrid").hideColumn("month_name");
-
+        $("#gridDetails").data("kendoGrid").hideColumn("date_field");
     }
 
     function resetForm() {
@@ -98,13 +106,12 @@
                 data: "list", total: "count",
                 model: {
                     fields: {
+                        date_field: {type: "date"},
                         month_name: {type: "string"},
                         pathology_name: {type: "string"},
                         pathology_count: {type: "number"},
                         charge_amount: {type: "number"},
-                        total: {type: "number"},
-                        yr: {type: "number"},
-                        mnth: {type: "number"}
+                        total: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -115,7 +122,9 @@
             },aggregate: [
                 {field: "pathology_count", aggregate: "sum" },
                 {field: "total", aggregate: "sum" }
-            ],group:[{field:"yr"},{field:"mnth"},{field:"month_name"}]
+            ],group:[{field:"date_field"}]
+            ,sortable:true
+
 
 
         });
@@ -144,11 +153,11 @@
             sortable: false,
             resizable: false,
             dataBound: dataBound,
-            reorderable: false,
             pageable: false,
             columns: [
-               {
-                    field: "month_name", title: "Month",
+                {
+                    field: "date_field", title: "Month",
+                    format: "{0:MMMM-yyyy}",
                     width: 60, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignCenter()},
                     footerAttributes: {style: setAlignRight()},

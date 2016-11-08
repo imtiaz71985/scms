@@ -210,7 +210,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
             }
         }
         String queryStr = """
-             SELECT c.date_field,DATE_FORMAT(c.date_field,'%M %Y') AS month_name,c.yr,c.mnth,tbl.pathology_name,tbl.pathology_count,tbl.charge_amount,tbl.total
+             SELECT c.date_field,DATE_FORMAT(c.date_field,'%M %Y') AS month_name,tbl.pathology_name,tbl.pathology_count,tbl.charge_amount,tbl.total
                         FROM (SELECT DATE_FORMAT(date_field,'%Y') AS yr,MONTH(date_field) AS mnth,date_field FROM calendar
                         WHERE date_field BETWEEN '${start}' AND '${end}' GROUP BY DATE_FORMAT(date_field,'%Y'),MONTH(date_field) ) c
                         LEFT JOIN
