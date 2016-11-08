@@ -13,6 +13,10 @@ import scms.utility.DateUtility
 import service.MedicineInfoService
 import service.RegistrationInfoService
 import service.SecUserService
+import service.ServiceTokenRelatedInfoService
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 class ReportsController extends BaseController {
 
@@ -23,6 +27,7 @@ class ReportsController extends BaseController {
     ListSummaryActionService listSummaryActionService
     MedicineInfoService medicineInfoService
     RegistrationInfoService registrationInfoService
+    ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
 
 
     def showMonthlyStatus() {
@@ -117,6 +122,42 @@ class ReportsController extends BaseController {
         }
 
         List<GroovyRowResult> lst = registrationInfoService.listOfPatientServedDetails(hospitalCode,date)
+
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
+    def showPathologySummary() {
+        SecUser user = SecUser.read(springSecurityService.principal.id)
+        boolean isAdmin = secUserService.isLoggedUserAdmin(user.id)
+
+        String hospitalCode = HospitalLocation.findByCode(user.hospitalCode).code
+        render(view: "/reports/monthlyPathologySummary/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
+    }
+    def listOfPathologySummary() {
+
+        String hospitalCode = ''
+        String fromDate,toDate
+        try {
+            String fromStr = params.from.toString()
+            Calendar c = Calendar.getInstance();
+            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+            Date from = originalFormat.parse(fromStr);
+            c.setTime(from);
+
+            String toStr = params.to.toString()
+            Calendar ce = Calendar.getInstance();
+            Date to = originalFormat.parse(toStr);
+            ce.setTime(to);
+            ce.set(Calendar.DAY_OF_MONTH, ce.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+            fromDate = DateUtility.getDBDateFormatAsString(c.getTime())
+            toDate = DateUtility.getDBDateFormatAsString(ce.getTime())
+            hospitalCode = params.hospitalCode
+        } catch (Exception ex) {
+        }
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.monthlyPathologySummary(fromDate,toDate,hospitalCode)
 
         Map result = new HashedMap()
         result.put('list', lst)

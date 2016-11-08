@@ -202,5 +202,36 @@ class ServiceTokenRelatedInfoService extends BaseService{
         List<GroovyRowResult> result = executeSelectSql(queryStr)
         return result
     }
+    public List<GroovyRowResult> monthlyPathologySummary(String start,String end, String hospital_code){
+        String hospital_str = EMPTY_SPACE
+        if(hospital_code!='') {
+            if(hospital_code!=ALL) {
+                hospital_str = "AND SUBSTRING(sti.service_token_no,2,2) = '${hospital_code}' "
+            }
+        }
+        String queryStr = """
+             SELECT DATE_FORMAT(c.date_field,'%M %Y') AS month_name,tbl.*
+                        FROM (SELECT DATE_FORMAT(date_field,'%Y') AS yr,MONTH(date_field) AS mnth,date_field FROM calendar
+                        WHERE date_field BETWEEN '${start}' AND '${end}' GROUP BY DATE_FORMAT(date_field,'%Y'),MONTH(date_field) ) c
+                        LEFT JOIN
+                        (SELECT DATE_FORMAT(tcm.create_date,'%Y') AS yr,MONTH(tcm.create_date) AS mnth,tcm.service_charge_id
+                        ,shi.name AS pathology_name,
+                        COALESCE(COUNT(tcm.service_charge_id),0) AS pathology_count,sc.charge_amount,COALESCE(SUM(sc.charge_amount),0) AS total
+                         FROM token_and_charge_mapping tcm
+                            LEFT JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
+                            JOIN service_charges sc ON sc.id = tcm.service_charge_id AND LEFT(sc.service_code,2)='03'
+                            JOIN service_head_info shi ON shi.service_code=sc.service_code
+                            WHERE sti.is_deleted <> TRUE AND tcm.create_date BETWEEN '${start}' AND '${end}'
+                            ${hospital_str}
+                            GROUP BY yr,mnth,tcm.service_charge_id
+                            ) tbl ON c.yr= tbl.yr AND c.mnth =tbl.mnth
 
+                        ORDER BY c.yr,c.mnth, tbl.pathology_count DESC
+
+
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+
+        return result
+    }
 }

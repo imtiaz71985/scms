@@ -98,6 +98,12 @@
                                             class="fa fa-file-o"></i>&nbsp;Activity Summary</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/reports/showPathologySummary">
+                                <li>
+                                    <a href="#reports/showPathologySummary"><i
+                                            class="fa fa-file-o"></i>&nbsp;Pathology Summary</a>
+                                </li>
+                            </sec:access>
                             <sec:access url="/reports/showPatientServedSummary">
                                 <li>
                                     <a href="#reports/showPatientServedSummary"><i
