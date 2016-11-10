@@ -8,7 +8,7 @@
 			<staticText>
 				<reportElement x="353" y="0" width="211" height="18" forecolor="#2C2A2B" uuid="1d01fb13-653c-4d58-aeb7-81041653d316"/>
 				<box rightPadding="2"/>
-				<textElement textAlignment="Right" verticalAlignment="Bottom">
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font fontName="Cambria" size="6"/>
 				</textElement>
 				<text><![CDATA[Application developed by MIS Department.
@@ -16,7 +16,7 @@
 			</staticText>
 			<textField pattern="dd-MMM-yyyy">
 				<reportElement x="0" y="0" width="168" height="17" forecolor="#2C2A2B" uuid="0c3833a9-d9ef-4d30-aadc-9f710090dabd"/>
-				<textElement verticalAlignment="Bottom">
+				<textElement verticalAlignment="Top">
 					<font fontName="SansSerif" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
@@ -36,14 +36,14 @@
 			</staticText>
 			<textField>
 				<reportElement x="232" y="1" width="80" height="17" forecolor="#2C2A2B" uuid="0c117db4-2cd3-402a-ad58-1231951a7c6e"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="312" y="1" width="40" height="17" forecolor="#2C2A2B" uuid="c7cb6116-ead8-467a-9698-03b32de411c1"/>
-				<textElement verticalAlignment="Middle">
+				<textElement verticalAlignment="Top">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>

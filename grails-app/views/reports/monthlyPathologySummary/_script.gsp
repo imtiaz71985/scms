@@ -1,23 +1,11 @@
-<style>
-.GridNoHeader .k-grid-header
-{
-    height: 0;
-    border-bottom-width: 0;
-    display: none;
-    overflow: hidden;
-}
-</style>
+
 <script language="javascript">
     var gridDetails, dataSource, isApplicable, dropDownHospitalCode, start, end;
 
     $(document).ready(function () {
         onLoadInfoPage();
-        //dataSource = new kendo.data.DataSource({data: ${gridModelMedicine}});
-        //dataSource.group([{field: "month_name" }]);
         initInfoGrid();
         loadGridValue();
-
-
     });
 
     function onLoadInfoPage() {
@@ -132,16 +120,6 @@
     function formatAmount(amount) {
         return kendo.toString(amount, "##,###");
     }
-    function dataBound(e) {
-        var grid = e.sender;
-        if (grid.dataSource.total() == 0) {
-            var colCount = grid.columns.length;
-            $(e.sender.wrapper)
-                    .find('tbody')
-                    .append('<tr><td colspan="' + colCount + '" class="no-data"><center>Sorry, no data found <i class="fa fa-frown-o"></i></center></td></tr>');
-        }
-
-    }
     function initInfoGrid() {
         initDataSource();
         $("#gridDetails").kendoGrid({
@@ -151,7 +129,7 @@
             selectable: true,
             sortable: false,
             resizable: false,
-            dataBound: dataBound,
+            dataBound: gridDataBound,
             pageable: false,
             columns: [
                 {
@@ -199,10 +177,13 @@
     function downloadMonthlyDetails() {
         if (isApplicable) {
             showLoadingSpinner(true);
-            var month = $('#month').val(),
-                    hospitalCode = dropDownHospitalCode.value(),
-                    msg = 'Do you want to download the sell report now?',
-                    url = "${createLink(controller: 'reports', action: 'downloadMonthlyDetails')}?month=" + month + "&hospitalCode=" + hospitalCode;
+            var from = $('#from').val();
+            var to = $('#to').val();
+            var hospitalCode = dropDownHospitalCode.value();
+            var params = "?from=" + from + "&to=" + to + "&hospitalCode=" + hospitalCode;
+            var  msg = 'Do you want to download the report now?',
+                    url = "${createLink(controller: 'reports', action: 'downloadMonthlyPathologySummary')}" + params;
+
             confirmDownload(msg, url);
         } else {
             showError('No record to download');

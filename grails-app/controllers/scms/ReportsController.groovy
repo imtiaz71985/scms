@@ -1,6 +1,7 @@
 package scms
 
 import actions.reports.DownloadMonthlyDetailsActionService
+import actions.reports.DownloadMonthlyPathologySummaryActionService
 import actions.reports.ListMonthlyDetailsActionService
 import actions.reports.ListSummaryActionService
 import com.scms.HospitalLocation
@@ -23,6 +24,7 @@ class ReportsController extends BaseController {
     SpringSecurityService springSecurityService
     ListMonthlyDetailsActionService listMonthlyDetailsActionService
     DownloadMonthlyDetailsActionService downloadMonthlyDetailsActionService
+    DownloadMonthlyPathologySummaryActionService downloadMonthlyPathologySummaryActionService
     SecUserService secUserService
     ListSummaryActionService listSummaryActionService
     MedicineInfoService medicineInfoService
@@ -163,6 +165,10 @@ class ReportsController extends BaseController {
         result.put('list', lst)
         result.put('count', lst.size())
         render result as JSON
+    }
+    def downloadMonthlyPathologySummary() {
+        Map result = (Map) getReportResponse(downloadMonthlyPathologySummaryActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
 
 }

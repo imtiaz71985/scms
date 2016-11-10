@@ -431,7 +431,7 @@
             showLoadingSpinner(true);
             var month = $('#month').val(),
                     hospitalCode = dropDownHospitalCode.value(),
-                    msg = 'Do you want to download the sell report now?',
+                    msg = 'Do you want to download the report now?',
                     url = "${createLink(controller: 'reports', action: 'downloadMonthlyDetails')}?month=" + month + "&hospitalCode="+hospitalCode;
             confirmDownload(msg, url);
         } else {
