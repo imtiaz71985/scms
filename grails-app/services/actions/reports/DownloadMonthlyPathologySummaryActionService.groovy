@@ -61,7 +61,7 @@ class DownloadMonthlyPathologySummaryActionService extends BaseService implement
         String hospitalCode = params.hospitalCode
         String hospitalName = EMPTY_SPACE
         String jesperFile = EMPTY_SPACE
-        String queryHospitalStr = " tcm.create_date BETWEEN '"+fromDate+"' AND '"+toDate+"'"
+        String queryHospitalStr = " tcm.service_date BETWEEN '"+fromDate+"' AND '"+toDate+"'"
         if (hospitalCode.equals(EMPTY_SPACE)) {
             hospitalName = FRIEND_SHIP_HEALTH_CLINIC
             jesperFile = JASPER_FILE

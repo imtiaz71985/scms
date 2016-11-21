@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthlyPathologySummary" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="33dee8e7-cdca-4aa2-8861-6e22f4da876d">
 	<property name="ireport.zoom" value="1.6105100000000008"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="66"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="reportTitle" class="java.lang.String"/>
 	<parameter name="hospitalName" class="java.lang.String"/>
@@ -16,7 +16,7 @@
                         FROM (SELECT DATE_FORMAT(date_field,'%Y') AS yr,MONTH(date_field) AS mnth,date_field FROM calendar
                         WHERE date_field BETWEEN $P{start} AND $P{end} GROUP BY DATE_FORMAT(date_field,'%Y'),MONTH(date_field) ) c
                         LEFT JOIN
-                        (SELECT DATE_FORMAT(tcm.create_date,'%Y') AS yr,MONTH(tcm.create_date) AS mnth,tcm.service_charge_id
+                        (SELECT DATE_FORMAT(tcm.service_date,'%Y') AS yr,MONTH(tcm.service_date) AS mnth,tcm.service_charge_id
                         ,shi.name AS pathology_name,
                         COALESCE(COUNT(tcm.service_charge_id),0) AS pathology_count,sc.charge_amount,COALESCE(SUM(sc.charge_amount),0) AS total
                          FROM token_and_charge_mapping tcm
@@ -44,6 +44,12 @@
 	<variable name="grandTotal" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{total}]]></variableExpression>
 	</variable>
+	<variable name="testCountSub" class="java.lang.Double" resetType="Group" resetGroup="Month" calculation="Sum">
+		<variableExpression><![CDATA[$F{pathology_count}]]></variableExpression>
+	</variable>
+	<variable name="subTotalCharge" class="java.lang.Double" resetType="Group" resetGroup="Month" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
 	<group name="Month">
 		<groupExpression><![CDATA[$F{date_field}]]></groupExpression>
 		<groupHeader>
@@ -64,6 +70,62 @@
 				</staticText>
 			</band>
 		</groupHeader>
+		<groupFooter>
+			<band height="14">
+				<textField pattern="###0" isBlankWhenNull="true">
+					<reportElement x="270" y="0" width="85" height="14" uuid="a793b0a8-898e-44fc-b759-da4d1d22dee9"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.1"/>
+						<leftPen lineWidth="0.1"/>
+						<bottomPen lineWidth="0.1"/>
+						<rightPen lineWidth="0.1"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{testCountSub}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="75" y="0" width="195" height="14" uuid="914775ca-3741-4808-bb4b-f6c0445ad9c6"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.1"/>
+						<leftPen lineWidth="0.1"/>
+						<bottomPen lineWidth="0.1"/>
+						<rightPen lineWidth="0.1"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[SubTotal:]]></text>
+				</staticText>
+				<textField pattern="###0" isBlankWhenNull="true">
+					<reportElement x="444" y="0" width="85" height="14" uuid="05d63bb4-9e81-4b2c-bc41-a37d72720cd2"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.1"/>
+						<leftPen lineWidth="0.1"/>
+						<bottomPen lineWidth="0.1"/>
+						<rightPen lineWidth="0.1"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subTotalCharge}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="355" y="0" width="89" height="14" uuid="a1bb4758-3b3e-4ba3-8849-6229e38b87c6"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.1"/>
+						<leftPen lineWidth="0.1"/>
+						<bottomPen lineWidth="0.1"/>
+						<rightPen lineWidth="0.1"/>
+					</box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
 	</group>
 	<background>
 		<band splitType="Stretch"/>

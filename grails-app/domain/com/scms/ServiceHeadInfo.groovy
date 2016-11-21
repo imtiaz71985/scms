@@ -12,8 +12,7 @@ class ServiceHeadInfo {
     long createdBy
 
     static constraints = {
-        createDate type:'date'
-        modifyDate type:'date'
+
         modifyDate(nullable: true)
         modifyBy (nullable: true)
     }
@@ -22,6 +21,8 @@ class ServiceHeadInfo {
         id name: 'serviceCode'
         version false
         id generator: 'assigned'
+        createDate sqltype:'date'
+        modifyDate sqltype:'date'
         serviceTypeId       index: 'service_head_info_service_type_id_idx'
     }
 }

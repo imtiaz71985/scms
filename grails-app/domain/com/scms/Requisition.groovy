@@ -35,11 +35,11 @@ class Requisition {
         isGeneratePR(nullable: true)
     }
     static mapping = {
-        createDate type:'date'
-        approvedDate type:'date'
-        procAdjDate type:'date'
-        sendDate type:'date'
-        deliveryDate type:'date'
+        createDate sqltype:'date'
+        approvedDate sqltype:'date'
+        procAdjDate sqltype:'date'
+        sendDate sqlType: 'date'
+        deliveryDate sqltype:'date'
         hospitalCode index: 'requisition_hospital_code_idx'
     }
 }

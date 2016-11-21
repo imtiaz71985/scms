@@ -33,7 +33,7 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <sec:ifAnyUrls urls="/registrationInfo/show,/counselorAction/show">
+                <sec:ifAnyUrls urls="/registrationInfo/show,/counselorAction/show,/counselorAction/showOldServiceHO">
                     <li>
                         <a href="#"><i class="fa fa-h-square"></i>&nbsp;Health Clinic<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -55,6 +55,16 @@
                             <sec:access url="/counselorAction/showServiceList">
                                 <li>
                                     <a href="#counselorAction/showServiceList"><i class="fa fa-list"></i>&nbsp;Service List</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/counselorAction/showOldService">
+                                <li>
+                                    <a href="#counselorAction/showOldService"><i class="fa fa-user-times"></i>&nbsp;Old Service Data Entry</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/counselorAction/showOldServiceHO">
+                                <li>
+                                    <a href="#counselorAction/showOldServiceHO"><i class="fa fa-user-times"></i>&nbsp;Approve Old Service</a>
                                 </li>
                             </sec:access>
                         </ul>

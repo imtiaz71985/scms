@@ -22,8 +22,8 @@ class DiseaseInfo {
         id name: 'diseaseCode'
         version false
         id generator: 'assigned'
-        createDate type:'date'
-        modifyDate type:'date'
+        createDate sqltype:'date'
+        modifyDate sqltype:'date'
         diseaseGroupId       index: 'disease_info_disease_group_id_idx'
     }
 }

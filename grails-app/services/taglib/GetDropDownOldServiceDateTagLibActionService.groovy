@@ -2,7 +2,6 @@ package taglib
 
 import com.scms.SecUser
 import grails.converters.JSON
-import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
@@ -11,7 +10,7 @@ import scms.BaseService
 import scms.utility.DateUtility
 
 @Transactional
-class GetDropDownRegistrationNoTagLibActionService extends BaseService implements ActionServiceIntf  {
+class GetDropDownOldServiceDateTagLibActionService extends BaseService implements ActionServiceIntf  {
 
     private static final String NAME = 'name'
     private static final String CLASS = 'class'
@@ -26,9 +25,9 @@ class GetDropDownRegistrationNoTagLibActionService extends BaseService implement
     private static final String DATA_MODEL_NAME = 'data_model_name'
     private static final String SINGLE_DOT = '.'
     private static final String ESCAPE_DOT = '\\\\.'
+    def springSecurityService
 
     private Logger log = Logger.getLogger(getClass())
-    SpringSecurityService springSecurityService
 
     /** Build a map containing properties of html select
      *  1. Set default values of properties
@@ -66,14 +65,8 @@ class GetDropDownRegistrationNoTagLibActionService extends BaseService implement
      */
     public Map execute(Map result) {
         try {
-            String type = result.type
-            List<GroovyRowResult> lstRegistrationNo
-            if (type.equals('Counselor')) {
-                lstRegistrationNo = (List<GroovyRowResult>) listRegistrationNoForCounselor()
-            }else {
-                lstRegistrationNo = (List<GroovyRowResult>) listRegistrationNo()
-            }
-            String html = buildDropDown(lstRegistrationNo, result)
+            List<GroovyRowResult> lst = (List<GroovyRowResult>) listVoucherNo()
+            String html = buildDropDown(lst, result)
             result.html = html
             return result
         } catch (Exception e) {
@@ -165,31 +158,50 @@ class GetDropDownRegistrationNoTagLibActionService extends BaseService implement
         return str.replace(SINGLE_DOT, ESCAPE_DOT)
     }
 
-    private List<GroovyRowResult> listRegistrationNo() {
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+    private List<GroovyRowResult> listVoucherNo() {
+        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        String hospital_rp = EMPTY_SPACE
+        String hospital_ri = EMPTY_SPACE
+        String hospital_sti = EMPTY_SPACE
 
-        String queryForList = """
-            SELECT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name
-                FROM registration_info ri
-                WHERE ri.is_active = TRUE  AND SUBSTRING(ri.reg_no,1,2)='${hospital_code}'
-                ORDER BY ri.create_date desc;
-        """
-        List<GroovyRowResult> lstMedicine = executeSelectSql(queryForList)
-        return lstMedicine
-    }
-    private List<GroovyRowResult> listRegistrationNoForCounselor() {
-        Date fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
-        Date toDate=DateUtility.getSqlToDateWithSeconds(new Date())
-        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        Date date =cal.getTime();
+        Date toDate = DateUtility.getSqlToDateWithSeconds(date);
 
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -7);
+        Date toDate1 = cal.getTime();
+        Date fromDate = DateUtility.getSqlFromDateWithSeconds(toDate1);
+
+        if (hospitalCode.length() > 1) {
+            hospital_rp = """
+                AND rp.hospital_code='${hospitalCode}'
+            """
+            hospital_ri = """
+               AND ri.hospital_code='${hospitalCode}'
+            """
+            hospital_sti = """
+               AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}'
+            """
+
+        }
         String queryForList = """
-            SELECT DISTINCT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name
-            FROM registration_info ri LEFT JOIN revisit_patient rp ON ri.reg_no=rp.reg_no
-            WHERE ri.is_active = TRUE  AND SUBSTRING(ri.reg_no,1,2)='${hospital_code}' AND
-            (ri.create_date BETWEEN '${fromDate}' AND '${toDate}' OR rp.create_date BETWEEN '${fromDate}' AND '${toDate}')
-            ORDER BY ri.create_date DESC;
+               SELECT c.date_field AS id,DATE_FORMAT(c.date_field,'%d-%m-%Y') AS name,
+                (COUNT( DISTINCT ri.reg_no)+COUNT(DISTINCT rp.id)) AS total_patient
+                 ,COUNT(DISTINCT sti.reg_no) AS total_served
+                FROM calendar c
+                 LEFT JOIN revisit_patient rp ON c.date_field=DATE(rp.create_date) """+hospital_rp+"""
+                 LEFT JOIN registration_info ri ON c.date_field=DATE(ri.create_date) AND ri.is_old_patient=FALSE """+hospital_ri+"""
+                 LEFT JOIN service_token_info sti ON c.date_field=DATE(sti.service_date) """+hospital_sti+""" AND sti.is_deleted=FALSE
+
+                WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' GROUP BY c.date_field
+                HAVING total_patient>total_served
+                ORDER BY c.date_field ASC
         """
-        List<GroovyRowResult> lstMedicine = executeSelectSql(queryForList)
-        return lstMedicine
+
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        return lst
     }
+
 }

@@ -1,11 +1,10 @@
 package actions.ServiceTokenInfo
 
-import com.scms.DiseaseInfo
+import com.scms.OldTokenAndChargeMapping
 import com.scms.RegistrationInfo
-import com.scms.ServiceCharges
+import com.scms.OldServiceTokenInfo
+import com.scms.OldTokenAndDiseaseMapping
 import com.scms.ServiceTokenInfo
-import com.scms.TokenAndChargeMapping
-import com.scms.TokenAndDiseaseMapping
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -16,11 +15,11 @@ import service.RegistrationInfoService
 import service.ServiceHeadInfoService
 import service.ServiceTokenRelatedInfoService
 
-class CreateServiceTokenInfoActionService extends BaseService implements ActionServiceIntf {
+class CreateOldServiceTokenInfoActionService extends BaseService implements ActionServiceIntf {
 
     SpringSecurityService springSecurityService
     private static final String SAVE_SUCCESS_MESSAGE = "Data saved successfully"
-    private static final String SERVICE_TOKEN_INFO = "serviceTokenInfo"
+    private static final String OLD_SERVICE_TOKEN_INFO = "oldServiceTokenInfo"
     private Logger log = Logger.getLogger(getClass())
 
     ServiceHeadInfoService serviceHeadInfoService
@@ -90,8 +89,15 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 }
             }
 
-            ServiceTokenInfo serviceTokenInfo = buildObject(params, serviceTypeId)
-            params.put(SERVICE_TOKEN_INFO, serviceTokenInfo)
+            if(!params.txtRemarks){
+                String remarks=params.txtRemarks
+                if(remarks.length()<3){
+                    return super.setError(params, 'Sorry! Please give remarks.')
+                }
+            }
+
+            OldServiceTokenInfo oldServiceTokenInfo = buildObject(params, serviceTypeId)
+            params.put(OLD_SERVICE_TOKEN_INFO, oldServiceTokenInfo)
             return params
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -104,19 +110,15 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     @Transactional
     public Map execute(Map result) {
         try {
-            ServiceTokenInfo serviceTokenInfo = (ServiceTokenInfo) result.get(SERVICE_TOKEN_INFO)
-            serviceTokenInfo.save()
-            if (serviceTokenInfo.referenceServiceTokenNo) {
-                ServiceTokenInfo serviceTokenInfoForRef = ServiceTokenInfo.findByServiceTokenNo(serviceTokenInfo.referenceServiceTokenNo)
-                serviceTokenInfoForRef.isFollowupNeeded = false
-                serviceTokenInfoForRef.save()
-            }
+
+            OldServiceTokenInfo oldServiceTokenInfo = (OldServiceTokenInfo) result.get(OLD_SERVICE_TOKEN_INFO)
+            oldServiceTokenInfo.save()
+            
             if (result.diseaseCode) {
-                TokenAndDiseaseMapping tokenAndDiseaseMapping = new TokenAndDiseaseMapping()
-                tokenAndDiseaseMapping.serviceDate = DateUtility.getSqlDate(new Date())
-                tokenAndDiseaseMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
-                tokenAndDiseaseMapping.diseaseCode = result.diseaseCode
-                tokenAndDiseaseMapping.save()
+                OldTokenAndDiseaseMapping oldTokenAndDiseaseMapping = new OldTokenAndDiseaseMapping()
+                oldTokenAndDiseaseMapping.serviceTokenNo = oldServiceTokenInfo.serviceTokenNo
+                oldTokenAndDiseaseMapping.diseaseCode = result.diseaseCode
+                oldTokenAndDiseaseMapping.save()
             }
 
             String str = result.selectedChargeId
@@ -126,20 +128,18 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             if (str.length() > 1) {
                 List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
                 for (int i = 0; i < lst.size(); i++) {
-                    TokenAndChargeMapping tokenAndChargeMapping = new TokenAndChargeMapping()
-                    tokenAndChargeMapping.serviceDate = DateUtility.getSqlDate(new Date())
-                    tokenAndChargeMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
+                    OldTokenAndChargeMapping oldTokenAndChargeMapping = new OldTokenAndChargeMapping()
+                    oldTokenAndChargeMapping.serviceTokenNo = oldServiceTokenInfo.serviceTokenNo
                     try {
                         if (lst.get(i) != '') {
-                            tokenAndChargeMapping.serviceChargeId = Long.parseLong(lst.get(i))
-                            tokenAndChargeMapping.save()
+                            oldTokenAndChargeMapping.serviceChargeId = Long.parseLong(lst.get(i))
+                            oldTokenAndChargeMapping.save()
                         }
                     }
                     catch (Exception ex) {
                     }
                 }
             }
-
 
             return result
         } catch (Exception ex) {
@@ -167,39 +167,40 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
      * @param parameterMap -serialized parameters from UI
      * @return -new systemEntity object
      /*        */
-    private ServiceTokenInfo buildObject(Map parameterMap, long serviceTypeId) {
+    private OldServiceTokenInfo buildObject(Map parameterMap, long serviceTypeId) {
 
-        ServiceTokenInfo serviceTokenInfo = new ServiceTokenInfo()
-        serviceTokenInfo.serviceTokenNo = parameterMap.serviceTokenNo
-        serviceTokenInfo.regNo = parameterMap.regNo
+        OldServiceTokenInfo oldServiceTokenInfo = new OldServiceTokenInfo()
+        oldServiceTokenInfo.serviceTokenNo = parameterMap.serviceTokenNo
+        oldServiceTokenInfo.regNo = parameterMap.regNo
         if (parameterMap.serviceProviderId) {
-            serviceTokenInfo.serviceProviderId = Long.parseLong(parameterMap.serviceProviderId)
+            oldServiceTokenInfo.serviceProviderId = Long.parseLong(parameterMap.serviceProviderId)
         } else {
-            serviceTokenInfo.serviceProviderId = 0 // When give counselor service
+            oldServiceTokenInfo.serviceProviderId = 0 // When give counselor service
         }
-        serviceTokenInfo.serviceDate = DateUtility.getSqlDate(new Date())
-        serviceTokenInfo.createDate = DateUtility.getSqlDate(new Date())
-        serviceTokenInfo.createBy = springSecurityService.principal.id
+        Date serviceDate = DateUtility.parseDateForDB(parameterMap.serviceDate)
+        oldServiceTokenInfo.serviceDate = DateUtility.getSqlDate(serviceDate)
+        oldServiceTokenInfo.createDate = DateUtility.getSqlDate(new Date())
+        oldServiceTokenInfo.createBy = springSecurityService.principal.id
         if (serviceTypeId == 5) {
-            serviceTokenInfo.visitTypeId = 3L // Follow-Up patient
-            serviceTokenInfo.referenceServiceTokenNo = parameterMap.referenceServiceNoDDL
+            oldServiceTokenInfo.visitTypeId = 3L // Follow-Up patient
+            oldServiceTokenInfo.referenceServiceTokenNo = parameterMap.referenceServiceNoDDL
         } else {
             int count = ServiceTokenInfo.countByRegNo(parameterMap.regNo)
             if (count > 0) {
-                serviceTokenInfo.visitTypeId = 2L // re-visit
+                oldServiceTokenInfo.visitTypeId = 2L // re-visit
             } else {
                 int oldCount = RegistrationInfo.countByRegNoAndIsOldPatient(parameterMap.regNo, true)
                 if (oldCount > 0)
-                    serviceTokenInfo.visitTypeId = 2L // re-visit patient
+                    oldServiceTokenInfo.visitTypeId = 2L // re-visit patient
                 else
-                    serviceTokenInfo.visitTypeId = 1L  // new patient
+                    oldServiceTokenInfo.visitTypeId = 1L  // new patient
             }
         }
 
         if (!parameterMap.subsidyAmount) {
-            serviceTokenInfo.subsidyAmount = 0d
+            oldServiceTokenInfo.subsidyAmount = 0d
         } else {
-            serviceTokenInfo.subsidyAmount = Double.parseDouble(parameterMap.subsidyAmount)
+            oldServiceTokenInfo.subsidyAmount = Double.parseDouble(parameterMap.subsidyAmount)
         }
         String prescription = ''
 
@@ -215,16 +216,15 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             prescription = (parameterMap.chkboxMedicine ? 'Medicine' : parameterMap.chkboxPathology ? 'Pathology Test' : parameterMap.chkboxDocReferral ? 'Doctors Referral' : '')
 
         if (parameterMap.chkboxDocReferral)
-            serviceTokenInfo.referralCenterId = Long.parseLong(parameterMap.referralCenterId)
+            oldServiceTokenInfo.referralCenterId = Long.parseLong(parameterMap.referralCenterId)
 
-        serviceTokenInfo.isFollowupNeeded = false
+        oldServiceTokenInfo.isFollowupNeeded = false
         if (parameterMap.chkboxFollowupNeeded)
-            serviceTokenInfo.isFollowupNeeded = true
+            oldServiceTokenInfo.isFollowupNeeded = true
 
-        serviceTokenInfo.prescriptionType = prescription
-        serviceTokenInfo.modifyDate = DateUtility.getSqlDate(new Date())
-        serviceTokenInfo.modifyBy = springSecurityService.principal.id
+        oldServiceTokenInfo.prescriptionType = prescription
+        oldServiceTokenInfo.remarks=parameterMap.txtRemarks
 
-        return serviceTokenInfo
+        return oldServiceTokenInfo
     }
 }

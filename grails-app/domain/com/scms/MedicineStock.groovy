@@ -13,7 +13,7 @@ class MedicineStock {
         expiryDate (nullable: true)
     }
     static mapping = {
-        expiryDate type:'date'
+        expiryDate sqltype:'date'
         hospitalCode index: 'hospital_code_idx'
         medicineId index: 'medicine_id_idx'
     }

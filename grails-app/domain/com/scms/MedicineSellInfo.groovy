@@ -16,7 +16,7 @@ class MedicineSellInfo {
         isReturn (nullable:true)
     }
     static mapping = {
-        sellDate type:'date'
+        sellDate sqltype:'date'
         sellBy  index: 'medicine_sell_info_sec_user_id_idx'
     }
 }

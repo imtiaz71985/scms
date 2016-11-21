@@ -26,14 +26,14 @@ class ServiceChargesService extends BaseService {
         return result
     }
 
-    public List<GroovyRowResult> getTotalChargeByListOfDiseaseCode(String groupCode) {
+    public List<GroovyRowResult> getTotalChargeByListOfDiseaseCode(Date serviceDate,String groupCode) {
         String queryStr = """
 
                SELECT sc.id, 0 AS VERSION,sc.charge_amount AS chargeAmount,sc.service_code,
                     sc.activation_date AS activationDate
                         FROM  service_charges sc
-                    WHERE sc.activation_date<=CURRENT_DATE
-                    AND CURRENT_DATE BETWEEN sc.activation_date AND  COALESCE(sc.last_active_date,CURRENT_DATE) AND SUBSTRING(sc.service_code,3,1)='D'
+                    WHERE sc.activation_date<='${serviceDate}'
+                    AND '${serviceDate}' BETWEEN sc.activation_date AND  COALESCE(sc.last_active_date,'${serviceDate}') AND SUBSTRING(sc.service_code,3,1)='D'
                     AND SUBSTRING(sc.service_code,4,LENGTH(sc.service_code)) IN (${groupCode})
                     ORDER BY sc.service_code ASC
         """

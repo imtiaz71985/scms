@@ -109,7 +109,9 @@
             },aggregate: [
                 {field: "pathology_count", aggregate: "sum" },
                 {field: "total", aggregate: "sum" }
-            ],group:[{field:"date_field"}]
+            ],group:[{field:"date_field",aggregates: [
+                { field: "pathology_count", aggregate: "sum" },
+                { field: "total", aggregate: "sum"}]}]
             ,sortable:true
 
 
@@ -140,32 +142,33 @@
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignCenter()}
                 },{
-                    field: "pathology_name", title: "Pathology",
+                    field: "pathology_name", title: "Name of Test",
                     width: 120, sortable: false, filterable: false,
-                    headerAttributes: {style: setAlignCenter()},
                     footerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignCenter()},
+                    groupFooterTemplate: "SubTotal:",
                     footerTemplate: "Grand Total:"
                 },{
-                    field: "pathology_count", title: "Pathology Count",
+                    field: "pathology_count", title: "No of Test",
                     width: 50, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
+                    groupFooterTemplate: "#=sum?sum:''#",
                     footerTemplate: "#=sum#"
                 },{
-                    field: "charge_amount", title: "Fees",
+                    field: "charge_amount", title: "Price(৳)/ Test",
                     width: 50, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()}
                 },
                 {
-                    field: "total", title: "Total",
+                    field: "total", title: "Total(৳)",
                     width: 40, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
+                    groupFooterTemplate: "#=sum?sum:''#",
                     footerTemplate: "#=sum#"
                 }
             ],

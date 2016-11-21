@@ -22,8 +22,8 @@ class DamarageAdjustment {
 
     }
     static mapping = {
-        createDate type:'date'
-        approvedDate type:'date'
+        createDate sqltype:'date'
+        approvedDate sqltype:'date'
 
         medicineId index: 'damarage_adjustment_medicine_id_idx'
 

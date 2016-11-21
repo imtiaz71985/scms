@@ -11,7 +11,7 @@ class RegistrationReissue {
     Date createDate
 
     static constraints = {
-        createDate type:'date'
+        createDate sqltype:'date'
         description (nullable: true)
     }
     static mapping = {

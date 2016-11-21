@@ -14,7 +14,7 @@ class MedicineReturn {
     static constraints = {
     }
     static mapping = {
-        returnDate type:'date'
+        returnDate sqltype:'date'
         returnBy  index: 'medicine_return_sec_user_id_idx'
     }
 }

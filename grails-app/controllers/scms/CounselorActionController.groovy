@@ -1,8 +1,12 @@
 package scms
 
+import actions.ServiceTokenInfo.ApproveOldServiceActionService
+import actions.ServiceTokenInfo.CreateOldServiceTokenInfoActionService
 import actions.ServiceTokenInfo.CreateServiceTokenInfoActionService
+import actions.ServiceTokenInfo.DeleteOldServiceTokenInfoActionService
 import actions.ServiceTokenInfo.DeleteServiceTokenInfoActionService
 import com.scms.DiseaseInfo
+import com.scms.OldServiceTokenInfo
 import com.scms.SecUser
 import com.scms.ServiceChargeFreeDays
 import com.scms.ServiceTokenInfo
@@ -30,6 +34,9 @@ class CounselorActionController extends BaseController {
 
     CreateServiceTokenInfoActionService createServiceTokenInfoActionService
     DeleteServiceTokenInfoActionService deleteServiceTokenInfoActionService
+    CreateOldServiceTokenInfoActionService createOldServiceTokenInfoActionService
+    DeleteOldServiceTokenInfoActionService deleteOldServiceTokenInfoActionService
+    ApproveOldServiceActionService approveOldServiceActionService
     ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
     ServiceHeadInfoService serviceHeadInfoService
     BaseService baseService
@@ -217,8 +224,14 @@ class CounselorActionController extends BaseController {
     def getTotalServiceChargesByDiseaseCode() {
         long diseaseId = Long.parseLong(params.diseaseId)
         List<GroovyRowResult> lstOfCharges
-
-        lstOfCharges = serviceChargesService.getTotalChargeByListOfDiseaseCode(diseaseId.toString())
+        Date serviceDate=DateUtility.getSqlDate(new Date())
+        try {
+            if (params.serviceDate) {
+                Date d = DateUtility.parseDateForDB(params.serviceDate)
+                serviceDate = DateUtility.getSqlDate(d)
+            }
+        }catch(ex){}
+        lstOfCharges = serviceChargesService.getTotalChargeByListOfDiseaseCode(serviceDate, diseaseId.toString())
         Map result = new HashedMap()
         result.put('totalCharge', lstOfCharges[0].chargeAmount)
         result.put('chargeIds', lstOfCharges[0].id)
@@ -259,4 +272,85 @@ class CounselorActionController extends BaseController {
         result.put('details', lst[0])
         render result as JSON
     }
+    def showOldService() {
+        render(view: "/counselorAction/showOldService")
+    }
+    def retrieveRegNoByDate() {
+        Date createDate = DateUtility.parseDateForDB(params.createDate)
+       String  hospitalCode= SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        Date fromDate=DateUtility.getSqlFromDateWithSeconds(createDate)
+        Date toDate=DateUtility.getSqlToDateWithSeconds(createDate)
+        List<GroovyRowResult> lstRegNo = registrationInfoService.listOfRegNoByDate(hospitalCode,fromDate,toDate)
+        lstRegNo = baseService.listForKendoDropdown(lstRegNo, null, null)
+        Map result = [lstRegNo: lstRegNo]
+        render result as JSON
+    }
+    def createTokenNoForOldService() {
+        String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        Date createDate = DateUtility.parseDateForDB(params.createDate)
+        Date start = DateUtility.getSqlFromDateWithSeconds(createDate)
+        Date end = DateUtility.getSqlToDateWithSeconds(createDate)
+        int c = ServiceTokenInfo.countByServiceDateBetween(start, end)
+        c += 1
+        int old = OldServiceTokenInfo.countByIsApprovedAndServiceDateBetween(false,start, end)
+        c = c + old
+        String DATE_FORMAT = "ddMMyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        String tokenNo = sdf.format(createDate)
+        String serviceNo = (c < 10 ? '00' : c < 100 ? '0' : '') + c.toString()
+        tokenNo = 'S' + hospital_code + tokenNo + serviceNo
+        // def result = [:]
+        Map result = new HashedMap()
+        result.put('tokenNo', tokenNo)
+
+        render result as JSON
+    }
+    def createOldService() {
+        renderOutput(createOldServiceTokenInfoActionService, params)
+    }
+    def deleteOldService() {
+        renderOutput(deleteOldServiceTokenInfoActionService, params)
+    }
+    def listOfOldService() {
+
+        String hospital_code = ""
+        if (!secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+            hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        }
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.RegAndOldServiceDetails( hospital_code)
+
+        Map result = new HashedMap()
+        result.put('list', lst)
+        result.put('count', lst.size())
+        render result as JSON
+    }
+    def retrieveTokenNoByRegNoForOldService() {
+        String regNo = params.regNo.toString()
+        Date serviceDate=DateUtility.getSqlDate(new Date())
+        try {
+            if (params.serviceDate) {
+                Date d = DateUtility.parseDateForDB(params.serviceDate)
+                serviceDate = DateUtility.getSqlToDateWithSeconds(d)
+            }
+        }catch(ex){}
+        List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndIsDeletedAndIsFollowupNeededAndServiceDateLessThan(regNo, false,true,serviceDate, [sort: "serviceDate", order: "DESC"])
+
+        lst = baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
+        Map result = [lstTokenNo: lst]
+        render result as JSON
+    }
+    def oldServiceDetails() {
+        String tokenNo = params.tokenNo.toString()
+        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.getOldTokenDetails(tokenNo)
+        Map result = new HashedMap()
+        result.put('details', lst[0])
+        render result as JSON
+    }
+    def showOldServiceHO() {
+        render(view: "/counselorAction/showOldServiceHO")
+    }
+    def approveRequest() {
+        renderOutput(approveOldServiceActionService, params)
+    }
+
 }

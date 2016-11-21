@@ -5,6 +5,7 @@ class ServiceTokenInfo {
     String serviceTokenNo
     String regNo
     Date serviceDate
+    Date createDate
     long createBy
     double subsidyAmount=0
     long visitTypeId
@@ -19,6 +20,7 @@ class ServiceTokenInfo {
 
     static constraints = {
         modifyDate(nullable: true)
+        createDate(nullable: true)
         modifyBy (nullable: true)
         referenceServiceTokenNo (nullable: true)
         prescriptionType (nullable: true)
@@ -30,6 +32,7 @@ class ServiceTokenInfo {
         id name: 'serviceTokenNo'
         version false
         id generator: 'assigned'
+        createDate sqlType: 'Date'
         regNo index: 'service_token_info_reg_no_idx'
         visitTypeId index: 'service_token_info_visit_type_id_idx'
         serviceProviderId index: 'service_token_info_service_provider_id_idx'

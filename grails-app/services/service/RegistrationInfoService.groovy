@@ -154,4 +154,18 @@ class RegistrationInfoService extends BaseService {
 
         return result
     }
+    public List<GroovyRowResult> listOfRegNoByDate(String hospitalCode, Date fromDate, Date toDate) {
+
+        String queryStr = """
+               SELECT DISTINCT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name
+            FROM registration_info ri LEFT JOIN revisit_patient rp ON ri.reg_no=rp.reg_no
+            WHERE ri.is_active = TRUE  AND SUBSTRING(ri.reg_no,1,2)='${hospitalCode}' AND
+            (ri.create_date BETWEEN '${fromDate}' AND '${toDate}' OR rp.create_date BETWEEN '${fromDate}' AND '${toDate}')
+            ORDER BY ri.create_date DESC;
+        """
+
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+
+        return result
+    }
 }
