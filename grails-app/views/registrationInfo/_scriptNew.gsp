@@ -148,13 +148,45 @@
                 {field: "address", title: "Address", width: 150, sortable: false, filterable: false},
                 {field: "dateOfBirth", title: "Age", width: 40, sortable: false, filterable: false,
                     template: "#=evaluateDateRange(dateOfBirth, new Date())#"},
-                {field: "sex", title: "Gender", width: 50, sortable: false, filterable: false}
+                {field: "sex", title: "Gender", width: 50, sortable: false, filterable: false},
+                {
+                    command: [
+                        //define the commands here
+                        { name: "custom2", text: "",click: deleteRecord,className: "fa fa-trash "  }
+                    ],
+                    title: "",width:50
+                }
             ],
             filterable: {
                 mode: "row"
             }
         });
         $("#menuGrid").kendoMenu();
+    }
+    function deleteRecord(e) {
+
+        if (!confirm('Are you sure you want to delete this patient?')) {
+            return false;
+        }
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'registrationInfo', action:  'delete')}?regNo=" + dataItem.regNo,
+            success: function (data) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus)
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
     }
     function populateUpazilaList() {
         var districtId = dropDownDistrict.value();

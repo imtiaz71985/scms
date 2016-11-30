@@ -1,16 +1,17 @@
 package actions.registrationInfo
 
 import com.scms.RegistrationInfo
+import com.scms.RevisitPatient
+import com.scms.ServiceTokenInfo
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
-import scms.utility.DateUtility
 import service.RegistrationInfoService
 
 @Transactional
-class DeleteRegistrationInfoActionService extends BaseService implements ActionServiceIntf{
+class DeleteRegistrationInfoActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -23,12 +24,16 @@ class DeleteRegistrationInfoActionService extends BaseService implements ActionS
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            String regNo=params.regNo.toString()
-            RegistrationInfo oldRegistrationInfo = RegistrationInfo.findByRegNo(regNo)
-            if(!oldRegistrationInfo){
+            String regNo = params.regNo.toString()
+
+            RegistrationInfo registrationInfo = RegistrationInfo.findByRegNo(regNo)
+            if (!registrationInfo) {
                 return super.setError(params, NOT_FOUND)
             }
-            RegistrationInfo registrationInfo = buildObject(oldRegistrationInfo)
+            int count = ServiceTokenInfo.countByRegNoAndIsDeleted(regNo, false)
+            if (count > 0) {
+                return super.setError(params, 'Sorry! Patient already taken service.')
+            }
             params.put(REGISTRATION_INFO, registrationInfo)
             return params
         } catch (Exception ex) {
@@ -41,7 +46,13 @@ class DeleteRegistrationInfoActionService extends BaseService implements ActionS
     public Map execute(Map result) {
         try {
             RegistrationInfo registrationInfo = (RegistrationInfo) result.get(REGISTRATION_INFO)
-            registrationInfo.save()
+            if (registrationInfo.isOldPatient) {
+                RevisitPatient revisitPatient = RevisitPatient.findByRegNo(registrationInfo.regNo)
+                revisitPatient.delete()
+            }
+
+            registrationInfo.delete()
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -61,12 +72,4 @@ class DeleteRegistrationInfoActionService extends BaseService implements ActionS
         return params
     }
 
-    private  RegistrationInfo buildObject(RegistrationInfo oldRegistrationInfo) {
-
-        oldRegistrationInfo.modifyDate = DateUtility.getSqlDate(new Date())
-        oldRegistrationInfo.modifyBy = springSecurityService.principal.id
-        oldRegistrationInfo.isActive=false
-
-        return oldRegistrationInfo
-    }
 }
