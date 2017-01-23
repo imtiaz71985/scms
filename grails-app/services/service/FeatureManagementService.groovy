@@ -131,7 +131,6 @@ class FeatureManagementService extends BaseService{
         String queryStr = """
             UPDATE feature_management
             SET config_attribute = CONCAT(config_attribute, ',${roleAuthority}')
-            SET config_attribute = CONCAT(config_attribute, ',${roleAuthority}')
             WHERE url LIKE '/'
         """
         String queryStr2 = """
