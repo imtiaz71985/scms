@@ -265,11 +265,6 @@
                                     <a href="#featureManagement/show"><i class="fa fa-cogs"></i>&nbsp;Role Right</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/login/showOnlineUser">
-                                <li>
-                                    <a href="#login/showOnlineUser"><i class="fa fa-binoculars"></i>&nbsp;Who is online</a>
-                                </li>
-                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
