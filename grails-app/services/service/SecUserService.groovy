@@ -14,7 +14,7 @@ class SecUserService extends BaseService {
     public boolean isLoggedUserAdmin(long userId) {
         SecUser user = SecUser.read(userId)
         SecRole roleAdmin = SecRole.findByAuthorityOrAuthority("ROLE_SYSTEM_ADMIN","ROLE_ADMIN")
-        SecRole roleHOSup = SecRole.findByAuthorityOrAuthority("ROLE_HO_SUPERVISOR","ROLE_Clinic Administration HO")
+        SecRole roleHOSup = SecRole.findByAuthorityOrAuthority("ROLE_REPORT_VIEWER","ROLE_HO_ADMIN",)
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
         int count2 = SecUserSecRole.countBySecRoleAndSecUser(roleHOSup, user)
         return count>0||count2 >0
