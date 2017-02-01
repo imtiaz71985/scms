@@ -176,14 +176,14 @@
             height: getGridHeightKendo(),
             selectable: true,
             sortable: true,
-            resizable: true,
+            resizable: false,
             dataBound: dataBoundGrid,
             reorderable: true,
             pageable: false,
             columns: [
                 {
                     field: "date_field",title: "Date",
-                    width: 60,sortable: false,filterable: false,
+                    width: 100,sortable: false,filterable: false,
                     headerAttributes: {style: setAlignCenter()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignCenter()},
@@ -194,7 +194,7 @@
                     columns: [
                         {
                             field: "new_patient", title: "New",
-                            width: 30,sortable: false,filterable: false,
+                            width: 50,sortable: false,filterable: false,
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
@@ -203,7 +203,7 @@
                         },
                         {
                             field: "patient_revisit", title: "Re-visit",
-                            width: 35,sortable: false,filterable: false,
+                            width: 50,sortable: false,filterable: false,
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
@@ -212,7 +212,7 @@
                         },
                         {
                             field: "total_patient", title: "Total",
-                            width: 40,sortable: false,filterable: false,
+                            width: 50,sortable: false,filterable: false,
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
@@ -232,7 +232,7 @@
                 },
                 {
                     field: "total_service", title: "Total <br/> Service",
-                    width: 40,sortable: false,filterable: false,
+                    width: 80,sortable: false,filterable: false,
                     headerAttributes: {style: setCAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
@@ -245,7 +245,7 @@
                             columns: [
                                 {
                                     field: "new_patient",title: "Count",
-                                    width: 30,sortable: false,filterable: false,
+                                    width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
@@ -254,7 +254,7 @@
                                 },
                                 {
                                     field: "registration_amount",title: "Amount(৳)",
-                                    width: 45,sortable: false,filterable: false,
+                                    width: 80,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -267,7 +267,7 @@
                             columns: [
                                 {
                                     field: "re_reg_patient",title: "Count",
-                                    width: 30,sortable: false,filterable: false,
+                                    width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
@@ -276,7 +276,7 @@
                                 },
                                 {
                                     field: "re_registration_amount",title: "Amount(৳)",
-                                    width: 45,sortable: false,filterable: false,
+                                    width: 80,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -289,7 +289,7 @@
                             columns: [
                                 {
                                     field: "consultation_count",title: "Count",
-                                    width: 30,sortable: false,filterable: false,
+                                    width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
@@ -298,7 +298,7 @@
                                 },
                                 {
                                     field: "consultation_amount",title: "Amount(৳)",
-                                    width: 45,sortable: false,filterable: false,
+                                    width: 80,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -306,7 +306,7 @@
                                     footerTemplate: "#=formatAmount(sum)#"
                                 },{
                                     field: "patient_followup", title: "Followup",
-                                    width: 42,sortable: false,filterable: false,
+                                    width: 60,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -314,7 +314,7 @@
                                     footerTemplate: "#=sum#"
                                 },{
                                     field: "patient_followup_amt",title: "Amount(৳)",
-                                    width: 45,sortable: false,filterable: false,
+                                    width: 80,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -327,7 +327,7 @@
                             columns: [
                                 {
                                     field: "subsidy_count",title: "Count",
-                                    width: 30,sortable: false,filterable: false,
+                                    width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
@@ -336,7 +336,7 @@
                                 },
                                 {
                                     field: "subsidy_amount",title: "Amount(৳)",
-                                    width: 45,sortable: false,filterable: false,
+                                    width: 80,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -349,7 +349,7 @@
                             columns: [
                                 {
                                     field: "pathology_count",title: "Count",
-                                    width: 30,sortable: false,filterable: false,
+                                    width: 50,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignCenter()},
                                     footerAttributes: {style: setAlignCenter()},
                                     attributes: {style: setAlignCenter()},
@@ -358,7 +358,7 @@
                                 },
                                 {
                                     field: "pathology_amount",title: "Amount(৳)",
-                                    width: 45,sortable: false,filterable: false,
+                                    width: 80,sortable: false,filterable: false,
                                     headerAttributes: {style: setCAlignRight()},
                                     footerAttributes: {style: setAlignRight()},
                                     attributes: {style: setAlignRight()},
@@ -374,7 +374,7 @@
                     columns: [
                         {
                             field: "medicine_sales", title: "Sales(৳)",
-                            width: 40,sortable: false,filterable: false,
+                            width: 70,sortable: false,filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
@@ -382,7 +382,7 @@
                             footerTemplate: "#=sum#"
                         }, {
                             field: "return_amt", title: "Return",
-                            width: 40, sortable: false, filterable: false,
+                            width: 60, sortable: false, filterable: false,
                             headerAttributes: {style: setCAlignRight()},
                             footerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
@@ -393,7 +393,7 @@
                 },
                 {
                     field: "medicine_sales",title: "Day <br/> Collection(৳)",
-                    width: 60,sortable: false,filterable: false,
+                    width: 110,sortable: false,filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
