@@ -25,7 +25,20 @@
         var date = new Date();
         date.setDate(date.getDate() + 1);
         // initialize form with kendo validator & bind onSubmit event
+
         initializeForm($("#diseaseInfoForm"), onSubmitDiseaseInfo);
+
+        var date = new Date();
+        date.setDate(date.getDate() + 1);
+        $("#activationDate").kendoDatePicker({
+            format: "dd/MM/yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            min: date
+        });
+        $("#activationDate").kendoMaskedTextBox({mask: "00/00/0000"});
+
+        $('#chargeAmount').prop('disabled',true);
+        $('#activationDateDiv').hide();
 
         $("#diseaseInfoRow").hide();
         // update page title
@@ -104,6 +117,8 @@
         initObservable();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
         $("#diseaseInfoRow").hide();
+        $('#chargeAmount').prop('disabled',true);
+        $('#activationDateDiv').hide();
     }
 
     function initDataSource() {
@@ -127,7 +142,10 @@
                         diseaseGroupName: {type: "string"},
                         applicableTo: {type: "number"},
                         applicableToName: {type: "string"},
-                        isActive: {type: "boolean"}
+                        isActive: {type: "boolean"},
+                        chargeAmount:{type: "number"},
+                        groupChargeAmount:{type: "number"},
+                        activationDate:{type: "date"}
                     }
                 },
                 parse: function (data) {
@@ -160,33 +178,37 @@
                 {
                     field: "diseaseCode",
                     title: "Disease Code",
-                    width: 60,
+                    width: 50,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
                 {
                     field: "diseaseGroupName",
                     title: "Group Name",
-                    width: 100,
+                    width: 80,
                     sortable: false,
                     filterable: kendoCommonFilterable(97)
                 },
-                {field: "name", title: "Name", width: 200, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "name", title: "Name", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
                 {
                     field: "description",
                     title: "Description",
-                    width: 120,
+                    width: 110,
                     sortable: false,
                     filterable: false
                 },
                 {
-                    field: "isActive", title: "Is Active", width: 40, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=isActive?'YES':'NO'#"
-                },
-                {
                     field: "applicableToName", title: "Applicable", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
+                {
+                    field: "activationDate", title: "Activation Date", format: "{0:dd-MM-yyyy}", width: 50, sortable: false, filterable: false
+                },
+                {field: "chargeAmount", title: "Charges", width: 40, sortable: false, filterable: false},
+                {
+                    field: "isActive", title: "Is Active", width: 30, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=isActive?'YES':'NO'#"
                 }
             ],
             filterable: {
@@ -208,7 +230,9 @@
                         diseaseGroupId: "",
                         diseaseGroupName: "",
                         applicableToName: "ALL",
-                        isActive: true
+                        isActive: true,
+                        chargeAmount:"",
+                        activationDate:""
                     }
                 }
         );
@@ -251,10 +275,23 @@
             return;
         }
 
-        dropDownDiseaseGroup.enable(false);
+        dropDownDiseaseGroup.readonly();
         $("#diseaseInfoRow").show();
         var diseaseInfo = getSelectedObjectFromGridKendo(gridDiseaseInfo);
         showRecord(diseaseInfo);
+        $('#chargeAmount').val('');
+        if(diseaseInfo.groupChargeAmount>0){
+                $('#chargeAmount').val(diseaseInfo.chargeAmount);
+                $('#chargeAmount').prop('disabled',true);
+                $('#activationDateDiv').hide();
+            }
+            else{
+            if(diseaseInfo.chargeAmount>0){
+                $('#chargeAmount').val(diseaseInfo.chargeAmount);
+            }
+                $('#chargeAmount').prop('disabled',false);
+                $('#activationDateDiv').show();
+            }
     }
 
     function showRecord(diseaseInfo) {
@@ -276,6 +313,17 @@
             url: actionUrl,
             success: function (data, textStatus) {
                 $('#diseaseCode').val(data.diseaseCode);
+                $('#chargeAmount').val('');
+
+                if(data.chargeAmount>0){
+                    $('#chargeAmount').val(data.chargeAmount);
+                    $('#chargeAmount').prop('disabled',true);
+                    $('#activationDateDiv').hide();
+                }
+                else{
+                    $('#chargeAmount').prop('disabled',false);
+                    $('#activationDateDiv').show();
+                }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
 

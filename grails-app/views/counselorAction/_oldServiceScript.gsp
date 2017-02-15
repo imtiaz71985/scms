@@ -764,7 +764,7 @@
 
         if ($("#isUndiagnosed").val() != 'true') {
             $.ajax({
-                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + groupId + '&serviceDate=' + $('#serviceDate').val(),
+                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByGroupId')}?groupId=" + groupId + '&serviceDate=' + $('#serviceDate').val(),
                 success: function (data) {
                     if (data.isError) {
                         showError(data.message);
@@ -854,7 +854,7 @@
             if (($('#diseaseCodeForChargeFree').val() != diseaseId) && ($("#isUndiagnosed").val() != 'true')) {
                 var groupId = $("#diseaseGroupId").val();
                 $.ajax({
-                    url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + groupId + '&serviceDate=' + $('#serviceDate').val(),
+                    url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByGroupId')}?groupId=" + groupId + '&serviceDate=' + $('#serviceDate').val(),
                     success: function (data) {
                         if (data.isError) {
                             showError(data.message);
@@ -882,6 +882,33 @@
                 getPayableAmount();
             }
         }
+
+        if($('#serviceCharges').val()<=0) {
+            getChargeAmountByDiseaseCode();
+        }
+    }
+    function getChargeAmountByDiseaseCode(){
+        var diseaseId = $("#diseaseCode").val();
+        $.ajax({
+            url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseCode=" + diseaseId,
+            success: function (data) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
+                $('#serviceCharges').val(data.totalCharge);
+                $('#selectedConsultancyId').val(data.chargeIds);
+
+                getPayableAmount();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            }
+
+        });
     }
 
 </script>

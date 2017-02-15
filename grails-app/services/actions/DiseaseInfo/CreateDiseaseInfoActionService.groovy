@@ -2,13 +2,16 @@ package actions.DiseaseInfo
 
 import com.model.ListDiseaseInfoActionServiceModel
 import com.scms.DiseaseInfo
+import com.scms.ServiceCharges
 import com.scms.SystemEntity
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
+import service.ServiceChargesService
 
 @Transactional
 class CreateDiseaseInfoActionService extends BaseService implements ActionServiceIntf {
@@ -18,14 +21,20 @@ class CreateDiseaseInfoActionService extends BaseService implements ActionServic
     private static final String ALREADY_EXIST = "Name & Group already exist"
     private static final String DISEASE_INFO = "diseaseInfo"
     private Logger log = Logger.getLogger(getClass())
+    ServiceChargesService serviceChargesService
 
     @Transactional
     public Map executePreCondition(Map params){
         try {
             //Check parameters
 
-            if (!params.diseaseCode||!params.diseaseGroupId||!params.name) {
+            if (!params.diseaseCode||!params.diseaseGroupId||!params.name||!params.applicableTo) {
                 return super.setError(params, INVALID_INPUT_MSG)
+            }
+            long diseaseGroupId = Long.parseLong(params.diseaseGroupId.toString())
+            double chargeAmount=serviceChargesService.chargeInfoByDiseaseGroupId(diseaseGroupId)
+            if(chargeAmount<=0 && !params.activationDate){
+                return super.setError(params, 'Error for invalid activation date')
             }
             int duplicateCount = DiseaseInfo.countByNameIlikeAndDiseaseGroupId(params.name,params.diseaseGroupId)
             if (duplicateCount > 0) {
@@ -47,6 +56,16 @@ class CreateDiseaseInfoActionService extends BaseService implements ActionServic
         try {
             DiseaseInfo diseaseInfo = (DiseaseInfo) result.get(DISEASE_INFO)
             diseaseInfo.save()
+            double chargeAmount=serviceChargesService.chargeInfoByDiseaseGroupId(diseaseInfo.diseaseGroupId)
+            if(chargeAmount<=0) {
+                ServiceCharges serviceCharges = new ServiceCharges()
+                serviceCharges.serviceCode = '02D' + diseaseInfo.diseaseCode
+                serviceCharges.chargeAmount = Double.parseDouble(result.chargeAmount)
+                serviceCharges.activationDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(result.activationDate))
+                serviceCharges.createDate = DateUtility.getSqlDate(new Date())
+                serviceCharges.createdBy = springSecurityService.principal.id
+                serviceCharges.save()
+            }
 
             return result
         } catch (Exception ex) {

@@ -221,8 +221,8 @@ class CounselorActionController extends BaseController {
         render result as JSON
     }
 
-    def getTotalServiceChargesByDiseaseCode() {
-        long diseaseId = Long.parseLong(params.diseaseId)
+    def getTotalServiceChargesByGroupId() {
+        long diseaseId = Long.parseLong(params.groupId)
         List<GroovyRowResult> lstOfCharges
         Date serviceDate=DateUtility.getSqlDate(new Date())
         try {
@@ -231,7 +231,24 @@ class CounselorActionController extends BaseController {
                 serviceDate = DateUtility.getSqlDate(d)
             }
         }catch(ex){}
-        lstOfCharges = serviceChargesService.getTotalChargeByListOfDiseaseCode(serviceDate, diseaseId.toString())
+        lstOfCharges = serviceChargesService.getTotalChargeByListOfDiseaseGroupId(serviceDate, diseaseId.toString())
+        Map result = new HashedMap()
+        result.put('totalCharge', lstOfCharges[0].chargeAmount)
+        result.put('chargeIds', lstOfCharges[0].id)
+
+        render result as JSON
+    }
+    def getTotalServiceChargesByDiseaseCode() {
+
+        List<GroovyRowResult> lstOfCharges
+        Date serviceDate=DateUtility.getSqlDate(new Date())
+        try {
+            if (params.serviceDate) {
+                Date d = DateUtility.parseDateForDB(params.serviceDate)
+                serviceDate = DateUtility.getSqlDate(d)
+            }
+        }catch(ex){}
+        lstOfCharges = serviceChargesService.getTotalChargeByDiseaseCode(serviceDate, params.diseaseCode)
         Map result = new HashedMap()
         result.put('totalCharge', lstOfCharges[0].chargeAmount)
         result.put('chargeIds', lstOfCharges[0].id)

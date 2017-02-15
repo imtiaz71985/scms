@@ -26,7 +26,7 @@ class ServiceChargesService extends BaseService {
         return result
     }
 
-    public List<GroovyRowResult> getTotalChargeByListOfDiseaseCode(Date serviceDate,String groupCode) {
+    public List<GroovyRowResult> getTotalChargeByListOfDiseaseGroupId(Date serviceDate,String groupCode) {
         String queryStr = """
 
                SELECT sc.id, 0 AS VERSION,sc.charge_amount AS chargeAmount,sc.service_code,
@@ -43,5 +43,35 @@ class ServiceChargesService extends BaseService {
         return result
 
     }
+    public  double chargeInfoByDiseaseGroupId(long diseaseGroupId) {
+        String queryStr = """
+                            SELECT COALESCE(charge_amount,0) AS chargeAmount,activation_date
+                            FROM service_charges WHERE SUBSTRING(service_code,4,LENGTH(service_code))='${diseaseGroupId}'
+                            AND SUBSTRING(service_code,3,1)='D'
+                            AND last_active_date IS NULL
 
+        """
+
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+        double d = Double.parseDouble(result[0].chargeAmount.toString())
+        return d
+    }
+
+    public List<GroovyRowResult> getTotalChargeByDiseaseCode(Date serviceDate,String diseaseCode) {
+        String queryStr = """
+
+               SELECT sc.id, 0 AS VERSION,sc.charge_amount AS chargeAmount,sc.service_code,
+                    sc.activation_date AS activationDate
+                        FROM  service_charges sc
+                    WHERE sc.activation_date<='${serviceDate}'
+                    AND '${serviceDate}' BETWEEN sc.activation_date AND  COALESCE(sc.last_active_date,'${serviceDate}') AND SUBSTRING(sc.service_code,3,1)='D'
+                    AND SUBSTRING(sc.service_code,4,LENGTH(sc.service_code)) = (${diseaseCode})
+                    ORDER BY sc.service_code ASC
+        """
+
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+
+        return result
+
+    }
 }
