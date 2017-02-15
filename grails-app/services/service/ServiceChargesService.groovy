@@ -3,6 +3,7 @@ package service
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import scms.BaseService
+import sun.org.mozilla.javascript.internal.regexp.SubString
 
 @Transactional
 class ServiceChargesService extends BaseService {
@@ -70,6 +71,9 @@ class ServiceChargesService extends BaseService {
         """
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
+if(result.size()<=0){
+    result= getTotalChargeByListOfDiseaseGroupId(serviceDate,diseaseCode.substring(0,2))
+}
 
         return result
 

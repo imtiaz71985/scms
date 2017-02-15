@@ -450,6 +450,7 @@
             $('#divSelectedDisease').show();
             $('#divTakenService').show();
             $('#serviceCharges').val('0');
+            $('#groupServiceCharge').val('0');
             $('#subsidyAmount').val('');
             loadDisease();
         }
@@ -708,6 +709,7 @@
         $('#divSelectedDisease').show();
         $('#divTakenService').show();
         $('#serviceCharges').val('0');
+        $('#groupServiceCharge').val('0');
         $('#subsidyAmount').val('');
         $('#divReferenceServiceNo').show();
         $('#referenceServiceNoDDL').kendoDropDownList({
@@ -732,6 +734,7 @@
             success: function (data, textStatus) {
 
                 $('#serviceCharges').val('0');
+                $('#groupServiceCharge').val('0');
                 $('#subsidyAmount').val('');
                 $('#payableAmount').val('0');
                 $("#selectedConsultancyId").val('');
@@ -771,6 +774,7 @@
                         return false;
                     }
                     $('#serviceCharges').val(data.totalCharge);
+                    $('#groupServiceCharge').val(data.totalCharge);
                     $('#selectedConsultancyId').val(data.chargeIds);
 
                     getPayableAmount();
@@ -786,6 +790,7 @@
         }
         else {
             $('#serviceCharges').val('0');
+            $('#groupServiceCharge').val('0');
             $('#subsidyAmount').val('');
             $("#selectedConsultancyId").val('');
             getPayableAmount();
@@ -861,6 +866,7 @@
                             return false;
                         }
                         $('#serviceCharges').val(data.totalCharge);
+                        $('#groupServiceCharge').val(data.totalCharge);
                         $('#selectedConsultancyId').val(data.chargeIds);
 
                         getPayableAmount();
@@ -877,6 +883,7 @@
             }
             else {
                 $('#serviceCharges').val('0');
+                $('#groupServiceCharge').val('0');
                 $('#subsidyAmount').val('');
                 $("#selectedConsultancyId").val('');
                 getPayableAmount();

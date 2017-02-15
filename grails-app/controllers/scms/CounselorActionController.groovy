@@ -233,8 +233,14 @@ class CounselorActionController extends BaseController {
         }catch(ex){}
         lstOfCharges = serviceChargesService.getTotalChargeByListOfDiseaseGroupId(serviceDate, diseaseId.toString())
         Map result = new HashedMap()
+        if(lstOfCharges.size()>0) {
         result.put('totalCharge', lstOfCharges[0].chargeAmount)
         result.put('chargeIds', lstOfCharges[0].id)
+        }
+        else{
+            result.put('totalCharge', 0)
+            result.put('chargeIds', '')
+        }
 
         render result as JSON
     }
@@ -250,8 +256,10 @@ class CounselorActionController extends BaseController {
         }catch(ex){}
         lstOfCharges = serviceChargesService.getTotalChargeByDiseaseCode(serviceDate, params.diseaseCode)
         Map result = new HashedMap()
-        result.put('totalCharge', lstOfCharges[0].chargeAmount)
-        result.put('chargeIds', lstOfCharges[0].id)
+
+            result.put('totalCharge', lstOfCharges[0].chargeAmount)
+            result.put('chargeIds', lstOfCharges[0].id)
+
 
         render result as JSON
     }
