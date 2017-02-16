@@ -824,7 +824,9 @@
                             if (data.totalCharge <= 0) {
                                 getChargeAmountByDiseaseCode();
                             }
-                            getPayableAmount();
+                            else {
+                                getPayableAmount();
+                            }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
                             afterAjaxError(XMLHttpRequest, textStatus);

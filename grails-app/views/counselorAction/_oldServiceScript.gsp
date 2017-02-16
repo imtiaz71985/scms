@@ -868,8 +868,12 @@
                         $('#serviceCharges').val(data.totalCharge);
                         $('#groupServiceCharge').val(data.totalCharge);
                         $('#selectedConsultancyId').val(data.chargeIds);
-
-                        getPayableAmount();
+                        if (data.totalCharge <= 0) {
+                            getChargeAmountByDiseaseCode();
+                        }
+                        else {
+                            getPayableAmount();
+                        }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         afterAjaxError(XMLHttpRequest, textStatus);
@@ -890,8 +894,10 @@
             }
         }
 
-        if($('#serviceCharges').val()<=0) {
-            getChargeAmountByDiseaseCode();
+        else {
+            if ($('#groupServiceCharge').val() <= 0) {
+                getChargeAmountByDiseaseCode();
+            }
         }
     }
     function getChargeAmountByDiseaseCode(){
