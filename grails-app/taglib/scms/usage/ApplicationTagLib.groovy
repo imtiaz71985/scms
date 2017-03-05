@@ -118,7 +118,7 @@ class ApplicationTagLib extends BaseTagLibExecutor {
         super.executeTag(getDropDownSellVoucherNoTagLibActionService, attrs)
         out << (String) attrs.html
     }
-    def dropDownOldServiceDate = { attrs, body ->
+    def dropDownIncompleteServiceDate = { attrs, body ->
         attrs.body = body
         super.executeTag(getDropDownOldServiceDateTagLibActionService, attrs)
         out << (String) attrs.html

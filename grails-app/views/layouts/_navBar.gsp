@@ -178,7 +178,7 @@
                 </sec:ifAnyUrls>
 
                 <sec:ifAnyUrls urls="/serviceType/show,/systemEntity/show,/serviceHeadInfo/show,/diseaseGroup/show,
-                                    /diseaseGroup/show,/diseaseInfo/show,/medicineInfo/show,/hospitalLocation/show">
+                                    /diseaseGroup/show,/diseaseInfo/show,/medicineInfo/show,/hospitalLocation/show,/transactionClosing/show">
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Setting<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -240,6 +240,11 @@
                             <sec:access url="/serviceProvider/show">
                                 <li>
                                     <a href="#serviceProvider/show"><i class="fa fa-user"></i>&nbsp; Service Provider</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/transactionClosing/show">
+                                <li>
+                                    <a href="#transactionClosing/show"><i class="fa fa-cloud-upload"></i>&nbsp; Transaction Closing</a>
                                 </li>
                             </sec:access>
                         </ul>

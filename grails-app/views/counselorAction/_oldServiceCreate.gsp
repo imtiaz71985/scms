@@ -15,12 +15,12 @@
                         </div>
 
                         <div class="col-md-2">
-                            <app:dropDownOldServiceDate
+                            <app:dropDownIncompleteServiceDate
                                     data_model_name="dropDownOldServiceDate"
                                     id="oldServiceDateDDL" name="oldServiceDateDDL" tabindex="1"
                                     onchange="javascript:populateRegNoDDL();"
-                                    class="kendo-drop-down">
-                            </app:dropDownOldServiceDate>
+                                    class="kendo-drop-down" type="Incomplete">
+                            </app:dropDownIncompleteServiceDate>
                         </div>
                         <div class="col-md-2" align="right" style="padding-right: 10px;padding-left: 0px;">
                             <label class="control-label ">Registration No:</label>
