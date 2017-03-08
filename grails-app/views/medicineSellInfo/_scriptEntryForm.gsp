@@ -5,7 +5,7 @@
 </ul>
 </script>
 <script language="javascript">
-    var voucherNo,quantity,gridMedicineSellInfo, dataSource, dropDownMedicine, 
+    var voucherNo,quantity,gridMedicineSellInfo, dataSource, dropDownMedicine, dropDownCreatingDate,
             medicineName, unitPrice = 0, totalAmount = 0, availableStock = 0;
 
     $(document).ready(function () {
@@ -93,13 +93,13 @@
             showLoadingSpinner(false);
             return false;
         }
-        var quantity = $('#quantity').val();
+        var qty = $('#quantity').val();
         var amount = $('#amount').val();
         var unitPrice = $('#hidUnitPrice').val();
         var unitType = $('#hidUnitType').val();
 
         // add data into grid;
-        addToGrid(gridMedicineSellInfo, medicineId, quantity, amount, unitPrice,unitType);
+        addToGrid(gridMedicineSellInfo, medicineId, qty, amount, unitPrice,unitType);
         showLoadingSpinner(false);
         setButtonDisabled($('#addMedicine'), false);
         return false;
@@ -131,11 +131,11 @@
         });
         return success;
     }
-    function addToGrid(gridModel, medicineId, quantity, amount, unitPrice,unitType) {
+    function addToGrid(gridModel, medicineId, qty, amount, unitPrice,unitType) {
         var data = {
             medicineName: medicineName,
             medicineId: medicineId,
-            quantity  : quantity,
+            quantity  : qty,
             stock     : availableStock,
             amount    : amount,
             unitPrice : unitPrice,
@@ -153,12 +153,17 @@
         $("#footerSpan").text(formatCeilAmount(totalAmount));
         unitPrice = 0;
         dropDownMedicine.dataSource.filter("");
-        clearForm($("#frmMedicine"), $("#medicineId"));
+
         availableStock = 0;
+
+        dropDownMedicine.value('');
+        quantity.value('');
         $("#stockQty").text('');
-        $("#voucherNo").val(voucherNo);
+        $("#unitPriceTxt").val('');
         $('#hidUnitPrice').val('');
         $('#hidUnitType').val('');
+        $('#amount').val('');
+
         $('#gridMedicine  > .k-grid-content').height(285);
         return false;
     }
@@ -275,16 +280,19 @@
     function calculateTotalPrice() {
         var medicineId = dropDownMedicine.value();
         var quantity = $("#quantity").val();
-        if (medicineId != '' && unitPrice != 0) {
-            $("#amount").val((unitPrice * quantity).toFixed(2));
-        } else {
-
+        if(quantity>=0) {
+            if (medicineId != '' && unitPrice != 0) {
+                $("#amount").val((unitPrice * quantity).toFixed(2));
+            }
         }
     }
 
     function getVoucherNo(){
+        var creatingDate = $('#creatingDateDDL').val();
+
+        showLoadingSpinner(true);
         $.ajax({
-            url: "${createLink(controller: 'medicineSellInfo', action:  'retrieveVoucherNo')}",
+            url: "${createLink(controller: 'medicineSellInfo', action:  'retrieveVoucherNo')}?creatingDate=" + creatingDate,
             success: function (data, textStatus) {
                 voucherNo = data.voucherNo;
                 $("#voucherNo").val(voucherNo);
@@ -332,4 +340,5 @@
         $("#footerSpan").text(formatCeilAmount(totalAmount));
         $('#gridMedicine  > .k-grid-content').height(285);
     }
+
 </script>

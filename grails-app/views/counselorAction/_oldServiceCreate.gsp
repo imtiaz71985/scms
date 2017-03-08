@@ -19,7 +19,7 @@
                                     data_model_name="dropDownOldServiceDate"
                                     id="oldServiceDateDDL" name="oldServiceDateDDL" tabindex="1"
                                     onchange="javascript:populateRegNoDDL();"
-                                    class="kendo-drop-down" type="Incomplete">
+                                    class="kendo-drop-down" type="forCounselor">
                             </app:dropDownIncompleteServiceDate>
                         </div>
                         <div class="col-md-2" align="right" style="padding-right: 10px;padding-left: 0px;">

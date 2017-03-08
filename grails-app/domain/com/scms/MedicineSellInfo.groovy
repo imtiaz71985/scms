@@ -11,9 +11,11 @@ class MedicineSellInfo {
     double totalAmount
     String hospitalCode
     boolean isReturn
+    Date createDate
 
     static constraints = {
         isReturn (nullable:true)
+        createDate (nullable:true)
     }
     static mapping = {
         sellDate sqltype:'date'

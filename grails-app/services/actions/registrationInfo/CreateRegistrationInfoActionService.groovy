@@ -91,7 +91,7 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
         RegistrationInfo registrationInfo = (RegistrationInfo) result.get(REGISTRATION_INFO)
         ListRegistrationInfoActionServiceModel model = ListRegistrationInfoActionServiceModel.read(registrationInfo.regNo)
         result.put(REGISTRATION_INFO, model)
-        String regNo = registrationInfoService.retrieveRegNo()
+        String regNo = registrationInfoService.retrieveRegNo(registrationInfo.createDate)
         result.put(REG_NO, regNo)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
@@ -114,7 +114,8 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
         registrationInfo.patientName = parameterMap.patientName
         registrationInfo.villageId = villageId
         registrationInfo.service_charge_id = serviceChargeId
-        registrationInfo.createDate = DateUtility.getSqlDate(new Date())
+        registrationInfo.createDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(parameterMap.creatingDateDDL))
+        registrationInfo.originalCreateDate = DateUtility.getSqlDate(new Date())
         registrationInfo.createdBy = springSecurityService.principal.id
         registrationInfo.hospitalCode = registrationInfo.regNo.substring(0, 2)
         registrationInfo.isActive = true

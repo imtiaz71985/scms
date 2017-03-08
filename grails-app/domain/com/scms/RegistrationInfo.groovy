@@ -10,6 +10,7 @@ class RegistrationInfo {
     long maritalStatusId
     String mobileNo
     Date createDate
+    Date originalCreateDate
     Date modifyDate
     long modifyBy
     long createdBy
@@ -27,6 +28,7 @@ class RegistrationInfo {
         modifyBy (nullable: true)
         isReissue (nullable: true)
         isOldPatient (nullable: true)
+        originalCreateDate (nullable: true)
     }
 
     static mapping = {

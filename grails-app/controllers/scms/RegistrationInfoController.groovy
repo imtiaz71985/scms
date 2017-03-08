@@ -46,7 +46,7 @@ class RegistrationInfoController extends BaseController {
     CreateRevisitPatientActionService createRevisitPatientActionService
 
     def showNew() {
-        String regNo = registrationInfoService.retrieveRegNo()
+        String regNo = registrationInfoService.retrieveRegNo(new Date())
         render(view: "/registrationInfo/showNew", model: [regNo: regNo])
     }
     def show() {
@@ -130,6 +130,13 @@ class RegistrationInfoController extends BaseController {
         LinkedHashMap resultMap = registrationInfoService.getAddressDetails(villageId)
 
         Map result = [unionId: resultMap.unionId,upazilaId: resultMap.upazilaId,districtId: resultMap.districtId]
+        render result as JSON
+    }
+    def retrieveRegNo() {
+        Date date=DateUtility.parseDateForDB(params.creatingDate)
+        String regNo = registrationInfoService.retrieveRegNo(date)
+        Map result = new HashedMap()
+        result.put('regNo', regNo)
         render result as JSON
     }
 }

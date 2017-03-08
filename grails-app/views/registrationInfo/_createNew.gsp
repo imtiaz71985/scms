@@ -16,7 +16,15 @@
                                 <label class="col-md-3 control-label label-optional"
                                        for="regNo">Registration No:</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-3">
+
+                                        <app:dropDownIncompleteServiceDate
+                                                data_model_name="dropDownCreatingDate"
+                                                id="creatingDateDDL" name="creatingDateDDL" tabindex="1"
+                                                onchange="javascript:populateRegNo();"
+                                                class="kendo-drop-down">
+                                        </app:dropDownIncompleteServiceDate>
+                                    </div><div class="col-md-3">
                                     <input type="text" readonly="true" class="form-control" id="regNo" name="regNo"/>
                                 </div>
 

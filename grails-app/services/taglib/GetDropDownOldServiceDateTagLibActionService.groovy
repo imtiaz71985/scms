@@ -133,7 +133,13 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
         String strDefaultValue = defaultValue ? defaultValue : EMPTY_SPACE
 
         if (showHints.booleanValue()) {
-            lstValues = listForKendoDropdown(lstValues, null, hintsText)
+            if(dropDownAttributes.type.equals('forTranClosing')||dropDownAttributes.type.equals('forCounselor')){
+                lstValues = listForKendoDropdown(lstValues, null, hintsText)
+            }
+            else{
+                lstValues = listForKendoDropdown(lstValues, null, hintsText)
+                lstValues.remove(0)
+            }
         }
         String jsonData = lstValues as JSON
 
@@ -170,14 +176,14 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
         Date date1 =cal.getTime();
         Date fromDate = DateUtility.getSqlFromDateWithSeconds(date1);
 
-        if(type.equals('forClosing')) {
+        if(type.equals('forCounselor')) {
             cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -1);
             Date date =cal.getTime();
             toDate = DateUtility.getSqlToDateWithSeconds(date);
         }
         else{
             cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -1);
             Date date =cal.getTime();
             toDate = DateUtility.getSqlToDateWithSeconds(date);
         }
@@ -190,7 +196,7 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
 
                 WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' AND COALESCE(tc.is_transaction_closed,FALSE) <> TRUE
                 AND c.is_holiday<>TRUE
-                ORDER BY c.date_field ASC
+                ORDER BY c.date_field DESC
 
         """
 

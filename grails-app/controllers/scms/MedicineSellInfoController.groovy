@@ -31,7 +31,7 @@ class MedicineSellInfoController extends BaseController {
         render(view: "/medicineSellInfo/show")
     }
     def showDetails() {
-        String voucherNo = generateVoucherNo()
+        String voucherNo = generateVoucherNo(new Date())
         render(view: "/medicineSellInfo/showDetails",model: [voucherNo: voucherNo])
     }
     def showLink(){
@@ -84,21 +84,23 @@ class MedicineSellInfoController extends BaseController {
     }
 
     def retrieveVoucherNo() {
-        String voucherNo = generateVoucherNo()
+        Date date=DateUtility.parseDateForDB(params.creatingDate)
+        String voucherNo = generateVoucherNo(date)
         Map result = new HashedMap()
         result.put('voucherNo', voucherNo)
         render result as JSON
     }
 
-    private String generateVoucherNo(){
-        Date date = DateUtility.parseDateForDB(DateUtility.getDBDateFormatAsString(new Date()))
+    private String generateVoucherNo(Date date){
+        Date sellDate = DateUtility.parseDateForDB(DateUtility.getDBDateFormatAsString(date))
         String hospital_code= SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        int serial = MedicineSellInfo.countBySellDateAndHospitalCode(date,hospital_code)
+        int serial = MedicineSellInfo.countBySellDateAndHospitalCode(sellDate,hospital_code)
         serial+=1
         String DATE_FORMAT = "ddMMyy";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        Calendar cal = Calendar.getInstance(); // today
-        String voucherNo=sdf.format(cal.getTime())
+        //Calendar cal = Calendar.getInstance(); // today
+        //String voucherNo=sdf.format(cal.getTime())
+        String voucherNo=sdf.format(date)
         String formatted = String.format("%04d", serial);
         voucherNo='V'+hospital_code+voucherNo+formatted
         return voucherNo

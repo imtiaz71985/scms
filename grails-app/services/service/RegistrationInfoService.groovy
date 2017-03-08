@@ -19,16 +19,15 @@ class RegistrationInfoService extends BaseService {
         return RegistrationInfo.read(regNo)
     }
 
-    public String retrieveRegNo() {
-        Timestamp fromDate = DateUtility.getSqlFromDateWithSeconds(new Date())
-        Timestamp toDate = DateUtility.getSqlToDateWithSeconds(new Date())
+    public String retrieveRegNo(Date date) {
+        Timestamp fromDate = DateUtility.getSqlFromDateWithSeconds(date)
+        Timestamp toDate = DateUtility.getSqlToDateWithSeconds(date)
         String hospital_code= SecUser.read(springSecurityService.principal.id)?.hospitalCode
         int c = RegistrationInfo.countByCreateDateBetweenAndHospitalCode(fromDate, toDate,hospital_code)
         c+=1
         String DATE_FORMAT = "ddMMyy";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        Calendar c1 = Calendar.getInstance(); // today
-        String regNo=sdf.format(c1.getTime())
+        String regNo=sdf.format(date)
         String patientNo= (c<10? '00' : c<100? '0' : '')+c.toString()
         regNo=hospital_code+regNo+patientNo
         return regNo

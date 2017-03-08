@@ -1,6 +1,6 @@
 <script language="javascript">
     var gridRegistrationInfo, dataSourceGrid,dropDownSex,dropDownMaritalStatus,
-        dropDownDistrict,dropDownUpazila,dropDownUnion,dropDownVillage, regNo;
+        dropDownDistrict,dropDownUpazila,dropDownUnion,dropDownVillage, regNo,dropDownCreatingDate;
 
     $(document).ready(function () {
         onLoadRegistrationInfoPage();
@@ -81,10 +81,11 @@
         $('#newOrRevisit').prop('checked', true);
     }
     function initDataSource() {
+        var creatingDate = $('#creatingDateDDL').val();
         dataSourceGrid = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'registrationInfo', action: 'list')}?isNew=Yes",
+                    url: "${createLink(controller: 'registrationInfo', action: 'list')}?isNew=Yes&creatingDate="+creatingDate,
                     dataType: "json",
                     type: "post"
                 }
@@ -361,7 +362,30 @@
             $('#regFees').val('0 tk');
         }
     }
+function populateRegNo(){
+    initRegistrationInfoGrid();
+    var creatingDate = $('#creatingDateDDL').val();
 
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller:'registrationInfo', action: 'retrieveRegNo')}?creatingDate=" + creatingDate;
+        jQuery.ajax({
+            type: 'post',
+            url: actionUrl,
+            success: function (data, textStatus) {
+                $('#regNo').val(data.regNo);
+                regNo=data.regNo;
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return true;
+
+}
 
 
 </script>

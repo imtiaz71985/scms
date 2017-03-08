@@ -30,6 +30,10 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+            int count=MedicineSellInfo.countByHospitalCodeAndVoucherNo(hospitalCode,params.voucherNo)
+            if (count>0) {
+                return super.setError(params, 'Voucher number already exists.')
+            }
             MedicineSellInfo medicineSellInfo = buildMedicineObject(params, hospitalCode)
             List<MedicineSellInfoDetails> lstMedicineDetails = buildMedicineDetailsMap(params)
             params.put(MEDICINE_SELL_INFO, medicineSellInfo)
@@ -102,8 +106,9 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
         MedicineSellInfo sellInfo = new MedicineSellInfo(params)
         sellInfo.voucherNo = params.voucherNo
         sellInfo.hospitalCode = hospitalCode
-        sellInfo.sellDate = DateUtility.getSqlDate(new Date())
-        sellInfo.sellDateExt = DateUtility.getSqlFromDateWithSeconds(new Date())
+        sellInfo.createDate = DateUtility.getSqlDate(new Date())
+        sellInfo.sellDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(params.creatingDateDDL))
+        sellInfo.sellDateExt = DateUtility.getSqlFromDateWithSeconds(DateUtility.parseDateForDB(params.creatingDateDDL))
         sellInfo.sellBy = springSecurityService.principal.id
         return sellInfo
     }

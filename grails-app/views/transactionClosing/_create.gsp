@@ -22,7 +22,7 @@
                                             data_model_name="dropDownClosingDate"
                                             id="closingDate" name="closingDate" tabindex="1"
                                             onchange="javascript:getServedAndTotalPatient();"
-                                            class="kendo-drop-down"  type="forClosing">
+                                            class="kendo-drop-down"  type="forTranClosing">
                                     </app:dropDownIncompleteServiceDate>
                                 </div>
                 <div class="col-md-7 pull-left" id="servedAndTotalPatientDiv">
@@ -30,12 +30,12 @@
 
                                 <div class="col-md-2">
                                     <input id="totalPatient" name="totalPatient" type="text" readonly="true"
-                                           class="form-control" value="0"/>
+                                           class="form-control" value=""/>
                                 </div>
                                 <label class="col-md-3 control-label" >Served Patient:</label>
                                 <div class="col-md-2">
                                     <input id="servedPatient" name="servedPatient" type="text" readonly="true"
-                                           class="form-control" value="0"/>
+                                           class="form-control" value=""/>
                                 </div>
                     </div>
                             </div>
