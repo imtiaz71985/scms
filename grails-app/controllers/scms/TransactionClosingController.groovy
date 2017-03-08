@@ -4,8 +4,13 @@ import actions.transactionClosing.CreateTransactionClosingActionService
 import actions.transactionClosing.ListTransactionClosingActionService
 import actions.transactionClosing.UpdateTransactionClosingActionService
 import com.scms.SecUser
+import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
+import groovy.sql.GroovyRowResult
+import org.apache.commons.collections.map.HashedMap
+import scms.utility.DateUtility
 import service.SecUserService
+import service.SystemEntityService
 
 class TransactionClosingController extends BaseController {
 
@@ -18,6 +23,7 @@ class TransactionClosingController extends BaseController {
     UpdateTransactionClosingActionService updateTransactionClosingActionService
     SecUserService secUserService
     SpringSecurityService springSecurityService
+    SystemEntityService systemEntityService
 
     def show() {
         SecUser user = SecUser.read(springSecurityService.principal.id)
@@ -34,5 +40,18 @@ class TransactionClosingController extends BaseController {
     }
     def unlock() {
         renderOutput(updateTransactionClosingActionService, params)
+    }
+    def retrieveServedAndTotalPatient() {
+        Date date=DateUtility.parseDateForDB(params.closingDate)
+        String hospital_code = ""
+        if (!secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+            hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        }
+        List<GroovyRowResult> lst=systemEntityService.listServedAndTotalPatient(date,hospital_code)
+        Map result = new HashedMap()
+        result.put('totalPatient', lst[0].total_patient)
+        result.put('totalServed', lst[0].total_served)
+
+        render result as JSON
     }
 }

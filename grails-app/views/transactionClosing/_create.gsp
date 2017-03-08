@@ -15,34 +15,33 @@
                     <div class="form-group">
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="closingDate">Date:</label>
+                                <label class="col-md-1 control-label label-required" for="closingDate">Date:</label>
 
                                 <div class="col-md-4">
                                     <app:dropDownIncompleteServiceDate
                                             data_model_name="dropDownClosingDate"
                                             id="closingDate" name="closingDate" tabindex="1"
-                                            class="kendo-drop-down"  type="complete">
+                                            onchange="javascript:getServedAndTotalPatient();"
+                                            class="kendo-drop-down"  type="forClosing">
                                     </app:dropDownIncompleteServiceDate>
                                 </div>
+                <div class="col-md-7 pull-left" id="servedAndTotalPatientDiv">
+                                <label class="col-md-3 control-label" >Total Patient:</label>
 
-                                <div class="col-md-3 pull-left">
-                                    <span class="k-invalid-msg" data-for="closingDate"></span>
+                                <div class="col-md-2">
+                                    <input id="totalPatient" name="totalPatient" type="text" readonly="true"
+                                           class="form-control" value="0"/>
                                 </div>
+                                <label class="col-md-3 control-label" >Served Patient:</label>
+                                <div class="col-md-2">
+                                    <input id="servedPatient" name="servedPatient" type="text" readonly="true"
+                                           class="form-control" value="0"/>
+                                </div>
+                    </div>
                             </div>
-                            %{--<div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="isTransactionClosed">Is Transaction Closed:</label>
 
-                                <div class="col-md-4">
-                                    <g:checkBox class="form-control-static" name="isTransactionClosed" tabindex="2"
-                                                data-bind="checked: transactionClosing.isTransactionClosed"/>
-                                </div>
-
-                                <div class="col-md-3 pull-left">
-                                    <span class="k-invalid-msg" data-for="isTransactionClosed"></span>
-                                </div>
-                            </div>--}%
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-optional" for="remarks">Remarks:</label>
+                                <label class="col-md-1 control-label label-optional" for="remarks">Remarks:</label>
 
                                 <div class="col-md-4">
                                     <textarea class="form-control" id="remarks" name="remarks"

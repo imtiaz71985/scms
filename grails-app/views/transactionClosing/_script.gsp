@@ -18,7 +18,7 @@
     function onLoadTransactionClosingPage() {
 
         // initialize form with kendo validator & bind onSubmit event
-        initializeForm($("#transactionClosingForm"), onSubmitServiceType);
+        initializeForm($("#transactionClosingForm"), onSubmitTransactionClosing);
         // update page title
         defaultPageTile("Create Transaction Closing",null);
 
@@ -27,15 +27,33 @@
             $("#transactionClosingRow").hide();
         }
     }
-
     function executePreCondition() {
         if (!validateForm($("#transactionClosingForm"))) {
             return false;
         }
         return true;
     }
+    function getServedAndTotalPatient(){
 
-    function onSubmitServiceType() {
+        showLoadingSpinner(true);
+        var closingDate=$('#closingDate').val();
+        $.ajax({
+            url: "${createLink(controller: 'transactionClosing', action:  'retrieveServedAndTotalPatient')}?closingDate=" + closingDate,
+            success: function (data, textStatus) {
+                $('#totalPatient').val(data.totalPatient);
+                $('#servedPatient').val(data.totalServed);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus)
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+    function onSubmitTransactionClosing() {
         if (executePreCondition() == false) {
             return false;
         }

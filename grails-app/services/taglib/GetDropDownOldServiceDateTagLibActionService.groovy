@@ -162,56 +162,34 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
 
     private List<GroovyRowResult> listVoucherNo(String type) {
         String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        String hospital_rp = EMPTY_SPACE
-        String hospital_ri = EMPTY_SPACE
-        String hospital_sti = EMPTY_SPACE
-        String completeCond = EMPTY_SPACE
+
         Date toDate
 
-        Date date1=DateUtility.getDateFromString('01/01/2017')
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -90);
+        Date date1 =cal.getTime();
         Date fromDate = DateUtility.getSqlFromDateWithSeconds(date1);
 
-        if (hospitalCode.length() > 1) {
-            hospital_rp = """
-                AND rp.hospital_code='${hospitalCode}'
-            """
-            hospital_ri = """
-               AND ri.hospital_code='${hospitalCode}'
-            """
-            hospital_sti = """
-               AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}'
-            """
-        }
-        if(type.equals('complete')) {
-            Calendar cal = Calendar.getInstance();
+        if(type.equals('forClosing')) {
+            cal = Calendar.getInstance();
             Date date =cal.getTime();
             toDate = DateUtility.getSqlToDateWithSeconds(date);
-
-            completeCond=""" HAVING total_patient=total_served """
         }
         else{
-            Calendar cal = Calendar.getInstance();
+            cal = Calendar.getInstance();
             cal.add(Calendar.DATE, -1);
             Date date =cal.getTime();
             toDate = DateUtility.getSqlToDateWithSeconds(date);
-
-            completeCond=""" HAVING total_patient>total_served """
         }
         String queryForList = """
 
                 SELECT c.date_field AS id,DATE_FORMAT(c.date_field,'%d-%m-%Y') AS name
-                ,(COALESCE((SELECT COUNT( DISTINCT rp.id) FROM revisit_patient rp WHERE DATE(rp.create_date)=c.date_field
-               """ + hospital_rp + """ GROUP BY DATE(rp.create_date)),0) +
-                COALESCE((SELECT COUNT(DISTINCT ri.reg_no) FROM registration_info ri
-                WHERE DATE(ri.create_date)=c.date_field AND ri.is_old_patient=FALSE
-                """ + hospital_ri + """ GROUP BY DATE(ri.create_date)),0)) AS total_patient
-                ,COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti WHERE DATE(sti.service_date)=c.date_field
-               """ + hospital_sti + """ AND sti.is_deleted=FALSE),0)AS total_served
+
                 FROM calendar c
-                 LEFT JOIN transaction_closing tc ON c.date_field=tc.closing_date
+                 LEFT JOIN transaction_closing tc ON c.date_field=tc.closing_date  AND tc.hospital_code='${hospitalCode}'
 
                 WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' AND COALESCE(tc.is_transaction_closed,FALSE) <> TRUE
-                 """+ completeCond+"""
+                AND c.is_holiday<>TRUE
                 ORDER BY c.date_field ASC
 
         """

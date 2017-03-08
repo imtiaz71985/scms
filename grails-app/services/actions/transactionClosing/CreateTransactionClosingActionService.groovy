@@ -27,7 +27,9 @@ class CreateTransactionClosingActionService extends BaseService implements Actio
            if (!params.closingDate) {
                return super.setError(params, INVALID_INPUT_MSG)
            }
-           
+           if(Long.parseLong(params.totalPatient)!=Long.parseLong(params.servedPatient)){
+               return super.setError(params, 'Total and served patient is not equal.')
+           }
             TransactionClosing transactionClosing = buildObject(params)
             params.put(TRANSACTION_CLOSING, transactionClosing)
             return params
