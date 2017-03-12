@@ -66,7 +66,7 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
     public Map execute(Map result) {
         try {
             String type = result.type
-            List<GroovyRowResult> lst = (List<GroovyRowResult>) listVoucherNo(type)
+            List<GroovyRowResult> lst = (List<GroovyRowResult>) listTransactionDate(type)
 
             String html = buildDropDown(lst, result)
             result.html = html
@@ -166,7 +166,7 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
         return str.replace(SINGLE_DOT, ESCAPE_DOT)
     }
 
-    private List<GroovyRowResult> listVoucherNo(String type) {
+    private List<GroovyRowResult> listTransactionDate(String type) {
         String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
 
         Date toDate

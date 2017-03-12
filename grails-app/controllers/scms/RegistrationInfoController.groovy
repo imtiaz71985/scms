@@ -51,7 +51,10 @@ class RegistrationInfoController extends BaseController {
     }
     def show() {
         String msg = registrationInfoService.patientServed()
-        render(view: "/registrationInfo/show", model: [patientServed:msg])
+        List<GroovyRowResult> dropDownCreatingDate=registrationInfoService.listUnclosedTransactionDate()
+        List<GroovyRowResult> lstValues= baseService.listForKendoDropdown(dropDownCreatingDate, null, null)
+        lstValues.remove(0)
+        render(view: "/registrationInfo/show", model: [patientServed:msg,dropDownVals:lstValues as JSON])
     }
     def showMonthlyPatient(){
         String viewStr = "/registrationInfo/showDailyPatient"

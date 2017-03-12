@@ -71,6 +71,7 @@ class CreateRegistrationInfoActionService extends BaseService implements ActionS
                 revisitPatient.regNo=registrationInfo.regNo
                 revisitPatient.visitTypeId=2
                 revisitPatient.createDate=registrationInfo.createDate
+                revisitPatient.originalCreateDate=registrationInfo.originalCreateDate
                 revisitPatient.createdBy=registrationInfo.createdBy
                 revisitPatient.hospitalCode=registrationInfo.hospitalCode
                 revisitPatient.save()

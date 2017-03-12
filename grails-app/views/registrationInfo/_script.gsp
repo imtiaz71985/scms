@@ -12,21 +12,29 @@
     <sec:access url="/registrationInfo/revisitPatientInfoEntry">
         <li onclick="revisitPatient();"><i class="fa fa-check-circle-o"></i>Revisit</li>
     </sec:access>
-    <li class="pull-right">
-        <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold;" >
-    </li>
+    <div class="pull-right">
+        <table><tr><td>
+            <input type="text" id="creatingDateDDL" name="creatingDateDDL" class="kendo-drop-down" style="width: 150px"/>
+        </td>
+            <td>
+                <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold;" >
+            </td></tr></table>
+
+    </div>
 </ul>
 </script>
 
 <script language="javascript">
     var gridRegistrationInfo, dataSourceGrid, registrationInfoModel,dropDownSex,dropDownMaritalStatus,
-            dropDownDistrict,dropDownUpazila,dropDownUnion,dropDownVillage;
+            dropDownDistrict,dropDownUpazila,dropDownUnion,dropDownVillage,dropDownTransactionDate;
 
     $(document).ready(function () {
         onLoadRegistrationInfoPage();
         initRegistrationInfoGrid();
         initObservable();
         $('#lblPatientServed').val('${patientServed}');
+        dropDownTransactionDate= initKendoDropdown($('#creatingDateDDL'), null, null, ${dropDownVals});
+
     });
     jQuery(function() {
         jQuery("form.counselorActionForm").submit(function(event) {
@@ -255,8 +263,9 @@
 
         showLoadingSpinner(true);
         var regNo = getSelectedValueFromGridKendo(gridRegistrationInfo, 'regNo');
+        var creatingDate=dropDownTransactionDate.value();
         $.ajax({
-            url: "${createLink(controller: 'registrationInfo', action:  'revisitPatientInfoEntry')}?regNo=" + regNo,
+            url: "${createLink(controller: 'registrationInfo', action:  'revisitPatientInfoEntry')}?regNo=" + regNo + "&creatingDate=" + creatingDate,
             success: executePostConditionForRevisit,
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus)
@@ -481,6 +490,7 @@
 
         $('#reissueRegNo').text(data.regNo);
         $('#hidReIssueRegNo').val(data.regNo);
+        $('#hidReIssueCreateDate').val(dropDownTransactionDate.value());
         $('#reissueName').text(data.patientName);
         $('#reissueAddress').text(data.address);
     }
@@ -491,7 +501,7 @@
         }
         var regNo = $('#hidReIssueRegNo').val(),
         description = $('#descriptionReissueModal').val();
-        var param = "?regNo=" + regNo+"&description="+description;
+        var param = "?regNo=" + regNo+"&description="+description+"&creatingDate=" + $('#hidReIssueCreateDate').val();
         $.ajax({
             type: "POST",
             url: "${createLink(controller:'registrationInfo', action: 'reIssue')}"+param,

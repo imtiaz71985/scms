@@ -48,7 +48,8 @@ class ReIssueRegistrationNoActionService extends BaseService implements ActionSe
 
             RegistrationReissue registrationReissue =new RegistrationReissue()
             registrationReissue.regNo=registrationInfo.regNo
-            registrationReissue.createDate= DateUtility.getSqlDate(new Date())
+            registrationReissue.originalCreateDate= DateUtility.getSqlDate(new Date())
+            registrationReissue.createDate= DateUtility.getSqlDate(DateUtility.parseDateForDB(result.creatingDate))
             registrationReissue.createBy=springSecurityService.principal.id
             registrationReissue.serviceChargeId=serviceHeadInfoService.serviceChargeIdByServiceType(1L)
             registrationReissue.description=result.description
