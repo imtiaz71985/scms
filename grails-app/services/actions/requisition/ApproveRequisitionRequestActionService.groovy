@@ -15,7 +15,7 @@ class ApproveRequisitionRequestActionService extends BaseService implements Acti
 
     SpringSecurityService springSecurityService
 
-    private static final String UPDATE_SUCCESS_MESSAGE = "Requisition request send successfully"
+    private static final String UPDATE_SUCCESS_MESSAGE = "Requisition approved successfully"
     private static final String REQUISITION = "requisition"
 
     private Logger log = Logger.getLogger(getClass())

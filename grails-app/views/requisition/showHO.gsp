@@ -10,9 +10,9 @@
     <sec:access url="/requisition/updateHO">
         <li onclick="editRecord();"><i class="fa fa-check-circle-o"></i>Adjustment</li>
     </sec:access>
-%{--    <sec:access url="/requisition/approveRequest">
+    <sec:access url="/requisition/approveRequest">
         <li onclick="approveRequest();"><i class="fa fa-check-circle-o"></i>Approve</li>
-    </sec:access>--}%
+    </sec:access>
 </ul>
 </script>
 

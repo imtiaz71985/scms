@@ -10,6 +10,7 @@
 	<parameter name="LOGO_DIR" class="java.lang.String"/>
 	<parameter name="requisitionNo" class="java.lang.String"/>
 	<parameter name="hospitalName" class="java.lang.String"/>
+	<parameter name="approveStatus" class="java.lang.Boolean"/>
 	<queryString>
 		<![CDATA[select (CASE WHEN mi.strength IS NULL THEN mi.brand_name
           ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
@@ -277,6 +278,21 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 				</textElement>
 				<textFieldExpression><![CDATA["Requisition Date : "+$F{send_date}]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="443" y="3" width="127" height="12" uuid="4dd43183-3cf9-46eb-ba07-582c5368f1ec"/>
+				<box topPadding="2" leftPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{approveStatus}.equals( true )?
+"":
+"Status : Not Approved"]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -536,10 +552,10 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<bottomPen lineWidth="0.1" lineColor="#000000"/>
 					<rightPen lineWidth="0.1" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Top">
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[Total Price]]></text>
+				<text><![CDATA[Total Price : ]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement x="517" y="0" width="58" height="12" uuid="5250407b-88ad-44e3-aa7b-6350e7e097dd"/>

@@ -261,7 +261,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="1" y="17" width="821" height="14" forecolor="#2C2A2B" uuid="1554fa60-c5de-4ef7-8d35-f3bae193f2ca"/>
+				<reportElement x="-39" y="18" width="821" height="14" forecolor="#2C2A2B" uuid="1554fa60-c5de-4ef7-8d35-f3bae193f2ca"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="true"/>
@@ -269,18 +269,18 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 				<textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="691" y="0" width="131" height="32" uuid="40133f03-e77e-4653-81bb-8cbff13490d1"/>
+				<reportElement x="651" y="1" width="131" height="32" uuid="40133f03-e77e-4653-81bb-8cbff13490d1"/>
 				<imageExpression><![CDATA[$P{LOGO_DIR}+"logo.png"]]></imageExpression>
 			</image>
 			<textField pattern="dd-MMM-yyyy">
-				<reportElement x="1" y="32" width="821" height="12" forecolor="#2C2A2B" uuid="99e8d58c-12ce-4904-9ab1-cafec748120c"/>
+				<reportElement x="-19" y="32" width="821" height="12" forecolor="#2C2A2B" uuid="99e8d58c-12ce-4904-9ab1-cafec748120c"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="SansSerif" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Month : " + $P{monthName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1" y="0" width="821" height="18" forecolor="#2C2A2B" uuid="db2631eb-f103-4983-95ac-51a14a11f9a2"/>
+				<reportElement x="-39" y="1" width="821" height="18" forecolor="#2C2A2B" uuid="db2631eb-f103-4983-95ac-51a14a11f9a2"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Cambria" size="10" isBold="true"/>

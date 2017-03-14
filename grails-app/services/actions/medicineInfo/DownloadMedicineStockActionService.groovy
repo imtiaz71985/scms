@@ -1,29 +1,33 @@
-package actions.requisition
+package actions.medicineInfo
 
 import com.scms.HospitalLocation
-import com.scms.Requisition
-import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
 import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
 import org.codehaus.groovy.grails.plugins.jasper.JasperService
 import scms.ActionServiceIntf
 import scms.BaseService
+import scms.utility.DateUtility
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 @Transactional
-class DownloadPurchaseRequestActionService extends BaseService implements ActionServiceIntf {
+class DownloadMedicineStockActionService extends BaseService implements ActionServiceIntf {
 
     JasperService jasperService
-    SpringSecurityService springSecurityService
 
-    private static final String REPORT_FOLDER = 'requisition'
-    private static final String JASPER_FILE = 'purchaseRequestReport'
+    private static final String REPORT_FOLDER = 'inventory'
+    private static final String JASPER_FILE_ALL = 'medicineStockReportAll'
+    private static final String JASPER_FILE = 'medicineStockReport'
+    private static final String JASPER_FILE_LBL = 'jesperFileLbl'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = 'Medicine Requisition'
-    private static final String OUTPUT_FILE_NAME = "medicine_requisition"
-    private static final String REQUISITION_NO = "requisitionNo"
+    private static final String REPORT_TITLE = 'Medicine Stock'
+    private static final String OUTPUT_FILE_NAME = "current_stock_"+DateUtility.getDateForUI(new Date())
+    private static final String EXECUTION_TIME = "executionTime"
     private static final String HOSPITAL_NAME = "hospitalName"
-    private static final String APPROVE_STATUS = "approveStatus"
+    private static final String HOSPITAL_CODE = "hospitalCode"
+    private static final String FRIEND_SHIP_HEALTH_CLINIC = "Friendship Health Clinic"
 
     /**
      * Get parameters from UI
@@ -34,14 +38,25 @@ class DownloadPurchaseRequestActionService extends BaseService implements Action
      */
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
-        if (!params.requisitionNo) {
-            return super.setError(params, INVALID_INPUT_MSG)
+
+
+        String hospitalCode = params.hospitalCode
+        String hospitalName = EMPTY_SPACE
+        String jesperFile = EMPTY_SPACE
+        if (hospitalCode.equals(EMPTY_SPACE)) {
+            hospitalName = FRIEND_SHIP_HEALTH_CLINIC
+            jesperFile = JASPER_FILE_ALL
+        } else {
+            hospitalName = HospitalLocation.findByCode(params.hospitalCode).name
+            jesperFile = JASPER_FILE
         }
 
-        Requisition requisition = Requisition.findByReqNo(params.requisitionNo.toString())
-        HospitalLocation location = HospitalLocation.findByCode(requisition.hospitalCode)
-        params.put(REQUISITION_NO, params.requisitionNo)
-        params.put(HOSPITAL_NAME, location.name)
+        params.put(HOSPITAL_NAME, hospitalName)
+        params.put(HOSPITAL_CODE, hospitalCode)
+        params.put(JASPER_FILE_LBL, jesperFile)
+        params.put(EXECUTION_TIME, DateUtility.getSqlDateWithSeconds(new Date()))
+
+
         return params
     }
 
@@ -54,13 +69,6 @@ class DownloadPurchaseRequestActionService extends BaseService implements Action
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Requisition requisition= Requisition.findByReqNo( result.get(REQUISITION_NO))
-            if(!requisition.isGeneratePR && requisition.isApproved) {
-                requisition.isGeneratePR = true
-                requisition.save()
-            }
-
-            result.put(APPROVE_STATUS, requisition.isApproved)
             Map report = getReport(result)
             result.put(REPORT, report)
             return result
@@ -107,10 +115,10 @@ class DownloadPurchaseRequestActionService extends BaseService implements Action
         reportParams.put(REPORT_DIR, reportDir)
         reportParams.put(SUBREPORT_DIR, subReportDir)
         reportParams.put(REPORT_TITLE_LBL, REPORT_TITLE)
-        reportParams.put(REQUISITION_NO, result.get(REQUISITION_NO))
+        reportParams.put(EXECUTION_TIME, result.get(EXECUTION_TIME))
         reportParams.put(HOSPITAL_NAME, result.get(HOSPITAL_NAME))
-        reportParams.put(APPROVE_STATUS, result.get(APPROVE_STATUS))
-        JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
+        reportParams.put(HOSPITAL_CODE, result.get(HOSPITAL_CODE))
+        JasperReportDef reportDef = new JasperReportDef(name: result.get(JASPER_FILE_LBL), fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)
         ByteArrayOutputStream report = jasperService.generateReport(reportDef)
         return [report: report, reportFileName: outputFileName, format: REPORT_FILE_FORMAT]

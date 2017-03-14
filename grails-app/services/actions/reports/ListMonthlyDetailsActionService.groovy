@@ -188,8 +188,10 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
                 WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE  AND SUBSTRING(sti.service_token_no, 2, 2) = ${hospitalCode}
                 GROUP BY DATE(sti.service_date)),0) AS total_served
+        -- Transaction Closed
+               ,COALESCE(tc.is_transaction_closed,FALSE) AS is_tran_closed
 
-                FROM calendar c
+                FROM calendar c LEFT JOIN transaction_closing tc ON tc.closing_date=c.date_field AND tc.hospital_code=${hospitalCode}
                WHERE c.date_field BETWEEN :fromDate AND :toDate
 
 
@@ -322,7 +324,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
                 WHERE sell_date = c.date_field GROUP BY sell_date ),0)
                      ) AS total_service,
-        -- Total served patient
+             -- Total served patient
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
                 WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE
                 GROUP BY DATE(sti.service_date)),0) AS total_served

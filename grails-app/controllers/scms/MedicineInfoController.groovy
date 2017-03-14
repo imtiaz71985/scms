@@ -2,6 +2,7 @@ package scms
 
 import actions.medicineInfo.CreateMedicineInfoActionService
 import actions.medicineInfo.DeleteMedicineInfoActionService
+import actions.medicineInfo.DownloadMedicineStockActionService
 import actions.medicineInfo.ListMedicineInfoActionService
 import actions.medicineInfo.ListMedicineStockActionService
 import actions.medicineInfo.UpdateMedicineInfoActionService
@@ -25,6 +26,7 @@ class MedicineInfoController extends BaseController {
     DeleteMedicineInfoActionService deleteMedicineInfoActionService
     ListMedicineInfoActionService listMedicineInfoActionService
     ListMedicineStockActionService listMedicineStockActionService
+    DownloadMedicineStockActionService downloadMedicineStockActionService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
@@ -64,6 +66,10 @@ class MedicineInfoController extends BaseController {
     }
     def listMedicineStock() {
         renderOutput(listMedicineStockActionService, params)
+    }
+    def downloadMedicineStock() {
+        Map result = (Map) getReportResponse(downloadMedicineStockActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
     def listMedicineShortageStock() {
         String hospitalCode = ''

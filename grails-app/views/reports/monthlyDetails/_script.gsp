@@ -72,16 +72,18 @@
                 $('tr[data-uid="' + row.uid + '"] ').css("background-color", "#fee7df");  //light red
                 $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
             }
-            if(row.total_patient>row.total_served){
+            else {
+                if (dropDownHospitalCode.value() != '' && !row.is_tran_closed) {
 
-                $('tr[data-uid="' + row.uid +'"]> td ').each(function(){
-                    if(($(this).index()=='0')&& (row.total_patient>row.total_served)){
-                        $(this).css("color", "#e60000")
-                    }
-               });
+                    $('tr[data-uid="' + row.uid + '"]> td ').each(function () {
+                        if (($(this).index() == '0')) {
+                            $(this).css("color", "#e60000")
+                        }
+                    });
 
-               $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");// font bold
+                    $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");// font bold
 
+                }
             }
         });
         $("#footerSpan").text(formatAmount(grandTotal));
@@ -122,7 +124,8 @@
                         patient_revisit: {type: "number"},
                         total_patient: {type: "number"},
                         total_service: {type: "number"},
-                        total_served: {type: "number"}
+                        total_served: {type: "number"},
+                        is_tran_closed:{type:"boolean"}
                     }
                 },
                 parse: function (data) {

@@ -34,6 +34,11 @@
                             role="button" tabindex="2"
                             aria-disabled="false"><span class="k-icon k-i-search"></span>View Result
                     </button>
+                    <button id="download" name="download" type="button" data-role="button"
+                            class="k-button k-button-icontext pull-right" role="button"
+                            onclick="downloadMedicineStock()"
+                            aria-disabled="false"><span class="fa fa-file-pdf-o"></span> &nbsp;Download
+                    </button>
                 </div>
             </g:form>
         </div>
@@ -44,7 +49,7 @@
     </div>
 </div>
 <script language="javascript">
-    var gridMedicineStock, dataSource, dropDownHospitalCode;
+    var gridMedicineStock, dataSource, dropDownHospitalCode,isApplicable;
 
     $(document).ready(function () {
         onLoadMedicineInfoPage();
@@ -115,7 +120,9 @@
                 },
                 parse: function (data) {
                     checkIsErrorGridKendo(data);
+                    if (data.count > 0) isApplicable = true;
                     return data;
+
                 }
             },
             sort:{field:"brandName",dir:"asc"},
@@ -191,6 +198,18 @@
         if(stockQty==0) return "<b style='color:red;font-size: larger;'>"+ stockQty+"</b>";
         if(stockQty<warnQty) return "<b style='color:#eb9316;font-size: larger;'>"+ stockQty+"</b>";
         return "<b style='color:#000000;font-size: larger;'>"+ stockQty+"</b>";
+    }
+    function downloadMedicineStock() {
+        if (isApplicable) {
+            showLoadingSpinner(true);
+            var  hospitalCode = dropDownHospitalCode.value(),
+                    msg = 'Do you want to download the report now?',
+                    url = "${createLink(controller: 'medicineInfo', action: 'downloadMedicineStock')}?hospitalCode="+hospitalCode;
+            confirmDownload(msg, url);
+        } else {
+            showError('No record to download');
+        }
+        return false;
     }
     
 </script>
