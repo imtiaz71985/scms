@@ -50,7 +50,7 @@ class RegistrationInfoController extends BaseController {
         render(view: "/registrationInfo/showNew", model: [regNo: regNo])
     }
     def show() {
-        String msg = registrationInfoService.patientServed()
+        String msg = registrationInfoService.patientServed(new Date())
         List<GroovyRowResult> dropDownCreatingDate=registrationInfoService.listUnclosedTransactionDate()
         List<GroovyRowResult> lstValues= baseService.listForKendoDropdown(dropDownCreatingDate, null, null)
         lstValues.remove(0)
@@ -140,6 +140,13 @@ class RegistrationInfoController extends BaseController {
         String regNo = registrationInfoService.retrieveRegNo(date)
         Map result = new HashedMap()
         result.put('regNo', regNo)
+        render result as JSON
+    }
+    def retrievePatientCountSummary() {
+        Date date=DateUtility.parseDateForDB(params.creatingDate)
+        String msg = registrationInfoService.patientServed(date)
+        Map result = new HashedMap()
+        result.put('patientServed', msg)
         render result as JSON
     }
 }

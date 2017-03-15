@@ -153,8 +153,6 @@ class CreateOldServiceTokenInfoActionService extends BaseService implements Acti
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        String msg = registrationInfoService.patientServed()
-        result.put('patientServed', msg)
         return super.setSuccess(result, '<div style="font-size: 16px">Data Saved successfully. Token No: <b>' + result.serviceTokenNo + '</b></div>')
     }
 

@@ -84,6 +84,7 @@ class RegistrationInfoService extends BaseService {
         String hospital_rp = EMPTY_SPACE
         String hospital_ri = EMPTY_SPACE
         String hospital_sti = EMPTY_SPACE
+        String hospital=EMPTY_SPACE
 
         if (hospitalCode.length() > 1) {
             hospital_rp = """
@@ -95,11 +96,14 @@ class RegistrationInfoService extends BaseService {
             hospital_sti = """
                AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}'
             """
-
+            hospital = """
+               AND hospital_code='${hospitalCode}'
+            """
         }
         String queryStr = """
                SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday,COUNT(DISTINCT ri.reg_no) AS new_patient,COUNT(DISTINCT rp.id) AS patient_revisit,
-                (COUNT( DISTINCT ri.reg_no)+COUNT(DISTINCT rp.id)) AS total_patient
+                (COUNT( DISTINCT ri.reg_no)+COALESCE((SELECT COUNT(DISTINCT id) FROM revisit_patient  WHERE DATE(create_date)=c.date_field
+                 """+hospital+"""  AND DATE(date_field)!=DATE(ri.create_date) GROUP BY DATE(date_field)),0)) AS total_patient
                  ,COUNT(DISTINCT sti.reg_no) AS total_served
                 FROM calendar c
                  LEFT JOIN revisit_patient rp ON c.date_field=DATE(rp.create_date) """+hospital_rp+"""
@@ -114,11 +118,11 @@ class RegistrationInfoService extends BaseService {
 
         return result
     }
-    public String patientServed(){
+    public String patientServed(Date date){
         String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         Date fromDate,toDate
-        fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
-        toDate=DateUtility.getSqlToDateWithSeconds(new Date())
+        fromDate=DateUtility.getSqlFromDateWithSeconds(date)
+        toDate=DateUtility.getSqlToDateWithSeconds(date)
         List<GroovyRowResult> lst = listOfPatientServedSummary(hospital_code,fromDate,toDate)
         String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
         return msg

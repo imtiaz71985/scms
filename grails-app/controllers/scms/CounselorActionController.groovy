@@ -44,7 +44,7 @@ class CounselorActionController extends BaseController {
 
 
     def show() {
-        String msg = registrationInfoService.patientServed()
+        String msg = registrationInfoService.patientServed(new Date())
         render(view: "/counselorAction/show", model: [patientServed:msg])
     }
     def showConsultancy() {

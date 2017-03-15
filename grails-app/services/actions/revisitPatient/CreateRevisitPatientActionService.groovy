@@ -60,7 +60,7 @@ class CreateRevisitPatientActionService extends BaseService implements ActionSer
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        String msg = registrationInfoService.patientServed()
+        String msg = registrationInfoService.patientServed(DateUtility.parseDateForDB(result.creatingDate))
         result.put('patientServed',msg)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }

@@ -163,7 +163,7 @@
             return;
         }
         var obj = getSelectedObjectFromGridKendo(gridRequisitionHO);
-        if (obj.isGeneratePR || obj.isReceived) {
+        if (obj.isGeneratePR || obj.isReceived ||obj.isApproved) {
             showError('Approved requisition could not be updated.');
             return false;
         }

@@ -14,7 +14,7 @@
     </sec:access>
     <div class="pull-right">
         <table><tr><td>
-            <input type="text" id="creatingDateDDL" name="creatingDateDDL" class="kendo-drop-down" style="width: 150px"/>
+            <input type="text" id="creatingDateDDL" name="creatingDateDDL" class="kendo-drop-down" onchange="retrievePatientCountSummary()" style="width: 150px"/>
         </td>
             <td>
                 <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold;" >
@@ -529,6 +529,26 @@
         $('#hidReIssueRegNo').val('');
         $('#descriptionReissueModal').val('');
         $("#createRegReIssueModal").modal('hide');
+    }
+    function retrievePatientCountSummary(){
+        var creatingDate = $('#creatingDateDDL').val();
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller:'registrationInfo', action: 'retrievePatientCountSummary')}?creatingDate=" + creatingDate;
+        jQuery.ajax({
+            type: 'post',
+            url: actionUrl,
+            success: function (data, textStatus) {
+                $('#lblPatientServed').val(data.patientServed);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return true;
     }
 
 </script>
