@@ -87,7 +87,8 @@
                         new_patient: {type: "number"},
                         patient_revisit: {type: "number"},
                         total_patient: {type: "number"},
-                        total_served: {type: "number"}
+                        total_served: {type: "number"},
+                        is_tran_closed: {type: "boolean"}
                     }
                 },
                 parse: function (data) {
@@ -179,13 +180,15 @@
         var grid = e.sender;
         var data = grid.dataSource.data();
         $.each(data, function (i, row) {
-            if(row.total_patient>row.total_served){
-                $('tr[data-uid="' + row.uid + '"] ').css("color", "#e60000"); // red
-                $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");// font bold
-            }
             if (row.is_holiday) {
                 $('tr[data-uid="' + row.uid + '"] ').css("background-color", "#fee7df");  //light red
                 $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
+            }
+            else{
+                if (dropDownHospitalCode.value() != '' && !row.is_tran_closed) {
+                    $('tr[data-uid="' + row.uid + '"] ').css("color", "#e60000"); // red
+                    $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");// font bold
+                }
             }
         });
 

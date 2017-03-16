@@ -102,9 +102,10 @@ class RegistrationInfoService extends BaseService {
         }
         String queryStr = """
                SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday,COUNT(DISTINCT ri.reg_no) AS new_patient,COUNT(DISTINCT rp.id) AS patient_revisit,
-                (COUNT( DISTINCT ri.reg_no)+COALESCE((SELECT COUNT(DISTINCT id) FROM revisit_patient  WHERE DATE(create_date)=c.date_field
-                 """+hospital+"""  AND DATE(date_field)!=DATE(ri.create_date) GROUP BY DATE(date_field)),0)) AS total_patient
+                (COUNT( DISTINCT ri.reg_no)+COALESCE((SELECT COUNT(DISTINCT id) FROM revisit_patient  WHERE DATE(create_date)=c.date_field """+hospital+"""
+                AND reg_no NOT IN (SELECT reg_no FROM registration_info WHERE DATE(create_date)=c.date_field) GROUP BY DATE(create_date)),0)) AS total_patient
                  ,COUNT(DISTINCT sti.reg_no) AS total_served
+                 ,COALESCE((SELECT tc.is_transaction_closed FROM transaction_closing tc WHERE DATE(tc.closing_date)=c.date_field """+hospital+""" ),FALSE) AS is_tran_closed
                 FROM calendar c
                  LEFT JOIN revisit_patient rp ON c.date_field=DATE(rp.create_date) """+hospital_rp+"""
                  LEFT JOIN registration_info ri ON c.date_field=DATE(ri.create_date) AND ri.is_old_patient=FALSE """+hospital_ri+""" AND is_active<>FALSE

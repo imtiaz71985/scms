@@ -76,11 +76,22 @@ class CreateTransactionClosingActionService extends BaseService implements Actio
  /*    */
     private TransactionClosing buildObject(Map parameterMap) {
         parameterMap.closingDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(parameterMap.closingDate))
-        TransactionClosing transactionClosing = new TransactionClosing(parameterMap)
-        transactionClosing.createDate=DateUtility.getSqlDate(new Date())
-        transactionClosing.createBy = springSecurityService.principal.id
-        transactionClosing.isTransactionClosed = true
-        transactionClosing.hospitalCode=SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        String hospitalCode=SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        TransactionClosing transactionClosing
+        transactionClosing= TransactionClosing.findByHospitalCodeAndClosingDate(hospitalCode,DateUtility.getSqlDate(parameterMap.closingDate))
+        if(transactionClosing){
+            transactionClosing.modifyDate=DateUtility.getSqlDate(new Date())
+            transactionClosing.modifyBy=springSecurityService.principal.id
+            transactionClosing.isTransactionClosed=true
+            if(parameterMap.remarks)
+                transactionClosing.remarks=parameterMap.remarks
+        }else {
+            transactionClosing = new TransactionClosing(parameterMap)
+            transactionClosing.createDate = DateUtility.getSqlDate(new Date())
+            transactionClosing.createBy = springSecurityService.principal.id
+            transactionClosing.isTransactionClosed = true
+            transactionClosing.hospitalCode = hospitalCode
+        }
         return transactionClosing
     }
 }
