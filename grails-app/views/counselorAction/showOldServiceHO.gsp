@@ -111,7 +111,7 @@
                             headerAttributes: {style: setCAlignLeft()}, sortable: false, filterable: false},
                         {field: "regNo", title: "Reg No", width: 60,attributes: {style: setCAlignCenter()},
                             headerAttributes: {style: setCAlignCenter()}, sortable: false, filterable: false},
-                        {field: "serviceTokenNo", title: "Token No", width: 65,attributes: {style: setCAlignCenter()},
+                        {field: "serviceTokenNo", title: "Service No", width: 65,attributes: {style: setCAlignCenter()},
                             headerAttributes: {style: setCAlignCenter()}, sortable: false, filterable: false},
                         {field: "serviceDate", title: "Service<br/> Date", width: 50,attributes: {style: setCAlignCenter()},
                             headerAttributes: {style: setCAlignCenter()}, sortable: false, filterable: false},
