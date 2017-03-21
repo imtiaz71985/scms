@@ -295,7 +295,7 @@
                         },
                         {
                             field: "serviceTokenNo",
-                            title: "Token No",
+                            title: "Service No",
                             width: 65,
                             attributes: {style: setCAlignCenter()},
                             headerAttributes: {style: setCAlignCenter()},

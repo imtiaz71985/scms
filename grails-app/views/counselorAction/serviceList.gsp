@@ -95,7 +95,7 @@
                                 }
                             }
                         },
-                        {field: "serviceTokenNo", title: "Token No", width: 70, sortable: false,
+                        {field: "serviceTokenNo", title: "Service No", width: 70, sortable: false,
                             filterable: {
                                 extra: false,
                                 operators: {

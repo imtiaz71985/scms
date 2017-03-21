@@ -153,7 +153,6 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
                         suggest         : true,
                         dataSource      : ${jsonData},
                         value           :'${strDefaultValue}'
-                        ${strOnChange}
                     });
                 });
                 ${dataModelName} = \$("#${escapeChar(name)}").data("kendoDropDownList");

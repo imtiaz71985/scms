@@ -42,7 +42,7 @@ class ApproveRequisitionRequestActionService extends BaseService implements Acti
             Requisition requisition = (Requisition) result.get(REQUISITION)
             List<RequisitionDetails> lstDetails = RequisitionDetails.findAllByReqNo(requisition.reqNo)
             if (lstDetails[0].approvedQty == 0) {
-                for (int i = 0; i > lstDetails.size(); i++) {
+                for (int i = 0; i < lstDetails.size(); i++) {
                     lstDetails[i].approvedQty = lstDetails[i].reqQty
                     lstDetails[i].approveAmount = lstDetails[i].amount
                     lstDetails[i].save()

@@ -6,5 +6,5 @@
 --%>
 
 
-<g:render template='/registrationInfo/scriptNew'/>
 <g:render template='/registrationInfo/createNew'/>
+<g:render template='/registrationInfo/scriptNew'/>

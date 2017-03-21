@@ -277,7 +277,7 @@
                     width: 50,
                     sortable: false,
                     filterable: false,
-                    template: "<span style='float: left; width: 100%;" +
+                    template: "<div style='float: left; width: 100%;" +
                     "font-size: large; background-color:gainsboro'><b>#=receiveQty#</b></div>",
                     footerTemplate: "<div style='text-align: right'>Total : </div>"
                 }, {

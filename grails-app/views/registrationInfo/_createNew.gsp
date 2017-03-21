@@ -64,7 +64,7 @@
                                 <label class="col-md-3 control-label label-required"
                                        for="dateOfBirth">Date of Birth:</label>
 
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <app:dateControl id="dateOfBirth" name="dateOfBirth" value=""
                                                      placeholder="dd/mm/yyyy"
                                                      required="true" validationMessage="Required"
@@ -72,9 +72,9 @@
                                     </app:dateControl>
                                 </div>
 
-                                <div class="col-md-2" style="padding-left: 0px;">
+                                <div class="col-md-3" style="padding-left: 0px;">
                                     <input type="text" class="form-control" id="ageTxt" placeholder="Age in year"
-                                           onchange="getAndSetDoB();" onKeyPress="return allowOnlyNumeric(event)"/>
+                                           onchange="getAndSetDoB();" onfocus="clearTextBox();" onKeyPress="return allowOnlyNumeric(event)"/>
                                 </div>
 
 
@@ -150,7 +150,7 @@
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" data-role='maskedtextbox' pattern="\d{11}"
-                                           id="mobileNo" name="mobileNo" validationmessage="Invalid Number"
+                                           id="mobileNo" name="mobileNo" validationmessage="Invalid Number" tabindex="6"
                                            onKeyPress="return allowOnlyNumeric(event)"/>
                                 </div>
 

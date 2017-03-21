@@ -257,7 +257,7 @@
                     },
                     columns: [
                         {field: "regNo", title: "Reg No", width: 70, sortable: false, filterable: false},
-                        {field: "serviceTokenNo", title: "Token No", width: 70, sortable: false, filterable: false},
+                        {field: "serviceTokenNo", title: "Service No", width: 70, sortable: false, filterable: false},
                         {field: "patientName", title: "Name", width: 110, sortable: false, filterable: false},
                         {field: "serviceType", title: "Service Type", width: 120, sortable: false, filterable: false},
                         {
