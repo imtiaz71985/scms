@@ -136,7 +136,7 @@
                         approvedQty: {editable: false, type: "number"},
                         procQty: {editable: false, type: "number"},
                         prevReceiveQty: {editable: false, type: "number"},
-                        receiveQty: {type: "number"},
+                        receiveQty: {type: "number",validation: { min: 0 }},
                         amount: {type: "number"},
                         remarks: {type: "string"}
 
@@ -182,27 +182,30 @@
                 });
                 $("[name='receiveQty']", e.container).blur(function () {
                     var input = $(this);
-                    value = input.val();
                     var row = $(this).closest("tr");
                     var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
 
+                    if (input.val() == ''||input.val()<0) {
+                        input.val(0);
+                        value = 0;
+                        data.set('receiveQty', value);
+                        var dirty = $(this).closest("tr").find(".k-dirty-cell");
+                        dirty.removeClass("k-dirty-cell");
+
+                    }
+                    value = input.val();
                     if (value > (data.approvedQty - data.prevReceiveQty)) {
-                        showError("Wrong quantity.");
-                        data.set('receiveQty', baseValue);
-                        data.set('amount', baseValue * data.unitPrice);
+                        var rowIdx = $("tr", $('#gridMedicine')).index(row);
+                        showRemarksModal(rowIdx, baseValue);
+                        //showError("Wrong quantity.");
+                        //data.set('receiveQty', baseValue);
+                       // data.set('amount', baseValue * data.unitPrice);
                     } else if (value < (data.approvedQty - data.prevReceiveQty)) {
                         var rowIdx = $("tr", $('#gridMedicine')).index(row);
                         showRemarksModal(rowIdx, baseValue);
                     }
                     else {
-                        if (input.val() == '') {
-                            input.val(0);
-                            value = 0;
-                            data.set('receiveQty', 0);
-                            var dirty = $(this).closest("tr").find(".k-dirty-cell");
-                            dirty.removeClass("k-dirty-cell");
-                        }
-                        totalAmount -= baseValue * data.unitPrice;
+                        totalAmount = totalAmount-(baseValue * data.unitPrice);
                         data.set('amount', parseFloat(value, 10) * data.unitPrice);
                         totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
                         setFooter();

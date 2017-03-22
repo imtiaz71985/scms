@@ -359,10 +359,7 @@
         cuDate=cuDate.substring(0,6)+year;
         $('#dateOfBirth').val(cuDate);
     }
-    function clearTextBox(){
-        $('#dateOfBirth').val('');
-        $('#ageTxt').val('');
-    }
+
     function toMmDdYy(inStr) {
         if((typeof inStr == 'undefined') || (inStr == null) ||
                 (inStr.length <= 0)) {

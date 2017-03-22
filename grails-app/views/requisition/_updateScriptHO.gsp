@@ -84,7 +84,7 @@
                         unitType: {editable: false, type: "string"},
                         stockQty: {editable: false, type: "number"},
                         reqQty: {editable: false, type: "number"},
-                        approvedQty: {type: "number"},
+                        approvedQty: {type: "number",validation: { min: 0 }},
                         procQty: {editable: false, type: "number"},
                         amount: {editable: false,type: "number"},
                         approveAmount: {type: "number"}

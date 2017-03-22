@@ -132,7 +132,7 @@
 
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" data-role='maskedtextbox' pattern="\d{11}"
-                                           data-bind="value: registrationInfo.mobileNo"
+                                           data-bind="value: registrationInfo.mobileNo" tabindex="6"
                                            id="mobileNo" name="mobileNo" validationmessage="Invalid Number"
                                            onKeyPress="return allowOnlyNumeric(event)"/>
                                 </div>

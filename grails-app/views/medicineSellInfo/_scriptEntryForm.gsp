@@ -232,6 +232,11 @@
         var medicineId = dropDownMedicine.value();
         if (medicineId == '') {
             $("#amount").val('');
+            quantity.value('');
+            $("#stockQty").text('');
+            $('#unitPriceTxt').val('');
+            $('#hidUnitPrice').val('');
+            $('#hidUnitType').val('');
             unitPrice = 0;
             return false;
         }
@@ -242,7 +247,6 @@
             url: actionUrl,
             success: function (data, textStatus) {
                 unitPrice = data.amount;
-                quantity.value();
                 medicineName = data.name;
                 availableStock = data.stockQty;
                 $("#stockQty").text('out of '+availableStock);
@@ -250,6 +254,7 @@
                 $('#unitPriceTxt').val(data.unitPriceTxt);
                 $('#hidUnitPrice').val(data.unitPrice);
                 $('#hidUnitType').val(data.unitType);
+                calculateTotalPrice();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
             },

@@ -18,6 +18,7 @@
         return true;
     }
     function onSubmitForm() {
+
         if (executePreCondition() == false) {
             return false;
         }
@@ -111,7 +112,7 @@
                     var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
                     value = input.val();
 
-                    if (value > data.quantity) {
+                    if (value > data.quantity||input.val()<0) {
                         showError("Wrong quantity.");
                         data.set('rtnQuantity', 0);
 

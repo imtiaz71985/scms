@@ -74,7 +74,7 @@
 
                                 <div class="col-md-3" style="padding-left: 0px;">
                                     <input type="text" class="form-control" id="ageTxt" placeholder="Age in year"
-                                           onchange="getAndSetDoB();" onfocus="clearTextBox();" onKeyPress="return allowOnlyNumeric(event)"/>
+                                           onchange="getAndSetDoB();" onKeyPress="return allowOnlyNumeric(event)"/>
                                 </div>
 
 
