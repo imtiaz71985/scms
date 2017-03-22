@@ -86,7 +86,7 @@ class ReportsController extends BaseController {
         boolean isAdmin = secUserService.isLoggedUserAdmin(user.id)
 
         String hospitalCode = HospitalLocation.findByCode(user.hospitalCode).code
-        render(view: "/reports/patientsServed/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
+        render(view: "/reports/patientServed/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
     }
     def listOfPatientServedSummary() {
 
@@ -108,7 +108,7 @@ class ReportsController extends BaseController {
         render result as JSON
     }
     def showPatientServedDetails() {
-        render(view: "/reports/patientsServed/showDetails",model: [hospitalCode:params.hospitalCode,dateField:params.dateField,patientCount:params.serviceCount])
+        render(view: "/reports/patientServed/showDetails",model: [hospitalCode:params.hospitalCode,dateField:params.dateField,patientCount:params.serviceCount])
     }
     def listOfPatientServedDetails() {
 

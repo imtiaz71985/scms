@@ -1,4 +1,4 @@
 
-<g:render template='PatientServed/summary'/>
-<g:render template='PatientServed/summaryScript'/>
+<g:render template='patientServed/summary'/>
+<g:render template='patientServed/summaryScript'/>
 
