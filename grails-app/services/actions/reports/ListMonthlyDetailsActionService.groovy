@@ -132,8 +132,9 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                     GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) AS re_reg_patient,
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
-                    WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
-                    AND hospital_code =  ${hospitalCode}
+                    WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field AND hospital_code =  ${hospitalCode}
+                     AND reg_no NOT IN (SELECT reg_no FROM registration_info
+                    WHERE DATE(create_date) = c.date_field AND is_old_patient <> TRUE  AND hospital_code =  ${hospitalCode})
                     GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0) AS patient_revisit,
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
@@ -154,6 +155,8 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
                     WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field AND hospital_code= ${hospitalCode}
+                     AND reg_no NOT IN (SELECT reg_no FROM registration_info
+                    WHERE DATE(create_date) = c.date_field AND is_old_patient <> TRUE  AND hospital_code =  ${hospitalCode})
                     GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0)) AS total_patient,
                 -- New Patient count
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
@@ -277,6 +280,8 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
                     WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
+                     AND reg_no NOT IN (SELECT reg_no FROM registration_info
+                    WHERE DATE(create_date) = c.date_field AND is_old_patient <> TRUE )
                     GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0) AS patient_revisit,
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
@@ -296,6 +301,8 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
                     WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
+                     AND reg_no NOT IN (SELECT reg_no FROM registration_info
+                    WHERE DATE(create_date) = c.date_field AND is_old_patient <> TRUE )
                     GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0)) AS total_patient,
                 -- New Patient count
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri

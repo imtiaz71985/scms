@@ -103,7 +103,7 @@ class RegistrationInfoService extends BaseService {
         String queryStr = """
                SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday,COUNT(DISTINCT ri.reg_no) AS new_patient,COUNT(DISTINCT rp.id) AS patient_revisit,
                 (COUNT( DISTINCT ri.reg_no)+COALESCE((SELECT COUNT(DISTINCT id) FROM revisit_patient  WHERE DATE(create_date)=c.date_field """+hospital+"""
-                AND reg_no NOT IN (SELECT reg_no FROM registration_info WHERE DATE(create_date)=c.date_field AND is_old_patient <> TRUE) GROUP BY DATE(create_date)),0)) AS total_patient
+                AND reg_no NOT IN (SELECT reg_no FROM registration_info WHERE DATE(create_date)=c.date_field AND is_old_patient <> TRUE """+hospital+""") GROUP BY DATE(create_date)),0)) AS total_patient
                  ,COUNT(DISTINCT sti.reg_no) AS total_served
                  ,COALESCE((SELECT tc.is_transaction_closed FROM transaction_closing tc WHERE DATE(tc.closing_date)=c.date_field """+hospital+""" LIMIT 1),FALSE) AS is_tran_closed
                 FROM calendar c
@@ -161,10 +161,12 @@ class RegistrationInfoService extends BaseService {
     public List<GroovyRowResult> listOfRegNoByDate(String hospitalCode, Date fromDate, Date toDate) {
 
         String queryStr = """
-               SELECT DISTINCT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name
+               SELECT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name,COALESCE(COUNT(sti.reg_no),0) AS service_count
             FROM registration_info ri LEFT JOIN revisit_patient rp ON ri.reg_no=rp.reg_no
+            LEFT JOIN service_token_info sti ON ri.reg_no=sti.reg_no
             WHERE ri.is_active = TRUE  AND SUBSTRING(ri.reg_no,1,2)='${hospitalCode}' AND
             (ri.create_date BETWEEN '${fromDate}' AND '${toDate}' OR rp.create_date BETWEEN '${fromDate}' AND '${toDate}')
+           GROUP BY ri.reg_no
             ORDER BY ri.create_date DESC;
         """
 

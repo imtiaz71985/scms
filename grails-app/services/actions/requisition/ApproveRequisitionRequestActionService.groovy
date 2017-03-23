@@ -76,6 +76,8 @@ class ApproveRequisitionRequestActionService extends BaseService implements Acti
         oldRequisition.isApproved = Boolean.TRUE
         oldRequisition.approvedBy = springSecurityService.principal.id
         oldRequisition.approvedDate = DateUtility.getSqlDate(new Date())
+        oldRequisition.isDelivered = Boolean.TRUE
+        oldRequisition.deliveryDate = DateUtility.getSqlDate(new Date())
         return oldRequisition
     }
 }

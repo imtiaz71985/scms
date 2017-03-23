@@ -657,6 +657,10 @@
         }
     }
     function LoadDetailsByRegNo() {
+        if ($('#regNoDDL').val()=='') {
+            showError('Please select date and registration no.');
+            return false;
+        }
         generateTokenNo();
         $('#divServiceType').show();
         $("#counselorActionRow").show();
@@ -694,6 +698,10 @@
         }
     }
     function loadFormForFollowup() {
+        if ($('#regNoDDL').val()=='') {
+            showError('Please select date and registration no.');
+            return false;
+        }
         generateTokenNo();
         $("#counselorActionRow").show();
         $('#searchCriteriaRow').hide();
