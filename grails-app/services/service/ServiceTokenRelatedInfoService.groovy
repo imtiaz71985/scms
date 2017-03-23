@@ -209,6 +209,28 @@ class ServiceTokenRelatedInfoService extends BaseService{
 
         return result
     }
+    public Long countUniqueDateWiseDiagnosis(Date start,Date end, String hospital_code){
+        String hospital_str = EMPTY_SPACE
+        Long c=0
+        if(hospital_code!='') {
+            if(hospital_code!=ALL) {
+                hospital_str = "AND ri.hospital_code = '${hospital_code}' "
+            }
+        }
+        String queryStr = """
+             SELECT COUNT(DISTINCT sti.reg_no) as patient_count FROM token_and_charge_mapping tcm
+                            LEFT JOIN service_token_info sti ON sti.service_token_no=tcm.service_token_no
+                            LEFT JOIN registration_info ri ON ri.reg_no = sti.reg_no
+
+                        WHERE  sti.is_deleted <> TRUE AND tcm.service_date BETWEEN '${start}' AND '${end}'
+                            ${hospital_str}
+                        GROUP BY DATE(tcm.service_date)
+        """
+        List<GroovyRowResult> result = executeSelectSql(queryStr)
+if(result)
+    c= result[0].patient_count
+        return c
+    }
     public List<GroovyRowResult> getDiseaseByGroupIdForDDL(long groupId){
         String queryStr = """
                 SELECT CONCAT(name,'(',disease_code,')') AS name , disease_code AS id FROM disease_info

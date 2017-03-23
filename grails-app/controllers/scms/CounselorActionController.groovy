@@ -87,11 +87,12 @@ class CounselorActionController extends BaseController {
         Date start = DateUtility.getSqlFromDateWithSeconds(dateField)
         Date end = DateUtility.getSqlToDateWithSeconds(dateField)
         String hospital_code = params.hospitalCode
-        List<GroovyRowResult> lst = serviceTokenRelatedInfoService.dateWiseDiagnosisDetails(start, end, hospital_code)
+        List<GroovyRowResult> listAll = serviceTokenRelatedInfoService.dateWiseDiagnosisDetails(start, end, hospital_code)
 
+        int count = serviceTokenRelatedInfoService.countUniqueDateWiseDiagnosis(start, end, hospital_code)
         Map result = new HashedMap()
-        result.put('list', lst)
-        result.put('count', lst.size())
+        result.put('list', listAll)
+        result.put('count', count)
 
         render result as JSON
     }

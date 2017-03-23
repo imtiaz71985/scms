@@ -37,14 +37,12 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             if (!params.serviceTokenNo || !params.regNo) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            if (!params.serviceTypeId && !params.chkboxPathology) {
-                return super.setError(params, INVALID_INPUT_MSG)
+            if (!params.serviceTypeId && !params.chkboxPathology && !params.chkboxDocReferral) {
+                return super.setError(params, 'Please select service type or pathology test or doctor referral.')
             }
             if (params.chkboxDocReferral) {
-                if (!params.referralCenterId)
-                    return super.setError(params, 'Sorry! Please select referral center.')
-                if (!params.serviceTypeId)
-                    return super.setError(params, 'Sorry! Please select service type.')
+                if (!params.referralCenterId || !params.serviceProviderId)
+                    return super.setError(params, 'Sorry! Please select referral center and service provider.')
             }
             long serviceTypeId = 0L
             if (params.serviceTypeId) {
@@ -84,9 +82,14 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     }
                 }
             } else {
-                String len = params.selectedChargeId
-                if (len.length() < 1) {
-                    return super.setError(params, 'Sorry! Please select at least one pathology test.')
+                if (!params.serviceProviderId) {
+                    return super.setError(params, 'Sorry! Please select service provider.')
+                }
+                if(params.chkboxPathology ) {
+                    String len = params.selectedChargeId
+                    if (len.length() < 1) {
+                        return super.setError(params, 'Sorry! Please select at least one pathology test.')
+                    }
                 }
             }
 
