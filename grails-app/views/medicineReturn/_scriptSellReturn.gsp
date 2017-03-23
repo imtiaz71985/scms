@@ -7,6 +7,7 @@
         initMedicineSellInfoGrid();
     });
     function onLoadMedicineSellReturnPage() {
+        initializeForm($("#frmMedicineReturn"), null);
         defaultPageTile("Medicine return", "medicineReturn/show");
     }
     function executePreCondition(){
@@ -25,7 +26,7 @@
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var voucherNo = $("#voucherNo").val();
-        var formData = jQuery('#frmMedicine').serializeArray();
+        var formData = jQuery('#frmMedicineReturn').serializeArray();
         formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineSellReturnInfo.dataSource.data())});
         formData.push({name: 'voucherNo', value: voucherNo});
         jQuery.ajax({
@@ -66,36 +67,65 @@
         }
         var voucherNo = $("#voucherNo").val();
         setButtonDisabled($('#btnNewService'), true);
-        jQuery.ajax({
-            type: 'post',
-            url: "${createLink(controller:'medicineReturn', action: 'retrieveMedicineDetails')}?voucherNo="+voucherNo,
-            success: function (data, textStatus) {
-                var gridData = data.gridModelMedicine;
-                totalAmount = data.totalAmount;
-                gridMedicineSellReturnInfo.setDataSource(new kendo.data.DataSource({data: gridData}));
-                $("#footerSpan").text(formatCeilAmount(totalAmount));
-                setButtonDisabled($('#btnNewService'), false);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus);
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json'
-        });
-        return false;
+        var url = "${createLink(controller:'medicineReturn', action: 'retrieveMedicineDetails')}?voucherNo="+voucherNo;
+        populateGridKendo(gridMedicineSellReturnInfo, url);
+        setButtonDisabled($('#btnNewService'), false);
     }
-
+    function initDataSource() {
+        dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: false,
+                    dataType: "json",
+                    type: "post"
+                }
+            },
+            schema: {
+                type: 'json',
+                data: "gridMedicineReturn",
+                model: {
+                    fields: {
+                        id: {type: "number"},
+                        version: {type: "number"},
+                        medicineName: {editable: false,type: "string"},
+                        quantity: {editable: false,type: "number"},
+                        rtnQuantity: {type: "number",validation:{min:0}},
+                        unitPriceTxt: {editable: false,type: "string"},
+                        amount: {editable: false,type: "number"},
+                        rtnAmount: {type: "number"},
+                        unitPrice: {editable: false,type: "number"},
+                        totalAmount: {editable: false, type: "number"}
+                    }
+                },
+                parse: function (data) {
+                    checkIsErrorGridKendo(data);
+                    totalAmount = data.totalAmount;
+                    return data;
+                }
+            },
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true
+        });
+    }
+    function gridDataBound(e) {
+        setFooter();
+    }
+    function setFooter() {
+        $("#footerSpan").text(formatAmount(totalAmount));
+    }
     function initMedicineSellInfoGrid() {
-        $("#gridMedicine").kendoGrid({
-            dataSource: getBlankDataSource,
-            height: 420,
+        initDataSource();
+        $("#gridMedicineReturn").kendoGrid({
+            dataSource: dataSource,
+            height: 410,
+            autoBind: false,
             selectable: true,
             sortable: true,
             resizable: true,
             reorderable: true,
             pageable: false,
+            dataBound: gridDataBound,
             editable: true,
             edit: function (e) {
                 var input = e.container.find(".k-input");
@@ -109,10 +139,9 @@
                 $("[name='rtnQuantity']", e.container).blur(function () {
                     var input = $(this);
                     var row = $(this).closest("tr");
-                    var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
+                    var data = $("#gridMedicineReturn").data("kendoGrid").dataItem(row);
                     value = input.val();
-
-                    if (value > data.quantity||input.val()<0) {
+                    if (value > data.quantity) {
                         showError("Wrong quantity.");
                         data.set('rtnQuantity', 0);
 
@@ -124,8 +153,10 @@
                             var dirty = $(this).closest("tr").find(".k-dirty-cell");
                             dirty.removeClass("k-dirty-cell");
                         }
+
                         rtnAmount -= pre * data.unitPrice;
                         rtnAmount += value * data.unitPrice;
+                        alert(value+'price:'+data.unitPrice);
                         rtnAmount=Math.floor(rtnAmount)
                         data.set('rtnAmount', value * data.unitPrice);
                         $("#footerSpanRtn").text(formatAmount(rtnAmount));
@@ -139,7 +170,6 @@
                     title: "Medicine Name",
                     width: 100,
                     sortable: false,
-                    editable:false,
                     filterable: false
                 },
                 {
@@ -154,7 +184,9 @@
                     title: "Rtn Qty",
                     width: 50,
                     sortable: false,
-                    template: "<span style='float: left; width: 100%;" +
+                    attributes: {style: setAlignRight()},
+                    headerAttributes: {style: setAlignRight()},
+                    template: "<div style='float: left; width: 100%;" +
                     "font-size: large; background-color:gainsboro'><b>#=rtnQuantity#</b></div>",
                     filterable: false
                 },
@@ -188,8 +220,8 @@
                 mode: "row"
             }
         });
-        gridMedicineSellReturnInfo = $("#gridMedicine").data("kendoGrid");
-        $('#gridMedicine  > .k-grid-content').height(370);
+        gridMedicineSellReturnInfo = $("#gridMedicineReturn").data("kendoGrid");
+        $('#gridMedicineReturn  > .k-grid-content').height(370);
     }
     function resetForm(){
         window.history.back();

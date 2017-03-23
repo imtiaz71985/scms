@@ -20,8 +20,8 @@ class SelectMedicineSellReturnActionService extends BaseService implements Actio
     private static final String NOT_FOUND_MASSAGE = "Selected record not found"
     private static final String TOTAL_AMOUNT = "totalAmount"
     private static final String VOUCHER_NO = "voucherNo"
-    private static final String MEDICINE_DETAILS = "requisitionDetails"
-    private static final String GRID_MODEL_MEDICINE = "gridModelMedicine"
+    private static final String MEDICINE_DETAILS = "medicineDetails"
+    private static final String GRID_MODEL_MEDICINE = "gridMedicineReturn"
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -93,6 +93,8 @@ class SelectMedicineSellReturnActionService extends BaseService implements Actio
             long medicineId = singleRow.medicineId
             int quantity = singleRow.quantity
             double amount = singleRow.amount
+            int rtnQuantity = 0
+            double rtnAmount =0
             String medicineName = EMPTY_SPACE
             String unitPriceTxt = EMPTY_SPACE
 
@@ -112,7 +114,7 @@ class SelectMedicineSellReturnActionService extends BaseService implements Actio
             Map eachDetails = [ id:id,version:version,voucherNo:voucherNo,medicineName:medicineName,
                                 medicineId:medicineId,quantity:quantity,amount:amount,
                                 stock:stock.stockQty+quantity,unitPriceTxt:unitPriceTxt,
-                                rtnQuantity:0,rtnAmount:0,unitPrice:(float)Math.round((amount/quantity)*100)/100
+                                rtnQuantity:rtnQuantity,rtnAmount:rtnAmount,unitPrice:(float)Math.round((amount/quantity)*100)/100
             ]
             lstRows << eachDetails
         }

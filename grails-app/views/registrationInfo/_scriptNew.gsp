@@ -389,7 +389,9 @@ function populateRegNo(){
             success: function (data, textStatus) {
                 $('#regNo').val(data.regNo);
                 regNo=data.regNo;
-                initRegistrationInfoGrid();
+                var creatingDate = dropDownCreatingDate.value();
+                var url = "${createLink(controller: 'registrationInfo', action: 'list')}?isNew=Yes&creatingDate="+creatingDate;
+                populateGridKendo(gridRegistrationInfo, url);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
 
