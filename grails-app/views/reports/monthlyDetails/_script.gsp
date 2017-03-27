@@ -73,6 +73,7 @@
                 $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
             }
             else {
+               // alert(dropDownHospitalCode.value() +'is tran close: '+row.is_tran_closed)
                 if (dropDownHospitalCode.value() != '' && !row.is_tran_closed) {
 
                     $('tr[data-uid="' + row.uid + '"]> td ').each(function () {

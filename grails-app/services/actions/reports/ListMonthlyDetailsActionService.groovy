@@ -192,7 +192,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE  AND SUBSTRING(sti.service_token_no, 2, 2) = ${hospitalCode}
                 GROUP BY DATE(sti.service_date)),0) AS total_served
         -- Transaction Closed
-               ,COALESCE(tc.is_transaction_closed,FALSE) AS is_tran_closed
+               ,CASE WHEN tc.is_transaction_closed IS NULL THEN 'FALSE' ELSE 'TRUE' END is_tran_closed
 
                 FROM calendar c LEFT JOIN transaction_closing tc ON tc.closing_date=c.date_field AND tc.hospital_code=${hospitalCode}
                WHERE c.date_field BETWEEN :fromDate AND :toDate
