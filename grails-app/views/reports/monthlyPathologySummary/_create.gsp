@@ -3,7 +3,7 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
-                    Monthly Summary
+                    Monthly Pathology Summary
                 </div>
             </div>
 
