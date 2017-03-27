@@ -7,6 +7,9 @@
         initMedicineSellInfoGrid();
     });
     function onLoadMedicineSellReturnPage() {
+        $('#frmMedicineReturn').on('keypress', function(e) {
+            return e.which !== 13;
+        });
         initializeForm($("#frmMedicineReturn"), null);
         defaultPageTile("Medicine return", "medicineReturn/show");
     }
@@ -19,7 +22,6 @@
         return true;
     }
     function onSubmitForm() {
-
         if (executePreCondition() == false) {
             return false;
         }
@@ -137,6 +139,7 @@
                     }
                 });
                 $("[name='rtnQuantity']", e.container).blur(function () {
+
                     var input = $(this);
                     var row = $(this).closest("tr");
                     var data = $("#gridMedicineReturn").data("kendoGrid").dataItem(row);
@@ -144,7 +147,6 @@
                     if (value > data.quantity) {
                         showError("Wrong quantity.");
                         data.set('rtnQuantity', 0);
-
                     }
                     else {
                         if(input.val()==''){
@@ -156,7 +158,6 @@
 
                         rtnAmount -= pre * data.unitPrice;
                         rtnAmount += value * data.unitPrice;
-                        alert(value+'price:'+data.unitPrice);
                         rtnAmount=Math.floor(rtnAmount)
                         data.set('rtnAmount', value * data.unitPrice);
                         $("#footerSpanRtn").text(formatAmount(rtnAmount));

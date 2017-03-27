@@ -105,7 +105,7 @@ class CreateMedicineReturnSellActionService extends BaseService implements Actio
                 details.traceNo = ''
                 details.medicineId = (long) lstRowsMedicine[i].medicineId
                 details.quantity = (int) lstRowsMedicine[i].rtnQuantity
-                details.amount = (double) lstRowsMedicine[i].rtnAmount
+                details.amount = details.quantity*(double) lstRowsMedicine[i].unitPrice
 
                 MedicineReturnDetails medicine = details
                 lstMedicine.add(medicine)
