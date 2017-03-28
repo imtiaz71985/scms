@@ -210,7 +210,11 @@ class BaseService extends Tools {
      * @param params Request parameters
      */
     private void initPagination(GrailsParameterMap params) {
-        this.resultPerPage = params.int(RESULT_PER_PAGE_KENDO)?params.int(RESULT_PER_PAGE_KENDO):15
+        if(params.take=="false"){
+            this.resultPerPage =0
+        } else{
+            this.resultPerPage = params.int(RESULT_PER_PAGE_KENDO)?params.int(RESULT_PER_PAGE_KENDO):15
+        }
         this.start = params.int(OFFSET_KENDO)?params.int(OFFSET_KENDO):0
     }
 
@@ -257,7 +261,7 @@ class BaseService extends Tools {
                 additionalFilter.delegate = delegate
                 additionalFilter()
             }
-            maxResults(this.resultPerPage)
+            if(this.resultPerPage>0) maxResults(this.resultPerPage)
             firstResult(this.start)
             order(this.sortColumn, this.sortOrder)
             setReadOnly(true)

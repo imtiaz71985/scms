@@ -87,32 +87,26 @@ class RegistrationInfoService extends BaseService {
         String hospital=EMPTY_SPACE
 
         if (hospitalCode.length() > 1) {
-            hospital_rp = """
-                AND rp.hospital_code='${hospitalCode}'
-            """
-            hospital_ri = """
-               AND ri.hospital_code='${hospitalCode}'
-            """
-            hospital_sti = """
-               AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}'
-            """
-            hospital = """
-               AND hospital_code='${hospitalCode}'
-            """
+            hospital_rp = """ AND rp.hospital_code='${hospitalCode}' """
+            hospital_ri = """ AND ri.hospital_code='${hospitalCode}' """
+            hospital_sti = """ AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}' """
+            hospital = """ AND hospital_code='${hospitalCode}' """
         }
         String queryStr = """
-               SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday,COUNT(DISTINCT ri.reg_no) AS new_patient,COUNT(DISTINCT rp.id) AS patient_revisit,
-                (COUNT( DISTINCT ri.reg_no)+COALESCE((SELECT COUNT(DISTINCT id) FROM revisit_patient  WHERE DATE(create_date)=c.date_field """+hospital+"""
-                AND reg_no NOT IN (SELECT reg_no FROM registration_info WHERE DATE(create_date)=c.date_field AND is_old_patient <> TRUE """+hospital+""") GROUP BY DATE(create_date)),0)) AS total_patient
-                 ,COUNT(DISTINCT sti.reg_no) AS total_served
-                 ,COALESCE((SELECT tc.is_transaction_closed FROM transaction_closing tc WHERE DATE(tc.closing_date)=c.date_field """+hospital+""" LIMIT 1),FALSE) AS is_tran_closed
+        SELECT tbl.*,(tbl.new_patient+tbl.patient_revisit) AS total_patient FROM
+            (SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday ,COALESCE((SELECT  COUNT(DISTINCT ri.reg_no)
+                FROM registration_info ri WHERE DATE(ri.create_date)=c.date_field AND ri.is_old_patient=FALSE AND ri.is_active<>FALSE
+                 """+hospital_ri+""" GROUP BY DATE(ri.create_date)),0) AS new_patient
+                ,COALESCE((SELECT COUNT(DISTINCT rp.id) FROM revisit_patient rp WHERE DATE(rp.create_date)=c.date_field  AND rp.reg_no NOT IN
+                (SELECT reg_no FROM registration_info WHERE DATE(create_date)=c.date_field AND is_old_patient=FALSE AND is_active<>FALSE """+hospital+""" )
+                 """+hospital_rp+"""),0)  AS patient_revisit
+                ,COALESCE(( SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE
+                 """+hospital_sti+""" GROUP BY DATE(sti.service_date)),0) AS total_served
+                ,CASE WHEN tc.is_transaction_closed IS NULL THEN 'FALSE' ELSE CASE WHEN tc.is_transaction_closed=TRUE THEN 'TRUE' ELSE 'FALSE' END  END is_tran_closed
                 FROM calendar c
-                 LEFT JOIN revisit_patient rp ON c.date_field=DATE(rp.create_date) """+hospital_rp+"""
-                 LEFT JOIN registration_info ri ON c.date_field=DATE(ri.create_date) AND ri.is_old_patient=FALSE """+hospital_ri+""" AND is_active<>FALSE
-                 LEFT JOIN service_token_info sti ON c.date_field=DATE(sti.service_date) """+hospital_sti+""" AND sti.is_deleted=FALSE
-
-                WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' GROUP BY c.date_field
-                ORDER BY c.date_field ASC
+                LEFT JOIN transaction_closing tc ON DATE(tc.closing_date)=c.date_field """+hospital+"""
+              WHERE c.date_field  BETWEEN '${fromDate}' AND '${toDate}'
+               ) tbl ORDER BY tbl.date_field ASC
         """
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
