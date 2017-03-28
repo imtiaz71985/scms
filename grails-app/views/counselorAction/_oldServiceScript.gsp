@@ -33,7 +33,17 @@
         $('#searchCriteriaRow').show();
         $('#counselorActionGridRow').show();
         dropDownDiseaseCode = initKendoDropdown($('#diseaseCode'), null, null, null);
-        dropDownRegistrationNo = initKendoDropdown($('#regNoDDL'), null, null, null);
+
+        $('#regNoDDL').kendoDropDownList({
+            dataTextField: "name",
+            dataValueField: "id",
+            template: "# if(data.service_count > 0) " +
+                      "{#<span style='color:green'> #= data.name # </span> #} " +
+                      "else {#<span> #= data.name # </span> #}#",
+            dataSource: getKendoEmptyDataSource
+        });
+        dropDownRegistrationNo = $('#regNoDDL').data("kendoDropDownList");
+
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#oldServiceActionForm"), onSubmitCounselorAction);
         // update page title
