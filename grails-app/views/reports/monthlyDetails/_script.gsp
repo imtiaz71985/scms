@@ -74,7 +74,7 @@
             }
             else {
                // alert(dropDownHospitalCode.value() +'is tran close: '+row.is_tran_closed)
-                if (dropDownHospitalCode.value() != '' && !row.is_tran_closed) {
+                if (!row.is_tran_closed) {
 
                     $('tr[data-uid="' + row.uid + '"]> td ').each(function () {
                         if (($(this).index() == '0')) {

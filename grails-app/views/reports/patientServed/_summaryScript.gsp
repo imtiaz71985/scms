@@ -185,7 +185,7 @@
                 $('tr[data-uid="' + row.uid + '"] ').css("color", "#7f7f7f"); // light black
             }
             else{
-                if (dropDownHospitalCode.value() != '' && !row.is_tran_closed) {
+                if (!row.is_tran_closed) {
                     $('tr[data-uid="' + row.uid + '"] ').css("color", "#e60000"); // red
                     $('tr[data-uid="' + row.uid + '"] ').css("font-weight", "bold");// font bold
                 }

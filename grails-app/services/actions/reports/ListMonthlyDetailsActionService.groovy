@@ -192,7 +192,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE  AND SUBSTRING(sti.service_token_no, 2, 2) = ${hospitalCode}
                 GROUP BY DATE(sti.service_date)),0) AS total_served
         -- Transaction Closed
-               ,CASE WHEN tc.is_transaction_closed IS NULL THEN 'FALSE' ELSE CASE WHEN tc.is_transaction_closed=TRUE THEN 'TRUE' ELSE 'FALSE' END  END is_tran_closed
+               ,CASE WHEN tc.is_transaction_closed IS NULL THEN 'FALSE' WHEN tc.is_transaction_closed=TRUE THEN 'TRUE' ELSE 'FALSE' END is_tran_closed
 
                 FROM calendar c LEFT JOIN transaction_closing tc ON tc.closing_date=c.date_field AND tc.hospital_code=${hospitalCode}
                WHERE c.date_field BETWEEN :fromDate AND :toDate
@@ -335,7 +335,12 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
                 WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE
                 GROUP BY DATE(sti.service_date)),0) AS total_served
-
+            -- Transaction Closed
+               ,(SELECT CASE WHEN (SELECT COUNT(is_transaction_closed) FROM transaction_closing tc WHERE tc.closing_date=c.date_field)=0 THEN 'FALSE'
+                WHEN( SELECT COUNT(is_transaction_closed) FROM transaction_closing tc
+                WHERE tc.closing_date=c.date_field AND is_transaction_closed = TRUE)=(SELECT COUNT(*)FROM hospital_location WHERE is_clinic=TRUE)
+                THEN 'TRUE'
+                ELSE 'FALSE' END) is_tran_closed
                 FROM calendar c
                 WHERE c.date_field BETWEEN :fromDate AND :toDate
         """

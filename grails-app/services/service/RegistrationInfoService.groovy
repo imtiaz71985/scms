@@ -85,15 +85,24 @@ class RegistrationInfoService extends BaseService {
         String hospital_ri = EMPTY_SPACE
         String hospital_sti = EMPTY_SPACE
         String hospital=EMPTY_SPACE
+        String hospital_tc=EMPTY_SPACE
 
         if (hospitalCode.length() > 1) {
             hospital_rp = """ AND rp.hospital_code='${hospitalCode}' """
             hospital_ri = """ AND ri.hospital_code='${hospitalCode}' """
             hospital_sti = """ AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}' """
             hospital = """ AND hospital_code='${hospitalCode}' """
+            hospital_tc = """ , COALESCE((SELECT CASE WHEN is_transaction_closed IS NULL THEN 'FALSE' WHEN is_transaction_closed=TRUE THEN 'TRUE' ELSE 'FALSE' END
+                FROM transaction_closing WHERE DATE(closing_date)= DATE(tbl.date_field) AND hospital_code='${hospitalCode}'),'FALSE')is_tran_closed """
+        }
+        else{
+            hospital_tc = """ , coalesce((SELECT CASE WHEN (SELECT COUNT(is_transaction_closed) FROM transaction_closing tc WHERE DATE(tc.closing_date)=DATE(tbl.date_field))=0 THEN 'FALSE'
+                WHEN( SELECT COUNT(is_transaction_closed) FROM transaction_closing tc
+                WHERE DATE(tc.closing_date)=DATE(tbl.date_field) AND is_transaction_closed = TRUE)=(SELECT COUNT(*)FROM hospital_location WHERE is_clinic=TRUE) THEN 'TRUE'
+                ELSE 'FALSE' END),'FALSE')is_tran_closed """
         }
         String queryStr = """
-        SELECT tbl.*,(tbl.new_patient+tbl.patient_revisit) AS total_patient FROM
+        SELECT tbl.* """+hospital_tc+""",(tbl.new_patient+tbl.patient_revisit) AS total_patient FROM
             (SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday ,COALESCE((SELECT  COUNT(DISTINCT ri.reg_no)
                 FROM registration_info ri WHERE DATE(ri.create_date)=c.date_field AND ri.is_old_patient=FALSE AND ri.is_active<>FALSE
                  """+hospital_ri+""" GROUP BY DATE(ri.create_date)),0) AS new_patient
@@ -102,9 +111,7 @@ class RegistrationInfoService extends BaseService {
                  """+hospital_rp+"""),0)  AS patient_revisit
                 ,COALESCE(( SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE
                  """+hospital_sti+""" GROUP BY DATE(sti.service_date)),0) AS total_served
-                ,CASE WHEN tc.is_transaction_closed IS NULL THEN 'FALSE' ELSE CASE WHEN tc.is_transaction_closed=TRUE THEN 'TRUE' ELSE 'FALSE' END  END is_tran_closed
                 FROM calendar c
-                LEFT JOIN transaction_closing tc ON DATE(tc.closing_date)=c.date_field """+hospital+"""
               WHERE c.date_field  BETWEEN '${fromDate}' AND '${toDate}'
                ) tbl ORDER BY tbl.date_field ASC
         """
