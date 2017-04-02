@@ -194,7 +194,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
         -- Transaction Closed
                ,CASE WHEN tc.is_transaction_closed IS NULL THEN 'FALSE' WHEN tc.is_transaction_closed=TRUE THEN 'TRUE' ELSE 'FALSE' END is_tran_closed
 
-                FROM calendar c LEFT JOIN transaction_closing tc ON tc.closing_date=c.date_field AND tc.hospital_code=${hospitalCode}
+                FROM calendar c LEFT JOIN transaction_closing tc ON DATE(tc.closing_date)=DATE(c.date_field) AND tc.hospital_code=${hospitalCode}
                WHERE c.date_field BETWEEN :fromDate AND :toDate
 
 
