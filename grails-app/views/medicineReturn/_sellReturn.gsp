@@ -28,6 +28,7 @@
                                 class="k-icon k-i-plus"></span> View
                         </button>
                     </div>
+                    <label class="col-md-2 control-label label-required" for="returnTypeId">Return Type:</label>
                     <div class="col-md-3">
                         <app:dropDownSystemEntity
                                 data_model_name="dropDownReturnType"

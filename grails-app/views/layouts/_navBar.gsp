@@ -126,6 +126,12 @@
                                             class="fa fa-file-o"></i>&nbsp;Medicine Wise Sales</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/reports/showMedicineReturn">
+                                <li>
+                                    <a href="#reports/showMedicineReturn"><i
+                                            class="fa fa-file-o"></i>&nbsp;Medicine Return</a>
+                                </li>
+                            </sec:access>
                         </ul>
                     </li>
                 </sec:ifAnyUrls>

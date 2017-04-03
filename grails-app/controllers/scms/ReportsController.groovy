@@ -170,5 +170,12 @@ class ReportsController extends BaseController {
         Map result = (Map) getReportResponse(downloadMonthlyPathologySummaryActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
+    def showMedicineReturn() {
+        SecUser user = SecUser.read(springSecurityService.principal.id)
+        boolean isAdmin = secUserService.isLoggedUserAdmin(user.id)
+
+        String hospitalCode = HospitalLocation.findByCode(user.hospitalCode).code
+        render(view: "/reports/medicineReturn/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
+    }
 
 }
