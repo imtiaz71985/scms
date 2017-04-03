@@ -28,6 +28,15 @@
                                 class="k-icon k-i-plus"></span> View
                         </button>
                     </div>
+                    <div class="col-md-3">
+                        <app:dropDownSystemEntity
+                                data_model_name="dropDownReturnType"
+                                hints_text="" show_hints="false"
+                                id="returnTypeId" name="returnTypeId" tabindex="3"
+                                class="kendo-drop-down" type="Return Type"
+                                required="true" validationmessage="Required">
+                        </app:dropDownSystemEntity>
+                    </div>
                 </div>
             </div>
         </div>

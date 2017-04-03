@@ -1,6 +1,6 @@
 
 <script language="javascript">
-    var gridMedicineSellReturnInfo, dataSource, totalAmount=0, rtnAmount=0;
+    var gridMedicineSellReturnInfo, dataSource, totalAmount=0, totalRtnAmount= 0,dropDownReturnType;
 
     $(document).ready(function () {
         onLoadMedicineSellReturnPage();
@@ -31,6 +31,7 @@
         var formData = jQuery('#frmMedicineReturn').serializeArray();
         formData.push({name: 'gridModelMedicine', value: JSON.stringify(gridMedicineSellReturnInfo.dataSource.data())});
         formData.push({name: 'voucherNo', value: voucherNo});
+        formData.push({name: 'returnTypeId', value: dropDownReturnType.value()});
         jQuery.ajax({
             type: 'post',
             data: formData,
@@ -156,11 +157,10 @@
                             dirty.removeClass("k-dirty-cell");
                         }
 
-                        rtnAmount -= pre * data.unitPrice;
-                        rtnAmount += value * data.unitPrice;
-                        rtnAmount=Math.floor(rtnAmount)
+                        totalRtnAmount -= pre * data.unitPrice;
+                        totalRtnAmount += value * data.unitPrice;
                         data.set('rtnAmount', value * data.unitPrice);
-                        $("#footerSpanRtn").text(formatAmount(rtnAmount));
+                        $("#footerSpanRtn").text(formatAmount(Math.floor(totalRtnAmount)));
                     }
 
                 });

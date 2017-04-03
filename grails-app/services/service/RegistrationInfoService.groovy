@@ -193,7 +193,7 @@ class RegistrationInfoService extends BaseService {
                 SELECT c.date_field AS id,DATE_FORMAT(c.date_field,'%d-%m-%Y') AS name
 
                 FROM calendar c
-                 LEFT JOIN transaction_closing tc ON c.date_field=tc.closing_date  AND tc.hospital_code='${hospitalCode}'
+                 LEFT JOIN transaction_closing tc ON DATE(c.date_field)=DATE(tc.closing_date)  AND tc.hospital_code='${hospitalCode}'
 
                 WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' AND COALESCE(tc.is_transaction_closed,FALSE) <> TRUE
                 AND c.is_holiday<>TRUE

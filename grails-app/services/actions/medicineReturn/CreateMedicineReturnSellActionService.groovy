@@ -122,7 +122,6 @@ class CreateMedicineReturnSellActionService extends BaseService implements Actio
         medicineReturn.hospitalCode = hospital_code
         medicineReturn.returnDate = DateUtility.getSqlDate(new Date())
         medicineReturn.returnBy = springSecurityService.principal.id
-        medicineReturn.returnTypeId = 1   // To-do fix return type
 
         return medicineReturn
     }
