@@ -157,6 +157,7 @@ function clearFormValues(form) {
         // select elements need to have their 'selectedIndex' property set to -1
         else if (tag == 'select') {
             var dropDownKendo = $(this).data("kendoDropDownList");
+            dropDownKendo.dataSource.filter([]);
             dropDownKendo.value('');
         }
     });
