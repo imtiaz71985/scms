@@ -164,7 +164,7 @@ class RegistrationInfoService extends BaseService {
         String queryStr = """
                SELECT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name,COALESCE(COUNT(sti.reg_no),0) AS service_count
             FROM registration_info ri LEFT JOIN revisit_patient rp ON ri.reg_no=rp.reg_no
-            LEFT JOIN service_token_info sti ON ri.reg_no=sti.reg_no AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}'
+            LEFT JOIN service_token_info sti ON ri.reg_no=sti.reg_no AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}' AND sti.is_deleted<>TRUE
             WHERE ri.is_active = TRUE  AND SUBSTRING(ri.reg_no,1,2)='${hospitalCode}' AND
             (ri.create_date BETWEEN '${fromDate}' AND '${toDate}' OR rp.create_date BETWEEN '${fromDate}' AND '${toDate}')
            GROUP BY ri.reg_no

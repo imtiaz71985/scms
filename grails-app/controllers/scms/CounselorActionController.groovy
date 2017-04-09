@@ -1,6 +1,5 @@
 package scms
 
-import actions.ServiceTokenInfo.ApproveOldServiceActionService
 import actions.ServiceTokenInfo.CreateOldServiceTokenInfoActionService
 import actions.ServiceTokenInfo.CreateServiceTokenInfoActionService
 import actions.ServiceTokenInfo.DeleteOldServiceTokenInfoActionService
@@ -36,7 +35,6 @@ class CounselorActionController extends BaseController {
     DeleteServiceTokenInfoActionService deleteServiceTokenInfoActionService
     CreateOldServiceTokenInfoActionService createOldServiceTokenInfoActionService
     DeleteOldServiceTokenInfoActionService deleteOldServiceTokenInfoActionService
-    ApproveOldServiceActionService approveOldServiceActionService
     ServiceTokenRelatedInfoService serviceTokenRelatedInfoService
     ServiceHeadInfoService serviceHeadInfoService
     BaseService baseService
@@ -105,8 +103,12 @@ class CounselorActionController extends BaseController {
     }
 
     def list() {
-        Date start = DateUtility.getSqlFromDateWithSeconds(new Date())
-        Date end = DateUtility.getSqlToDateWithSeconds(new Date())
+        Date createDate =new Date()
+        if(params.createDate){
+            createDate = DateUtility.parseDateForDB(params.createDate)
+        }
+        Date start = DateUtility.getSqlFromDateWithSeconds(createDate)
+        Date end = DateUtility.getSqlToDateWithSeconds(createDate)
 
         String hospital_code = ""
         if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
@@ -172,14 +174,16 @@ class CounselorActionController extends BaseController {
 
     def createServiceTokenNo() {
         String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        Date start = DateUtility.getSqlFromDateWithSeconds(new Date())
-        Date end = DateUtility.getSqlToDateWithSeconds(new Date())
+        Date createDate = DateUtility.parseDateForDB(params.createDate)
+        Date start = DateUtility.getSqlFromDateWithSeconds(createDate)
+        Date end = DateUtility.getSqlToDateWithSeconds(createDate)
         int c = ServiceTokenInfo.countByServiceDateBetween(start, end)
         c += 1
+        int old = OldServiceTokenInfo.countByIsApprovedAndServiceDateBetween(false,start, end)
+        c = c + old
         String DATE_FORMAT = "ddMMyy";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        Calendar c1 = Calendar.getInstance(); // today
-        String tokenNo = sdf.format(c1.getTime())
+        String tokenNo = sdf.format(createDate)
         String serviceNo = (c < 10 ? '00' : c < 100 ? '0' : '') + c.toString()
         tokenNo = 'S' + hospital_code + tokenNo + serviceNo
         // def result = [:]
@@ -215,7 +219,14 @@ class CounselorActionController extends BaseController {
 
     def retrieveTokenNoByRegNo() {
         String regNo = params.regNo.toString()
-         List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndIsDeletedAndIsFollowupNeeded(regNo, false,true, [sort: "serviceDate", order: "DESC"])
+        Date serviceDate=DateUtility.getSqlDate(new Date())
+        try {
+            if (params.serviceDate) {
+                Date d = DateUtility.parseDateForDB(params.serviceDate)
+                serviceDate = DateUtility.getSqlToDateWithSeconds(d)
+            }
+        }catch(ex){}
+        List<ServiceTokenInfo> lst = ServiceTokenInfo.findAllByRegNoAndIsDeletedAndIsFollowupNeededAndServiceDateLessThan(regNo, false,true,serviceDate, [sort: "serviceDate", order: "DESC"])
 
         lst = baseService.listForKendoDropdown(lst, 'serviceTokenNo', null)
         Map result = [lstTokenNo: lst]

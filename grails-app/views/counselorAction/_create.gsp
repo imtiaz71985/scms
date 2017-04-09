@@ -4,42 +4,55 @@
         <div class="panel-heading">
             <div class="panel-title">
                 Search Criteria
+
+                <div class="col-md-4 pull-right" id="divPatientServed" style="padding-right: 10px !important; padding-top: 0px !important;">
+                <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold; text-align: center;" >
+            </div>
             </div>
         </div>
 
         <g:form name='searchByRegForm' id='searchByRegForm' class="form-horizontal form-widgets" role="form">
             <div class="panel-body">
                 <div class="form-group">
-                    <div class="col-md-2" align="center">
+                    <div class="col-md-1" align="right">
+                        <label class="control-label ">Date:</label>
+                    </div>
+
+                    <div class="col-md-2">
+                        <app:dropDownIncompleteServiceDate
+                                data_model_name="dropDownServiceDate"
+                                id="serviceDateDDL" name="serviceDateDDL" tabindex="1"
+                                onchange="javascript:populateRegNoDDL();"
+                                class="kendo-drop-down">
+                        </app:dropDownIncompleteServiceDate>
+                    </div>
+                    <div class="col-md-2" align="right" style="padding-right: 10px;padding-left: 0px;">
                         <label class="control-label ">Registration No:</label>
                     </div>
 
-                    <div class="col-md-3">
-                        <app:dropDownRegistrationNo
-                                data_model_name="dropDownRegistrationNo"
-                                id="regNoDDL" name="regNoDDL" tabindex="1"
-                                class="kendo-drop-down" type="Counselor">
-                        </app:dropDownRegistrationNo>
+                    <div class="col-md-3" style="padding-left: 0px;text-align: left;">
+                        <select
+                                id="regNoDDL" name="regNoDDL" tabindex="2"
+                                required="required" validationmessage="Required"
+                                class="kendo-drop-down">
+                        </select>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3" style="padding-left: 0px;padding-right: 0px;">
 
                         <button id="btnNewService" name="btnNewService" type="button"
-                                class="k-button" tabindex="2"
+                                class="k-button" tabindex="3"
                                 role="button" onclick="LoadDetailsByRegNo()"
                                 aria-disabled="false"><span
                                 class="k-icon k-i-plus"></span> New Service
                         </button>
                         <button id="btnFollowupService" name="btnFollowupService" type="button"
-                                class="k-button" tabindex="2"
+                                class="k-button" tabindex="4"
                                 role="button" onclick="loadFormForFollowup()"
                                 aria-disabled="false"><span
                                 class="k-icon k-i-plus"></span> Follow-up Service
                         </button>
                     </div>
-            <div class="col-md-3 pull-right" id="divPatientServed">
-                <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold; text-align: center;" >
-            </div>
 
                 </div>
 
@@ -60,6 +73,7 @@
         <g:form name='counselorActionForm' id='counselorActionForm' class="form-horizontal form-widgets"
                 role="form">
             <div class="panel-body">
+                <input type="hidden" id="serviceDate" name="serviceDate"/>
                 <input type="hidden" id="regNo" name="regNo"/>
                 <input type="hidden" id="selectedChargeId" name="selectedChargeId"/>
                 <input type="hidden" id="selectedConsultancyId" name="selectedConsultancyId"/>

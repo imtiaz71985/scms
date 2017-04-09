@@ -123,22 +123,5 @@ class ApproveOldServiceActionService extends BaseService implements ActionServic
 
         return serviceTokenInfo
     }
-    private OldServiceTokenInfo buildObjectOfOldService(Map params) {
 
-        //OldServiceTokenInfo oldServiceTokenInfo=OldServiceTokenInfo.read(params.serviceTokenNo)
-        //OldServiceTokenInfo oldServiceTokenInfox=OldServiceTokenInfo.findById(params.serviceTokenNo)
-        OldServiceTokenInfo oldServiceTokenInfo=OldServiceTokenInfo.findByServiceTokenNo(params.serviceTokenNo)
-
-        oldServiceTokenInfo.approveBy= springSecurityService.principal.id
-        oldServiceTokenInfo.approveDate=DateUtility.getSqlDate(new Date())
-        if(params.isApprove=='true') {
-            oldServiceTokenInfo.isApproved = true
-            oldServiceTokenInfo.isDecline=false
-        }else{
-            oldServiceTokenInfo.isApproved = false
-            oldServiceTokenInfo.isDecline=true
-        }
-
-        return oldServiceTokenInfo
-    }
 }

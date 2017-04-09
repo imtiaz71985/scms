@@ -116,7 +116,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             }
             if (result.diseaseCode) {
                 TokenAndDiseaseMapping tokenAndDiseaseMapping = new TokenAndDiseaseMapping()
-                tokenAndDiseaseMapping.serviceDate = DateUtility.getSqlDate(new Date())
+                tokenAndDiseaseMapping.serviceDate = serviceTokenInfo.serviceDate
                 tokenAndDiseaseMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
                 tokenAndDiseaseMapping.diseaseCode = result.diseaseCode
                 tokenAndDiseaseMapping.save()
@@ -130,7 +130,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
                 for (int i = 0; i < lst.size(); i++) {
                     TokenAndChargeMapping tokenAndChargeMapping = new TokenAndChargeMapping()
-                    tokenAndChargeMapping.serviceDate = DateUtility.getSqlDate(new Date())
+                    tokenAndChargeMapping.serviceDate = serviceTokenInfo.serviceDate
                     tokenAndChargeMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
                     try {
                         if (lst.get(i) != '') {
@@ -156,7 +156,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        String msg = registrationInfoService.patientServed(new Date())
+        String msg = registrationInfoService.patientServed(DateUtility.getSqlDate(DateUtility.parseDateForDB(result.serviceDate)))
         result.put('patientServed', msg)
         return super.setSuccess(result, '<div style="font-size: 16px">Data Saved successfully. Token No: <b>' + result.serviceTokenNo + '</b></div>')
     }
@@ -180,7 +180,8 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         } else {
             serviceTokenInfo.serviceProviderId = 0 // When give counselor service
         }
-        serviceTokenInfo.serviceDate = DateUtility.getSqlDate(new Date())
+        Date serviceDate = DateUtility.parseDateForDB(parameterMap.serviceDate)
+        serviceTokenInfo.serviceDate = DateUtility.getSqlDate(serviceDate)
         serviceTokenInfo.createDate = DateUtility.getSqlDate(new Date())
         serviceTokenInfo.createBy = springSecurityService.principal.id
         if (serviceTypeId == 5) {
