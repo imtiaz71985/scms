@@ -1,12 +1,12 @@
 <div class="container-fluid">
     <div class="row" id="searchCriteriaRow">
     <div id="application_top_panel" class="panel panel-primary">
-        <div class="panel-heading">
-            <div class="panel-title">
+        <div class="panel-heading"  style="padding-right: 0px !important; padding-top: 0px !important;">
+            <div class="panel-title" >
                 Search Criteria
 
-                <div class="col-md-4 pull-right" id="divPatientServed" style="padding-right: 10px !important; padding-top: 0px !important;">
-                <input type="text" readonly="true" id="lblPatientServed" class="form-control" style="font-size: medium; font-weight: bold; text-align: center;" >
+                <div class="col-md-3 pull-right" id="divPatientServed" style="padding-right: 0px !important; padding-top: 0px !important; padding-bottom: 0px!important;">
+                <input type="text" readonly="true" id="lblPatientServed"  style="width: 100%; padding-bottom: 0px!important; padding-top: 0px !important;font-size: medium; font-weight: bold; text-align: center;" >
             </div>
             </div>
         </div>
