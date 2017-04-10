@@ -57,16 +57,6 @@
                                     <a href="#counselorAction/showServiceList"><i class="fa fa-list"></i>&nbsp;Service List</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/counselorAction/showOldService">
-                                <li>
-                                    <a href="#counselorAction/showOldService"><i class="fa fa-user-times"></i>&nbsp;Old Service Data Entry</a>
-                                </li>
-                            </sec:access>
-                            <sec:access url="/counselorAction/showOldServiceHO">
-                                <li>
-                                    <a href="#counselorAction/showOldServiceHO"><i class="fa fa-user-times"></i>&nbsp;Approve Old Service</a>
-                                </li>
-                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>

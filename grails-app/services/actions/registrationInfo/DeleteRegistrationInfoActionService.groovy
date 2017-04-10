@@ -1,16 +1,13 @@
 package actions.registrationInfo
 
-import com.scms.OldServiceTokenInfo
 import com.scms.RegistrationInfo
 import com.scms.RevisitPatient
 import com.scms.ServiceTokenInfo
-import com.scms.TransactionClosing
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
-import scms.utility.DateUtility
 import service.RegistrationInfoService
 
 @Transactional
@@ -32,10 +29,6 @@ class DeleteRegistrationInfoActionService extends BaseService implements ActionS
             RegistrationInfo registrationInfo = RegistrationInfo.findByRegNo(regNo)
             if (!registrationInfo) {
                 return super.setError(params, NOT_FOUND)
-            }
-            int c = OldServiceTokenInfo.countByRegNo(regNo)
-            if (c > 0) {
-                return super.setError(params, 'Sorry! Patient already taken service.')
             }
             int count = ServiceTokenInfo.countByRegNo(regNo)
             if (count > 0) {
