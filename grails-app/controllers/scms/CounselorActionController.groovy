@@ -286,7 +286,9 @@ class CounselorActionController extends BaseController {
         render result as JSON
     }
     def retrieveRegNoByDate() {
-        Date createDate = DateUtility.parseDateForDB(params.createDate)
+        Date createDate = new Date()
+        if(params.createDate)
+            createDate = DateUtility.parseDateForDB(params.createDate)
        String  hospitalCode= SecUser.read(springSecurityService.principal.id)?.hospitalCode
         Date fromDate=DateUtility.getSqlFromDateWithSeconds(createDate)
         Date toDate=DateUtility.getSqlToDateWithSeconds(createDate)

@@ -6,9 +6,7 @@
 
 </style>
 <script language="javascript">
-    var gridCounselorAction, dataSource, registrationInfoModel, dropDownServiceType, dropDownServiceProvider,
-            dropDownDiseaseGroup, gridServiceHeadInfo, dropDownRegistrationNo, dropDownReferralCenter,
-            dropDownReferenceServiceNoDDL, detailsTemplate, dropDownDiseaseCode, dropDownServiceDate;
+    var gridCounselorAction, dataSource, registrationInfoModel,gridServiceHeadInfo, detailsTemplate;
     var checkedIds = {}; // declare an object to hold selected grid ids
 
     var chargeAmt = 0;
@@ -19,6 +17,7 @@
         initRegAndServiceInfoGrid();
         initServiceHeadInfoGrid();
         initObservable();
+        populateRegNoDDL();
     });
     jQuery(function () {
         jQuery("form.counselorActionForm").submit(function (event) {
@@ -151,7 +150,7 @@
         }
     }
     function populateRegNoDDL() {
-        var date = dropDownServiceDate.value();
+        var date = $('#serviceDateDDL').val();
         dropDownRegistrationNo.setDataSource(getKendoEmptyDataSource(dropDownRegistrationNo, null));
         dropDownRegistrationNo.value('');
 

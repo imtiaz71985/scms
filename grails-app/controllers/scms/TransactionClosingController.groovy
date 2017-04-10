@@ -55,4 +55,7 @@ class TransactionClosingController extends BaseController {
 
         render result as JSON
     }
+    def reloadDateDropDown() {
+        render app.dropDownIncompleteServiceDate(params)
+    }
 }

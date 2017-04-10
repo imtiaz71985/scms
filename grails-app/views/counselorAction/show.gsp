@@ -1,11 +1,8 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Tonmoy
-  Date: 6/6/2016
-  Time: 5:14 PM
---%>
+<script language="javascript">
+    var dropDownServiceType, dropDownServiceProvider,dropDownDiseaseGroup,  dropDownRegistrationNo, dropDownReferralCenter,
+            dropDownReferenceServiceNoDDL, dropDownDiseaseCode, dropDownServiceDate;
+</script>
 
-
-<g:render template='/counselorAction/script'/>
 <g:render template='/counselorAction/detailsTemplate'/>
 <g:render template='/counselorAction/create'/>
+<g:render template='/counselorAction/script'/>

@@ -22,6 +22,7 @@
                                             data_model_name="dropDownClosingDate"
                                             id="closingDate" name="closingDate" tabindex="1"
                                             onchange="javascript:getServedAndTotalPatient();"
+                                            url="${createLink(controller: 'transactionClosing', action: 'reloadDateDropDown')}"
                                             class="kendo-drop-down"  type="forTranClosing">
                                     </app:dropDownIncompleteServiceDate>
                                 </div>

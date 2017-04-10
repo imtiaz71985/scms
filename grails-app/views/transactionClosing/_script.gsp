@@ -99,7 +99,8 @@
     }
 
     function resetForm() {
-        clearForm($("#transactionClosingForm"), $('#name'));
+        clearForm($("#transactionClosingForm"), $('#closingDate'));
+        $('#closingDate').reloadMe();
         initObservable();
 
     }
