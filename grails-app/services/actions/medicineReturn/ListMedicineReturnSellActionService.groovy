@@ -69,7 +69,7 @@ class ListMedicineReturnSellActionService extends BaseService implements ActionS
                 String hospitalCode=result.hospitalCode
                 long retTypeId=Long.parseLong(result.returnType)
                 Closure param
-                if(Long.parseLong(hospitalCode)>0) {
+                if(!hospitalCode.isEmpty()) {
                     param = {
                         'and' {
                             'eq'('hospitalCode', hospitalCode)
