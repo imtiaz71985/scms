@@ -19,32 +19,33 @@
 	<parameter name="hospitalCode" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
             WHERE msi.sell_date = c.date_field AND msi.hospital_code =  $P{hospitalCode}
-            GROUP BY msi.sell_date ),0)) AS medicine_sales,
-
+            GROUP BY msi.sell_date ),0))END AS medicine_sales,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
             COALESCE((SELECT SUM(mr.total_amount) FROM medicine_return mr
             WHERE mr.return_date = c.date_field AND mr.hospital_code =  $P{hospitalCode}
-            GROUP BY mr.return_date ),0) AS return_amt,
-
+            GROUP BY mr.return_date ),0)END AS return_amt,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT SUM(sc.charge_amount) FROM
                   registration_info ri LEFT JOIN service_charges sc ON sc.id = ri.service_charge_id
                 WHERE DATE(ri.create_date) = c.date_field  AND ri.is_old_patient<> TRUE AND ri.hospital_code =  $P{hospitalCode}
                 GROUP BY DATE(ri.create_date))
-                ,0) AS registration_amount,
-
+                ,0)END AS registration_amount,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT SUM(sc4.charge_amount) FROM registration_reissue rr
                   LEFT JOIN service_charges sc4 ON sc4.id = rr.service_charge_id
                   WHERE DATE_FORMAT(rr.create_date,'%Y-%m-%d') = c.date_field AND LEFT(rr.reg_no,2) =  $P{hospitalCode}
-                  GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0) AS re_registration_amount,
-
+                  GROUP BY DATE_FORMAT(rr.create_date,'%Y-%m-%d')),0)END AS re_registration_amount,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE  DATE_FORMAT(tcm2.service_date,'%Y-%m-%d') = c.date_field
                 AND sti.is_deleted <> TRUE AND sti.visit_type_id<>3 AND SUBSTRING(tcm2.service_token_no, 2, 2) =  $P{hospitalCode}
-                GROUP BY DATE_FORMAT(tcm2.service_date,'%Y-%m-%d')),0) AS consultation_amount,
-
+                GROUP BY DATE_FORMAT(tcm2.service_date,'%Y-%m-%d')),0)END AS consultation_amount,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 (COALESCE((SELECT COUNT(tcm2.service_token_no) FROM token_and_charge_mapping tcm2
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 INNER JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id AND SUBSTRING(sc2.service_code, 1,2) = '02'
@@ -58,68 +59,69 @@
                 RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '04'
                 WHERE sti.is_deleted <> TRUE AND sti.visit_type_id<>3 AND DATE_FORMAT(tcm3.service_date,'%Y-%m-%d') = c.date_field
                 AND SUBSTRING(tcm3.service_token_no, 2, 2) =  $P{hospitalCode}
-                GROUP BY DATE_FORMAT(tcm3.service_date,'%Y-%m-%d')),0) )AS consultation_count,
-
+                GROUP BY DATE_FORMAT(tcm3.service_date,'%Y-%m-%d')),0) )END AS consultation_count,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT SUM(sti.subsidy_amount)
                 FROM service_token_info sti
                         WHERE sti.is_deleted <> TRUE AND DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field
                          AND SUBSTRING(sti.service_token_no, 2, 2) =  $P{hospitalCode}
-                        GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_amount,
-
+                        GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0)END AS subsidy_amount,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT COUNT(sti.service_token_no)
                 FROM service_token_info sti
                         WHERE sti.is_deleted <> TRUE AND DATE_FORMAT(sti.service_date,'%Y-%m-%d') = c.date_field AND sti.subsidy_amount > 0
                         AND SUBSTRING(sti.service_token_no, 2, 2) =  $P{hospitalCode}
-                        GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0) AS subsidy_count,
-
+                        GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d')),0)END AS subsidy_count,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT SUM(sc3.charge_amount)
                          FROM token_and_charge_mapping tcm3
                          JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no AND sti.is_deleted <> TRUE
                         LEFT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                         WHERE DATE_FORMAT(tcm3.service_date,'%Y-%m-%d') = c.date_field
                         AND SUBSTRING(tcm3.service_token_no, 2, 2) =  $P{hospitalCode}
-                        GROUP BY DATE_FORMAT(tcm3.service_date,'%Y-%m-%d')),0) AS pathology_amount,
-
+                        GROUP BY DATE_FORMAT(tcm3.service_date,'%Y-%m-%d')),0)END AS pathology_amount,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT COUNT(sc3.id)
                          FROM token_and_charge_mapping tcm3
                          JOIN service_token_info sti ON sti.service_token_no=tcm3.service_token_no AND sti.is_deleted <> TRUE
                         RIGHT JOIN service_charges sc3 ON sc3.id = tcm3.service_charge_id AND SUBSTRING(sc3.service_code, 1,2) = '03'
                         WHERE DATE_FORMAT(tcm3.service_date,'%Y-%m-%d') = c.date_field
                         AND SUBSTRING(tcm3.service_token_no, 2, 2) =  $P{hospitalCode}
-                        GROUP BY DATE_FORMAT(tcm3.service_date,'%Y-%m-%d')),0) AS pathology_count,
-
+                        GROUP BY DATE_FORMAT(tcm3.service_date,'%Y-%m-%d')),0)END AS pathology_count,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                     COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
                     WHERE DATE(ri.create_date) = c.date_field AND ri.is_old_patient <> TRUE  AND ri.hospital_code =  $P{hospitalCode}
-                    GROUP BY DATE(ri.create_date) ),0) AS new_patient,
-
+                    GROUP BY DATE(ri.create_date) ),0)END AS new_patient,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT COUNT(rri.id) FROM registration_reissue rri
                     WHERE DATE_FORMAT(rri.create_date,'%Y-%m-%d') = c.date_field AND LEFT(rri.reg_no,2) =  $P{hospitalCode}
-                    GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) AS re_reg_patient,
-
+                    GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0)END AS re_reg_patient,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
                     WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
                     AND hospital_code =  $P{hospitalCode}
-                    GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0) AS patient_revisit,
-
+                    GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0)END AS patient_revisit,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
                     WHERE sti.visit_type_id = 3 AND DATE_FORMAT(sti.service_date,'%Y-%m-%d')= c.date_field
                      AND sti.is_deleted <> TRUE AND SUBSTRING(sti.service_token_no, 2, 2) =  $P{hospitalCode}
-                    GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0) AS patient_followup,
-
+                    GROUP BY DATE_FORMAT(sti.service_date,'%Y-%m-%d') ),0)END AS patient_followup,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT SUM(sc2.charge_amount) FROM token_and_charge_mapping tcm2
                 JOIN service_token_info sti ON sti.service_token_no=tcm2.service_token_no
                 LEFT JOIN service_charges sc2 ON sc2.id = tcm2.service_charge_id  AND SUBSTRING(sc2.service_code, 1,2) = '02'
                 WHERE  DATE_FORMAT(tcm2.service_date,'%Y-%m-%d') = c.date_field
                 AND sti.is_deleted <> TRUE AND sti.visit_type_id=3 AND SUBSTRING(sti.service_token_no, 2, 2) =  $P{hospitalCode}
-                GROUP BY DATE_FORMAT(tcm2.service_date,'%Y-%m-%d')),0) AS patient_followup_amt,
-
+                GROUP BY DATE_FORMAT(tcm2.service_date,'%Y-%m-%d')),0)END AS patient_followup_amt,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
                 WHERE DATE(ri.create_date) = c.date_field AND ri.is_old_patient <> TRUE
                 AND ri.hospital_code =  $P{hospitalCode} GROUP BY DATE(ri.create_date) ),0) +
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
                     WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field AND hospital_code= $P{hospitalCode}
-                    GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0)) AS total_patient,
+                    GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0))END AS total_patient,
+CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 -- New Patient count
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
                     WHERE DATE(ri.create_date) = c.date_field  AND ri.is_old_patient <> TRUE
@@ -148,13 +150,15 @@
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
                 WHERE sell_date = c.date_field AND hospital_code= $P{hospitalCode} GROUP BY sell_date ),0)
-                     ) AS total_service,
+                     )END AS total_service,
         -- Total served patient
+        CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
                 WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE  AND SUBSTRING(sti.service_token_no, 2, 2) = $P{hospitalCode}
-                GROUP BY DATE(sti.service_date)),0) AS total_served
-
-                FROM calendar c
+                GROUP BY DATE(sti.service_date)),0)END AS total_served
+-- Transaction Closed
+               ,CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE 1 END is_tran_closed
+                FROM calendar c LEFT JOIN transaction_closing tc ON DATE(tc.closing_date)=DATE(c.date_field) AND tc.hospital_code=$P{hospitalCode}
                WHERE c.date_field BETWEEN $P{fromDate} AND $P{toDate}]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
@@ -192,6 +196,7 @@
 	<field name="total_patient" class="java.lang.Long"/>
 	<field name="total_service" class="java.lang.Long"/>
 	<field name="total_served" class="java.lang.Long"/>
+	<field name="is_tran_closed" class="java.lang.Long"/>
 	<variable name="medicine" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{medicine_sales}]]></variableExpression>
 	</variable>
@@ -261,7 +266,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="-39" y="18" width="821" height="14" forecolor="#2C2A2B" uuid="1554fa60-c5de-4ef7-8d35-f3bae193f2ca"/>
+				<reportElement x="0" y="18" width="821" height="14" forecolor="#2C2A2B" uuid="1554fa60-c5de-4ef7-8d35-f3bae193f2ca"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="true"/>
@@ -273,14 +278,14 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 				<imageExpression><![CDATA[$P{LOGO_DIR}+"logo.png"]]></imageExpression>
 			</image>
 			<textField pattern="dd-MMM-yyyy">
-				<reportElement x="-19" y="32" width="821" height="12" forecolor="#2C2A2B" uuid="99e8d58c-12ce-4904-9ab1-cafec748120c"/>
+				<reportElement x="0" y="32" width="821" height="12" forecolor="#2C2A2B" uuid="99e8d58c-12ce-4904-9ab1-cafec748120c"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="SansSerif" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Month : " + $P{monthName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="-39" y="1" width="821" height="18" forecolor="#2C2A2B" uuid="db2631eb-f103-4983-95ac-51a14a11f9a2"/>
+				<reportElement x="0" y="1" width="821" height="18" forecolor="#2C2A2B" uuid="db2631eb-f103-4983-95ac-51a14a11f9a2"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Cambria" size="10" isBold="true"/>
@@ -711,7 +716,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="627" y="0" width="55" height="14" forecolor="#000000" uuid="b38600e9-9362-47cf-90b8-80fe27b97ef0">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -725,7 +730,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="272" y="0" width="35" height="14" forecolor="#000000" uuid="dbb7e76c-948f-48dc-a87e-697f823f6595">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -739,7 +744,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="402" y="0" width="40" height="14" forecolor="#000000" uuid="02fd2ca0-40bb-4774-befc-a2d3ae7d581a">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -753,7 +758,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="682" y="0" width="50" height="14" forecolor="#000000" uuid="ee449818-a344-435d-929f-09760884fb77">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -767,7 +772,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="335" y="0" width="35" height="14" forecolor="#000000" uuid="ff2e321b-5ac4-4bbe-bd3c-1ed59e714f3f">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -781,7 +786,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="548" y="0" width="39" height="14" forecolor="#000000" uuid="87ca5a2f-a469-463d-8bb7-0742f24e870f">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -795,7 +800,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></variableExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="764" y="0" width="58" height="14" forecolor="#000000" uuid="cfdc7a28-d2c4-46f9-bd36-021dd39c438c">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -812,7 +817,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="81" y="0" width="28" height="14" forecolor="#000000" uuid="e00b31f6-ce8f-41fb-b00d-fc31c10cf2c9">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -826,7 +831,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="142" y="0" width="32" height="14" forecolor="#000000" uuid="2a49fdc2-ce4e-4297-984f-a589e88111ff">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -840,7 +845,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="109" y="0" width="33" height="14" forecolor="#000000" uuid="92c8186e-1798-43c4-a4e4-8bedc583222b">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -854,7 +859,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="370" y="0" width="32" height="14" forecolor="#000000" uuid="1aa55f69-d24e-46ae-b757-039608c3f930">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -868,7 +873,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="518" y="0" width="31" height="14" forecolor="#000000" uuid="716a1b14-fa19-4982-87c3-935a0ec31970">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -882,7 +887,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="587" y="0" width="40" height="14" forecolor="#000000" uuid="cd574b91-adcb-4515-9a68-315c1126e99b">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -896,7 +901,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="206" y="0" width="38" height="14" forecolor="#000000" uuid="6830e841-e899-477b-bf27-9803436cd91d">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -910,7 +915,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="307" y="0" width="28" height="14" forecolor="#000000" uuid="58fde24e-372f-42ed-a79f-147ce02dc54a">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -924,7 +929,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="244" y="0" width="28" height="14" forecolor="#000000" uuid="fc381090-e963-4ee1-beb9-add9e802e81d">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -938,7 +943,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="732" y="0" width="32" height="14" forecolor="#000000" uuid="c024d7ba-04c7-417a-b771-805f8371eb6e">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -952,7 +957,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="174" y="0" width="32" height="14" forecolor="#000000" uuid="4955b51a-82ea-4938-9110-2aad1d38d5ed">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -966,7 +971,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="442" y="0" width="38" height="14" forecolor="#000000" uuid="5599f4f5-34ac-4688-b1fe-85a4bb0e08c8">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -980,7 +985,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="480" y="0" width="38" height="14" forecolor="#000000" uuid="86d5225b-6361-413e-a7c6-cdad709c92fd">
-					<printWhenExpression><![CDATA[$F{is_holiday}!=true]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{is_holiday}!=true && $F{is_tran_closed}!=0]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="1">
 					<topPen lineWidth="0.1" lineColor="#333333"/>
@@ -1006,6 +1011,36 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Holiday]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="81" y="0" width="741" height="14" uuid="cbdc9177-b80e-4657-927c-2286f82e0021">
+					<printWhenExpression><![CDATA[$F{is_tran_closed}==0 && $F{is_holiday}!=true && $F{date_field}<=new Date()]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="15" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.1"/>
+					<leftPen lineWidth="0.1"/>
+					<bottomPen lineWidth="0.1"/>
+					<rightPen lineWidth="0.1"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Transaction Incomplete]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="81" y="0" width="741" height="14" uuid="e68d7a5e-edf0-4484-b179-4b297dcea6ca">
+					<printWhenExpression><![CDATA[$F{date_field}>new Date()]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="15" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.1"/>
+					<leftPen lineWidth="0.1"/>
+					<bottomPen lineWidth="0.1"/>
+					<rightPen lineWidth="0.1"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[]]></text>
 			</staticText>
 		</band>
 	</detail>
@@ -1057,7 +1092,7 @@ $F{pathology_amount}-$F{subsidy_amount}-$F{return_amt}]]></textFieldExpression>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{diagnostic}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{is_tran_closed}=='FALSE' && $F{is_holiday}==false && $F{date_field}<=new Date()?0:$V{diagnostic}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
 				<reportElement x="402" y="0" width="40" height="14" uuid="615b4750-b8ca-4f5b-a4b8-0c228a236605"/>
