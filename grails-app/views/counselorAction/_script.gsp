@@ -156,6 +156,7 @@
 
         if (date != '') {
             showLoadingSpinner(true);
+            retrievePatientCountSummary();
             $.ajax({
                 url: "${createLink(controller: 'counselorAction', action: 'retrieveRegNoByDate')}?createDate=" + date,
                 success: function (data) {
@@ -260,7 +261,7 @@
                         consultancyAmt: {type: "number"},
                         pathologyAmt: {type: "number"},
                         totalCharge: {type: "number"},
-                        serviceDate: {type: "string"},
+                        serviceDate: {type: "date"},
                         serviceType: {type: "string"}
                     }
                 },
@@ -937,6 +938,26 @@
             }
 
         });
+    }
+    function retrievePatientCountSummary(){
+        var creatingDate = $('#serviceDateDDL').val();
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller:'registrationInfo', action: 'retrievePatientCountSummary')}?creatingDate=" + creatingDate;
+        jQuery.ajax({
+            type: 'post',
+            url: actionUrl,
+            success: function (data, textStatus) {
+                $('#lblPatientServed').val(data.patientServed);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return true;
     }
 
 </script>

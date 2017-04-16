@@ -32,7 +32,7 @@ class ServiceTokenInfo {
         id name: 'serviceTokenNo'
         version false
         id generator: 'assigned'
-        createDate sqlType: 'Date'
+        serviceDate sqlType: 'Date'
         regNo index: 'service_token_info_reg_no_idx'
         visitTypeId index: 'service_token_info_visit_type_id_idx'
         serviceProviderId index: 'service_token_info_service_provider_id_idx'

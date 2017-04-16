@@ -92,6 +92,10 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     }
                 }
             }
+            int count=ServiceTokenInfo.countByServiceTokenNo(params.serviceTokenNo)
+            if(count>0){
+                return super.setError(params, 'Service No already exist.')
+            }
 
             ServiceTokenInfo serviceTokenInfo = buildObject(params, serviceTypeId)
             params.put(SERVICE_TOKEN_INFO, serviceTokenInfo)

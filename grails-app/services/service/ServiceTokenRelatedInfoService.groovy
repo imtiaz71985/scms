@@ -59,7 +59,7 @@ class ServiceTokenRelatedInfoService extends BaseService{
                   LEFT JOIN service_type st ON CAST(SUBSTRING(sc.service_code,1,2)AS UNSIGNED)=st.id
                   WHERE ${hospital_str} sti.service_date BETWEEN '${start}' AND '${end}'  AND sti.is_deleted <> TRUE
                    GROUP BY sti.service_token_no
-                   ORDER BY sti.service_date ASC
+                   ORDER BY sti.create_date ASC
         """
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
