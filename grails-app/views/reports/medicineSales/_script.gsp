@@ -97,15 +97,15 @@
             },
             sort:{field:"brandName",dir:"asc"},
             pageSize: false,
-            serverPaging: false,
-            serverFiltering: false,
-            serverSorting: false
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true
         });
     }
 
     function initMedicineInfoGrid() {
         initDataSource();
-        $("#gridDetails").kendoGrid({
+        $("#gridMedicineDetails").kendoGrid({
             dataSource: dataSource,
             autoBind: false,
             height: getGridHeightKendo(),
@@ -172,7 +172,7 @@
                 mode: "row"
             }
         });
-        gridMedicineDetails = $("#gridDetails").data("kendoGrid");
+        gridMedicineDetails = $("#gridMedicineDetails").data("kendoGrid");
     }
 
 </script>

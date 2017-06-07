@@ -5,14 +5,18 @@ import actions.DiseaseInfo.DeleteDiseaseInfoActionService
 import actions.DiseaseInfo.ListDiseaseInfoActionService
 import actions.DiseaseInfo.UpdateDiseaseInfoActionService
 import com.scms.DiseaseInfo
+import com.scms.ServiceCharges
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
+import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
+import service.ServiceChargesService
 
 class DiseaseInfoController extends BaseController {
 
     SpringSecurityService springSecurityService
     BaseService baseService
+    ServiceChargesService serviceChargesService
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
     ]
@@ -49,9 +53,11 @@ class DiseaseInfoController extends BaseController {
 
         String diseaseNo= (c<10? '0' : '')+c.toString()
         String diseaseCode=groupId+diseaseNo
+        double chargeAmount=serviceChargesService.chargeInfoByDiseaseGroupId(diseaseGroupId)
         // def result = [:]
         Map result=new HashedMap()
         result.put('diseaseCode', diseaseCode)
+        result.put('chargeAmount', chargeAmount)
 
         render result as JSON
         //render(view: "/registrationInfo/show", model: [key:'value'])

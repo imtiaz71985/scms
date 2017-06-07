@@ -6,7 +6,7 @@
         voucherNo = '${voucherNo}';
         totalAmount = ${totalAmount};
         $("#voucherNo").text(voucherNo);
-        $("#dateStr").text('${sellDate}');
+        $("#dateStr").text(moment('${sellDate}').format('DD-MM-YYYY'));
         initMedicineSellInfoGrid();
         gridMedicineSellInfo.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
         $("#footerSpan").text(formatCeilAmount(totalAmount));

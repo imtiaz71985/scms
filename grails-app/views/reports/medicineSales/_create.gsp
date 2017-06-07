@@ -3,14 +3,14 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
-                    Summary Report
+                    Medicine Wise Sales Summary
                 </div>
             </div>
 
             <g:form name='detailsForm' id='detailsForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
                     <div class="form-group">
-                        <label class="col-md-1 control-label label-required" for="fromDateTxt">From Date:</label>
+                        <label class="col-md-1 control-label label-required" for="fromDateTxt" style="padding-right: 0px !important;">From Date:</label>
 
                         <div class="col-md-2">
                             <input type='text' tabindex="1" required="required" onkeydown="return false;"
@@ -18,9 +18,9 @@
                                    placeholder="dd/mm/yyyy" validationMessage="Req"/>
                         </div>
                         <div class="col-md-1">
-                            <span class="k-invalid-msg" data-for="month"></span>
+                            <span class="k-invalid-msg" data-for="fromDateTxt"></span>
                         </div>
-                        <label class="col-md-1 control-label label-required" for="toDateTxt">To Date:</label>
+                        <label class="col-md-1 control-label label-required" for="toDateTxt" style="padding-right: 0px !important;">To Date:</label>
 
                         <div class="col-md-2">
                             <input type='text' tabindex="2" required="required" onkeydown="return false;"
@@ -28,7 +28,7 @@
                                    placeholder="dd/mm/yyyy" validationMessage="Req"/>
                         </div>
                         <div class="col-md-1">
-                            <span class="k-invalid-msg" data-for="month"></span>
+                            <span class="k-invalid-msg" data-for="toDateTxt"></span>
                         </div>
                         <label class="col-md-1 control-label label-optional" for="hospitalCode">Hospital:</label>
 
@@ -65,6 +65,6 @@
     </div>
 
     <div class="row">
-        <div id="gridDetails"></div>
+        <div id="gridMedicineDetails"></div>
     </div>
 </div>

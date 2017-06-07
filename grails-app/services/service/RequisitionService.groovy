@@ -75,7 +75,7 @@ class RequisitionService extends BaseService {
             (rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0)) AS receiveQty,
             ROUND(((rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0))*mi.unit_price),2) AS amount,'' AS remarks
             FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no  =:requisitionNo
-            AND r.is_approved=TRUE AND r.is_delivered=TRUE
+            AND r.is_approved=TRUE AND r.is_received<>TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id
             LEFT JOIN vendor ON vendor.id=mi.vendor_id
             LEFT JOIN system_entity se ON mi.type=se.id
@@ -97,7 +97,7 @@ class RequisitionService extends BaseService {
             (rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0)) AS receiveQty,
             ROUND(((rd.approved_qty - COALESCE(SUM(receive_details.receive_qty),0))*mi.unit_price),2) AS amount,'' AS remarks
             FROM requisition r INNER JOIN requisition_details rd ON r.req_no=rd.req_no AND rd.req_no  =:requisitionNo
-            AND r.is_approved=TRUE AND r.is_delivered=TRUE
+            AND r.is_approved=TRUE AND r.is_received<>TRUE
             INNER JOIN medicine_info mi ON rd.medicine_id = mi.id AND mi.vendor_id=${vendorId}
             LEFT JOIN vendor ON vendor.id=mi.vendor_id
             LEFT JOIN system_entity se ON mi.type=se.id

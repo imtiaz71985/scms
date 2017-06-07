@@ -2,17 +2,21 @@ package actions.medicineReturn
 
 import com.model.ListMedicineReturnSellActionServiceModel
 import com.model.ListMedicineSellInfoActionServiceModel
+import com.scms.SecUser
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 import scms.utility.DateUtility
+import service.SecUserService
 
 @Transactional
 class ListMedicineReturnSellActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
-
+    SecUserService secUserService
+    SpringSecurityService springSecurityService
 
     public Map executePreCondition(Map params) {
         return params
@@ -22,16 +26,68 @@ class ListMedicineReturnSellActionService extends BaseService implements ActionS
     public Map execute(Map result) {
         try {
             Map resultMap
-            if(result.dateField){
-                Date dateField = DateUtility.parseDateForDB(result.dateField)
-                Date fromDate = DateUtility.getSqlFromDateWithSeconds(dateField)
-                Date toDate = DateUtility.getSqlToDateWithSeconds(dateField)
-                Closure param = {
-                    'between'('returnDate', fromDate,toDate)
+            if(!result.isReport) {
+                if (result.dateField) {
+                    Date dateField = DateUtility.parseDateForDB(result.dateField)
+                    Date fromDate = DateUtility.getSqlFromDateWithSeconds(dateField)
+                    Date toDate = DateUtility.getSqlToDateWithSeconds(dateField)
+                    Closure param
+                    if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+                        param = {
+                            'between'('returnDate', fromDate, toDate)
+                        }
+                    }
+                    else {
+                        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+                        param = {
+                            'and' {
+                                'eq'('hospitalCode', hospitalCode)
+                                'between'('returnDate', fromDate, toDate)
+                            }
+                        }
+                    }
+                    resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class, param)
+                } else {
+                    Closure param
+                    if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
+                        resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class)
+                    }
+                    else {
+                        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+                        param = {
+                                'eq'('hospitalCode', hospitalCode)
+                             }
+                        resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class)
+                    }
                 }
-                resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class,param)
-            }else{
-                resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class)
+            }
+            else{
+                Date fDate = DateUtility.parseMaskedDate(result.fromDate)
+                Date fromDate = DateUtility.getSqlFromDateWithSeconds(fDate)
+                Date tDate = DateUtility.parseMaskedDate(result.toDate)
+                Date toDate = DateUtility.getSqlToDateWithSeconds(tDate)
+                String hospitalCode=result.hospitalCode
+                long retTypeId=Long.parseLong(result.returnType)
+                Closure param
+                if(!hospitalCode.isEmpty()) {
+                    param = {
+                        'and' {
+                            'eq'('hospitalCode', hospitalCode)
+                            'eq'('returnTypeId', retTypeId)
+                            'between'('returnDate', fromDate, toDate)
+                        }
+                    }
+                }
+                else{
+                    param = {
+                        'and' {
+                            'eq'('returnTypeId', retTypeId)
+                            'between'('returnDate', fromDate, toDate)
+                        }
+                    }
+                }
+
+                resultMap = super.getSearchResult(result, ListMedicineReturnSellActionServiceModel.class, param)
             }
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)

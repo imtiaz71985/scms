@@ -76,7 +76,7 @@
             pageable:false,
             columns: [
                 {title: "SL#", width: 15, sortable: false, filterable: false,template:"#= rowNumber++ #"},
-                {field: "serviceTokenNo", title: "Service Token No", width: 60, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "serviceTokenNo", title: "Service No", width: 60, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "serviceDate", title: "Service Date", width: 70, sortable: false, filterable: false,
                 template:"#=kendo.toString(kendo.parseDate(serviceDate, 'yyyy/MM/dd HH:mm:ss'), 'dd/MM/yy hh:mm tt')#"},
                 {field: "regNo", title: "Registration No", width: 60, sortable: false, filterable: kendoCommonFilterable(97)},

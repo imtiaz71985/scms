@@ -85,6 +85,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
     }
 
     private Map wrapEducationGrid(List<MedicineSellInfoDetails> lstMedicine) {
+
         String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         List lstRows = []
         MedicineSellInfoDetails singleRow
@@ -100,7 +101,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
             String unitPriceTxt = EMPTY_SPACE
 
             MedicineInfo medicineInfo = MedicineInfo.read(medicineId)
-            MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(medicineId,hospitalCode)
+            //MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(medicineId,hospitalCode)
             SystemEntity medicineType = SystemEntity.read(medicineInfo.type)
             if(medicineInfo.strength){
                 medicineName = medicineInfo.brandName + ' (' + medicineInfo.strength + ')' + ' - ' + medicineType.name
@@ -114,7 +115,7 @@ class SelectMedicineSellInfoActionService extends BaseService implements ActionS
             }
             Map eachDetails = [ id:id,version:version,voucherNo:voucherNo,medicineName:medicineName,
                                medicineId:medicineId,quantity:quantity,amount:amount,
-                               stock:stock.stockQty+quantity,unitPriceTxt:unitPriceTxt
+                               unitPriceTxt:unitPriceTxt
             ]
             lstRows << eachDetails
         }

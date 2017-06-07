@@ -23,6 +23,7 @@ class DownloadPurchaseRequestActionService extends BaseService implements Action
     private static final String OUTPUT_FILE_NAME = "medicine_requisition"
     private static final String REQUISITION_NO = "requisitionNo"
     private static final String HOSPITAL_NAME = "hospitalName"
+    private static final String APPROVE_STATUS = "approveStatus"
 
     /**
      * Get parameters from UI
@@ -54,10 +55,12 @@ class DownloadPurchaseRequestActionService extends BaseService implements Action
     public Map execute(Map result) {
         try {
             Requisition requisition= Requisition.findByReqNo( result.get(REQUISITION_NO))
-            if(!requisition.isGeneratePR) {
+            if(!requisition.isGeneratePR && requisition.isApproved) {
                 requisition.isGeneratePR = true
                 requisition.save()
             }
+
+            result.put(APPROVE_STATUS, requisition.isApproved)
             Map report = getReport(result)
             result.put(REPORT, report)
             return result
@@ -106,6 +109,7 @@ class DownloadPurchaseRequestActionService extends BaseService implements Action
         reportParams.put(REPORT_TITLE_LBL, REPORT_TITLE)
         reportParams.put(REQUISITION_NO, result.get(REQUISITION_NO))
         reportParams.put(HOSPITAL_NAME, result.get(HOSPITAL_NAME))
+        reportParams.put(APPROVE_STATUS, result.get(APPROVE_STATUS))
         JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)
         ByteArrayOutputStream report = jasperService.generateReport(reportDef)

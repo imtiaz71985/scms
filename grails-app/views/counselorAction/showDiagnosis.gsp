@@ -52,7 +52,7 @@
                 },
                 parse: function (data) {
                     checkIsErrorGridKendo(data);
-                    var msg=pathologyCount +' diagnosis provided to '+data.count+' patients.';
+                    var msg=pathologyCount +' diagnosis provided to '+ data.count+' patients.';
                    $('#lblDiagnosisSummary').text(msg);
                     return data;
                 }
@@ -92,10 +92,10 @@
                             template: "#=evaluateDateRange(date_of_birth, new Date())#"
                         },
                         {
-                            field: "service_token_no", title: "Token No", width: 70, sortable: false,filterable: false
+                            field: "service_token_no", title: "Service No", width: 70, sortable: false,filterable: false
                         },
                         {
-                            field: "service_date", title: "Service Date & Time", width: 70, sortable: false, filterable: false,
+                            field: "service_date", title: "Service Date", width: 70, sortable: false, filterable: false,
                             template: "#=kendo.toString(kendo.parseDate(service_date, 'yyyy-MM-dd hh:mm:ss'), 'dd/MM/yyyy hh:mm:ss tt')#"
                         },
                         {

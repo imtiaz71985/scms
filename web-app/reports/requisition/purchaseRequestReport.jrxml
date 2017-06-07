@@ -10,18 +10,19 @@
 	<parameter name="LOGO_DIR" class="java.lang.String"/>
 	<parameter name="requisitionNo" class="java.lang.String"/>
 	<parameter name="hospitalName" class="java.lang.String"/>
+	<parameter name="approveStatus" class="java.lang.Boolean"/>
 	<queryString>
-		<![CDATA[select (CASE WHEN mi.strength IS NULL THEN mi.brand_name
+		<![CDATA[SELECT (CASE WHEN mi.strength IS NULL THEN mi.brand_name
           ELSE CONCAT(mi.brand_name,' (',mi.strength,')')
           END) AS medicineName,DATE_FORMAT(rq.send_date,'%d %b %Y') AS send_date,
-mi.generic_name,rd.approved_qty,type.name as type,
-COALESCE(v.short_name,v.name) as vendor,rd.req_no,
+mi.generic_name,IF(rd.approved_qty>0,rd.approved_qty,rd.req_qty) AS approved_qty,type.name AS type,
+COALESCE(v.short_name,v.name) AS vendor,rd.req_no,
 mi.unit_price,mi.unit_type,mi.box_size,mi.box_rate,
-(rd.approved_qty*mi.unit_price) as total_price,
-concat("<b>",pre.name,"</b><br/>",pre.designation,"<br/>","Friendship","<br/>",
-coalesce(prelo.address,"")) as prepared_by,
-concat("<b>",rec.name,"</b><br/>",rec.designation,"<br/>","Friendship") as recommended_by,
-concat("<b>",appv.name,"</b><br/>",appv.designation,"<br/>","Friendship") as approved_by
+ROUND((IF(rd.approved_qty>0,rd.approved_qty,rd.req_qty)*mi.unit_price),2) AS total_price,
+CONCAT("<b>",pre.name,"</b><br/>",pre.designation,"<br/>","Friendship","<br/>",
+COALESCE(prelo.address,"")) AS prepared_by,
+CONCAT("<b>",rec.name,"</b><br/>",rec.designation,"<br/>","Friendship") AS recommended_by,
+CONCAT("<b>",appv.name,"</b><br/>",appv.designation,"<br/>","Friendship") AS approved_by
  from requisition_details rd
 left join requisition rq on rq.req_no = rd.req_no
 left join medicine_info mi on mi.id = rd.medicine_id
@@ -106,7 +107,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Cambria" size="8"/>
 				</textElement>
-				<text><![CDATA[Req Qty]]></text>
+				<text><![CDATA[Qty]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="210" y="29" width="82" height="25" uuid="4f3c1e70-458f-4710-af8c-ec3fb42b01a4"/>
@@ -276,6 +277,21 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Requisition Date : "+$F{send_date}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="443" y="3" width="127" height="12" uuid="4dd43183-3cf9-46eb-ba07-582c5368f1ec"/>
+				<box topPadding="2" leftPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{approveStatus}.equals( true )?
+"":
+"Status : Not Approved"]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -536,10 +552,10 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<bottomPen lineWidth="0.1" lineColor="#000000"/>
 					<rightPen lineWidth="0.1" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Top">
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[Total Price]]></text>
+				<text><![CDATA[Total Price : ]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement x="517" y="0" width="58" height="12" uuid="5250407b-88ad-44e3-aa7b-6350e7e097dd"/>

@@ -30,7 +30,7 @@ class DeleteRegistrationInfoActionService extends BaseService implements ActionS
             if (!registrationInfo) {
                 return super.setError(params, NOT_FOUND)
             }
-            int count = ServiceTokenInfo.countByRegNoAndIsDeleted(regNo, false)
+            int count = ServiceTokenInfo.countByRegNo(regNo)
             if (count > 0) {
                 return super.setError(params, 'Sorry! Patient already taken service.')
             }

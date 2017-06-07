@@ -29,7 +29,7 @@ class CreateRevisitPatientActionService extends BaseService implements ActionSer
             if (!params.regNo) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            int duplicateCount = RevisitPatient.countByRegNoAndCreateDateBetween(params.regNo, DateUtility.getSqlFromDateWithSeconds(new Date()), DateUtility.getSqlToDateWithSeconds(new Date()))
+            int duplicateCount = RevisitPatient.countByRegNoAndCreateDateBetween(params.regNo, DateUtility.getSqlFromDateWithSeconds(DateUtility.parseDateForDB(params.creatingDate)), DateUtility.getSqlToDateWithSeconds(DateUtility.parseDateForDB(params.creatingDate)))
             if (duplicateCount > 0) {
                 return super.setError(params, ALREADY_EXIST)
             }
@@ -60,7 +60,7 @@ class CreateRevisitPatientActionService extends BaseService implements ActionSer
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        String msg = registrationInfoService.patientServed()
+        String msg = registrationInfoService.patientServed(DateUtility.parseDateForDB(result.creatingDate))
         result.put('patientServed',msg)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
@@ -76,7 +76,8 @@ class CreateRevisitPatientActionService extends BaseService implements ActionSer
      */
     private RevisitPatient buildObject(Map parameterMap) {
         RevisitPatient revisitPatient = new RevisitPatient(parameterMap)
-        revisitPatient.createDate=DateUtility.getSqlDate(new Date())
+        revisitPatient.createDate=DateUtility.getSqlDate(DateUtility.parseDateForDB(parameterMap.creatingDate))
+        revisitPatient.originalCreateDate=DateUtility.getSqlDate(new Date())
         revisitPatient.createdBy= springSecurityService.principal.id
         revisitPatient.visitTypeId=2
         revisitPatient.hospitalCode=parameterMap.regNo.substring(0, 2)

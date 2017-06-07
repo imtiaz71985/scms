@@ -15,7 +15,7 @@
         <button id="create" name="create" type="button" data-role="button"
                 class="k-button k-button-icontext" role="button" tabindex="1"
                 onclick='generatePR();' aria-disabled="false">
-            <span class="k-icon k-i-plus"></span>Generate Requisition
+            <span class="k-icon k-i-plus"></span>Download
         </button>
         <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                 class="k-button k-button-icontext" role="button" tabindex="2"
@@ -143,13 +143,13 @@
     }
 
     function generatePR() {
-        if(isApplicable){
+       // if(isApplicable){
             showLoadingSpinner(true);
-            var msg = 'Do you want to generate PR now?',
+            var msg = 'Do you want to download PR now?',
                     url = "${createLink(controller: 'requisition', action: 'generatePR')}?requisitionNo=" + requisitionNo;
             confirmDownload(msg, url);
-        }else{
+        /*}else{
             showError("Could not generate PR for this Requisition");
-        }
+        }*/
     }
 </script>

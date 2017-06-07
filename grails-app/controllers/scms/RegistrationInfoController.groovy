@@ -46,12 +46,15 @@ class RegistrationInfoController extends BaseController {
     CreateRevisitPatientActionService createRevisitPatientActionService
 
     def showNew() {
-        String regNo = registrationInfoService.retrieveRegNo()
+        String regNo = registrationInfoService.retrieveRegNo(new Date())
         render(view: "/registrationInfo/showNew", model: [regNo: regNo])
     }
     def show() {
-        String msg = registrationInfoService.patientServed()
-        render(view: "/registrationInfo/show", model: [patientServed:msg])
+        String msg = registrationInfoService.patientServed(new Date())
+        List<GroovyRowResult> dropDownCreatingDate=registrationInfoService.listUnclosedTransactionDate()
+        List<GroovyRowResult> lstValues= baseService.listForKendoDropdown(dropDownCreatingDate, null, null)
+        lstValues.remove(0)
+        render(view: "/registrationInfo/show", model: [patientServed:msg,dropDownVals:lstValues as JSON])
     }
     def showMonthlyPatient(){
         String viewStr = "/registrationInfo/showDailyPatient"
@@ -130,6 +133,20 @@ class RegistrationInfoController extends BaseController {
         LinkedHashMap resultMap = registrationInfoService.getAddressDetails(villageId)
 
         Map result = [unionId: resultMap.unionId,upazilaId: resultMap.upazilaId,districtId: resultMap.districtId]
+        render result as JSON
+    }
+    def retrieveRegNo() {
+        Date date=DateUtility.parseDateForDB(params.creatingDate)
+        String regNo = registrationInfoService.retrieveRegNo(date)
+        Map result = new HashedMap()
+        result.put('regNo', regNo)
+        render result as JSON
+    }
+    def retrievePatientCountSummary() {
+        Date date=DateUtility.parseDateForDB(params.creatingDate)
+        String msg = registrationInfoService.patientServed(date)
+        Map result = new HashedMap()
+        result.put('patientServed', msg)
         render result as JSON
     }
 }

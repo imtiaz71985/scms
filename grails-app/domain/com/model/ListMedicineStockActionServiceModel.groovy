@@ -16,7 +16,7 @@ class ListMedicineStockActionServiceModel {
                     LEFT JOIN system_entity se ON se.id=mi.type
                     LEFT JOIN vendor v ON v.id=mi.vendor_id
                     LEFT JOIN medicine_stock ms ON ms.medicine_id = mi.id
-                    ORDER BY ms.hospital_code,mi.brand_name;
+                   ORDER BY CASE WHEN ms.stock_qty>0 THEN 1 ELSE 0 END DESC, ms.hospital_code ASC,mi.brand_name ASC;
     """
 
     long id

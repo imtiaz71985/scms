@@ -71,9 +71,13 @@ class ListRegistrationInfoActionService extends BaseService implements ActionSer
                 }
             } else {
                 if (result.isNew == 'Yes') {
+                    Date date=DateUtility.parseDateForDB(result.creatingDate)
+                    if(!date)
+                        date=new  Date()
+
                     if (secUserService.isLoggedUserAdmin(springSecurityService.principal.id)) {
                         Closure param = {
-                            'between'('createDate', DateUtility.getSqlFromDateWithSeconds(new Date()), DateUtility.getSqlToDateWithSeconds(new Date()))
+                            'between'('createDate', DateUtility.getSqlFromDateWithSeconds(date), DateUtility.getSqlToDateWithSeconds(date))
                         }
                         resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)
                     } else {
@@ -82,7 +86,7 @@ class ListRegistrationInfoActionService extends BaseService implements ActionSer
                         Closure param = {
                             'and' {
                                 'eq'('hospitalCode', hospitalCode)
-                                'between'('createDate', DateUtility.getSqlFromDateWithSeconds(new Date()), DateUtility.getSqlToDateWithSeconds(new Date()))
+                                'between'('createDate', DateUtility.getSqlFromDateWithSeconds(date), DateUtility.getSqlToDateWithSeconds(date))
                             }
                         }
                         resultMap = super.getSearchResult(result, ListRegistrationInfoActionServiceModel.class, param)

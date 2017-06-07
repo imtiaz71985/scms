@@ -89,7 +89,7 @@
                         unitPrice: {editable: false, type: "number"},
                         unitType: {editable: false, type: "string"},
                         stockQty: {editable: false, type: "number"},
-                        reqQty: {type: "number"},
+                        reqQty: {type: "number",validation: { min: 0 } },
                         approveQty: {editable: false, type: "number"},
                         procQty: {editable: false, type: "number"},
                         amount: {type: "number"}
@@ -144,13 +144,13 @@
                     var input = $(this);
                     var row = $(this).closest("tr");
                     var data = $("#gridMedicine").data("kendoGrid").dataItem(row);
-                    value = input.val();
-                    if(input.val()==''){
+                    if(input.val()==''||input.val()<0){
                         input.val(0);
                         data.set('reqQty', 0);
                         var dirty = $(this).closest("tr").find(".k-dirty-cell");
                         dirty.removeClass("k-dirty-cell");
                     }
+                    value = input.val();
                     totalAmount -= minus * data.unitPrice;
                     data.set('amount', value * data.unitPrice);
                     totalAmount = parseFloat(totalAmount, 10) + parseFloat(value * data.unitPrice, 10);
@@ -218,7 +218,7 @@
                     headerAttributes: {style: setAlignRight()},
                     sortable: false,
                     filterable: false,
-                    template: "<span style='float: left; width: 100%;" +
+                    template: "<div style='float: left; width: 100%;" +
                     "font-size: large; background-color:gainsboro'><b>#=reqQty#</b></div>"
                 },
                 {
@@ -239,4 +239,5 @@
 
 
     }
+
 </script>

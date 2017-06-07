@@ -65,7 +65,9 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
      */
     public Map execute(Map result) {
         try {
-            List<GroovyRowResult> lst = (List<GroovyRowResult>) listVoucherNo()
+            String type = result.type
+            List<GroovyRowResult> lst = (List<GroovyRowResult>) listTransactionDate(type)
+
             String html = buildDropDown(lst, result)
             result.html = html
             return result
@@ -131,7 +133,13 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
         String strDefaultValue = defaultValue ? defaultValue : EMPTY_SPACE
 
         if (showHints.booleanValue()) {
-            lstValues = listForKendoDropdown(lstValues, null, hintsText)
+            if(dropDownAttributes.type.equals('forTranClosing')||dropDownAttributes.type.equals('forCounselor')){
+                lstValues = listForKendoDropdown(lstValues, null, hintsText)
+            }
+            else{
+                lstValues = listForKendoDropdown(lstValues, null, hintsText)
+                lstValues.remove(0)
+            }
         }
         String jsonData = lstValues as JSON
 
@@ -145,7 +153,6 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
                         suggest         : true,
                         dataSource      : ${jsonData},
                         value           :'${strDefaultValue}'
-                        ${strOnChange}
                     });
                 });
                 ${dataModelName} = \$("#${escapeChar(name)}").data("kendoDropDownList");
@@ -158,46 +165,38 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
         return str.replace(SINGLE_DOT, ESCAPE_DOT)
     }
 
-    private List<GroovyRowResult> listVoucherNo() {
+    private List<GroovyRowResult> listTransactionDate(String type) {
         String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
-        String hospital_rp = EMPTY_SPACE
-        String hospital_ri = EMPTY_SPACE
-        String hospital_sti = EMPTY_SPACE
+
+        Date toDate
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
-        Date date =cal.getTime();
-        Date toDate = DateUtility.getSqlToDateWithSeconds(date);
+        cal.add(Calendar.DATE, -5);
+        Date date1 =cal.getTime();
+        Date fromDate = DateUtility.getSqlFromDateWithSeconds(date1);
 
-        cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -7);
-        Date toDate1 = cal.getTime();
-        Date fromDate = DateUtility.getSqlFromDateWithSeconds(toDate1);
-
-        if (hospitalCode.length() > 1) {
-            hospital_rp = """
-                AND rp.hospital_code='${hospitalCode}'
-            """
-            hospital_ri = """
-               AND ri.hospital_code='${hospitalCode}'
-            """
-            hospital_sti = """
-               AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}'
-            """
-
+        if(type.equals('forCounselor')) {
+            cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -1);
+            Date date =cal.getTime();
+            toDate = DateUtility.getSqlToDateWithSeconds(date);
+        }
+        else{
+            cal = Calendar.getInstance();
+            Date date =cal.getTime();
+            toDate = DateUtility.getSqlToDateWithSeconds(date);
         }
         String queryForList = """
-               SELECT c.date_field AS id,DATE_FORMAT(c.date_field,'%d-%m-%Y') AS name,
-                (COUNT( DISTINCT ri.reg_no)+COUNT(DISTINCT rp.id)) AS total_patient
-                 ,COUNT(DISTINCT sti.reg_no) AS total_served
-                FROM calendar c
-                 LEFT JOIN revisit_patient rp ON c.date_field=DATE(rp.create_date) """+hospital_rp+"""
-                 LEFT JOIN registration_info ri ON c.date_field=DATE(ri.create_date) AND ri.is_old_patient=FALSE """+hospital_ri+"""
-                 LEFT JOIN service_token_info sti ON c.date_field=DATE(sti.service_date) """+hospital_sti+""" AND sti.is_deleted=FALSE
 
-                WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' GROUP BY c.date_field
-                HAVING total_patient>total_served
-                ORDER BY c.date_field ASC
+                SELECT c.date_field AS id,DATE_FORMAT(c.date_field,'%d-%m-%Y') AS name
+
+                FROM calendar c
+                 LEFT JOIN transaction_closing tc ON DATE(c.date_field)=DATE(tc.closing_date)  AND tc.hospital_code='${hospitalCode}'
+
+                WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' AND COALESCE(tc.is_transaction_closed,FALSE) <> TRUE
+                AND c.is_holiday<>TRUE
+                ORDER BY c.date_field DESC
+
         """
 
         List<GroovyRowResult> lst = executeSelectSql(queryForList)

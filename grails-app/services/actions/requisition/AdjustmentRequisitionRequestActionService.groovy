@@ -54,11 +54,6 @@ class AdjustmentRequisitionRequestActionService extends BaseService implements A
                 lstReqDetails[i].save()
             }
             requisition.approvedAmount = totalAmount
-            requisition.isApproved = Boolean.TRUE
-            requisition.isDelivered = Boolean.TRUE
-            requisition.approvedBy = springSecurityService.principal.id
-            requisition.approvedDate = DateUtility.getSqlDate(new Date())
-            requisition.deliveryDate = DateUtility.getSqlDate(new Date())
             requisition.save()
             return result
         } catch (Exception ex) {

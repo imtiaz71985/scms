@@ -37,14 +37,12 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             if (!params.serviceTokenNo || !params.regNo) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            if (!params.serviceTypeId && !params.chkboxPathology) {
-                return super.setError(params, INVALID_INPUT_MSG)
+            if (!params.serviceTypeId && !params.chkboxPathology && !params.chkboxDocReferral) {
+                return super.setError(params, 'Please select service type or pathology test or doctor referral.')
             }
             if (params.chkboxDocReferral) {
-                if (!params.referralCenterId)
-                    return super.setError(params, 'Sorry! Please select referral center.')
-                if (!params.serviceTypeId)
-                    return super.setError(params, 'Sorry! Please select service type.')
+                if (!params.referralCenterId || !params.serviceProviderId)
+                    return super.setError(params, 'Sorry! Please select referral center and service provider.')
             }
             long serviceTypeId = 0L
             if (params.serviceTypeId) {
@@ -84,10 +82,19 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                     }
                 }
             } else {
-                String len = params.selectedChargeId
-                if (len.length() < 1) {
-                    return super.setError(params, 'Sorry! Please select at least one pathology test.')
+                if (!params.serviceProviderId) {
+                    return super.setError(params, 'Sorry! Please select service provider.')
                 }
+                if(params.chkboxPathology ) {
+                    String len = params.selectedChargeId
+                    if (len.length() < 1) {
+                        return super.setError(params, 'Sorry! Please select at least one pathology test.')
+                    }
+                }
+            }
+            int count=ServiceTokenInfo.countByServiceTokenNo(params.serviceTokenNo)
+            if(count>0){
+                return super.setError(params, 'Service No already exist.')
             }
 
             ServiceTokenInfo serviceTokenInfo = buildObject(params, serviceTypeId)
@@ -113,7 +120,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
             }
             if (result.diseaseCode) {
                 TokenAndDiseaseMapping tokenAndDiseaseMapping = new TokenAndDiseaseMapping()
-                tokenAndDiseaseMapping.serviceDate = DateUtility.getSqlDate(new Date())
+                tokenAndDiseaseMapping.serviceDate = serviceTokenInfo.serviceDate
                 tokenAndDiseaseMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
                 tokenAndDiseaseMapping.diseaseCode = result.diseaseCode
                 tokenAndDiseaseMapping.save()
@@ -127,7 +134,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
                 List<String> lst = Arrays.asList(str.split("\\s*,\\s*"));
                 for (int i = 0; i < lst.size(); i++) {
                     TokenAndChargeMapping tokenAndChargeMapping = new TokenAndChargeMapping()
-                    tokenAndChargeMapping.serviceDate = DateUtility.getSqlDate(new Date())
+                    tokenAndChargeMapping.serviceDate = serviceTokenInfo.serviceDate
                     tokenAndChargeMapping.serviceTokenNo = serviceTokenInfo.serviceTokenNo
                     try {
                         if (lst.get(i) != '') {
@@ -153,7 +160,7 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
     }
 
     public Map buildSuccessResultForUI(Map result) {
-        String msg = registrationInfoService.patientServed()
+        String msg = registrationInfoService.patientServed(DateUtility.getSqlDate(DateUtility.parseDateForDB(result.serviceDate)))
         result.put('patientServed', msg)
         return super.setSuccess(result, '<div style="font-size: 16px">Data Saved successfully. Token No: <b>' + result.serviceTokenNo + '</b></div>')
     }
@@ -177,7 +184,8 @@ class CreateServiceTokenInfoActionService extends BaseService implements ActionS
         } else {
             serviceTokenInfo.serviceProviderId = 0 // When give counselor service
         }
-        serviceTokenInfo.serviceDate = DateUtility.getSqlDate(new Date())
+        Date serviceDate = DateUtility.parseDateForDB(parameterMap.serviceDate)
+        serviceTokenInfo.serviceDate = DateUtility.getSqlDate(serviceDate)
         serviceTokenInfo.createDate = DateUtility.getSqlDate(new Date())
         serviceTokenInfo.createBy = springSecurityService.principal.id
         if (serviceTypeId == 5) {

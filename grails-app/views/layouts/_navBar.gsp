@@ -57,16 +57,6 @@
                                     <a href="#counselorAction/showServiceList"><i class="fa fa-list"></i>&nbsp;Service List</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/counselorAction/showOldService">
-                                <li>
-                                    <a href="#counselorAction/showOldService"><i class="fa fa-user-times"></i>&nbsp;Old Service Data Entry</a>
-                                </li>
-                            </sec:access>
-                            <sec:access url="/counselorAction/showOldServiceHO">
-                                <li>
-                                    <a href="#counselorAction/showOldServiceHO"><i class="fa fa-user-times"></i>&nbsp;Approve Old Service</a>
-                                </li>
-                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
@@ -126,6 +116,12 @@
                                             class="fa fa-file-o"></i>&nbsp;Medicine Wise Sales</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/reports/showMedicineReturn">
+                                <li>
+                                    <a href="#reports/showMedicineReturn"><i
+                                            class="fa fa-file-o"></i>&nbsp;Medicine Return</a>
+                                </li>
+                            </sec:access>
                         </ul>
                     </li>
                 </sec:ifAnyUrls>
@@ -178,7 +174,7 @@
                 </sec:ifAnyUrls>
 
                 <sec:ifAnyUrls urls="/serviceType/show,/systemEntity/show,/serviceHeadInfo/show,/diseaseGroup/show,
-                                    /diseaseGroup/show,/diseaseInfo/show,/medicineInfo/show,/hospitalLocation/show">
+                                    /diseaseGroup/show,/diseaseInfo/show,/medicineInfo/show,/hospitalLocation/show,/transactionClosing/show">
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Setting<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -240,6 +236,11 @@
                             <sec:access url="/serviceProvider/show">
                                 <li>
                                     <a href="#serviceProvider/show"><i class="fa fa-user"></i>&nbsp; Service Provider</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/transactionClosing/show">
+                                <li>
+                                    <a href="#transactionClosing/show"><i class="fa fa-cloud-upload"></i>&nbsp; Transaction Closing</a>
                                 </li>
                             </sec:access>
                         </ul>

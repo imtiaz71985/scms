@@ -115,7 +115,6 @@
                 }
             },
             sort:{field:"brandName",dir:"asc"},
-            pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -132,12 +131,8 @@
             sortable: true,
             resizable: true,
             reorderable: true,
-            dataBound: gridDataBound,
-            pageable: {
-                refresh: true,
-                pageSizes: getDefaultPageSizes(),
-                buttonCount: 4
-            },
+            dataBound: gridDataBound
+           ,
             columns: [
                 {field: "type", title: "Type", width: 40, sortable: false, filterable: kendoCommonFilterable(97)},
                 {

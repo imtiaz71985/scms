@@ -5,7 +5,7 @@
         voucherNo = '${traceNo}';
         totalAmount = ${totalAmount};
         $("#voucherNo").text(voucherNo);
-        $("#dateStr").text('${returnDate}');
+        $("#dateStr").text(moment('${returnDate}').format('DD-MM-YYYY'));
         initMedicineRetrunInfoGrid();
         gridMedicineReturnInfo.setDataSource(new kendo.data.DataSource({data: ${gridModelMedicine}}));
         $("#footerSpan").text(formatCeilAmount(totalAmount));

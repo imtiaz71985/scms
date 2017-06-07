@@ -1,16 +1,12 @@
 <style>
 
-.k-grid .k-button
-{
+.k-grid .k-button {
     min-width: 0 !important;
 }
 
 </style>
-
 <script language="javascript">
-    var gridCounselorAction, dataSource, registrationInfoModel, dropDownServiceType, dropDownServiceProvider,
-            dropDownDiseaseGroup, gridServiceHeadInfo, dropDownRegistrationNo, dropDownReferralCenter,
-            dropDownreferenceServiceNoDDL, detailsTemplate,dropDownDiseaseCode;
+    var gridCounselorAction, dataSource, registrationInfoModel,gridServiceHeadInfo, detailsTemplate;
     var checkedIds = {}; // declare an object to hold selected grid ids
 
     var chargeAmt = 0;
@@ -21,6 +17,7 @@
         initRegAndServiceInfoGrid();
         initServiceHeadInfoGrid();
         initObservable();
+        populateRegNoDDL();
     });
     jQuery(function () {
         jQuery("form.counselorActionForm").submit(function (event) {
@@ -37,10 +34,20 @@
         $('#lblPatientServed').val('${patientServed}');
         dropDownDiseaseCode = initKendoDropdown($('#diseaseCode'), null, null, null);
 
+        $('#regNoDDL').kendoDropDownList({
+            dataTextField: "name",
+            dataValueField: "id",
+            template: "# if(data.service_count > 0) " +
+            "{#<span style='color:green'> #= data.name # </span> #} " +
+            "else {#<span> #= data.name # </span> #}#",
+            dataSource: getKendoEmptyDataSource
+        });
+        dropDownRegistrationNo = $('#regNoDDL').data("kendoDropDownList");
+
         // initialize form with kendo validator & bind onSubmit event
         initializeForm($("#counselorActionForm"), onSubmitCounselorAction);
         // update page title
-        defaultPageTile("Service Details", null);
+        defaultPageTile("Previous Service Details", "counselorAction/show");
     }
     function showForm() {
         if (executeCommonPreConditionForSelectKendo(gridCounselorAction, 'record') == false) {
@@ -56,12 +63,13 @@
             $("#serviceTokenNo").val('');
             return false;
         }
+        var date = dropDownServiceDate.value();
         showLoadingSpinner(true);
-        var actionUrl = "${createLink(controller:'counselorAction', action: 'createServiceTokenNo')}";
+        var actionUrl = "${createLink(controller:'counselorAction', action: 'createServiceTokenNo')}?createDate=" + date;
 
         jQuery.ajax({
             type: 'post',
-            //data: jQuery("#counselorActionForm").serialize(),
+            //data: jQuery("#oldServiceActionForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
                 $('#serviceTokenNo').val(data.tokenNo);
@@ -135,11 +143,42 @@
         } else {
             try {
                 bootboxAlert(result.message);
-                $('#lblPatientServed').val(result.patientServed);
                 resetForm();
             } catch (e) {
                 // Do Nothing
             }
+        }
+    }
+    function populateRegNoDDL() {
+        var date = $('#serviceDateDDL').val();
+        dropDownRegistrationNo.setDataSource(getKendoEmptyDataSource(dropDownRegistrationNo, null));
+        dropDownRegistrationNo.value('');
+
+        if (date != '') {
+            showLoadingSpinner(true);
+            retrievePatientCountSummary();
+            $.ajax({
+                url: "${createLink(controller: 'counselorAction', action: 'retrieveRegNoByDate')}?createDate=" + date,
+                success: function (data) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+                    dropDownRegistrationNo.setDataSource(data.lstRegNo);
+                    var creatingDate = dropDownServiceDate.value();
+                    var url = "${createLink(controller: 'counselorAction', action: 'list')}?createDate="+creatingDate;
+                    populateGridKendo(gridCounselorAction, url);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    afterAjaxError(XMLHttpRequest, textStatus);
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);
+                },
+                dataType: 'json',
+                type: 'post'
+            });
+            return true;
         }
     }
     function resetForm() {
@@ -191,13 +230,18 @@
         $("#gridCounselorAction").data('kendoGrid').dataSource.read();
         $('#diseaseCodeForChargeFree').val('');
         $("#isUndiagnosed").val('');
+
         resetBasicData();
     }
     function initDataSourceRegAndServiceInfo() {
+        var url="${createLink(controller: 'counselorAction', action: 'list')}";
+        if($('#serviceDate').val()!=''){
+         url=   "${createLink(controller: 'counselorAction', action: 'list')}?createDate=" + + $('#serviceDate').val();
+        }
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'counselorAction', action: 'list')}",
+                    url:url,
                     dataType: "json",
                     type: "post"
                 }
@@ -217,7 +261,7 @@
                         consultancyAmt: {type: "number"},
                         pathologyAmt: {type: "number"},
                         totalCharge: {type: "number"},
-                        serviceDate: {type: "string"},
+                        serviceDate: {type: "date"},
                         serviceType: {type: "string"}
                     }
                 },
@@ -240,6 +284,15 @@
                     .append('<tr><td colspan="' + 9 + '" class="no-data"><center>Sorry, no data found <i class="fa fa-frown-o"></i></center></td></tr>');
         }
     }
+    function setCAlignRight() {
+        return "text-align:right;font-size:9pt;";
+    }
+    function setCAlignLeft() {
+        return "text-align:leftt;font-size:9pt;";
+    }
+    function setCAlignCenter() {
+        return "text-align:center;font-size:9pt;";
+    }
     function initRegAndServiceInfoGrid() {
         initDataSourceRegAndServiceInfo();
         $("#gridCounselorAction").kendoGrid({
@@ -257,7 +310,7 @@
                     },
                     columns: [
                         {field: "regNo", title: "Reg No", width: 70, sortable: false, filterable: false},
-                        {field: "serviceTokenNo", title: "Token No", width: 70, sortable: false, filterable: false},
+                        {field: "serviceTokenNo", title: "Service No", width: 70, sortable: false, filterable: false},
                         {field: "patientName", title: "Name", width: 110, sortable: false, filterable: false},
                         {field: "serviceType", title: "Service Type", width: 120, sortable: false, filterable: false},
                         {
@@ -312,6 +365,7 @@
         ;
         gridCounselorAction = $("#gridCounselorAction").data("kendoGrid");
     }
+
     function showDetails(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
@@ -404,6 +458,7 @@
             $('#divSelectedDisease').show();
             $('#divTakenService').show();
             $('#serviceCharges').val('0');
+            $('#groupServiceCharge').val('0');
             $('#subsidyAmount').val('');
             loadDisease();
         }
@@ -419,19 +474,19 @@
     }
     function populateServiceNoDDL(regNo) {
         if (regNo == '') {
-            dropDownreferenceServiceNoDDL.setDataSource(getKendoEmptyDataSource(dropDownreferenceServiceNoDDL, null));
-            dropDownreferenceServiceNoDDL.value('');
+            dropDownReferenceServiceNoDDL.setDataSource(getKendoEmptyDataSource(dropDownReferenceServiceNoDDL, null));
+            dropDownReferenceServiceNoDDL.value('');
             return false;
         }
         showLoadingSpinner(true);
         $.ajax({
-            url: "${createLink(controller: 'counselorAction', action: 'retrieveTokenNoByRegNo')}?regNo=" + regNo,
+            url: "${createLink(controller: 'counselorAction', action: 'retrieveTokenNoByRegNo')}?regNo=" + regNo + '&serviceDate=' + $('#serviceDate').val(),
             success: function (data) {
                 if (data.isError) {
                     showError(data.message);
                     return false;
                 }
-                dropDownreferenceServiceNoDDL.setDataSource(data.lstTokenNo);
+                dropDownReferenceServiceNoDDL.setDataSource(data.lstTokenNo);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus);
@@ -610,6 +665,10 @@
         }
     }
     function LoadDetailsByRegNo() {
+        if ($('#regNoDDL').val()=='') {
+            showError('Please select date and registration no.');
+            return false;
+        }
         generateTokenNo();
         $('#divServiceType').show();
         $("#counselorActionRow").show();
@@ -617,12 +676,14 @@
         $('#counselorActionGridRow').hide();
 
     }
-    function generateTokenNo(){
+    function generateTokenNo() {
         var regNo = $('#regNoDDL').val();
         $("#regNo").val(regNo);
         if (regNo > 0) {
+            var date = dropDownServiceDate.value();
+            $('#serviceDate').val(date);
             showLoadingSpinner(true);
-            var actionUrl = "${createLink(controller:'counselorAction', action: 'createServiceTokenNo')}";
+            var actionUrl = "${createLink(controller:'counselorAction', action: 'createServiceTokenNo')}?createDate=" + date;
 
             jQuery.ajax({
                 type: 'post',
@@ -644,7 +705,11 @@
             return;
         }
     }
-    function loadFormForFollowup(){
+    function loadFormForFollowup() {
+        if ($('#regNoDDL').val()=='') {
+            showError('Please select date and registration no.');
+            return false;
+        }
         generateTokenNo();
         $("#counselorActionRow").show();
         $('#searchCriteriaRow').hide();
@@ -660,6 +725,7 @@
         $('#divSelectedDisease').show();
         $('#divTakenService').show();
         $('#serviceCharges').val('0');
+        $('#groupServiceCharge').val('0');
         $('#subsidyAmount').val('');
         $('#divReferenceServiceNo').show();
         $('#referenceServiceNoDDL').kendoDropDownList({
@@ -668,7 +734,7 @@
             filter: "contains",
             suggest: true
         });
-        dropDownreferenceServiceNoDDL = $('#referenceServiceNoDDL').data('kendoDropDownList');
+        dropDownReferenceServiceNoDDL = $('#referenceServiceNoDDL').data('kendoDropDownList');
         var regNo = $('#regNo').val();
         populateServiceNoDDL(regNo);
     }
@@ -677,52 +743,54 @@
 
         var actionUrl = "${createLink(controller:'counselorAction', action: 'retrieveDiseaseOfReferenceTokenNo')}?tokenNo=" + tokenNo;
 
-            jQuery.ajax({
-                type: 'post',
-                //data: jQuery("#counselorActionForm").serialize(),
-                url: actionUrl,
-                success: function (data, textStatus) {
+        jQuery.ajax({
+            type: 'post',
+            //data: jQuery("#oldServiceActionForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
 
-                     $('#serviceCharges').val('0');
-                     $('#subsidyAmount').val('');
-                     $('#payableAmount').val('0');
-                     $("#selectedConsultancyId").val('');
-                     $("#isUndiagnosed").val(data.isUndiagnosed);
-                    dropDownDiseaseGroup.value(data.lstDiseaseInfo[0].groupId);
+                $('#serviceCharges').val('0');
+                $('#groupServiceCharge').val('0');
+                $('#subsidyAmount').val('');
+                $('#payableAmount').val('0');
+                $("#selectedConsultancyId").val('');
+                $("#isUndiagnosed").val(data.isUndiagnosed);
+                dropDownDiseaseGroup.value(data.lstDiseaseInfo[0].groupId);
 
-                    if(data.isChargeApply){
-                        getConsultationFees();
-                    }
-                    else{
-                        $('#diseaseCodeForChargeFree').val(data.lstDiseaseInfo[0].disease_code);
-                        loadDisease();
-                    }
-                    dropDownDiseaseCode.value(data.lstDiseaseInfo[0].disease_code);
+                if (data.isChargeApply) {
+                    getConsultationFees();
+                }
+                else {
+                    $('#diseaseCodeForChargeFree').val(data.lstDiseaseInfo[0].disease_code);
+                    loadDisease();
+                }
+                dropDownDiseaseCode.value(data.lstDiseaseInfo[0].disease_code);
 
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
 
-                },
-                complete: function (XMLHttpRequest, textStatus) {
-                    showLoadingSpinner(false);
-                },
-                dataType: 'json'
-            });
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
 
     }
     function getConsultationFees() {
         var groupId = $("#diseaseGroupId").val();
         loadDisease();
 
-        if($("#isUndiagnosed").val()!='true') {
+        if ($("#isUndiagnosed").val() != 'true') {
             $.ajax({
-                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + groupId,
+                url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByGroupId')}?groupId=" + groupId + '&serviceDate=' + $('#serviceDate').val(),
                 success: function (data) {
                     if (data.isError) {
                         showError(data.message);
                         return false;
                     }
                     $('#serviceCharges').val(data.totalCharge);
+                    $('#groupServiceCharge').val(data.totalCharge);
                     $('#selectedConsultancyId').val(data.chargeIds);
 
                     getPayableAmount();
@@ -736,8 +804,9 @@
 
             });
         }
-        else{
+        else {
             $('#serviceCharges').val('0');
+            $('#groupServiceCharge').val('0');
             $('#subsidyAmount').val('');
             $("#selectedConsultancyId").val('');
             getPayableAmount();
@@ -801,39 +870,94 @@
         }
     }
     function checkIsChargeApply() {
-        if ( $('#divReferenceServiceNo').is(":visible")) {
+        if ($('#divReferenceServiceNo').is(":visible")) {
             var diseaseId = $("#diseaseCode").val();
-            if( ($('#diseaseCodeForChargeFree').val()!=diseaseId) && ($("#isUndiagnosed").val()!='true')){
+            if (($('#diseaseCodeForChargeFree').val() != diseaseId) && ($("#isUndiagnosed").val() != 'true')) {
                 var groupId = $("#diseaseGroupId").val();
-                    $.ajax({
-                        url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseId=" + groupId,
-                        success: function (data) {
-                            if (data.isError) {
-                                showError(data.message);
-                                return false;
-                            }
-                            $('#serviceCharges').val(data.totalCharge);
-                            $('#selectedConsultancyId').val(data.chargeIds);
-
-                            getPayableAmount();
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            afterAjaxError(XMLHttpRequest, textStatus);
-                        },
-                        complete: function (XMLHttpRequest, textStatus) {
-                            showLoadingSpinner(false);
+                $.ajax({
+                    url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByGroupId')}?groupId=" + groupId + '&serviceDate=' + $('#serviceDate').val(),
+                    success: function (data) {
+                        if (data.isError) {
+                            showError(data.message);
+                            return false;
                         }
+                        $('#serviceCharges').val(data.totalCharge);
+                        $('#groupServiceCharge').val(data.totalCharge);
+                        $('#selectedConsultancyId').val(data.chargeIds);
+                        if (data.totalCharge <= 0) {
+                            getChargeAmountByDiseaseCode();
+                        }
+                        else {
+                            getPayableAmount();
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                    },
+                    complete: function (XMLHttpRequest, textStatus) {
+                        showLoadingSpinner(false);
+                    }
 
-                    });
+                });
 
             }
-            else{
+            else {
                 $('#serviceCharges').val('0');
+                $('#groupServiceCharge').val('0');
                 $('#subsidyAmount').val('');
                 $("#selectedConsultancyId").val('');
                 getPayableAmount();
             }
         }
+
+        else {
+            if ($('#groupServiceCharge').val() <= 0) {
+                getChargeAmountByDiseaseCode();
+            }
+        }
+    }
+    function getChargeAmountByDiseaseCode(){
+        var diseaseId = $("#diseaseCode").val();
+        $.ajax({
+            url: "${createLink(controller: 'counselorAction', action: 'getTotalServiceChargesByDiseaseCode')}?diseaseCode=" + diseaseId,
+            success: function (data) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
+                $('#serviceCharges').val(data.totalCharge);
+                $('#selectedConsultancyId').val(data.chargeIds);
+
+                getPayableAmount();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            }
+
+        });
+    }
+    function retrievePatientCountSummary(){
+        var creatingDate = $('#serviceDateDDL').val();
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller:'registrationInfo', action: 'retrievePatientCountSummary')}?creatingDate=" + creatingDate;
+        jQuery.ajax({
+            type: 'post',
+            url: actionUrl,
+            success: function (data, textStatus) {
+                $('#lblPatientServed').val(data.patientServed);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return true;
     }
 
 </script>

@@ -105,7 +105,7 @@ class CreateMedicineReturnSellActionService extends BaseService implements Actio
                 details.traceNo = ''
                 details.medicineId = (long) lstRowsMedicine[i].medicineId
                 details.quantity = (int) lstRowsMedicine[i].rtnQuantity
-                details.amount = (double) lstRowsMedicine[i].rtnAmount
+                details.amount = details.quantity*(double) lstRowsMedicine[i].unitPrice
 
                 MedicineReturnDetails medicine = details
                 lstMedicine.add(medicine)
@@ -122,7 +122,6 @@ class CreateMedicineReturnSellActionService extends BaseService implements Actio
         medicineReturn.hospitalCode = hospital_code
         medicineReturn.returnDate = DateUtility.getSqlDate(new Date())
         medicineReturn.returnBy = springSecurityService.principal.id
-        medicineReturn.returnTypeId = 1   // To-do fix return type
 
         return medicineReturn
     }

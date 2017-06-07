@@ -132,8 +132,9 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                     GROUP BY DATE_FORMAT(rri.create_date,'%Y-%m-%d') ),0) AS re_reg_patient,
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
-                    WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
-                    AND hospital_code =  ${hospitalCode}
+                    WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field AND hospital_code =  ${hospitalCode}
+                     AND reg_no NOT IN (SELECT reg_no FROM registration_info
+                    WHERE DATE(create_date) = c.date_field AND is_old_patient <> TRUE  AND hospital_code =  ${hospitalCode})
                     GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0) AS patient_revisit,
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
@@ -154,6 +155,8 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
                     WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field AND hospital_code= ${hospitalCode}
+                     AND reg_no NOT IN (SELECT reg_no FROM registration_info
+                    WHERE DATE(create_date) = c.date_field AND is_old_patient <> TRUE  AND hospital_code =  ${hospitalCode})
                     GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0)) AS total_patient,
                 -- New Patient count
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
@@ -188,8 +191,10 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
                 WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE  AND SUBSTRING(sti.service_token_no, 2, 2) = ${hospitalCode}
                 GROUP BY DATE(sti.service_date)),0) AS total_served
+        -- Transaction Closed
+               ,CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE 1 END is_tran_closed
 
-                FROM calendar c
+                FROM calendar c LEFT JOIN transaction_closing tc ON DATE(tc.closing_date)=DATE(c.date_field) AND tc.hospital_code=${hospitalCode}
                WHERE c.date_field BETWEEN :fromDate AND :toDate
 
 
@@ -275,6 +280,8 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
                     WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
+                     AND reg_no NOT IN (SELECT reg_no FROM registration_info
+                    WHERE DATE(create_date) = c.date_field AND is_old_patient <> TRUE )
                     GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0) AS patient_revisit,
 
                 COALESCE((SELECT COUNT(sti.service_token_no) FROM service_token_info sti
@@ -294,6 +301,8 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
 
                 COALESCE((SELECT COUNT(reg_no) FROM revisit_patient
                     WHERE visit_type_id = 2 AND DATE_FORMAT(create_date,'%Y-%m-%d')= c.date_field
+                     AND reg_no NOT IN (SELECT reg_no FROM registration_info
+                    WHERE DATE(create_date) = c.date_field AND is_old_patient <> TRUE )
                     GROUP BY DATE_FORMAT(create_date,'%Y-%m-%d') ),0)) AS total_patient,
                 -- New Patient count
                 (COALESCE((SELECT COUNT(ri.reg_no) FROM registration_info ri
@@ -322,11 +331,15 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
                 WHERE sell_date = c.date_field GROUP BY sell_date ),0)
                      ) AS total_service,
-        -- Total served patient
+             -- Total served patient
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
                 WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE
                 GROUP BY DATE(sti.service_date)),0) AS total_served
-
+            -- Transaction Closed
+               ,(SELECT CASE WHEN (SELECT COUNT(is_transaction_closed) FROM transaction_closing tc WHERE DATE(tc.closing_date)=DATE(c.date_field))=0 THEN 0
+               WHEN (SELECT COUNT(is_transaction_closed) FROM transaction_closing tc
+               WHERE DATE(tc.closing_date)=DATE(c.date_field) AND is_transaction_closed = TRUE)=(SELECT COUNT(*)FROM hospital_location WHERE is_clinic=TRUE)
+                THEN 1 ELSE 0  END) is_tran_closed
                 FROM calendar c
                 WHERE c.date_field BETWEEN :fromDate AND :toDate
         """

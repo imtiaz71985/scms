@@ -57,27 +57,50 @@
                                     <span class="k-invalid-msg" data-for="name"></span>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label label-required"
+                                       for="isActive">Is Active:</label>
+
+                                <div class="col-md-1">
+                                    <g:checkBox class="form-control-static" name="isActive" tabindex="2"
+                                                data-bind="checked: diseaseInfo.isActive"/>
+                                </div>
+                                <label class="col-md-2 control-label label-required">Applicable:</label>
+                                <label class="radio-inline"><input type="radio" value="0" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">ALL</label>
+                                <label class="radio-inline"><input type="radio" value="1" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">Male</label>
+                                <label class="radio-inline"><input type="radio" value="2" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">Female</label>
+                            </div>
 
                         </div>
                         <div class="col-md-6">
 
-                        <div class="form-group">
-                            <label class="col-md-2 control-label label-required"
-                                   for="isActive">Is Active:</label>
 
-                            <div class="col-md-1">
-                                <g:checkBox class="form-control-static" name="isActive" tabindex="2"
-                                            data-bind="checked: diseaseInfo.isActive"/>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"
+                                       for="chargeAmount">Charge:</label>
+
+                                <div class="col-md-6">
+                                    <input id="chargeAmount" name="chargeAmount" type="number" tabindex="3"
+                                           class="form-control" data-bind="value: diseaseInfo.chargeAmount"/>
+                                </div>
                             </div>
-                            <label class="col-md-2 control-label label-required">Applicable:</label>
-                            <label class="radio-inline"><input type="radio" value="0" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">ALL</label>
-                            <label class="radio-inline"><input type="radio" value="1" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">Male</label>
-                            <label class="radio-inline"><input type="radio" value="2" name="applicableTo" data-bind="checked: diseaseInfo.applicableTo">Female</label>
-                        </div>
+                            <div class="form-group" id="activationDateDiv" style="display: none;">
+                                <label class="col-md-2 control-label" for="activationDate">Activation Date:</label>
+
+                                <div class="col-md-6">
+                                    <input type="text" name="activationDate" id="activationDate"
+                                           tabindex="4" class="form-control" data-bind="value: diseaseInfo.activationDate"/>
+
+                                </div>
+
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="activationDate"></span>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-md-2 control-label">Description:</label>
 
-                                <div class="col-md-8">
+                                <div class="col-md-10">
                                     <textarea class="form-control" id="description" name="description"
                                            placeholder="Short Description" tabindex="1"
                                            data-bind="value: diseaseInfo.description"/>

@@ -97,6 +97,7 @@
             <div class="modal-body">
                 <form class="form-horizontal form-widgets" id="createRegReIssueForm" name="createRegReIssueForm">
                     <input type="hidden" id="hidReIssueRegNo" name="hidReIssueRegNo" value=""/>
+                    <input type="hidden" id="hidReIssueCreateDate" name="hidReIssueCreateDate" value=""/>
 
                     <div class="form-group">
                         <div class="col-md-12">

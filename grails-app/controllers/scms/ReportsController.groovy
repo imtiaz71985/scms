@@ -86,7 +86,7 @@ class ReportsController extends BaseController {
         boolean isAdmin = secUserService.isLoggedUserAdmin(user.id)
 
         String hospitalCode = HospitalLocation.findByCode(user.hospitalCode).code
-        render(view: "/reports/PatientServed/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
+        render(view: "/reports/patientServed/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
     }
     def listOfPatientServedSummary() {
 
@@ -108,7 +108,7 @@ class ReportsController extends BaseController {
         render result as JSON
     }
     def showPatientServedDetails() {
-        render(view: "/reports/PatientServed/showDetails",model: [hospitalCode:params.hospitalCode,dateField:params.dateField,patientCount:params.serviceCount])
+        render(view: "/reports/patientServed/showDetails",model: [hospitalCode:params.hospitalCode,dateField:params.dateField,patientCount:params.serviceCount])
     }
     def listOfPatientServedDetails() {
 
@@ -169,6 +169,13 @@ class ReportsController extends BaseController {
     def downloadMonthlyPathologySummary() {
         Map result = (Map) getReportResponse(downloadMonthlyPathologySummaryActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
+    }
+    def showMedicineReturn() {
+        SecUser user = SecUser.read(springSecurityService.principal.id)
+        boolean isAdmin = secUserService.isLoggedUserAdmin(user.id)
+
+        String hospitalCode = HospitalLocation.findByCode(user.hospitalCode).code
+        render(view: "/reports/medicineReturn/show", model: [isAdmin:isAdmin,hospitalCode:hospitalCode])
     }
 
 }

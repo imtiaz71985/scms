@@ -16,5 +16,6 @@ class MedicineReturn {
     static mapping = {
         returnDate sqltype:'date'
         returnBy  index: 'medicine_return_sec_user_id_idx'
+        returnTypeId  index: 'medicine_return_return_type_id_idx'
     }
 }

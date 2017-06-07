@@ -40,7 +40,8 @@
                         returnBy: {type: "string"},
                         hospitalCode: {type: "string"},
                         totalAmount: {type: "number"},
-                        returnDate: {type: "date"}
+                        returnDate: {type: "date"},
+                        returnType: {type: "string"}
                     }
                 },
                 parse: function (data) {
@@ -79,6 +80,13 @@
                     filterable: kendoCommonFilterable(97)
                 },
                 {
+                    field: "returnType",
+                    title: "Return Type",
+                    width: 100,
+                    sortable: false,
+                    filterable: false
+                },
+                {
                     field: "totalAmount",
                     title: "Total Amount",
                     width: 50,
@@ -89,7 +97,7 @@
                     filterable: false
                 },
                 {
-                    field: "returnDate", title: "Return Date", width: 100, sortable: false,
+                    field: "returnDate", title: "Return Date", width: 50, sortable: false,
                     filterable: {cell: {template: formatFilterableDate,showOperators: false}},
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=kendo.toString(kendo.parseDate(returnDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#"

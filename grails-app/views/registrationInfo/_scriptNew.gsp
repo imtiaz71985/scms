@@ -1,6 +1,6 @@
 <script language="javascript">
-    var gridRegistrationInfo, dataSourceGrid,dropDownSex,dropDownMaritalStatus,
-        dropDownDistrict,dropDownUpazila,dropDownUnion,dropDownVillage, regNo;
+    var gridRegistrationInfo, dataSource,dropDownSex,dropDownMaritalStatus,
+        dropDownDistrict,dropDownUpazila,dropDownUnion,dropDownVillage, regNo,dropDownCreatingDate;
 
     $(document).ready(function () {
         onLoadRegistrationInfoPage();
@@ -81,10 +81,12 @@
         $('#newOrRevisit').prop('checked', true);
     }
     function initDataSource() {
-        dataSourceGrid = new kendo.data.DataSource({
+        var creatingDate = dropDownCreatingDate.value();
+
+        dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'registrationInfo', action: 'list')}?isNew=Yes",
+                    url: "${createLink(controller: 'registrationInfo', action: 'list')}?isNew=Yes&creatingDate="+creatingDate,
                     dataType: "json",
                     type: "post"
                 }
@@ -129,7 +131,7 @@
     function initRegistrationInfoGrid() {
         initDataSource();
         $("#gridRegistrationInfo").kendoGrid({
-            dataSource: dataSourceGrid,
+            dataSource: dataSource,
             height: getGridHeightKendo(),
             selectable: true,
             sortable: true,
@@ -152,7 +154,7 @@
                 {
                     command: [
                         //define the commands here
-                        { name: "custom2", text: "",click: deleteRecord,className: "fa fa-trash "  }
+                        { name: "custom1", text: "",click: deleteRecord,className: "fa fa-trash "  }
                     ],
                     title: "",width:50
                 }
@@ -161,6 +163,7 @@
                 mode: "row"
             }
         });
+        gridRegistrationInfo = $("#gridRegistrationInfo").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
     function deleteRecord(e) {
@@ -169,11 +172,11 @@
             return false;
         }
         e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-
+       // var d = this.dataItem($(e.currentTarget).closest("tr"));
+        var di = this.dataItem($(e.currentTarget).closest("tr"));
         showLoadingSpinner(true);
         $.ajax({
-            url: "${createLink(controller: 'registrationInfo', action:  'delete')}?regNo=" + dataItem.regNo,
+            url: "${createLink(controller: 'registrationInfo', action:  'delete')}?regNo=" + di.regNo,
             success: function (data) {
                 executePostCondition(data);
             },
@@ -332,17 +335,31 @@
     function getAndSetAge() {
 
        var date1= toMmDdYy($('#dateOfBirth').val());
+        if(new Date(date1)>new Date()){
+            showError('Sorry! Invalid date.');
+            $('#dateOfBirth').val('');
+            $('#ageTxt').val('');
+            return false;
+        }
         var a=evaluateDateRange(new Date(date1),new Date());
         $('#ageTxt').val(a );
     }
     function getAndSetDoB() {
+        var year = parseInt($('#ageTxt').val());
+        if(year>=0)
+        $('#ageTxt').val(year);
+        else{
+            $('#dateOfBirth').val('');
+            $('#ageTxt').val('');
+            return false;
+        }
        var cuDate=  moment().format('DD/MM/YYYY');
         var curYear=cuDate.substring(6,10);
-        var year = $('#ageTxt').val();
         year=curYear-year;
         cuDate=cuDate.substring(0,6)+year;
-        $('#dateOfBirth').val(cuDate)
+        $('#dateOfBirth').val(cuDate);
     }
+
     function toMmDdYy(inStr) {
         if((typeof inStr == 'undefined') || (inStr == null) ||
                 (inStr.length <= 0)) {
@@ -361,7 +378,32 @@
             $('#regFees').val('0 tk');
         }
     }
+function populateRegNo(){
+    var creatingDate = dropDownCreatingDate.value();
 
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller:'registrationInfo', action: 'retrieveRegNo')}?creatingDate=" + creatingDate;
+        jQuery.ajax({
+            type: 'post',
+            url: actionUrl,
+            success: function (data, textStatus) {
+                $('#regNo').val(data.regNo);
+                regNo=data.regNo;
+                var creatingDate = dropDownCreatingDate.value();
+                var url = "${createLink(controller: 'registrationInfo', action: 'list')}?isNew=Yes&creatingDate="+creatingDate;
+                populateGridKendo(gridRegistrationInfo, url);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        //return false;
+
+}
 
 
 </script>

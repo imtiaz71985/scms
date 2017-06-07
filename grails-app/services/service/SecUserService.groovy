@@ -13,11 +13,18 @@ class SecUserService extends BaseService {
 
     public boolean isLoggedUserAdmin(long userId) {
         SecUser user = SecUser.read(userId)
-        SecRole roleAdmin = SecRole.findByAuthorityOrAuthority("ROLE_SYSTEM_ADMIN","ROLE_ADMIN")
-        SecRole roleHOSup = SecRole.findByAuthorityOrAuthority("ROLE_HO_SUPERVISOR","ROLE_Clinic Administration HO")
-        int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
-        int count2 = SecUserSecRole.countBySecRoleAndSecUser(roleHOSup, user)
-        return count>0||count2 >0
+        List<SecRole> roleAdmin = SecRole.findAllByAuthorityOrAuthorityOrAuthority("ROLE_ADMIN", "ROLE_REPORT_VIEWER", "ROLE_HO_ADMIN")
+        //SecRole roleHOSup = SecRole.findByAuthorityOrAuthority("ROLE_REPORT_VIEWER","ROLE_HO_ADMIN")
+        int count =0
+        for (SecRole secRole : roleAdmin) {
+
+            count = SecUserSecRole.countBySecRoleAndSecUser(secRole, user)
+            if(count>0)
+                break;
+        }
+       // int count2 = SecUserSecRole.countBySecRoleAndSecUser(roleHOSup, user)
+        //return count>0||count2 >0
+        return count>0
     }
 
     public String retrieveHospitalCode(){

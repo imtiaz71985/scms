@@ -28,6 +28,16 @@
                                 class="k-icon k-i-plus"></span> View
                         </button>
                     </div>
+                    <label class="col-md-2 control-label label-required" for="returnTypeId">Return Type:</label>
+                    <div class="col-md-3">
+                        <app:dropDownSystemEntity
+                                data_model_name="dropDownReturnType"
+                                hints_text="" show_hints="false"
+                                id="returnTypeId" name="returnTypeId" tabindex="3"
+                                class="kendo-drop-down" type="Return Type"
+                                required="true" validationmessage="Required">
+                        </app:dropDownSystemEntity>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,11 +45,11 @@
 
     <div class="row" id="medicineReturnRow">
         <div id="application_top_panel" class="panel panel-primary">
-            <form id="frmMedicine" name="frmMedicine" class="form-horizontal form-widgets" role="form">
+            <form id="frmMedicineReturn" name="frmMedicineReturn" class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
 
                     <div class="form-group" style="height: 420px;">
-                        <div id="gridMedicine"></div>
+                        <div id="gridMedicineReturn"></div>
                     </div>
                 </div>
 

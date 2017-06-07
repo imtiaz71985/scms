@@ -156,11 +156,11 @@
     function showDetails(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var loc = ''
-        if(dataItem.isApproved){
+        //if(dataItem.isApproved){
             loc = "${createLink(controller: 'requisition', action: 'detailsHO')}?id=" + dataItem.id;
-        }else{
+        /*}else{
             loc = "${createLink(controller: 'requisition', action: 'details')}?id=" + dataItem.id;
-        }
+        }*/
         router.navigate(formatLink(loc));
         return false;
     }

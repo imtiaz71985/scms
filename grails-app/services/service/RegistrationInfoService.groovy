@@ -19,16 +19,15 @@ class RegistrationInfoService extends BaseService {
         return RegistrationInfo.read(regNo)
     }
 
-    public String retrieveRegNo() {
-        Timestamp fromDate = DateUtility.getSqlFromDateWithSeconds(new Date())
-        Timestamp toDate = DateUtility.getSqlToDateWithSeconds(new Date())
+    public String retrieveRegNo(Date date) {
+        Timestamp fromDate = DateUtility.getSqlFromDateWithSeconds(date)
+        Timestamp toDate = DateUtility.getSqlToDateWithSeconds(date)
         String hospital_code= SecUser.read(springSecurityService.principal.id)?.hospitalCode
         int c = RegistrationInfo.countByCreateDateBetweenAndHospitalCode(fromDate, toDate,hospital_code)
         c+=1
         String DATE_FORMAT = "ddMMyy";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        Calendar c1 = Calendar.getInstance(); // today
-        String regNo=sdf.format(c1.getTime())
+        String regNo=sdf.format(date)
         String patientNo= (c<10? '00' : c<100? '0' : '')+c.toString()
         regNo=hospital_code+regNo+patientNo
         return regNo
@@ -85,41 +84,47 @@ class RegistrationInfoService extends BaseService {
         String hospital_rp = EMPTY_SPACE
         String hospital_ri = EMPTY_SPACE
         String hospital_sti = EMPTY_SPACE
+        String hospital=EMPTY_SPACE
+        String hospital_tc=EMPTY_SPACE
 
         if (hospitalCode.length() > 1) {
-            hospital_rp = """
-                AND rp.hospital_code='${hospitalCode}'
-            """
-            hospital_ri = """
-               AND ri.hospital_code='${hospitalCode}'
-            """
-            hospital_sti = """
-               AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}'
-            """
-
+            hospital_rp = """ AND rp.hospital_code='${hospitalCode}' """
+            hospital_ri = """ AND ri.hospital_code='${hospitalCode}' """
+            hospital_sti = """ AND SUBSTRING(sti.service_token_no,2,2)='${hospitalCode}' """
+            hospital = """ AND hospital_code='${hospitalCode}' """
+            hospital_tc = """ , COALESCE((SELECT CASE WHEN is_transaction_closed IS NULL THEN 'FALSE' WHEN is_transaction_closed=TRUE THEN 'TRUE' ELSE 'FALSE' END
+                FROM transaction_closing WHERE DATE(closing_date)= DATE(tbl.date_field) AND hospital_code='${hospitalCode}'),'FALSE')is_tran_closed """
+        }
+        else{
+            hospital_tc = """ , coalesce((SELECT CASE WHEN (SELECT COUNT(is_transaction_closed) FROM transaction_closing tc WHERE DATE(tc.closing_date)=DATE(tbl.date_field))=0 THEN 'FALSE'
+                WHEN( SELECT COUNT(is_transaction_closed) FROM transaction_closing tc
+                WHERE DATE(tc.closing_date)=DATE(tbl.date_field) AND is_transaction_closed = TRUE)=(SELECT COUNT(*)FROM hospital_location WHERE is_clinic=TRUE) THEN 'TRUE'
+                ELSE 'FALSE' END),'FALSE')is_tran_closed """
         }
         String queryStr = """
-               SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday,COUNT(DISTINCT ri.reg_no) AS new_patient,COUNT(DISTINCT rp.id) AS patient_revisit,
-                (COUNT( DISTINCT ri.reg_no)+COUNT(DISTINCT rp.id)) AS total_patient
-                 ,COUNT(DISTINCT sti.reg_no) AS total_served
+        SELECT tbl.* """+hospital_tc+""",(tbl.new_patient+tbl.patient_revisit) AS total_patient FROM
+            (SELECT c.id,c.version,c.date_field,c.holiday_status,c.is_holiday ,COALESCE((SELECT  COUNT(DISTINCT ri.reg_no)
+                FROM registration_info ri WHERE DATE(ri.create_date)=c.date_field AND ri.is_old_patient=FALSE AND ri.is_active<>FALSE
+                 """+hospital_ri+""" GROUP BY DATE(ri.create_date)),0) AS new_patient
+                ,COALESCE((SELECT COUNT(DISTINCT rp.id) FROM revisit_patient rp WHERE DATE(rp.create_date)=c.date_field  AND rp.reg_no NOT IN
+                (SELECT reg_no FROM registration_info WHERE DATE(create_date)=c.date_field AND is_old_patient=FALSE AND is_active<>FALSE """+hospital+""" )
+                 """+hospital_rp+"""),0)  AS patient_revisit
+                ,COALESCE(( SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti WHERE DATE(sti.service_date)=c.date_field AND sti.is_deleted=FALSE
+                 """+hospital_sti+""" GROUP BY DATE(sti.service_date)),0) AS total_served
                 FROM calendar c
-                 LEFT JOIN revisit_patient rp ON c.date_field=DATE(rp.create_date) """+hospital_rp+"""
-                 LEFT JOIN registration_info ri ON c.date_field=DATE(ri.create_date) AND ri.is_old_patient=FALSE """+hospital_ri+""" AND is_active<>FALSE
-                 LEFT JOIN service_token_info sti ON c.date_field=DATE(sti.service_date) """+hospital_sti+""" AND sti.is_deleted=FALSE
-
-                WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' GROUP BY c.date_field
-                ORDER BY c.date_field ASC
+              WHERE c.date_field  BETWEEN '${fromDate}' AND '${toDate}'
+               ) tbl ORDER BY tbl.date_field ASC
         """
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
 
         return result
     }
-    public String patientServed(){
+    public String patientServed(Date date){
         String hospital_code = SecUser.read(springSecurityService.principal.id)?.hospitalCode
         Date fromDate,toDate
-        fromDate=DateUtility.getSqlFromDateWithSeconds(new Date())
-        toDate=DateUtility.getSqlToDateWithSeconds(new Date())
+        fromDate=DateUtility.getSqlFromDateWithSeconds(date)
+        toDate=DateUtility.getSqlToDateWithSeconds(date)
         List<GroovyRowResult> lst = listOfPatientServedSummary(hospital_code,fromDate,toDate)
         String msg='Registered: '+lst[0].total_patient+'; Served: '+lst[0].total_served
         return msg
@@ -157,15 +162,46 @@ class RegistrationInfoService extends BaseService {
     public List<GroovyRowResult> listOfRegNoByDate(String hospitalCode, Date fromDate, Date toDate) {
 
         String queryStr = """
-               SELECT DISTINCT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name
+               SELECT ri.reg_no AS id, CONCAT(ri.reg_no,' (',ri.patient_name,')') AS name,COALESCE(COUNT(sti.reg_no),0) AS service_count
             FROM registration_info ri LEFT JOIN revisit_patient rp ON ri.reg_no=rp.reg_no
+            LEFT JOIN service_token_info sti ON ri.reg_no=sti.reg_no AND sti.service_date BETWEEN '${fromDate}' AND '${toDate}' AND sti.is_deleted<>TRUE
             WHERE ri.is_active = TRUE  AND SUBSTRING(ri.reg_no,1,2)='${hospitalCode}' AND
             (ri.create_date BETWEEN '${fromDate}' AND '${toDate}' OR rp.create_date BETWEEN '${fromDate}' AND '${toDate}')
+           GROUP BY ri.reg_no
             ORDER BY ri.create_date DESC;
         """
 
         List<GroovyRowResult> result = executeSelectSql(queryStr)
 
         return result
+    }
+    private List<GroovyRowResult> listUnclosedTransactionDate() {
+        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+
+        Date toDate
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -90);
+        Date date1 =cal.getTime();
+        Date fromDate = DateUtility.getSqlFromDateWithSeconds(date1);
+        cal = Calendar.getInstance();
+        Date date =cal.getTime();
+        toDate = DateUtility.getSqlToDateWithSeconds(date);
+
+        String queryForList = """
+
+                SELECT c.date_field AS id,DATE_FORMAT(c.date_field,'%d-%m-%Y') AS name
+
+                FROM calendar c
+                 LEFT JOIN transaction_closing tc ON DATE(c.date_field)=DATE(tc.closing_date)  AND tc.hospital_code='${hospitalCode}'
+
+                WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' AND COALESCE(tc.is_transaction_closed,FALSE) <> TRUE
+                AND c.is_holiday<>TRUE
+                ORDER BY c.date_field DESC
+
+        """
+
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        return lst
     }
 }
