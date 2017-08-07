@@ -107,6 +107,7 @@ class CreateSecUserSecRoleActionService extends BaseService implements ActionSer
         SecRole role = secRoleService.read(roleId)
         userRole.secUser = user
         userRole.secRole = role
+        userRole.appsId = 3L
         return userRole
     }
 }

@@ -23,6 +23,7 @@ class ApplicationTagLib extends BaseTagLibExecutor {
     GetDropDownReferralCenterTagLibActionService getDropDownReferralCenterTagLibActionService
     GetDropDownSellVoucherNoTagLibActionService getDropDownSellVoucherNoTagLibActionService
     GetDropDownOldServiceDateTagLibActionService getDropDownOldServiceDateTagLibActionService
+    GetDropDownEmployeeTaglibActionService getDropDownEmployeeTaglibActionService
 
     /**
      * Render html select of Department
@@ -123,5 +124,10 @@ class ApplicationTagLib extends BaseTagLibExecutor {
         super.executeTag(getDropDownOldServiceDateTagLibActionService, attrs)
         out << (String) attrs.html
     }
+    def dropDownEmployee = { attrs, body ->
+        attrs.body = body
+        super.executeTag(getDropDownEmployeeTaglibActionService, attrs)
+        out << (String) attrs.html
 
+    }
 }

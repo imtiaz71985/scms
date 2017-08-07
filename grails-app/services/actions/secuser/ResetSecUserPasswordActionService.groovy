@@ -153,7 +153,7 @@ class ResetSecUserPasswordActionService extends BaseService implements ActionSer
                 id: user.id,
                 version: user.version
         ]
-        int updateCount = executeUpdateSql(UPDATE_USER, queryParams)
+        int updateCount = groovySql_comn.executeUpdate(UPDATE_USER, queryParams)
         if (updateCount <= 0) {
             throw new RuntimeException('Error occurred while reset password')
         }

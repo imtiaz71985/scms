@@ -8,6 +8,7 @@ class SecUserSecRole implements Serializable {
 
 	SecUser secUser
 	SecRole secRole
+	long appsId
 
 	boolean equals(other) {
 		if (!(other instanceof SecUserSecRole)) {
@@ -15,7 +16,7 @@ class SecUserSecRole implements Serializable {
 		}
 
 		other.secUser?.id == secUser?.id &&
-		other.secRole?.id == secRole?.id
+				other.secRole?.id == secRole?.id
 	}
 
 	int hashCode() {
@@ -28,19 +29,19 @@ class SecUserSecRole implements Serializable {
 	static SecUserSecRole get(long secUserId, long secRoleId) {
 		SecUserSecRole.where {
 			secUser == SecUser.load(secUserId) &&
-			secRole == SecRole.load(secRoleId)
+					secRole == SecRole.load(secRoleId) && appsId ==3L
 		}.get()
 	}
 
 	static boolean exists(long secUserId, long secRoleId) {
 		SecUserSecRole.where {
 			secUser == SecUser.load(secUserId) &&
-			secRole == SecRole.load(secRoleId)
+					secRole == SecRole.load(secRoleId) && appsId ==3L
 		}.count() > 0
 	}
 
 	static SecUserSecRole create(SecUser secUser, SecRole secRole, boolean flush = false) {
-		def instance = new SecUserSecRole(secUser: secUser, secRole: secRole)
+		def instance = new SecUserSecRole(secUser: secUser, secRole: secRole, appsId: 3L)
 		instance.save(flush: flush, insert: true)
 		instance
 	}
@@ -50,7 +51,7 @@ class SecUserSecRole implements Serializable {
 
 		int rowCount = SecUserSecRole.where {
 			secUser == SecUser.load(u.id) &&
-			secRole == SecRole.load(r.id)
+					secRole == SecRole.load(r.id) && appsId ==3L
 		}.deleteAll()
 
 		if (flush) { SecUserSecRole.withSession { it.flush() } }
@@ -62,7 +63,7 @@ class SecUserSecRole implements Serializable {
 		if (u == null) return
 
 		SecUserSecRole.where {
-			secUser == SecUser.load(u.id)
+			secUser == SecUser.load(u.id) && appsId ==3L
 		}.deleteAll()
 
 		if (flush) { SecUserSecRole.withSession { it.flush() } }
@@ -72,13 +73,14 @@ class SecUserSecRole implements Serializable {
 		if (r == null) return
 
 		SecUserSecRole.where {
-			secRole == SecRole.load(r.id)
+			secRole == SecRole.load(r.id) && appsId ==3L
 		}.deleteAll()
 
 		if (flush) { SecUserSecRole.withSession { it.flush() } }
 	}
 
 	static constraints = {
+		appsId nullable: true
 		secRole validator: { SecRole r, SecUserSecRole ur ->
 			if (ur.secUser == null) return
 			boolean existing = false
@@ -92,6 +94,7 @@ class SecUserSecRole implements Serializable {
 	}
 
 	static mapping = {
+		datasource 'comn'
 		id composite: ['secRole', 'secUser']
 		version false
 	}

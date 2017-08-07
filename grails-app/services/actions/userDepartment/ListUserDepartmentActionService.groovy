@@ -1,13 +1,13 @@
-package actions.secRole
+package actions.userDepartment
 
-import com.model.ListSecRoleActionServiceModel
+import com.model.ListUserDepartmentActionServiceModel
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
 import scms.BaseService
 
 @Transactional
-class ListSecRoleActionService extends BaseService implements ActionServiceIntf {
+class ListUserDepartmentActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -34,10 +34,10 @@ class ListSecRoleActionService extends BaseService implements ActionServiceIntf 
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Closure param = {
-                'eq'('appsId', 3L)
+            Closure params = {
+                'eq' ('userId', Long.parseLong(result.userId.toString()))
             }
-            Map resultMap = super.getSearchResult(result, ListSecRoleActionServiceModel.class,param)
+            Map resultMap = super.getSearchResult(result, ListUserDepartmentActionServiceModel.class, params)
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result

@@ -36,18 +36,14 @@ class PermissionTagLib {
         }
     }
     def hospitalName = { attrs ->
-        String hospitalCode = SecUser.read(springSecurityService.principal.id).hospitalCode
-        String hospitalName = HospitalLocation.findByCode(hospitalCode).name
+        String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        String hospitalName = HospitalLocation.findByCode(hospitalCode)?.name
         return out << hospitalName
     }
 
 
     def userName = { attrs ->
-        SecUser user = SecUser.read(springSecurityService.principal.id)
-        String username = user.username
-        if(user.fullName!=''){
-            username = user.fullName
-        }
-        out << username
+        String employeeName = SecUser.read(springSecurityService.principal.id)?.employeeName
+        out << employeeName
     }
 }

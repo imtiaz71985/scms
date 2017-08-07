@@ -5,14 +5,14 @@ class ListRequisitionReceiveActionServiceModel {
     public static final String SQL_LIST_REQUISITION_RECEIVE_MODEL = """
         CREATE OR REPLACE VIEW list_requisition_receive_action_service_model AS
 
-            SELECT rq.id,rq.version, rq.req_no AS requisition_no,au.username AS requisition_by,rq.create_date AS requisition_date,
+            SELECT rq.id,rq.version, rq.req_no AS requisition_no,au.employee_name AS requisition_by,rq.create_date AS requisition_date,
                    hl.name AS location,hl.code AS hospital_code, rq.approved_date,rq.is_received AS is_action_complete,
                    CASE WHEN rcv.req_no=r.req_no THEN TRUE ELSE FALSE END AS receive_in_process
                         FROM requisition rq
                         LEFT JOIN receive rcv ON rcv.req_no=rq.req_no
                         LEFT JOIN receive r ON r.req_no=rq.req_no
                         LEFT JOIN hospital_location hl ON hl.code = rq.hospital_code
-                        LEFT JOIN sec_user au ON au.id = rq.created_by
+                        LEFT JOIN login_auth.sec_user au ON au.id = rq.created_by
                         WHERE rq.is_approved = TRUE
                         GROUP BY rq.req_no
                   ORDER BY rq.is_received,requisition_date DESC;

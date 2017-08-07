@@ -5,10 +5,11 @@ class ListSecUserActionServiceModel {
     public static final String MODEL_NAME = 'list_sec_user_action_service_model'
     public static final String SQL_LIST_SEC_USER_MODEL = """
     CREATE OR REPLACE VIEW list_sec_user_action_service_model AS
-        SELECT suser.id, suser.version,suser.username,suser.full_name,hl.code AS hospital_code,hl.name AS hospital_name,
-        suser.password, suser.enabled, suser.account_expired, suser.account_locked
+        SELECT suser.id, suser.version,suser.username,suser.employee_name,suser.employee_name full_name,hl.code AS hospital_code,hl.name AS hospital_name,
+        suser.password, suser.enabled, suser.account_expired, suser.account_locked, sc.id AS service_id, sc.name AS service
         FROM sec_user suser
-        LEFT JOIN hospital_location hl ON hl.code=suser.hospital_code
+        LEFT JOIN scms_deploy.hospital_location hl ON hl.code=suser.hospital_code
+        LEFT JOIN mis.service sc ON sc.id = suser.service_id
         ORDER BY suser.id ASC;
     """
 
@@ -16,14 +17,18 @@ class ListSecUserActionServiceModel {
     long version                            // entity version in the persistence layer
     String username                         // login ID of SecUser
     String fullName                         // user name of SecUser
+    String employeeName                     // user name of SecUser
     boolean enabled                         // flag to enable SecUser
     boolean accountExpired                  // flag to determine is account expired or not
     boolean accountLocked                   // flag to determine is account locked or not
     String password                         // password of SecUser
     String hospitalCode                     // user hospital code
     String hospitalName                     // user hospital name
+    long serviceId                          // departmentId
+    String service                          // which department the user belongs
 
     static mapping = {
+        datasource 'comn'
         cache usage: "read-only"
     }
 }

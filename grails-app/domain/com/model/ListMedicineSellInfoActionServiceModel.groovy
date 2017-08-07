@@ -7,9 +7,9 @@ class ListMedicineSellInfoActionServiceModel {
         CREATE OR REPLACE VIEW list_medicine_sell_info_action_service_model AS
 
                   SELECT msi.id, msi.version,msi.voucher_no,SUBSTRING(msi.voucher_no,2,2) AS hospital_code,
-                    msi.total_amount, msi.sell_date,u.username AS seller
+                    msi.total_amount, msi.sell_date,u.employee_name AS seller
                     FROM medicine_sell_info msi
-                    LEFT JOIN sec_user u ON u.id = msi.sell_by;
+                    LEFT JOIN login_auth.sec_user u ON u.id = msi.sell_by;
     """
 
     long id

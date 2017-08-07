@@ -17,6 +17,7 @@ class ListSecUserSecRoleActionServiceModel implements Serializable {
     String authority
 
     static mapping = {
+        datasource 'comn'
         id composite: ['roleId', 'userId']
         version false
         cache usage: "read-only"

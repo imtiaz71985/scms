@@ -116,7 +116,7 @@ class GetDropDownRoleTagLibActionService extends BaseService implements ActionSe
     """
 
     private List<SecRole> listRole() {
-        List<SecRole> lstRole = SecRole.list()
+        List<SecRole> lstRole = SecRole.findAllByAppsId(3L)
         return lstRole
     }
 

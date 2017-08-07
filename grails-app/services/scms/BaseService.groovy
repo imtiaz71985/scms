@@ -17,6 +17,8 @@ class BaseService extends Tools {
 
     def sessionFactory
     def groovySql
+    def groovySql_mis
+    def groovySql_comn
     static transactional = false
 
     public final static int DEFAULT_RESULT_PER_PAGE = 10;

@@ -115,11 +115,11 @@ class RequisitionService extends BaseService {
     public List<GroovyRowResult> listOfDeliveredMedicine(String hospitalCode) {
         String queryStr = """
                 SELECT r.id,r.version, r.req_no AS requisitionNo,r.create_date AS requisitionDate, u.username AS requisitionBy,
-                      r.total_amount AS reqAmount,r.is_approved AS isApproved,au.username AS approvedBy,r.approved_date AS approvedDate,r.is_send AS isSend,
+                      r.total_amount AS reqAmount,r.is_approved AS isApproved,au.employee_name AS approvedBy,r.approved_date AS approvedDate,r.is_send AS isSend,
                       r.approved_amount AS approvedAmount,r.delivery_date AS deliveryDate
                             FROM requisition r
-                            LEFT JOIN sec_user u ON u.id = r.created_by
-                            LEFT JOIN sec_user au ON au.id = r.approved_by
+                            LEFT JOIN login_auth.sec_user u ON u.id = r.created_by
+                            LEFT JOIN login_auth.sec_user au ON au.id = r.approved_by
                             WHERE r.is_approved=TRUE AND r.is_delivered=TRUE  AND u.hospital_code=${hospitalCode}
                                     AND r.is_received=FALSE
                       ORDER BY r.id ASC;
