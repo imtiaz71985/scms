@@ -102,7 +102,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Receive Qty]]></text>
 			</staticText>
@@ -115,7 +115,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Generic Name]]></text>
 			</staticText>
@@ -128,7 +128,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Type]]></text>
 			</staticText>
@@ -141,7 +141,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Vendor]]></text>
 			</staticText>
@@ -154,7 +154,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[SL#]]></text>
 			</staticText>
@@ -167,7 +167,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Unit Price]]></text>
 			</staticText>
@@ -180,7 +180,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Brand Name]]></text>
 			</staticText>
@@ -193,7 +193,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Unit Type]]></text>
 			</staticText>
@@ -206,7 +206,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineWidth="0.1" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Total Price]]></text>
 			</staticText>
@@ -219,7 +219,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Box  size]]></text>
 			</staticText>
@@ -232,7 +232,7 @@ left join requisition_authority appv on appv.is_active = true and appv.rights_id
 					<rightPen lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Cambria" size="8"/>
+					<font fontName="Cambria" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Box Rate]]></text>
 			</staticText>
