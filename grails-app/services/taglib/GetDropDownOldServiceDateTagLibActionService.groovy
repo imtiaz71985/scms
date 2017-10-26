@@ -1,6 +1,7 @@
 package taglib
 
 import com.scms.SecUser
+import com.scms.SystemEntity
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
@@ -10,7 +11,7 @@ import scms.BaseService
 import scms.utility.DateUtility
 
 @Transactional
-class GetDropDownOldServiceDateTagLibActionService extends BaseService implements ActionServiceIntf  {
+class GetDropDownOldServiceDateTagLibActionService extends BaseService implements ActionServiceIntf {
 
     private static final String NAME = 'name'
     private static final String CLASS = 'class'
@@ -133,10 +134,9 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
         String strDefaultValue = defaultValue ? defaultValue : EMPTY_SPACE
 
         if (showHints.booleanValue()) {
-            if(dropDownAttributes.type.equals('forTranClosing')||dropDownAttributes.type.equals('forCounselor')){
+            if (dropDownAttributes.type.equals('forTranClosing') || dropDownAttributes.type.equals('forCounselor')) {
                 lstValues = listForKendoDropdown(lstValues, null, hintsText)
-            }
-            else{
+            } else {
                 lstValues = listForKendoDropdown(lstValues, null, hintsText)
                 lstValues.remove(0)
             }
@@ -168,22 +168,27 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
     private List<GroovyRowResult> listTransactionDate(String type) {
         String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
 
-        Date toDate
+        SystemEntity systemEntity = SystemEntity.findByType("Transaction Time Limit")
 
+        Date toDate
+        int days = 0
+        try {
+            days = Integer.parseInt(systemEntity.name)
+        } catch (Exception ex) {
+        }
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -7);
-        Date date1 =cal.getTime();
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - days);
+        Date date1 = cal.getTime();
         Date fromDate = DateUtility.getSqlFromDateWithSeconds(date1);
 
-        if(type.equals('forCounselor')) {
+        if (type.equals('forCounselor')) {
             cal = Calendar.getInstance();
             cal.add(Calendar.DATE, -1);
-            Date date =cal.getTime();
+            Date date = cal.getTime();
             toDate = DateUtility.getSqlToDateWithSeconds(date);
-        }
-        else{
+        } else {
             cal = Calendar.getInstance();
-            Date date =cal.getTime();
+            Date date = cal.getTime();
             toDate = DateUtility.getSqlToDateWithSeconds(date);
         }
         String queryForList = """
@@ -191,7 +196,9 @@ class GetDropDownOldServiceDateTagLibActionService extends BaseService implement
                 SELECT c.date_field AS id,DATE_FORMAT(c.date_field,'%d-%m-%Y') AS name
 
                 FROM calendar c
-                 LEFT JOIN transaction_closing tc ON DATE(c.date_field)=DATE(tc.closing_date)  AND tc.hospital_code='${hospitalCode}'
+                 LEFT JOIN transaction_closing tc ON DATE(c.date_field)=DATE(tc.closing_date)  AND tc.hospital_code='${
+            hospitalCode
+        }'
 
                 WHERE c.date_field BETWEEN '${fromDate}' AND '${toDate}' AND COALESCE(tc.is_transaction_closed,FALSE) <> TRUE
                 AND c.is_holiday<>TRUE
