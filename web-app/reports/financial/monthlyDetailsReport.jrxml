@@ -21,7 +21,7 @@
 		<![CDATA[SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
 CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
-            WHERE msi.sell_date = c.date_field AND msi.hospital_code =  $P{hospitalCode}
+            WHERE msi.sell_date = c.date_field AND msi.is_delete<>TRUE AND msi.hospital_code =  $P{hospitalCode}
             GROUP BY msi.sell_date ),0))END AS medicine_sales,
 CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE
             COALESCE((SELECT SUM(mr.total_amount) FROM medicine_return mr
@@ -149,7 +149,7 @@ CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0
                 AND SUBSTRING(tcm2.service_token_no, 2, 2) = $P{hospitalCode} GROUP BY DATE_FORMAT(tcm2.service_date,'%Y-%m-%d')),0) +
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
-                WHERE sell_date = c.date_field AND hospital_code= $P{hospitalCode} GROUP BY sell_date ),0)
+                WHERE sell_date = c.date_field AND is_delete<>TRUE AND hospital_code= $P{hospitalCode} GROUP BY sell_date ),0)
                      )END AS total_service,
         -- Total served patient
         CASE WHEN tc.is_transaction_closed IS NULL OR tc.is_transaction_closed<>1 THEN 0 ELSE

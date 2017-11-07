@@ -21,7 +21,7 @@
 		<![CDATA[SELECT tbl.*,
 CASE WHEN tbl.is_tran_closed <>1 THEN 0 ELSE
 	    CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
-            WHERE msi.sell_date = tbl.date_field
+            WHERE msi.sell_date = tbl.date_field AND msi.is_delete<>TRUE
             GROUP BY msi.sell_date ),0))END AS medicine_sales,
 
 CASE WHEN tbl.is_tran_closed <>1 THEN 0 ELSE
@@ -146,7 +146,7 @@ CASE WHEN tbl.is_tran_closed <>1 THEN 0 ELSE
                 GROUP BY DATE_FORMAT(tcm2.service_date,'%Y-%m-%d')),0) +
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
-                WHERE sell_date = tbl.date_field GROUP BY sell_date ),0) )END AS total_service,
+                WHERE sell_date = tbl.date_field AND is_delete<>TRUE GROUP BY sell_date ),0) )END AS total_service,
 CASE WHEN tbl.is_tran_closed <>1 THEN 0 ELSE
              -- Total served patient
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
@@ -160,9 +160,7 @@ CASE WHEN tbl.is_tran_closed <>1 THEN 0 ELSE
                WHERE DATE(tc.closing_date)=DATE(c.date_field) AND is_transaction_closed = TRUE)=(SELECT COUNT(*)FROM hospital_location WHERE is_clinic=TRUE)
                 THEN 1 ELSE 0  END) is_tran_closed
                 FROM calendar c
-               WHERE c.date_field BETWEEN $P{fromDate} AND $P{toDate}) tbl
-
-                ]]>
+               WHERE c.date_field BETWEEN $P{fromDate} AND $P{toDate}) tbl]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>

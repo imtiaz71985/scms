@@ -55,7 +55,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
         String queryStr1 = """
         SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
-            WHERE msi.sell_date = c.date_field AND msi.hospital_code =  ${hospitalCode}
+            WHERE msi.sell_date = c.date_field AND msi.is_delete<>TRUE AND msi.hospital_code =  ${hospitalCode}
             GROUP BY msi.sell_date ),0)) AS medicine_sales,
 
             COALESCE((SELECT SUM(mr.total_amount) FROM medicine_return mr
@@ -185,7 +185,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 AND SUBSTRING(tcm2.service_token_no, 2, 2) = ${hospitalCode} GROUP BY DATE_FORMAT(tcm2.service_date,'%Y-%m-%d')),0) +
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
-                WHERE sell_date = c.date_field AND hospital_code= ${hospitalCode} GROUP BY sell_date ),0)
+                WHERE sell_date = c.date_field AND is_delete<>TRUE AND hospital_code= ${hospitalCode} GROUP BY sell_date ),0)
                      ) AS total_service,
         -- Total served patient
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
@@ -204,7 +204,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
         String queryStr2 = """
        SELECT c.id, c.version,c.date_field,c.is_holiday,c.holiday_status,
             CEIL(COALESCE((SELECT SUM(msi.total_amount) FROM medicine_sell_info msi
-            WHERE msi.sell_date = c.date_field
+            WHERE msi.sell_date = c.date_field AND msi.is_delete<>TRUE
             GROUP BY msi.sell_date ),0)) AS medicine_sales,
 
             COALESCE((SELECT SUM(mr.total_amount) FROM medicine_return mr
@@ -329,7 +329,7 @@ class ListMonthlyDetailsActionService extends BaseService implements ActionServi
                 GROUP BY DATE_FORMAT(tcm2.service_date,'%Y-%m-%d')),0) +
                 -- Medicine Sales count
                 COALESCE((SELECT COUNT(voucher_no) FROM medicine_sell_info
-                WHERE sell_date = c.date_field GROUP BY sell_date ),0)
+                WHERE sell_date = c.date_field AND is_delete<>TRUE GROUP BY sell_date ),0)
                      ) AS total_service,
              -- Total served patient
                 COALESCE((SELECT COUNT(DISTINCT sti.reg_no) FROM service_token_info sti
