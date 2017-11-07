@@ -12,6 +12,7 @@ class MedicineSellInfo {
     String hospitalCode
     boolean isReturn
     Date createDate
+    boolean isDelete=false
 
     static constraints = {
         isReturn (nullable:true)

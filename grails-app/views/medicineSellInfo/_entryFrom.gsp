@@ -14,13 +14,8 @@
                     <label class="col-md-3 control-label label-optional" for="voucherNo">Voucher No:</label>
 
                     <div class="col-md-3">
-
-                        <app:dropDownIncompleteServiceDate
-                                data_model_name="dropDownCreatingDate"
-                                id="creatingDateDDL" name="creatingDateDDL"
-                                onchange="javascript:getVoucherNo();"
-                                class="kendo-drop-down">
-                        </app:dropDownIncompleteServiceDate>
+                        <input id="sellDate" name="sellDate" type="hidden">
+                        <input type="text" class="form-control" id="dateStr" readonly="true" />
                     </div><div class="col-md-3">
                         <input type="text" class="form-control" id="voucherNo" name="voucherNo" readonly="true" />
                     </div>

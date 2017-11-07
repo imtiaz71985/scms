@@ -2,6 +2,7 @@ package service
 
 import com.scms.RegistrationInfo
 import com.scms.SecUser
+import com.scms.SystemEntity
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import scms.BaseService
@@ -177,12 +178,23 @@ class RegistrationInfoService extends BaseService {
     }
     private List<GroovyRowResult> listUnclosedTransactionDate() {
         String hospitalCode = SecUser.read(springSecurityService.principal.id)?.hospitalCode
+        SystemEntity systemEntity = SystemEntity.findByType("Transaction Time Limit")
 
         Date toDate
 
-        Calendar cal = Calendar.getInstance();
+        /*Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -90);
         Date date1 =cal.getTime();
+        Date fromDate = DateUtility.getSqlFromDateWithSeconds(date1);*/
+
+        int days = 0
+        try {
+            days = Integer.parseInt(systemEntity.name)
+        } catch (Exception ex) {
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - days);
+        Date date1 = cal.getTime();
         Date fromDate = DateUtility.getSqlFromDateWithSeconds(date1);
         cal = Calendar.getInstance();
         Date date =cal.getTime();

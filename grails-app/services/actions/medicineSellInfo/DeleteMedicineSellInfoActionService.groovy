@@ -1,7 +1,9 @@
 package actions.medicineSellInfo
 
+import com.scms.MedicineReturn
 import com.scms.MedicineSellInfo
 import com.scms.MedicineSellInfoDetails
+import com.scms.MedicineStock
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import scms.ActionServiceIntf
@@ -21,14 +23,15 @@ class DeleteMedicineSellInfoActionService extends BaseService implements ActionS
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         long id = Long.parseLong(params.id)
-        MedicineSellInfo medicineSellInfo = MedicineSellInfo.read(id)
+        MedicineSellInfo medicineSellInfo = MedicineSellInfo.findById(id)
         if(!medicineSellInfo){
             return super.setError(params, NOT_FOUND)
         }
-        int count = MedicineSellInfoDetails.countByVoucherNo(medicineSellInfo.voucherNo)
-        if(count>0){
-            return super.setError(params, RECORDS_EXISTS)
+        int count = MedicineReturn.countByTraceNo(medicineSellInfo.voucherNo)
+        if (count > 0) {
+            return super.setError(params, 'Sorry! Please delete return info for this voucher.')
         }
+        medicineSellInfo.isDelete=true
         params.put(MEDICINE_SELL_INFO, medicineSellInfo)
         return params
     }
@@ -36,8 +39,17 @@ class DeleteMedicineSellInfoActionService extends BaseService implements ActionS
     @Transactional
     public Map execute(Map result) {
         try {
-            MedicineSellInfo medicineInfo = (MedicineSellInfo) result.get(MEDICINE_SELL_INFO)
-            medicineInfo.delete()
+            MedicineSellInfo medicineSellInfo = (MedicineSellInfo) result.get(MEDICINE_SELL_INFO)
+            medicineSellInfo.save()
+            List<MedicineSellInfoDetails> lstDetails = MedicineSellInfoDetails.findAllByVoucherNo(medicineSellInfo.voucherNo)
+            if (lstDetails.size() > 0) {
+                for (int i = 0; i < lstDetails.size(); i++) {
+
+                    MedicineStock stock = MedicineStock.findByMedicineIdAndHospitalCode(lstDetails[i].medicineId, medicineSellInfo.hospitalCode)
+                    stock.stockQty += lstDetails[i].quantity
+                    stock.save()
+                }
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

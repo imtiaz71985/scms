@@ -9,7 +9,7 @@ class ListMedicineSellInfoActionServiceModel {
                   SELECT msi.id, msi.version,msi.voucher_no,SUBSTRING(msi.voucher_no,2,2) AS hospital_code,
                     msi.total_amount, msi.sell_date,u.employee_name AS seller
                     FROM medicine_sell_info msi
-                    LEFT JOIN login_auth.sec_user u ON u.id = msi.sell_by;
+                    LEFT JOIN login_auth.sec_user u ON u.id = msi.sell_by WHERE is_delete<>TRUE ;
     """
 
     long id

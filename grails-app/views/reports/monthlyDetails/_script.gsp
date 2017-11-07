@@ -226,8 +226,8 @@
                     ]
                 },
                 {
-                    field: "total_served", title: "Served",
-                    width: 40,sortable: false,filterable: false,
+                    field: "total_served", title: "Total <br/> Served",
+                    width: 60,sortable: false,filterable: false,
                     headerAttributes: {style: setCAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
@@ -236,7 +236,7 @@
                 },
                 {
                     field: "total_service", title: "Total <br/> Service",
-                    width: 80,sortable: false,filterable: false,
+                    width: 60,sortable: false,filterable: false,
                     headerAttributes: {style: setCAlignRight()},
                     footerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},

@@ -6,27 +6,36 @@
  <sec:access url="/medicineSellInfo/update">
     <li onclick="editRecord();"><i class="fa fa-file"></i>View Details</li>
 </sec:access>
-%{--
 <sec:access url="/medicineSellInfo/delete">
 <li onclick="deleteRecord();"><i class="fa fa-trash-o"></i>Delete</li>
-</sec:access>--}%
+</sec:access>
+    <div class="pull-right">
+            <input type="text" id="creatingDateDDL" name="creatingDateDDL" class="kendo-drop-down" onchange="getSelectedDateData()" style="width: 150px"/>
+  </div>
 </ul>
 </script>
 
 <script language="javascript">
-    var gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine, currentDate,unitPrice = 0;
+    var gridMedicineSellInfo, dataSource, medicineSellInfoModel, dropDownMedicine, currentDate,unitPrice = 0,dropDownTransactionDate;
 
     $(document).ready(function () {
+
         onLoadMedicineSellInfoPage();
         initMedicineSellInfoGrid();
         initObservable();
-        currentDate = moment().format('DD/MM/YYYY');
-        $('#sellDate').val(currentDate);
+        dropDownTransactionDate= initKendoDropdown($('#creatingDateDDL'), null, null, ${dropDownVals});
+        if(currentDate!=null) {
+            dropDownTransactionDate.value(currentDate);
+            getSelectedDateData();
+        }
+        else{
+            currentDate = moment().format('YYYY-MM-DD');
+        }
     });
 
     function newRecord() {
         showLoadingSpinner(true);
-        var loc = "${createLink(controller: 'medicineSellInfo', action: 'showDetails')}";
+        var loc = "${createLink(controller: 'medicineSellInfo', action: 'showDetails')}?dateField="+currentDate;
         router.navigate(formatLink(loc));
         return false;
     }
@@ -99,17 +108,14 @@
     }
 
     function resetForm() {
-        clearForm($("#medicineSellInfoForm"), $('#medicineId'));
-        initObservable();
-        $('#sellDate').val(currentDate);
-        $('#create').html("<span class='k-icon k-i-plus'></span>Sell");
+
     }
 
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'medicineSellInfo', action: 'list')}",
+                    url: "${createLink(controller: 'medicineSellInfo', action: 'list')}?dateField="+currentDate,
                     dataType: "json",
                     type: "post"
                 }
@@ -221,6 +227,11 @@
         var id = getSelectedIdFromGridKendo(gridMedicineSellInfo);
         var loc = "${createLink(controller: 'medicineSellInfo', action: 'select')}?id=" + id;
         router.navigate(formatLink(loc));
+        return false;
+    }
+    function getSelectedDateData() {
+        currentDate=dropDownTransactionDate.value();
+        initMedicineSellInfoGrid();
         return false;
     }
 

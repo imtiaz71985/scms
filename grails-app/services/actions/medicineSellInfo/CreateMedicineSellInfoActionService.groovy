@@ -103,12 +103,12 @@ class CreateMedicineSellInfoActionService extends BaseService implements ActionS
         return details
     }
     private MedicineSellInfo buildMedicineObject(Map params, String hospitalCode) {
+        params.sellDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(params.sellDate))
         MedicineSellInfo sellInfo = new MedicineSellInfo(params)
         sellInfo.voucherNo = params.voucherNo
         sellInfo.hospitalCode = hospitalCode
         sellInfo.createDate = DateUtility.getSqlDate(new Date())
-        sellInfo.sellDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(params.creatingDateDDL))
-        sellInfo.sellDateExt = DateUtility.getSqlFromDateWithSeconds(DateUtility.parseDateForDB(params.creatingDateDDL))
+        sellInfo.sellDateExt = DateUtility.getSqlFromDateWithSeconds(params.sellDate)
         sellInfo.sellBy = springSecurityService.principal.id
         return sellInfo
     }

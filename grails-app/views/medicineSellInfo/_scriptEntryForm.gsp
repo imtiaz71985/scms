@@ -11,6 +11,8 @@
     $(document).ready(function () {
         voucherNo = '${voucherNo}';
         $("#voucherNo").val(voucherNo);
+        $("#sellDate").val('${sellDate}');
+        $("#dateStr").val(moment('${sellDate}').format('DD-MM-YYYY'));
         initMedicineSellInfoGrid();
         $('#quantity').kendoNumericTextBox({
             spin: function() {
@@ -292,26 +294,6 @@
         }
     }
 
-    function getVoucherNo(){
-        var creatingDate = $('#creatingDateDDL').val();
-
-        showLoadingSpinner(true);
-        $.ajax({
-            url: "${createLink(controller: 'medicineSellInfo', action:  'retrieveVoucherNo')}?creatingDate=" + creatingDate,
-            success: function (data, textStatus) {
-                voucherNo = data.voucherNo;
-                $("#voucherNo").val(voucherNo);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus)
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
-        });
-    }
     function editMedicine(com, grid) {
         if (executeCommonPreConditionForSelectKendo(gridMedicineSellInfo, 'medicine') == false) {
             return;

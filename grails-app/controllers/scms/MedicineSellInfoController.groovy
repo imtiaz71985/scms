@@ -9,8 +9,10 @@ import com.scms.SecUser
 import com.scms.SystemEntity
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
+import groovy.sql.GroovyRowResult
 import org.apache.commons.collections.map.HashedMap
 import scms.utility.DateUtility
+import service.RegistrationInfoService
 
 import java.text.SimpleDateFormat
 
@@ -22,17 +24,23 @@ class MedicineSellInfoController extends BaseController {
     DeleteMedicineSellInfoActionService deleteMedicineSellInfoActionService
     ListMedicineSellInfoActionService listMedicineSellInfoActionService
     SelectMedicineSellInfoActionService selectMedicineSellInfoActionService
+    RegistrationInfoService registrationInfoService
+    BaseService baseService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
     ]
 
     def show() {
-        render(view: "/medicineSellInfo/show")
+        List<GroovyRowResult> dropDownCreatingDate=registrationInfoService.listUnclosedTransactionDate()
+        List<GroovyRowResult> lstValues= baseService.listForKendoDropdown(dropDownCreatingDate, null, null)
+        lstValues.remove(0)
+        render(view: "/medicineSellInfo/show", model: [dropDownVals:lstValues as JSON])
     }
     def showDetails() {
-        String voucherNo = generateVoucherNo(new Date())
-        render(view: "/medicineSellInfo/showDetails",model: [voucherNo: voucherNo])
+        Date date = DateUtility.parseDateForDB(params.dateField)
+        String voucherNo = generateVoucherNo(date)
+        render(view: "/medicineSellInfo/showDetails",model: [voucherNo: voucherNo,sellDate: params.dateField])
     }
     def showLink(){
         render(view: "/medicineSellInfo/showLink",model: [dateField: params.dateField])
@@ -80,14 +88,6 @@ class MedicineSellInfoController extends BaseController {
         result.put('unitType', medicineInfo.unitType)
         result.put('amount', medicineInfo.unitPrice)
         result.put('stockQty', medicineStock.stockQty)
-        render result as JSON
-    }
-
-    def retrieveVoucherNo() {
-        Date date=DateUtility.parseDateForDB(params.creatingDate)
-        String voucherNo = generateVoucherNo(date)
-        Map result = new HashedMap()
-        result.put('voucherNo', voucherNo)
         render result as JSON
     }
 
